@@ -1,9 +1,9 @@
 package de.amr.games.pacman.controller.ghosthouse;
 
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.confirmed;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.rejected;
 import static de.amr.games.pacman.model.game.Game.sec;
@@ -13,9 +13,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Door;

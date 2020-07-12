@@ -1,6 +1,6 @@
 package de.amr.games.pacman.test.navigation.graph;
 
-import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;

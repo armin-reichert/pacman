@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.game.GameController;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.statemachine.core.State;
 import net.miginfocom.swing.MigLayout;
 

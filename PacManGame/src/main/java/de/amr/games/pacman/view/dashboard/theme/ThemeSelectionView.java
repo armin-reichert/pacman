@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.view.api.PacManGameView;
 import net.miginfocom.swing.MigLayout;
 

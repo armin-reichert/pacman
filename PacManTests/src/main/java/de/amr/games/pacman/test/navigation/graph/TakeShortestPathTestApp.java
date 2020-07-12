@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.navigation.graph;
 
-import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
-import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -11,7 +11,7 @@ import java.util.List;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.actor.steering.Steering;
+import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.Portal;

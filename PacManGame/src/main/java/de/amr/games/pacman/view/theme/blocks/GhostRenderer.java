@@ -7,8 +7,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.Application;
-import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.GhostState;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 

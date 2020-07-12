@@ -10,13 +10,13 @@ import java.awt.RenderingHints;
 import java.util.BitSet;
 
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.api.Creature;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.api.Theme;

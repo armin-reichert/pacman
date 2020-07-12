@@ -1,13 +1,13 @@
 package de.amr.games.pacman.view.theme.letters;
 
-import static de.amr.games.pacman.controller.actor.PacManState.DEAD;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 
 import java.awt.Color;
 import java.awt.Font;
 
 import de.amr.easy.game.Application;
-import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Door.DoorState;

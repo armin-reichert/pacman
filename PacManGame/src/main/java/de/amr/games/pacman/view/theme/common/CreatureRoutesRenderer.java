@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.theme.common;
 
 import static de.amr.games.pacman.PacManApp.settings;
-import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.view.theme.common.Rendering.alpha;
 import static de.amr.games.pacman.view.theme.common.Rendering.drawDirectionIndicator;
 import static de.amr.games.pacman.view.theme.common.Rendering.ghostColor;
@@ -13,10 +13,10 @@ import java.awt.Stroke;
 import java.util.List;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.api.IRenderer;

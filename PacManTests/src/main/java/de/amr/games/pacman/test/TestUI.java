@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test;
 
-import static de.amr.games.pacman.controller.SpeedLimits.pacManSpeedLimit;
-import static de.amr.games.pacman.controller.SpeedLimits.speedLimit;
+import static de.amr.games.pacman.controller.game.SpeedLimits.pacManSpeedLimit;
+import static de.amr.games.pacman.controller.game.SpeedLimits.speedLimit;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -10,12 +10,12 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.api.Creature;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.Themes;

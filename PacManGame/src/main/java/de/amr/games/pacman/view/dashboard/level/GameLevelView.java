@@ -7,7 +7,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.view.dashboard.util.UniversalFormatter;
 import net.miginfocom.swing.MigLayout;
 

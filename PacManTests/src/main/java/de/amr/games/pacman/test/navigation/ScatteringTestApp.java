@@ -1,6 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;

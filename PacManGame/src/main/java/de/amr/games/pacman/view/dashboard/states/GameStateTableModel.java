@@ -1,19 +1,19 @@
 package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
-import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.game.Game.sec;
 
 import javax.swing.table.AbstractTableModel;
 
-import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.GhostSanity;
-import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostSanity;
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.game.GameController;
+import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;

@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.dashboard.states;
 
-import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.view.dashboard.util.Formatting.ticksAndSeconds;
 import static de.amr.games.pacman.view.theme.arcade.ArcadeTheme.ASSETS;
@@ -18,10 +18,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import net.miginfocom.swing.MigLayout;
 
 /**

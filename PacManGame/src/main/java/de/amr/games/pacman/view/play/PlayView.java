@@ -1,18 +1,18 @@
 package de.amr.games.pacman.view.play;
 
-import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
-import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
-import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
+import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;

@@ -1,6 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
