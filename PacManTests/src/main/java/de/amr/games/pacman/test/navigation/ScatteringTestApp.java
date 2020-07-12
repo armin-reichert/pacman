@@ -53,6 +53,9 @@ class ScatteringTestUI extends TestUI {
 			ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
 			view.clearMessage(2);
 		}
+		if (Keyboard.keyPressedOnce("-")) {
+			ghostsOnStage().forEach(ghost -> ghost.reverseDirection());
+		}
 		super.update();
 	}
 }
