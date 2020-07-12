@@ -1,6 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import de.amr.easy.game.Application;
@@ -31,10 +32,12 @@ public class EnterAndLeaveGhostHouseTestApp extends Application {
 
 class EnterGhostHouseTestUI extends TestUI {
 
-	Tile[] capes = { world.capeNW(), world.capeSE(), world.capeSW() };
+	private final List<Tile> capes = Arrays.asList(world.capeNW(), world.capeSE(), world.capeSW());
+	private int visits;
+	private boolean enteredCape, leftCape;
 
 	private Tile randomCape() {
-		return capes[new Random().nextInt(capes.length)];
+		return capes.get(new Random().nextInt(capes.size()));
 	}
 
 	@Override
@@ -53,8 +56,22 @@ class EnterGhostHouseTestUI extends TestUI {
 		if (inky.getState() == GhostState.LEAVING_HOUSE && !inky.isInsideHouse()) {
 			inky.setState(GhostState.SCATTERING);
 			inky.behavior(GhostState.SCATTERING, inky.headingFor(randomCape()));
-		} else if (inky.getState() == GhostState.SCATTERING && Arrays.asList(capes).contains(inky.location())) {
-			inky.setState(GhostState.DEAD);
+		} else if (inky.getState() == GhostState.SCATTERING) {
+			// one round around the block, then killed at cape
+			if (capes.contains(inky.location())) {
+				enteredCape = true;
+			} else {
+				if (enteredCape) {
+					leftCape = true;
+					enteredCape = false;
+					visits++;
+				}
+			}
+			if (leftCape && visits == 2) {
+				inky.setState(GhostState.DEAD);
+				visits = 0;
+				enteredCape = leftCape = false;
+			}
 		}
 		super.update();
 	}
