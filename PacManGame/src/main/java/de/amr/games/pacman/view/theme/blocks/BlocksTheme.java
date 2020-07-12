@@ -14,12 +14,19 @@ import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.view.api.ThemeParameters;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
+import de.amr.games.pacman.view.theme.common.ParameterMap;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class BlocksTheme implements Theme {
 
-	public static final Font FONT = Assets.storeTrueTypeFont("ConcertOne", "ConcertOne-Regular.ttf", Font.PLAIN, 10);
+	public static final ParameterMap env = new ParameterMap();
+
+	{
+		env.put("font", Assets.storeTrueTypeFont("ConcertOne", "ConcertOne-Regular.ttf", Font.PLAIN, 10));
+		env.put("maze-flash-sec", 0.5f);
+	}
 
 	public static final Color GHOST_COLORS[] = new Color[4];
 
@@ -59,6 +66,11 @@ public class BlocksTheme implements Theme {
 	}
 
 	@Override
+	public ThemeParameters env() {
+		return env;
+	}
+
+	@Override
 	public String name() {
 		return "BLOCKS";
 	}
@@ -71,7 +83,7 @@ public class BlocksTheme implements Theme {
 	@Override
 	public IRenderer createScoreRenderer(World world, Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
-		renderer.setFont(FONT);
+		renderer.setFont(env.$font("font"));
 		renderer.setSmoothText(true);
 		return renderer;
 	}
@@ -99,7 +111,7 @@ public class BlocksTheme implements Theme {
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont(FONT.deriveFont(14f));
+		renderer.setFont(env.$font("font").deriveFont(14f));
 		renderer.setSmoothText(true);
 		return renderer;
 	}

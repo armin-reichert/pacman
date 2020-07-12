@@ -17,7 +17,9 @@ import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.view.api.ThemeParameters;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
+import de.amr.games.pacman.view.theme.common.ParameterMap;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
 /**
@@ -27,8 +29,12 @@ import de.amr.games.pacman.view.theme.common.Rendering;
  */
 public class LettersTheme implements Theme {
 
-	public static final Font FONT = new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE);
-	public static final int OFFSET_BASELINE = Tile.SIZE - 1;
+	public static final ParameterMap env = new ParameterMap();
+
+	static {
+		env.put("font", new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
+		env.put("offset-baseline", Tile.SIZE - 1);
+	}
 
 	public static Color ghostColor(Ghost ghost) {
 		switch (ghost.name()) {
@@ -61,6 +67,11 @@ public class LettersTheme implements Theme {
 	}
 
 	@Override
+	public ThemeParameters env() {
+		return env;
+	}
+
+	@Override
 	public String name() {
 		return "LETTERS";
 	}
@@ -69,9 +80,11 @@ public class LettersTheme implements Theme {
 	public IRenderer createGhostRenderer(Ghost ghost) {
 		return g -> {
 			if (ghost.isVisible()) {
-				g.setFont(FONT);
+				Font font = env().$font("font");
+				int offset_baseline = env().$int("offset-baseline");
+				g.setFont(font);
 				g.setColor(ghostColor(ghost));
-				g.drawString(ghostLetter(ghost), ghost.entity.tf.x, ghost.entity.tf.y + OFFSET_BASELINE);
+				g.drawString(ghostLetter(ghost), ghost.entity.tf.x, ghost.entity.tf.y + offset_baseline);
 			}
 		};
 	}
@@ -80,10 +93,12 @@ public class LettersTheme implements Theme {
 	public IPacManRenderer createPacManRenderer(PacMan pacMan) {
 		return g -> {
 			if (pacMan.isVisible()) {
-				g.setFont(FONT);
+				Font font = env().$font("font");
+				int offset_baseline = env().$int("offset-baseline");
+				g.setFont(font);
 				g.setColor(Color.YELLOW);
 				String letter = pacMan.is(DEAD) ? "\u2668" : "O";
-				g.drawString(letter, pacMan.entity.tf.x, pacMan.entity.tf.y + OFFSET_BASELINE);
+				g.drawString(letter, pacMan.entity.tf.x, pacMan.entity.tf.y + offset_baseline);
 			}
 		};
 	}
@@ -91,52 +106,60 @@ public class LettersTheme implements Theme {
 	@Override
 	public IRenderer createLevelCounterRenderer(World world, Game game) {
 		return g -> {
+			Font font = env().$font("font");
+			int offset_baseline = env().$int("offset-baseline");
 			String text = String.format("Level: %d (%s)", game.level.number, game.level.bonusSymbol);
 			g.setColor(Color.YELLOW);
-			g.setFont(FONT);
-			g.drawString(text, -15 * Tile.SIZE, Tile.SIZE + OFFSET_BASELINE);
+			g.setFont(font);
+			g.drawString(text, -15 * Tile.SIZE, Tile.SIZE + offset_baseline);
 		};
 	}
 
 	@Override
 	public IRenderer createLiveCounterRenderer(World world, Game game) {
 		return g -> {
+			Font font = env().$font("font");
+			int offset_baseline = env().$int("offset-baseline");
 			g.setColor(Color.YELLOW);
-			g.setFont(FONT);
-			g.drawString(String.format("Lives: %d", game.lives), 0, Tile.SIZE + OFFSET_BASELINE);
+			g.setFont(font);
+			g.drawString(String.format("Lives: %d", game.lives), 0, Tile.SIZE + offset_baseline);
 		};
 	}
 
 	@Override
 	public IRenderer createScoreRenderer(World world, Game game) {
 		return g -> {
+			Font font = env().$font("font");
+			int offset_baseline = env().$int("offset-baseline");
 			g.setColor(Color.YELLOW);
-			g.setFont(FONT);
-			g.drawString(" Score          Highscore        Pellets", 0, OFFSET_BASELINE);
+			g.setFont(font);
+			g.drawString(" Score          Highscore        Pellets", 0, offset_baseline);
 			g.drawString(String.format(" %08d       %08d         %03d", game.score, game.hiscore.points,
-					game.level.remainingFoodCount()), 0, Tile.SIZE + OFFSET_BASELINE);
+					game.level.remainingFoodCount()), 0, Tile.SIZE + offset_baseline);
 		};
 	}
 
 	@Override
 	public IWorldRenderer createWorldRenderer(World world) {
 		return g -> {
-			g.setFont(FONT);
+			Font font = env().$font("font");
+			int offset_baseline = env().$int("offset-baseline");
+			g.setFont(font);
 			for (int row = 3; row < world.height() - 2; ++row) {
 				for (int col = 0; col < world.width(); ++col) {
 					Tile tile = Tile.at(col, row);
 					if (world.isAccessible(tile)) {
 						if (world.containsEnergizer(tile) && Application.app().clock().getTotalTicks() % 60 < 30) {
 							g.setColor(Color.PINK);
-							g.drawString("Ö", col * Tile.SIZE + 2, row * Tile.SIZE + OFFSET_BASELINE);
+							g.drawString("Ö", col * Tile.SIZE + 2, row * Tile.SIZE + offset_baseline);
 						}
 						if (world.containsSimplePellet(tile)) {
 							g.setColor(Color.PINK);
-							g.drawString(".", col * Tile.SIZE + 1, row * Tile.SIZE - 3 + OFFSET_BASELINE);
+							g.drawString(".", col * Tile.SIZE + 1, row * Tile.SIZE - 3 + offset_baseline);
 						}
 					} else {
 						g.setColor(Rendering.alpha(Color.GREEN, 80));
-						g.drawString("#", col * Tile.SIZE + 1, row * Tile.SIZE + OFFSET_BASELINE - 1);
+						g.drawString("#", col * Tile.SIZE + 1, row * Tile.SIZE + offset_baseline - 1);
 					}
 				}
 			}
@@ -154,7 +177,8 @@ public class LettersTheme implements Theme {
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont(FONT);
+		Font font = env().$font("font");
+		renderer.setFont(font);
 		return renderer;
 	}
 }

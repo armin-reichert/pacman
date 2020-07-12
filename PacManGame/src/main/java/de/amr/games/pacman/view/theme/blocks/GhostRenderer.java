@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.theme.blocks;
 
+import static de.amr.games.pacman.view.theme.blocks.BlocksTheme.env;
 import static de.amr.games.pacman.view.theme.blocks.BlocksTheme.ghostColor;
 
 import java.awt.Color;
@@ -74,7 +75,7 @@ class GhostRenderer implements IRenderer {
 
 	private void drawPoints(Graphics2D g) {
 		g.setColor(Color.GREEN);
-		g.setFont(BlocksTheme.FONT);
+		g.setFont(env.$font("font"));
 		g.drawString(ghost.getBounty() + "", (int) ghost.entity.tf.x, (int) ghost.entity.tf.y);
 	}
 

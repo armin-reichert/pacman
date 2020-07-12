@@ -10,12 +10,24 @@ import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.view.api.ThemeParameters;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
+import de.amr.games.pacman.view.theme.common.ParameterMap;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class ArcadeTheme implements Theme {
 
+	public static final ParameterMap env = new ParameterMap();
+	{
+		env.put("maze-flash-sec", 0.4f);
+	}
+
 	public static final ArcadeThemeAssets ASSETS = new ArcadeThemeAssets();
+
+	@Override
+	public ThemeParameters env() {
+		return env;
+	}
 
 	@Override
 	public String name() {

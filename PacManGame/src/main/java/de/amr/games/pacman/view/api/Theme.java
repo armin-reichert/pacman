@@ -10,6 +10,8 @@ public interface Theme {
 
 	String name();
 
+	ThemeParameters env();
+
 	IRenderer createGhostRenderer(Ghost ghost);
 
 	IPacManRenderer createPacManRenderer(PacMan pacMan);

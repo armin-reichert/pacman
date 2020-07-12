@@ -3,6 +3,7 @@ package de.amr.games.pacman.view.theme.arcade;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 
@@ -33,7 +34,12 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
 	@Override
 	public void render(Graphics2D g) {
-		switch (pacMan.getState()) {
+		PacManState state = pacMan.getState();
+		if (state == null) {
+			selectSprite("full");
+			return;
+		}
+		switch (state) {
 		case DEAD:
 			if (pacMan.isCollapsing()) {
 				if (!"collapsing".equals(sprites.selectedKey())) {
