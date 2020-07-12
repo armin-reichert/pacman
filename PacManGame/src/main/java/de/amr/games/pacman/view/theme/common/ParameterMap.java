@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.theme.common;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.util.HashMap;
 
@@ -9,6 +10,12 @@ public class ParameterMap extends HashMap<String, Object> implements ThemeParame
 
 	private static final Font DEFAULT_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 8);
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T $value(String key) {
+		return (T) get(key);
+	}
+
 	@Override
 	public int $int(String key) {
 		return (int) getOrDefault(key, 0);
@@ -17,6 +24,11 @@ public class ParameterMap extends HashMap<String, Object> implements ThemeParame
 	@Override
 	public float $float(String key) {
 		return (float) getOrDefault(key, 0f);
+	}
+
+	@Override
+	public Color $color(String key) {
+		return (Color) getOrDefault(key, Color.BLACK);
 	}
 
 	@Override

@@ -2,12 +2,11 @@ package de.amr.games.pacman.view.theme.blocks;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.stream.Stream;
+import java.util.Map;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.controller.world.arcade.Symbol;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.api.IPacManRenderer;
@@ -19,6 +18,12 @@ import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ParameterMap;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
+/**
+ * A theme using simple geometric figures.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public class BlocksTheme implements Theme {
 
 	public static final ParameterMap env = new ParameterMap();
@@ -26,43 +31,38 @@ public class BlocksTheme implements Theme {
 	{
 		env.put("font", Assets.storeTrueTypeFont("ConcertOne", "ConcertOne-Regular.ttf", Font.PLAIN, 10));
 		env.put("maze-flash-sec", 0.5f);
-	}
 
-	public static final Color GHOST_COLORS[] = new Color[4];
+		env.put("ghost-colors", Map.of(
+		//@formatter:off
+		Ghost.RED_GHOST,    Color.RED,
+		Ghost.PINK_GHOST,   Color.PINK,
+		Ghost.CYAN_GHOST,   Color.CYAN,
+		Ghost.ORANGE_GHOST, Color.ORANGE
+		//@formatter:on
+		));
 
-	static {
-		GHOST_COLORS[Ghost.RED_GHOST] = Color.RED;
-		GHOST_COLORS[Ghost.PINK_GHOST] = Color.PINK;
-		GHOST_COLORS[Ghost.CYAN_GHOST] = Color.CYAN;
-		GHOST_COLORS[Ghost.ORANGE_GHOST] = Color.ORANGE;
+		env.put("symbol-colors", Map.of(
+		//@formatter:off
+		"APPLE",      Color.RED,		
+		"BELL",       Color.YELLOW,
+		"CHERRIES",   Color.RED,
+		"GALAXIAN",   Color.BLUE,
+		"GRAPES",     Color.GREEN,
+		"KEY",        Color.BLUE,
+		"PEACH",      Color.ORANGE,
+		"STRAWBERRY", Color.RED
+		//@formatter:on
+		));
 	}
 
 	public static Color ghostColor(Ghost ghost) {
-		return GHOST_COLORS[ghost.getColor()];
+		Map<Integer, Color> colors = env.$value("ghost-colors");
+		return colors.getOrDefault(ghost.getColor(), Color.WHITE);
 	}
 
 	public static Color symbolColor(String symbolName) {
-		Symbol symbol = Stream.of(Symbol.values()).filter(s -> s.name().equals(symbolName)).findFirst().get();
-		switch (symbol) {
-		case APPLE:
-			return Color.RED;
-		case BELL:
-			return Color.YELLOW;
-		case CHERRIES:
-			return Color.RED;
-		case GALAXIAN:
-			return Color.BLUE;
-		case GRAPES:
-			return Color.GREEN;
-		case KEY:
-			return Color.BLUE;
-		case PEACH:
-			return Color.ORANGE;
-		case STRAWBERRY:
-			return Color.RED;
-		default:
-			return Color.GREEN;
-		}
+		Map<String, Color> colors = env.$value("symbol-colors");
+		return colors.getOrDefault(symbolName, Color.GREEN);
 	}
 
 	@Override
