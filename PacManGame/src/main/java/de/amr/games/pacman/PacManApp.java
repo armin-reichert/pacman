@@ -27,7 +27,6 @@ import de.amr.statemachine.core.StateMachine;
 public class PacManApp extends Application {
 
 	public static void main(String[] args) {
-		fsm_logging(false);
 		launch(PacManApp.class, settings, args);
 	}
 
@@ -42,7 +41,7 @@ public class PacManApp extends Application {
 	public static void fsm_logging(boolean enabled) {
 		FSM_LOGGER.setLevel(enabled ? Level.INFO : Level.OFF);
 	}
-	
+
 	public static boolean fsm_logging_enabled() {
 		return FSM_LOGGER.getLevel() == Level.INFO;
 	}
@@ -115,6 +114,8 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
+		fsm_logging(false);
+		loginfo("Finite-state machine logging is " + fsm_logging_enabled());
 		setIcon("/images/pacman-icon.png");
 		setController(settings.simpleMode ? new GameController() : new EnhancedGameController());
 	}
