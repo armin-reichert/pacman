@@ -55,12 +55,12 @@ public class BlocksTheme extends AbstractTheme {
 	}
 
 	public Color ghostColor(Ghost ghost) {
-		Map<Integer, Color> colors = IT.$value("ghost-colors");
+		Map<Integer, Color> colors = $value("ghost-colors");
 		return colors.getOrDefault(ghost.getColor(), Color.WHITE);
 	}
 
 	public Color symbolColor(String symbolName) {
-		Map<String, Color> colors = IT.$value("symbol-colors");
+		Map<String, Color> colors = $value("symbol-colors");
 		return colors.getOrDefault(symbolName, Color.GREEN);
 	}
 
@@ -72,7 +72,7 @@ public class BlocksTheme extends AbstractTheme {
 	@Override
 	public IRenderer createScoreRenderer(World world, Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
-		renderer.setFont(BlocksTheme.IT.$font("font"));
+		renderer.setFont($font("font"));
 		renderer.setSmoothText(true);
 		return renderer;
 	}
@@ -100,7 +100,7 @@ public class BlocksTheme extends AbstractTheme {
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont(BlocksTheme.IT.$font("font").deriveFont(14f));
+		renderer.setFont($font("font").deriveFont(14f));
 		renderer.setSmoothText(true);
 		return renderer;
 	}
