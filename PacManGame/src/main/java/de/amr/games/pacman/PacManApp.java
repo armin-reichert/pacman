@@ -1,6 +1,8 @@
 package de.amr.games.pacman;
 
 import java.awt.DisplayMode;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.beust.jcommander.Parameter;
 
@@ -13,6 +15,7 @@ import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
 import de.amr.games.pacman.view.dashboard.theme.ThemeSelectionView;
+import de.amr.statemachine.core.StateMachine;
 
 /**
  * The Pac-Man game application.
@@ -24,8 +27,31 @@ import de.amr.games.pacman.view.dashboard.theme.ThemeSelectionView;
 public class PacManApp extends Application {
 
 	public static void main(String[] args) {
+		fsm_logging(false);
 		launch(PacManApp.class, settings, args);
 	}
+
+	// Finite-state machine tracing
+
+	private static final Logger FSM_LOGGER = Logger.getLogger(PacManApp.class.getName() + "-fsm");
+
+	public static void fsm_loginfo(String message, Object... args) {
+		FSM_LOGGER.info(String.format(message, args));
+	}
+
+	public static void fsm_logging(boolean enabled) {
+		FSM_LOGGER.setLevel(enabled ? Level.INFO : Level.OFF);
+	}
+	
+	public static boolean fsm_logging_enabled() {
+		return FSM_LOGGER.getLevel() == Level.INFO;
+	}
+
+	public static void fsm_register(StateMachine<?, ?> fsm) {
+		fsm.getTracer().setLogger(FSM_LOGGER);
+	}
+
+	// Application configuration
 
 	public static class Settings extends AppSettings {
 

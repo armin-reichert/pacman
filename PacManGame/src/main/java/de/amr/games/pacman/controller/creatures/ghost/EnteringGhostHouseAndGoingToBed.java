@@ -6,7 +6,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.EnteringGhostHouseA
 import static de.amr.games.pacman.controller.creatures.ghost.EnteringGhostHouseAndGoingToBed.State.TARGET_REACHED;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.ghost.EnteringGhostHouseAndGoingToBed.State;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -71,7 +71,7 @@ public class EnteringGhostHouseAndGoingToBed extends StateMachine<State, Void> i
 					
 		.endStateMachine();
 		/*@formatter:on*/
-		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		PacManApp.fsm_register(this);
 	}
 
 	@Override

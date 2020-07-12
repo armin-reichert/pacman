@@ -19,7 +19,7 @@ import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -70,7 +70,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		this.sounds = soundManager;
 		this.width = width;
 		this.height = height;
-		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		PacManApp.fsm_register(this);
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[IntroView]")

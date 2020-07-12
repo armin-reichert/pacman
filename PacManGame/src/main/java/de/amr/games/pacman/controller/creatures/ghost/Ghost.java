@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.creatures.Animal;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
@@ -180,7 +180,7 @@ public class Ghost extends Animal<GhostState> {
 		.endStateMachine();
 		/*@formatter:on*/
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		PacManApp.fsm_register(this);
 	}
 
 	@Override
@@ -225,9 +225,9 @@ public class Ghost extends Animal<GhostState> {
 		};
 
 		// Blinky can get insane ("cruise elroy")
-		if (name().equals("Blinky")) {
+		if (this == folks.blinky()) {
 			sanityControl = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
-			sanityControl.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+			PacManApp.fsm_register(sanityControl);
 		}
 	}
 

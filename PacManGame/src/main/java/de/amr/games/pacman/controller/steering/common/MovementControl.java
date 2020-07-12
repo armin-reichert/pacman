@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Animal;
 import de.amr.games.pacman.controller.game.SpeedLimits;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -28,7 +28,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 
 	public MovementControl(Animal<?> creature) {
 		super(MovementType.class);
-		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		PacManApp.fsm_register(this);
 		//@formatter:off
 		beginStateMachine()
 			.description(String.format("[%s movement]", creature.name()))

@@ -2,6 +2,8 @@ package de.amr.games.pacman.controller.game;
 
 import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
+import static de.amr.games.pacman.PacManApp.fsm_logging;
+import static de.amr.games.pacman.PacManApp.fsm_logging_enabled;
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
@@ -12,7 +14,6 @@ import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
-import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
@@ -136,8 +137,8 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void toggleStateMachineLogging() {
-		PacManStateMachineLogging.toggle();
-		loginfo("State machine logging changed to %s", PacManStateMachineLogging.LOGGER.getLevel());
+		fsm_logging(!fsm_logging_enabled());
+		loginfo("State machine logging changed to %s", fsm_logging_enabled() ? "enabled" : "off");
 	}
 
 	private void toggleGhostFrightenedBehavior() {

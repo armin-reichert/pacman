@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.creatures.Animal;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -93,7 +92,7 @@ public class PacMan extends Animal<PacManState> {
 
 		.endStateMachine();
 		/* @formatter:on */
-		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		PacManApp.fsm_register(this);
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);

@@ -8,7 +8,7 @@ import static de.amr.games.pacman.model.world.core.BonusState.INACTIVE;
 
 import java.util.Random;
 
-import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.game.Game;
@@ -28,7 +28,7 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 
 	public BonusControl(Game game, World world) {
 		super(BonusState.class);
-		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		PacManApp.fsm_register(this);
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[BonusControl]")

@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.creatures.Animal;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -92,8 +92,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		super(PacManGameState.class);
 		app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
+		PacManApp.fsm_register(this);
 		//@formatter:off
 		beginStateMachine()
 			
