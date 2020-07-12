@@ -1,13 +1,11 @@
 package de.amr.games.pacman.view.theme.arcade;
 
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.easy.game.assets.Assets.storeTrueTypeFont;
 import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -25,17 +23,14 @@ import de.amr.games.pacman.model.world.api.Direction;
  * 
  * @author Armin Reichert
  */
-public class ArcadeThemeAssets {
-
-	public final Font messageFont;
+public class ArcadeThemeSprites {
 
 	private static final int TILE_SIZE = 16;
 
-	private final BufferedImage spriteSheet = Assets.readImage("images/arcade/sprites.png");
-	private final BufferedImage imageMazeEmpty = Assets.readImage("images/arcade/maze_empty.png");
+	private final BufferedImage spriteSheet = Assets.readImage("themes/arcade/sprites.png");
+	private final BufferedImage imageMazeEmpty = Assets.readImage("themes/arcade/maze_empty.png");
+	private final BufferedImage imageMazeFull = Assets.readImage("themes/arcade/maze_full.png");
 	private final BufferedImage imageMazeEmptyWhite;
-	private final BufferedImage imageMazeFull = Assets.readImage("images/arcade/maze_full.png");
-	private final BufferedImage imageLogo = Assets.readImage("images/arcade/logo.png");
 	private final BufferedImage imagePacManFull;
 	private final BufferedImage imagePacManWalking[][];
 	private final BufferedImage imagePacManDying[];
@@ -45,6 +40,7 @@ public class ArcadeThemeAssets {
 	private final BufferedImage imageGhostEyes[];
 	private final BufferedImage imageGreenNumbers[];
 	private final BufferedImage imagePinkNumbers[];
+	private final BufferedImage imageLogo = Assets.readImage("images/logo.png");
 	private final Map<String, BufferedImage> imageMapSymbols = new HashMap<>();
 
 	// in the spritesheet, the order of directions is: RIGHT, LEFT, UP, DOWN
@@ -90,9 +86,7 @@ public class ArcadeThemeAssets {
 		return copy;
 	}
 
-	ArcadeThemeAssets() {
-
-		messageFont = storeTrueTypeFont("font.hud", "PressStart2P-Regular.ttf", Font.PLAIN, 8);
+	ArcadeThemeSprites() {
 
 		// debugger told me RGB value of blue color in maze image
 		imageMazeEmptyWhite = exchangeColor(imageMazeEmpty, -14605825, Color.WHITE.getRGB());

@@ -14,7 +14,7 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
 	public PacManRenderer(PacMan pacMan) {
 		this.pacMan = pacMan;
-		ArcadeThemeAssets assets = ArcadeTheme.ASSETS;
+		ArcadeThemeSprites assets = ArcadeTheme.ASSETS;
 		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, assets.makeSprite_pacManWalking(dir)));
 		sprites.set("collapsing", assets.makeSprite_pacManDying());
 		sprites.set("full", assets.makeSprite_pacManFull());

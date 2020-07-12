@@ -28,7 +28,7 @@ import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
-import de.amr.games.pacman.view.theme.arcade.ArcadeThemeAssets;
+import de.amr.games.pacman.view.theme.arcade.ArcadeThemeSprites;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -227,7 +227,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 	@Override
 	public void init() {
-		ArcadeThemeAssets assets = ArcadeTheme.ASSETS;
+		ArcadeThemeSprites assets = ArcadeTheme.ASSETS;
 		pacManLogo = new ImageWidget(assets.image_logo());
 		pacManLogo.tf.centerX(width);
 		pacManLogo.tf.y = 20;

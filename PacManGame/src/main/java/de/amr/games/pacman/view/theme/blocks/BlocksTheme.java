@@ -29,7 +29,7 @@ public class BlocksTheme implements Theme {
 	public static final ParameterMap env = new ParameterMap();
 
 	{
-		env.put("font", Assets.storeTrueTypeFont("ConcertOne", "ConcertOne-Regular.ttf", Font.PLAIN, 10));
+		env.put("font", Assets.storeTrueTypeFont("ConcertOne", "themes/blocks/ConcertOne-Regular.ttf", Font.PLAIN, 10));
 		env.put("maze-flash-sec", 0.5f);
 
 		env.put("ghost-colors", Map.of(

@@ -2,6 +2,7 @@ package de.amr.games.pacman.view.theme.arcade;
 
 import java.awt.Font;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
@@ -19,10 +20,11 @@ public class ArcadeTheme implements Theme {
 
 	public static final ParameterMap env = new ParameterMap();
 	{
+		env.put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		env.put("maze-flash-sec", 0.4f);
 	}
 
-	public static final ArcadeThemeAssets ASSETS = new ArcadeThemeAssets();
+	public static final ArcadeThemeSprites ASSETS = new ArcadeThemeSprites();
 
 	@Override
 	public ThemeParameters env() {
@@ -42,7 +44,7 @@ public class ArcadeTheme implements Theme {
 	@Override
 	public IRenderer createScoreRenderer(World world, Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
-		Font font = ASSETS.messageFont;
+		Font font = env.$font("font");
 		renderer.setFont(font);
 		return renderer;
 	}
@@ -70,7 +72,7 @@ public class ArcadeTheme implements Theme {
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont(ASSETS.messageFont);
+		renderer.setFont(env.$font("font"));
 		return renderer;
 	}
 }
