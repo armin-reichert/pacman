@@ -55,7 +55,6 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 		movement = new MovementControl(this);
 	}
 
-	@Override
 	public String name() {
 		return name;
 	}
@@ -86,6 +85,16 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 
 	public void setWorld(World world) {
 		this.world = world;
+	}
+
+	/**
+	 * Euclidean distance (in tiles) between this and the other animal.
+	 * 
+	 * @param other other animal
+	 * @return Euclidean distance measured in tiles
+	 */
+	public double distance(Animal<?> other) {
+		return location().distance(other.location());
 	}
 
 	/**

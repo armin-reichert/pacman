@@ -9,9 +9,15 @@ import de.amr.games.pacman.view.theme.api.Theme;
 
 public interface Creature extends Lifeform, View {
 
-	String name();
-
 	Transform tf();
+
+	boolean isVisible();
+
+	void setVisible(boolean visible);
+
+	void setTheme(Theme theme);
+
+	IRenderer renderer();
 
 	Tile location();
 
@@ -20,22 +26,4 @@ public interface Creature extends Lifeform, View {
 	default void placeAt(Tile tile) {
 		placeAt(tile, 0, 0);
 	}
-
-	/**
-	 * Euclidean distance (in tiles) between this and the other entity.
-	 * 
-	 * @param other other entity
-	 * @return Euclidean distance measured in tiles
-	 */
-	default double distance(Creature other) {
-		return location().distance(other.location());
-	}
-
-	void setVisible(boolean visible);
-
-	boolean isVisible();
-
-	IRenderer renderer();
-
-	void setTheme(Theme theme);
 }

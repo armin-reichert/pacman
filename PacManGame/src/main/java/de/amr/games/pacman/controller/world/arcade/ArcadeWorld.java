@@ -1,7 +1,5 @@
 package de.amr.games.pacman.controller.world.arcade;
 
-import static de.amr.easy.game.Application.loginfo;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -141,10 +139,8 @@ public class ArcadeWorld extends AbstractWorld {
 		Creature mc = (Creature) creature;
 		if (out) {
 			mc.setVisible(false);
-			loginfo("%s take out of world", mc.name());
 		} else {
 			mc.setVisible(true);
-			loginfo("%s put into world", mc.name());
 		}
 	}
 
