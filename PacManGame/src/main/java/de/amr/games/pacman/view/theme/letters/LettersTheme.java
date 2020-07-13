@@ -72,7 +72,11 @@ public class LettersTheme extends AbstractTheme {
 				int offset_baseline = $int("offset-baseline");
 				g.setFont(font);
 				g.setColor(ghostColor(ghost));
-				g.drawString(ghostLetter(ghost), ghost.entity.tf.x, ghost.entity.tf.y + offset_baseline);
+				if (ghost.getBounty() > 0) {
+					g.drawString("" + ghost.getBounty(), ghost.entity.tf.x, ghost.entity.tf.y + offset_baseline);
+				} else {
+					g.drawString(ghostLetter(ghost), ghost.entity.tf.x, ghost.entity.tf.y + offset_baseline);
+				}
 			}
 		};
 	}

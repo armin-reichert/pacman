@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.theme.blocks;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.Application;
@@ -73,7 +74,8 @@ class GhostRenderer implements IRenderer {
 	private void drawPoints(Graphics2D g) {
 		g.setColor(Color.GREEN);
 		g.setFont(BlocksTheme.IT.$font("font"));
-		g.drawString(ghost.getBounty() + "", (int) ghost.entity.tf.x, (int) ghost.entity.tf.y);
+		FontMetrics fm = g.getFontMetrics();
+		g.drawString(ghost.getBounty() + "", (int) ghost.entity.tf.x - 4, (int) ghost.entity.tf.y + fm.getAscent());
 	}
 
 	private void drawFrightened(Graphics2D g) {
@@ -108,13 +110,5 @@ class GhostRenderer implements IRenderer {
 		g.fillRect(x, y, size, size);
 		g.fillArc(x, y - Tile.SIZE / 2, size, size, 0, 180);
 		g.translate(0, -2);
-	}
-
-	@Override
-	public void resetAnimations() {
-	}
-
-	@Override
-	public void enableAnimation(boolean enabled) {
 	}
 }

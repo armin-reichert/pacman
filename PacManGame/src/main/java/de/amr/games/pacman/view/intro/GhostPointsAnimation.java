@@ -38,7 +38,7 @@ public class GhostPointsAnimation extends GameObject {
 	private int ghostTimer;
 	private int energizerTimer;
 	private boolean energizer;
-	private int dx = 2 * Tile.SIZE + 2;
+	private int dx = 2 * Tile.SIZE + 3;
 
 	public GhostPointsAnimation(Theme theme, PacManSounds sounds) {
 		this.sounds = sounds;
