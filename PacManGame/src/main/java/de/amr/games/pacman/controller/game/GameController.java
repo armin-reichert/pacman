@@ -17,6 +17,7 @@ import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
+import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -69,7 +70,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	protected ArcadeWorld world;
 	protected ArcadeWorldFolks folks;
-	protected PacManSounds soundManager;
+	protected PacManSounds sound;
 
 	protected GhostCommand ghostCommand;
 	protected DoorMan doorMan;
@@ -104,23 +105,23 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
-						soundManager.loadMusic();
+						sound.loadMusic();
 						showView(new MusicLoadingView(theme(), settings.width, settings.height));
 					})
 					
 				.state(INTRO)
 					.onEntry(() -> {
-						introView = new IntroView(world, theme(), soundManager, settings.width, settings.height);
+						introView = new IntroView(world, theme(), sound, settings.width, settings.height);
 						showView(introView);
 					})
 					.onExit(() -> {
-						soundManager.stopAll();
+						sound.stopAll();
 					})
 				
 				.state(GETTING_READY)
 					.timeoutAfter(sec(7))
 					.onEntry(() -> {
-						soundManager.gameReady();
+						sound.gameReady();
 						newGame();
 						world.setFrozen(true);
 						showView(playView);
@@ -129,7 +130,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == sec(5)) {
 							playView.showGameReady();
 							world.setFrozen(false);
-							soundManager.music_playing().play();
+							sound.music_playing().play();
 						}
 						folksInsideWorld().forEach(Creature::update);
 					})
@@ -141,7 +142,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						folks.pacMan().fallAsleep();
 						doorMan.onLevelChange();
-						soundManager.stopAllClips();
+						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
 					})
@@ -199,7 +200,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> game.lives > 1 ? sec(7) : sec(5))
 					.onEntry(() -> {
 						game.lives -= settings.pacManImmortable ? 0 : 1;
-						soundManager.stopAllClips();
+						sound.stopAllClips();
 						world.setFrozen(true);
 					})
 					.onTick((state, t, remaining) -> {
@@ -212,7 +213,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						else if (t == dyingStartTime) {
 							folks.pacMan().setCollapsing(true);
-							soundManager.pacManDied();
+							sound.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
 							folks.pacMan().setCollapsing(false);
@@ -236,7 +237,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghost.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
 						playView.showGameOver();
-						soundManager.gameOver();
+						sound.gameOver();
 					})
 					.onTick(() -> {
 						folks.ghostsInsideWorld().forEach(ghost -> {
@@ -249,16 +250,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghost.init();
 						});
 						playView.clearMessages();
-						soundManager.stopAll();
+						sound.stopAll();
 					})
 	
 			.transitions()
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
-					.condition(() -> soundManager.isMusicLoadingComplete()	&& settings.skipIntro)
+					.condition(() -> sound.isMusicLoadingComplete()	&& settings.skipIntro)
 	
 				.when(LOADING_MUSIC).then(INTRO)
-					.condition(() -> soundManager.isMusicLoadingComplete())
+					.condition(() -> sound.isMusicLoadingComplete())
 			
 				.when(INTRO).then(GETTING_READY)
 					.condition(() -> currentView.isComplete())
@@ -312,7 +313,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.condition(() -> Keyboard.keyPressedOnce("space"))
 					
 				.when(GAME_OVER).then(INTRO)
-					.condition(() -> !soundManager.isGameOverMusicRunning())
+					.condition(() -> !sound.isGameOverMusicRunning())
 							
 		.endStateMachine();
 		//@formatter:on
@@ -331,7 +332,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			folks.pacMan().startRunning();
 			playView.init();
 			playView.enableGhostAnimations(true);
-			soundManager.resumePlayingMusic();
+			sound.resumePlayingMusic();
 		}
 
 		@Override
@@ -340,16 +341,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			doorMan.update();
 			bonusControl.update();
 			folksInsideWorld().forEach(Creature::update);
-			soundManager.updatePlayingSounds();
+			sound.updatePlayingSounds();
 		}
 
 		@Override
 		public void onExit() {
-			soundManager.stopGhostSounds();
+			sound.stopGhostSounds();
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
-			soundManager.pacManLostPower();
+			sound.pacManLostPower();
 			ghostCommand.resume();
 		}
 
@@ -360,9 +361,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				int livesBefore = game.lives;
 				game.scoreGhostKilled(ghost.name());
 				if (game.lives > livesBefore) {
-					soundManager.extraLife();
+					sound.extraLife();
 				}
-				soundManager.ghostEaten();
+				sound.ghostEaten();
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
 				loginfo("%s got killed at %s", ghost.name(), ghost.location());
@@ -371,7 +372,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 			if (!settings.ghostsHarmless) {
 				doorMan.onLifeLost();
-				soundManager.stopAll();
+				sound.stopAll();
 				folks.pacMan().process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
 				loginfo("Pac-Man killed by %s at %s", ghost.name(), ghost.location());
@@ -382,9 +383,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			loginfo("PacMan found %s and wins %d points", game.level.bonusSymbol, game.level.bonusValue);
 			int livesBefore = game.lives;
 			game.score(game.level.bonusValue);
-			soundManager.bonusEaten();
+			sound.bonusEaten();
 			if (game.lives > livesBefore) {
-				soundManager.extraLife();
+				sound.extraLife();
 			}
 			bonusControl.process(event);
 		}
@@ -400,10 +401,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				game.scoreSimplePelletFound();
 			}
 			if (game.lives > livesBeforeScoring) {
-				soundManager.extraLife();
+				sound.extraLife();
 			}
 			doorMan.onPacManFoundFood();
-			soundManager.pelletEaten();
+			sound.pelletEaten();
 
 			if (game.level.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
@@ -414,7 +415,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				bonusControl.activateBonus();
 			}
 			if (energizer && game.level.pacManPowerSeconds > 0) {
-				soundManager.pacManGainsPower();
+				sound.pacManGainsPower();
 				ghostCommand.suspend();
 				folks.pacMan().setPower(sec(game.level.pacManPowerSeconds));
 				folks.ghostsInsideWorld().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
@@ -431,7 +432,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		folks.all().forEach(world::bringIn);
 		folks.pacMan().addEventListener(this::process);
 		folks.ghosts().forEach(ghost -> ghost.addEventListener(this::process));
-		soundManager = new PacManSounds(world, folks);
+		sound = new PacManSounds(world, folks);
 		super.init();
 	}
 
@@ -481,20 +482,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	public void selectTheme(String themeName) {
-		switch (themeName.toUpperCase()) {
-		case "ARCADE":
-			currentThemeIndex = 0;
-			break;
-		case "BLOCKS":
-			currentThemeIndex = 1;
-			break;
-		case "LETTERS":
-			currentThemeIndex = 2;
-			break;
-		default:
-			currentThemeIndex = 0;
-			break;
-		}
+		currentThemeIndex = range(0, themes.length).filter(i -> themes[i].name().equalsIgnoreCase(themeName)).findFirst()
+				.orElse(0);
 		if (currentView != null) {
 			currentView.setTheme(theme());
 		}
