@@ -150,7 +150,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						
 						// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.
 						if (passed == sec(2)) {
-							folks.ghostsInsideWorld().forEach(ghost -> ghost.entity.visible = false);
+							folks.ghostsInsideWorld().forEach(ghost -> ghost.setVisible(false));
 							if (flashingSeconds > 0) {
 								world.setChangingLevel(true);
 							}
@@ -183,7 +183,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GHOST_DYING)
 					.timeoutAfter(sec(1))
 					.onEntry(() -> {
-						folks.pacMan().entity.visible = false;
+						folks.pacMan().setVisible(false);
 					})
 					.onTick(() -> {
 						bonusControl.update();
@@ -192,7 +192,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							.forEach(Ghost::update);
 					})
 					.onExit(() -> {
-						folks.pacMan().entity.visible = true;
+						folks.pacMan().setVisible(true);
 					})
 				
 				.state(PACMAN_DYING)
@@ -208,7 +208,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 								dyingEndTime = dyingStartTime + sec(3f);
 						if (t == waitTime) {
 							bonusControl.deactivateBonus();
-							folks.ghostsInsideWorld().forEach(ghost -> ghost.entity.visible = false);
+							folks.ghostsInsideWorld().forEach(ghost -> ghost.setVisible(false));
 						}
 						else if (t == dyingStartTime) {
 							folks.pacMan().setCollapsing(true);
@@ -524,6 +524,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.of(bonusControl);
 	}
 
+	protected void showView(PacManGameView view) {
+		if (currentView != view) {
+			currentView = view;
+			currentView.init();
+		}
+	}
+
 	@Override
 	public Optional<View> currentView() {
 		return Optional.ofNullable(currentView);
@@ -555,10 +562,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return showingGrid;
 	}
 
-	public boolean isShowingStates() {
-		return showingStates;
-	}
-
 	public void setShowingStates(boolean selected) {
 		showingStates = selected;
 		if (selected) {
@@ -568,8 +571,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	public boolean isShowingScores() {
-		return showingScores;
+	public boolean isShowingStates() {
+		return showingStates;
 	}
 
 	public void setShowingScores(boolean selected) {
@@ -581,6 +584,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
+	public boolean isShowingScores() {
+		return showingScores;
+	}
+
 	public void setDemoMode(boolean demoMode) {
 		if (demoMode) {
 			settings.pacManImmortable = true;
@@ -590,13 +597,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			settings.pacManImmortable = false;
 			playView.clearMessage(1);
 			folks.pacMan().behavior(folks.pacMan().followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
-		}
-	}
-
-	protected void showView(PacManGameView view) {
-		if (currentView != view) {
-			currentView = view;
-			currentView.init();
 		}
 	}
 
