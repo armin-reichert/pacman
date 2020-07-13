@@ -26,14 +26,14 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 
-public class ActorStatesRenderer implements IRenderer {
+public class StatesRenderer implements IRenderer {
 
 	private static final Font SMALL_FONT = new Font("Arial", Font.PLAIN, 6);
 
 	private final ArcadeWorldFolks folks;
 	private final GhostCommand ghostCommand;
 
-	public ActorStatesRenderer(ArcadeWorldFolks folks, GhostCommand ghostCommand) {
+	public StatesRenderer(ArcadeWorldFolks folks, GhostCommand ghostCommand) {
 		this.folks = folks;
 		this.ghostCommand = ghostCommand;
 	}

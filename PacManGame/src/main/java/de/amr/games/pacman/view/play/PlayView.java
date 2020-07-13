@@ -21,8 +21,8 @@ import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
-import de.amr.games.pacman.view.theme.common.ActorStatesRenderer;
-import de.amr.games.pacman.view.theme.common.CreatureRoutesRenderer;
+import de.amr.games.pacman.view.theme.common.StatesRenderer;
+import de.amr.games.pacman.view.theme.common.RoutesRenderer;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
@@ -69,8 +69,8 @@ public class PlayView implements PacManGameView {
 		showingRoutes = false;
 		showingStates = false;
 		gridRenderer = new GridRenderer(world);
-		actorRoutesRenderer = new CreatureRoutesRenderer(folks);
-		actorStatesRenderer = new ActorStatesRenderer(folks, ghostCommand);
+		actorRoutesRenderer = new RoutesRenderer(folks);
+		actorStatesRenderer = new StatesRenderer(folks, ghostCommand);
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);

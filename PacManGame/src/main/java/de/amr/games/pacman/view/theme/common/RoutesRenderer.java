@@ -26,22 +26,24 @@ import de.amr.games.pacman.view.theme.api.IRenderer;
  * 
  * @author Armin Reichert
  */
-public class CreatureRoutesRenderer implements IRenderer {
+public class RoutesRenderer implements IRenderer {
 
 	private final ArcadeWorldFolks folks;
 
-	public CreatureRoutesRenderer(ArcadeWorldFolks folks) {
+	public RoutesRenderer(ArcadeWorldFolks folks) {
 		this.folks = folks;
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		drawPacManRoute(g, folks.pacMan());
-		folks.ghostsInsideWorld().forEach(ghost -> drawGhostRoute(g, ghost));
-		if (folks.inky().isInsideWorld()) {
+		if (folks.pacMan().isVisible()) {
+			drawPacManRoute(g, folks.pacMan());
+		}
+		folks.ghostsInsideWorld().filter(Ghost::isVisible).forEach(ghost -> drawGhostRoute(g, ghost));
+		if (folks.inky().isInsideWorld() && folks.inky().isVisible()) {
 			drawInkyChasing(g, folks.inky());
 		}
-		if (folks.clyde().isInsideWorld()) {
+		if (folks.clyde().isInsideWorld() && folks.clyde().isVisible()) {
 			drawClydeChasingArea(g, folks.clyde());
 		}
 	}
