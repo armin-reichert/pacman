@@ -4,7 +4,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
@@ -21,10 +20,10 @@ import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
-import de.amr.games.pacman.view.theme.common.StatesRenderer;
-import de.amr.games.pacman.view.theme.common.RoutesRenderer;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
+import de.amr.games.pacman.view.theme.common.RoutesRenderer;
+import de.amr.games.pacman.view.theme.common.StatesRenderer;
 
 /**
  * View where the action is.
@@ -33,12 +32,24 @@ import de.amr.games.pacman.view.theme.common.Rendering;
  */
 public class PlayView implements PacManGameView {
 
+	static class Message {
+
+		String text;
+		Color color;
+		int row;
+
+		Message(int row) {
+			this.row = row;
+			text = null;
+			color = Color.LIGHT_GRAY;
+		}
+	}
+
 	private final World world;
 	private final ArcadeWorldFolks folks;
 	private Game game;
 
-	private String[] messageTexts = new String[2];
-	private Color[] messageColors = new Color[2];
+	private final Message[] messages;
 
 	private Theme theme;
 	private IWorldRenderer worldRenderer;
@@ -46,34 +57,28 @@ public class PlayView implements PacManGameView {
 	private IRenderer liveCounterRenderer;
 	private IRenderer levelCounterRenderer;
 	private MessagesRenderer messagesRenderer;
-	private FrameRateWidget frameRateDisplay;
 
-	private boolean showingScores;
+	private final GridRenderer gridRenderer;
+	private final IRenderer routesRenderer;
+	private final IRenderer statesRenderer;
+	private final FrameRateWidget frameRateDisplay;
+
+	private boolean showingScores = true;
 	private boolean showingFrameRate;
 	private boolean showingGrid;
 	private boolean showingRoutes;
 	private boolean showingStates;
-
-	private final GridRenderer gridRenderer;
-	private final IRenderer actorRoutesRenderer;
-	private final IRenderer actorStatesRenderer;
 
 	public PlayView(World world, Theme theme, ArcadeWorldFolks folks, Game game, GhostCommand ghostCommand,
 			DoorMan doorMan) {
 		this.world = world;
 		this.folks = folks;
 		this.game = game;
-		showingScores = true;
-		showingFrameRate = false;
-		showingGrid = false;
-		showingRoutes = false;
-		showingStates = false;
+		messages = new Message[] { new Message(15), new Message(21) };
 		gridRenderer = new GridRenderer(world);
-		actorRoutesRenderer = new RoutesRenderer(folks);
-		actorStatesRenderer = new StatesRenderer(folks, ghostCommand);
+		routesRenderer = new RoutesRenderer(folks);
+		statesRenderer = new StatesRenderer(folks, ghostCommand);
 		frameRateDisplay = new FrameRateWidget();
-		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
-		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
 		setTheme(theme);
 	}
 
@@ -82,13 +87,12 @@ public class PlayView implements PacManGameView {
 		if (this.theme != theme) {
 			this.theme = theme;
 			worldRenderer = theme.createWorldRenderer(world);
+			scoreRenderer = theme.createScoreRenderer(world, game);
 			liveCounterRenderer = theme.createLiveCounterRenderer(world, game);
 			levelCounterRenderer = theme.createLevelCounterRenderer(world, game);
-			scoreRenderer = theme.createScoreRenderer(world, game);
+			messagesRenderer = theme.createMessagesRenderer();
 			folks.pacMan().setTheme(theme);
 			folks.ghosts().forEach(ghost -> ghost.setTheme(theme));
-			scoreRenderer = theme.createScoreRenderer(world, game);
-			messagesRenderer = theme.createMessagesRenderer();
 		}
 	}
 
@@ -105,37 +109,22 @@ public class PlayView implements PacManGameView {
 
 	@Override
 	public void update() {
-		folks.ghosts().forEach(ghost -> {
-			if (ghost.steering() instanceof PathProvidingSteering) {
-				PathProvidingSteering pathProvider = (PathProvidingSteering) ghost.steering();
-				pathProvider.setPathComputed(showingRoutes);
-			}
+		folks.ghosts().filter(ghost -> ghost.steering() instanceof PathProvidingSteering).forEach(ghost -> {
+			PathProvidingSteering pathProvider = (PathProvidingSteering) ghost.steering();
+			pathProvider.setPathComputed(showingRoutes);
 		});
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (showingGrid) {
-			worldRenderer.setEatenFoodColor(Rendering::patternColor);
-			gridRenderer.render(g);
-		} else {
-			worldRenderer.setEatenFoodColor(tile -> Color.BLACK);
-		}
+		drawGrid(g);
 		drawWorld(g);
-		if (showingGrid) {
-			gridRenderer.drawOneWayTiles(g);
-		}
-		if (showingFrameRate) {
-			frameRateDisplay.draw(g);
-		}
+		drawOneWayTiles(g);
+		drawFrameRate(g);
 		drawMessages(g);
 		drawActors(g);
-		if (showingRoutes) {
-			actorRoutesRenderer.render(g);
-		}
-		if (showingStates) {
-			actorStatesRenderer.render(g);
-		}
+		drawRoutes(g);
+		drawStates(g);
 		drawScores(g);
 		drawLiveCounter(g);
 		drawLevelCounter(g);
@@ -149,9 +138,15 @@ public class PlayView implements PacManGameView {
 		showMessage(2, "Game Over!", Color.RED);
 	}
 
-	public void showMessage(int oneOrTwo, String text, Color color) {
-		messageTexts[oneOrTwo - 1] = text;
-		messageColors[oneOrTwo - 1] = color;
+	/**
+	 * 
+	 * @param number message number (1 or 2)
+	 * @param text   message text
+	 * @param color  message color
+	 */
+	public void showMessage(int number, String text, Color color) {
+		messages[number - 1].text = text;
+		messages[number - 1].color = color;
 	}
 
 	public void clearMessages() {
@@ -159,8 +154,13 @@ public class PlayView implements PacManGameView {
 		clearMessage(2);
 	}
 
-	public void clearMessage(int oneOrTwo) {
-		messageTexts[oneOrTwo - 1] = null;
+	/**
+	 * Clears the message with the given number.
+	 * 
+	 * @param number message number (1 or 2)
+	 */
+	public void clearMessage(int number) {
+		messages[number - 1].text = null;
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
@@ -228,19 +228,29 @@ public class PlayView implements PacManGameView {
 	}
 
 	private void drawWorld(Graphics2D g) {
+		worldRenderer.setEatenFoodColor(showingGrid ? Rendering::patternColor : tile -> Color.BLACK);
 		worldRenderer.render(g);
 	}
 
-	private void drawMessages(Graphics2D g) {
-		if (messageTexts[0] != null) {
-			messagesRenderer.setRow(15);
-			messagesRenderer.setTextColor(messageColors[0]);
-			messagesRenderer.drawCentered(g, messageTexts[0], world.width());
+	private void drawGrid(Graphics2D g) {
+		if (showingGrid) {
+			gridRenderer.render(g);
 		}
-		if (messageTexts[1] != null) {
-			messagesRenderer.setRow(21);
-			messagesRenderer.setTextColor(messageColors[1]);
-			messagesRenderer.drawCentered(g, messageTexts[1], world.width());
+	}
+
+	private void drawOneWayTiles(Graphics2D g) {
+		if (showingGrid) {
+			gridRenderer.drawOneWayTiles(g);
+		}
+	}
+
+	private void drawMessages(Graphics2D g) {
+		for (Message message : messages) {
+			if (message.text != null) {
+				messagesRenderer.setRow(message.row);
+				messagesRenderer.setTextColor(message.color);
+				messagesRenderer.drawCentered(g, message.text, world.width());
+			}
 		}
 	}
 
@@ -266,5 +276,24 @@ public class PlayView implements PacManGameView {
 		g.translate(world.width() * Tile.SIZE, (world.height() - 2) * Tile.SIZE);
 		levelCounterRenderer.render(g);
 		g.translate(-world.width() * Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
+	}
+
+	private void drawFrameRate(Graphics2D g) {
+		if (showingFrameRate) {
+			frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
+			frameRateDisplay.draw(g);
+		}
+	}
+
+	private void drawStates(Graphics2D g) {
+		if (showingStates) {
+			statesRenderer.render(g);
+		}
+	}
+
+	private void drawRoutes(Graphics2D g) {
+		if (showingRoutes) {
+			routesRenderer.render(g);
+		}
 	}
 }
