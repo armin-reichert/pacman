@@ -12,6 +12,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.steering.api.Steering;
+import de.amr.games.pacman.controller.steering.common.TakingShortestPath;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.Portal;
@@ -58,9 +59,9 @@ class TakeShortestPathTestUI extends TestUI {
 		targetIndex = 0;
 		soundManager.snd_ghost_chase().volume(0);
 		include(blinky);
-		Steering steering = blinky.takingShortestPath(() -> targets.get(targetIndex));
-		blinky.behavior(CHASING, steering);
-		blinky.behavior(FRIGHTENED, steering);
+		Steering takingShortestPath = new TakingShortestPath(blinky, () -> targets.get(targetIndex));
+		blinky.behavior(CHASING, takingShortestPath);
+		blinky.behavior(FRIGHTENED, takingShortestPath);
 		blinky.setState(CHASING);
 		view.showMessage(2, "SPACE toggles ghost state", Color.WHITE);
 	}

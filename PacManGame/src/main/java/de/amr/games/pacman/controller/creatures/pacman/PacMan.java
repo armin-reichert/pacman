@@ -10,8 +10,6 @@ import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import java.awt.Graphics2D;
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Optional;
 
 import de.amr.easy.game.math.Vector2f;
@@ -35,7 +33,6 @@ import de.amr.games.pacman.view.theme.api.Theme;
  */
 public class PacMan extends Animal<PacManState> {
 
-	private final Map<PacManState, Steering> steerings = new EnumMap<>(PacManState.class);
 	private int power;
 	private int digestion;
 	private boolean collapsing;
@@ -96,11 +93,6 @@ public class PacMan extends Animal<PacManState> {
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
-	}
-
-	@Override
-	public Map<PacManState, Steering> steerings() {
-		return steerings;
 	}
 
 	public void setCollapsing(boolean collapsing) {

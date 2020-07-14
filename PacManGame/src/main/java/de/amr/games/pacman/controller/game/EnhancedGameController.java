@@ -138,7 +138,7 @@ public class EnhancedGameController extends GameController {
 
 	private void toggleStateMachineLogging() {
 		fsm_logging(!fsm_logging_enabled());
-		loginfo("State machine logging changed to %s", fsm_logging_enabled() ? "enabled" : "off");
+		loginfo("State machine logging %s", fsm_logging_enabled() ? "enabled" : "disabled");
 	}
 
 	private void toggleGhostFrightenedBehavior() {

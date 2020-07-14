@@ -2,6 +2,8 @@ package de.amr.games.pacman.controller.creatures;
 
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,7 +21,6 @@ import de.amr.games.pacman.controller.steering.common.MovementControl;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.steering.common.TakingFixedPath;
-import de.amr.games.pacman.controller.steering.common.TakingShortestPath;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -29,7 +30,8 @@ import de.amr.statemachine.core.StateMachine;
 /**
  * An entity with a visual appearance that can move through the world and with a behavior defined by
  * a finite-state machine. The appearance is exchangeable via theming. The physical size is one tile
- * by default. The visual size however is normally larger.
+ * by default. The visual size however is normally larger. Depending on its state, an animal has a
+ * specific steering.
  * 
  * @param <STATE> state (identifier) type
  * 
@@ -38,8 +40,10 @@ import de.amr.statemachine.core.StateMachine;
 public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent> implements MobileCreature {
 
 	public final Entity entity = new Entity();
-	protected final String name;
+
+	protected String name;
 	protected World world;
+	protected Map<STATE, Steering> steeringMap;
 	protected MovementControl movement;
 	protected Direction moveDir;
 	protected Direction wishDir;
@@ -47,12 +51,13 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 	protected boolean enteredNewTile;
 	protected Theme theme;
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Animal(Class<STATE> stateClass, String name) {
 		super(stateClass);
 		this.name = name;
-		entity.tf.width = Tile.SIZE;
-		entity.tf.height = Tile.SIZE;
+		entity.tf.width = entity.tf.height = Tile.SIZE;
 		movement = new MovementControl(this);
+		steeringMap = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
 	}
 
 	public String name() {
@@ -108,13 +113,11 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 		movement.setSpeedLimit(fnSpeedLimit);
 	}
 
-	protected abstract Map<STATE, Steering> steerings();
-
 	/**
 	 * @return the current steering for this actor.
 	 */
 	public Steering steering() {
-		return steerings().getOrDefault(getState(), () -> {
+		return steeringMap.getOrDefault(getState(), () -> {
 			// do nothing
 		});
 	}
@@ -126,8 +129,8 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 	 * @return steering defined for this state
 	 */
 	public Steering steering(STATE state) {
-		if (steerings().containsKey(state)) {
-			return steerings().get(state);
+		if (steeringMap.containsKey(state)) {
+			return steeringMap.get(state);
 		}
 		throw new IllegalArgumentException(String.format("%s: No steering found for state %s", this, state));
 	}
@@ -139,7 +142,7 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 	 * @param steering steering defined for this state
 	 */
 	public void behavior(STATE state, Steering steering) {
-		steerings().put(state, steering);
+		steeringMap.put(state, steering);
 	}
 
 	@Override
@@ -261,36 +264,13 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 	}
 
 	/**
-	 * Lets the actor head for a variable (probably unreachable) target tile by taking the "best"
-	 * direction at every intersection.
+	 * Lets the actor head for a (probably unreachable) target tile by taking the "best" direction at
+	 * every intersection.
 	 * 
-	 * @return behavior where actor heads for the target tile
+	 * @return behavior where the actor tries to reach the target tile
 	 */
 	public Steering headingFor(Supplier<Tile> fnTargetTile) {
 		return new HeadingForTargetTile(this, fnTargetTile);
-	}
-
-	/**
-	 * Lets the actor head for a constant (probably unreachable) target tile by taking the "best"
-	 * direction at every intersection.
-	 * 
-	 * @return behavior where actor heads for the target tile
-	 */
-	public Steering headingFor(Tile targetTile) {
-		return headingFor(() -> targetTile);
-	}
-
-	/**
-	 * Lets the actor follow the shortest path to the target. Depending on the actor's current state,
-	 * this path might not be completely accessible for the actor.
-	 * 
-	 * @param fnTarget function supplying the target tile
-	 * 
-	 * @return behavior where an actor follows the shortest (using Manhattan distance) path to a target
-	 *         tile
-	 */
-	public Steering takingShortestPath(Supplier<Tile> fnTarget) {
-		return new TakingShortestPath(this, fnTarget);
 	}
 
 	/**

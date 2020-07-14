@@ -14,8 +14,6 @@ import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import java.awt.Graphics2D;
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -53,7 +51,6 @@ public class Ghost extends Animal<GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
-	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 	private final ArcadeWorldFolks folks;
 	private final int color;
 	private Supplier<GhostState> fnSubsequentState;
@@ -181,11 +178,6 @@ public class Ghost extends Animal<GhostState> {
 		/*@formatter:on*/
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		PacManApp.fsm_register(this);
-	}
-
-	@Override
-	protected Map<GhostState, Steering> steerings() {
-		return steerings;
 	}
 
 	public ArcadeWorldFolks folks() {
