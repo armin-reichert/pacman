@@ -22,10 +22,6 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implements Steering {
 
-	public static EnteringHouseAndGoingToBed steers(Ghost ghost, Bed bed) {
-		return new EnteringHouseAndGoingToBed(ghost, bed);
-	}
-	
 	public enum State {
 		FALLING, MOVING_LEFT, MOVING_RIGHT, TARGET_REACHED
 	}
@@ -38,7 +34,7 @@ public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implem
 		return bed.center.y - Tile.SIZE / 2;
 	}
 
-	private EnteringHouseAndGoingToBed(Ghost ghost, Bed bed) {
+	public EnteringHouseAndGoingToBed(Ghost ghost, Bed bed) {
 		super(State.class);
 		/*@formatter:off*/
 		beginStateMachine()

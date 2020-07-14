@@ -9,6 +9,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
+import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.randomMovement;
 
 import java.awt.event.KeyEvent;
 
@@ -17,7 +18,6 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeCorner;
 
 /**
@@ -146,7 +146,7 @@ public class EnhancedGameController extends GameController {
 	private void toggleGhostFrightenedBehavior() {
 		if (settings.ghostsSafeCorner) {
 			settings.ghostsSafeCorner = false;
-			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, RandomMovement.steers(ghost)));
+			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, randomMovement(ghost).build()));
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;

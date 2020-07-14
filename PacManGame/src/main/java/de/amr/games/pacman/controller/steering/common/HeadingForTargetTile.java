@@ -29,10 +29,6 @@ import de.amr.games.pacman.model.world.core.Tile;
  * @author Armin Reichert
  */
 public class HeadingForTargetTile implements PathProvidingSteering {
-	
-	public static HeadingForTargetTile steers(MobileCreature creature, Supplier<Tile> fnTargetTile) {
-		return new HeadingForTargetTile(creature, fnTargetTile);
-	}
 
 	/**
 	 * Computes the next move direction as described
@@ -68,7 +64,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	private boolean forced;
 	private boolean pathComputed;
 
-	private HeadingForTargetTile(MobileCreature creature, Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(MobileCreature creature, Supplier<Tile> fnTargetTile) {
 		this.creature = Objects.requireNonNull(creature);
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}

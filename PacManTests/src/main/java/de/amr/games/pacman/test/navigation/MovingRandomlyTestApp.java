@@ -1,6 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.randomMovement;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -8,7 +9,6 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.test.TestUI;
 
@@ -43,7 +43,7 @@ class MovingRandomlyTestUI extends TestUI {
 		ghostsOnStage().forEach(ghost -> {
 			ghost.init();
 			ghost.placeAt(Tile.at(world.pacManBed().col(), world.pacManBed().row()));
-			ghost.behavior(FRIGHTENED, RandomMovement.steers(ghost));
+			ghost.behavior(FRIGHTENED, randomMovement(ghost).build());
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
 		});
