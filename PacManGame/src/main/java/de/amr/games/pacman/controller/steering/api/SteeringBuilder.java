@@ -15,109 +15,109 @@ import de.amr.games.pacman.model.world.core.Tile;
 
 public class SteeringBuilder {
 
-	public static class HeadingForTargetTileBuilder {
-
-		private MobileCreature creature;
-		private Supplier<Tile> fnTargetTile;
-
-		public HeadingForTargetTileBuilder tile(Supplier<Tile> fnTargetTile) {
-			this.fnTargetTile = fnTargetTile;
-			return this;
-		}
-
-		public HeadingForTargetTileBuilder tile(Tile targetTile) {
-			return tile(() -> targetTile);
-		}
-
-		public HeadingForTargetTileBuilder tile(int col, int row) {
-			return tile(Tile.at(col, row));
-		}
-
-		public Steering doit() {
-			return new HeadingForTargetTile(creature, fnTargetTile);
-		}
-	}
-
-	public static HeadingForTargetTileBuilder headingForTargetTile(Ghost ghost) {
-		HeadingForTargetTileBuilder builder = new HeadingForTargetTileBuilder();
-		builder.creature = ghost;
-		return builder;
-	}
-
-	public static class RandomMovementBuilder {
-		private MobileCreature creature;
-
-		public Steering doit() {
-			return new RandomMovement(creature);
-		}
-	}
-
-	public static RandomMovementBuilder randomMovement(MobileCreature ghost) {
-		RandomMovementBuilder builder = new RandomMovementBuilder();
-		builder.creature = ghost;
-		return builder;
-	}
-
-	public static class EnteringHouseAndGoingToBedBuilder {
-
+	public static class BouncesOnBedBuilder {
+	
 		private Ghost ghost;
 		private Bed bed;
-
-		public EnteringHouseAndGoingToBedBuilder bed(Bed bed) {
+	
+		public BouncesOnBedBuilder bed(Bed bed) {
 			this.bed = bed;
 			return this;
 		}
-
-		public Steering doit() {
-			return new EnteringHouseAndGoingToBed(ghost, bed);
-		}
-	}
-
-	public static EnteringHouseAndGoingToBedBuilder enteringHouseAndGoingToBed(Ghost ghost) {
-		EnteringHouseAndGoingToBedBuilder builder = new EnteringHouseAndGoingToBedBuilder();
-		builder.ghost = ghost;
-		return builder;
-	}
-
-	public static class BouncingOnBedBuilder {
-
-		private Ghost ghost;
-		private Bed bed;
-
-		public BouncingOnBedBuilder bed(Bed bed) {
-			this.bed = bed;
-			return this;
-		}
-
-		public Steering doit() {
+	
+		public Steering ok() {
 			return new BouncingOnBed(ghost, bed);
 		}
 	}
 
-	public static BouncingOnBedBuilder bouncingOnBed(Ghost ghost) {
-		BouncingOnBedBuilder builder = new BouncingOnBedBuilder();
-		builder.ghost = ghost;
-		return builder;
+	public static class EntersHouseAndGoesToBedBuilder {
+	
+		private Ghost ghost;
+		private Bed bed;
+	
+		public EntersHouseAndGoesToBedBuilder bed(Bed bed) {
+			this.bed = bed;
+			return this;
+		}
+	
+		public Steering ok() {
+			return new EnteringHouseAndGoingToBed(ghost, bed);
+		}
 	}
 
-	public static class LeavingHouseBuilder {
+	public static class HeadsForTargetTileBuilder {
 
-		private Ghost ghost;
-		private House house;
+		private MobileCreature creature;
+		private Supplier<Tile> fnTargetTile;
 
-		public LeavingHouseBuilder house(House house) {
-			this.house = house;
+		public HeadsForTargetTileBuilder tile(Supplier<Tile> fnTargetTile) {
+			this.fnTargetTile = fnTargetTile;
 			return this;
 		}
 
-		public Steering doit() {
+		public HeadsForTargetTileBuilder tile(Tile targetTile) {
+			return tile(() -> targetTile);
+		}
+
+		public HeadsForTargetTileBuilder tile(int col, int row) {
+			return tile(Tile.at(col, row));
+		}
+
+		public Steering ok() {
+			return new HeadingForTargetTile(creature, fnTargetTile);
+		}
+	}
+
+	public static class LeavesHouseBuilder {
+	
+		private Ghost ghost;
+		private House house;
+	
+		public LeavesHouseBuilder house(House house) {
+			this.house = house;
+			return this;
+		}
+	
+		public Steering ok() {
 			return new LeavingHouse(ghost, house);
 		}
 	}
 
-	public static LeavingHouseBuilder leavingHouse(Ghost ghost) {
-		LeavingHouseBuilder builder = new LeavingHouseBuilder();
+	public static class MovesRandomlyBuilder {
+		private MobileCreature creature;
+
+		public Steering ok() {
+			return new RandomMovement(creature);
+		}
+	}
+
+	public static BouncesOnBedBuilder bouncesOnBed(Ghost ghost) {
+		BouncesOnBedBuilder builder = new BouncesOnBedBuilder();
 		builder.ghost = ghost;
+		return builder;
+	}
+
+	public static EntersHouseAndGoesToBedBuilder entersHouseAndGoesToBed(Ghost ghost) {
+		EntersHouseAndGoesToBedBuilder builder = new EntersHouseAndGoesToBedBuilder();
+		builder.ghost = ghost;
+		return builder;
+	}
+
+	public static HeadsForTargetTileBuilder headsForTargetTile(Ghost ghost) {
+		HeadsForTargetTileBuilder builder = new HeadsForTargetTileBuilder();
+		builder.creature = ghost;
+		return builder;
+	}
+
+	public static LeavesHouseBuilder leavesHouse(Ghost ghost) {
+		LeavesHouseBuilder builder = new LeavesHouseBuilder();
+		builder.ghost = ghost;
+		return builder;
+	}
+
+	public static MovesRandomlyBuilder movesRandomly(MobileCreature ghost) {
+		MovesRandomlyBuilder builder = new MovesRandomlyBuilder();
+		builder.creature = ghost;
 		return builder;
 	}
 }

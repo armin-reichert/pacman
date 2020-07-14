@@ -1,6 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.headingForTargetTile;
+import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.headsForTargetTile;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +59,7 @@ class EnterGhostHouseTestUI extends TestUI {
 	public void update() {
 		if (inky.getState() == GhostState.LEAVING_HOUSE && !inky.isInsideHouse()) {
 			inky.setState(GhostState.SCATTERING);
-			inky.behavior(GhostState.SCATTERING, headingForTargetTile(inky).tile(this::randomCape).doit());
+			inky.behavior(GhostState.SCATTERING, headsForTargetTile(inky).tile(this::randomCape).ok());
 		} else if (inky.getState() == GhostState.SCATTERING) {
 			// one round around the block, then killed at cape
 			if (capes.contains(inky.location())) {
