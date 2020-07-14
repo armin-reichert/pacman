@@ -8,7 +8,9 @@ import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.steering.ghost.BouncingOnBed;
 import de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed;
+import de.amr.games.pacman.controller.steering.ghost.LeavingHouse;
 import de.amr.games.pacman.model.world.core.Bed;
+import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.Tile;
 
 public class SteeringBuilder {
@@ -94,6 +96,27 @@ public class SteeringBuilder {
 
 	public static BouncingOnBedBuilder bouncingOnBed(Ghost ghost) {
 		BouncingOnBedBuilder builder = new BouncingOnBedBuilder();
+		builder.ghost = ghost;
+		return builder;
+	}
+
+	public static class LeavingHouseBuilder {
+
+		private Ghost ghost;
+		private House house;
+
+		public LeavingHouseBuilder house(House house) {
+			this.house = house;
+			return this;
+		}
+
+		public Steering build() {
+			return new LeavingHouse(ghost, house);
+		}
+	}
+
+	public static LeavingHouseBuilder leavingHouse(Ghost ghost) {
+		LeavingHouseBuilder builder = new LeavingHouseBuilder();
 		builder.ghost = ghost;
 		return builder;
 	}

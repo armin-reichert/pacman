@@ -10,6 +10,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERI
 import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.bouncingOnBed;
 import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.enteringHouseAndGoingToBed;
 import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.headingForTargetTile;
+import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.leavingHouse;
 import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.randomMovement;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -55,7 +56,7 @@ public class ArcadeWorldFolks {
 		Tile houseEntry = Tile.at(house.bed(0).col(), house.bed(0).row());
 
 		ghosts().forEach(ghost -> {
-			ghost.behavior(LEAVING_HOUSE, () -> ghost.leavingHouse(house));
+			ghost.behavior(LEAVING_HOUSE, leavingHouse(ghost).house(house).build());
 			ghost.behavior(FRIGHTENED, randomMovement(ghost).build());
 			ghost.behavior(DEAD, headingForTargetTile(ghost).tile(houseEntry).build());
 			ghost.behavior(DEAD, headingForTargetTile(ghost).tile(houseEntry).build());

@@ -8,9 +8,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.game.Game.sec;
-import static de.amr.games.pacman.model.world.api.Direction.LEFT;
-import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
-import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import java.awt.Graphics2D;
 import java.util.Optional;
@@ -29,7 +26,6 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.api.IRenderer;
@@ -254,24 +250,6 @@ public class Ghost extends Animal<GhostState> {
 		return flashing;
 	}
 
-	/**
-	 * lets a ghost leave the given house
-	 */
-	public void leavingHouse(House house) {
-		Tile exit = Tile.at(house.bed(0).col(), house.bed(0).row());
-		int targetX = exit.centerX(), targetY = exit.y();
-		if (entity.tf.y <= targetY) {
-			entity.tf.y = targetY;
-		} else if (Math.round(entity.tf.x) == targetX) {
-			entity.tf.x = targetX;
-			setWishDir(UP);
-		} else if (entity.tf.x < targetX) {
-			setWishDir(RIGHT);
-		} else if (entity.tf.x > targetX) {
-			setWishDir(LEFT);
-		}
-	}
-
 	private boolean hasLeftGhostHouse() {
 		return entity.tf.y == world.theHouse().bed(0).row() * Tile.SIZE;
 	}
@@ -281,7 +259,6 @@ public class Ghost extends Animal<GhostState> {
 		if (world.isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-
 		Optional<OneWayTile> maybeOneWay = world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst();
 		if (maybeOneWay.isPresent()) {
 			OneWayTile oneWay = maybeOneWay.get();
