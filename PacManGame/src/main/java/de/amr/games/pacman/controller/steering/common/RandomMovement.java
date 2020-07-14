@@ -13,10 +13,14 @@ import de.amr.games.pacman.model.world.api.Direction;
  */
 public class RandomMovement implements Steering {
 
+	public static RandomMovement steers(MobileCreature creature) {
+		return new RandomMovement(creature);
+	}
+
 	private MobileCreature creature;
 	private boolean forced;
 
-	public RandomMovement(MobileCreature creature) {
+	private RandomMovement(MobileCreature creature) {
 		this.creature = Objects.requireNonNull(creature);
 	}
 

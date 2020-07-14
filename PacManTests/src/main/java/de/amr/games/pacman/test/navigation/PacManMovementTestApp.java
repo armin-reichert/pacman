@@ -8,6 +8,7 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
+import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.test.TestUI;
 
@@ -77,7 +78,7 @@ class PacManMovementTestUI extends TestUI {
 					pacMan.followingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 			view.showMessage(2, "Numpad keys", Color.WHITE);
 		} else if (steeringIndex == 2) {
-			pacMan.behavior(pacMan.movingRandomly());
+			pacMan.behavior(RandomMovement.steers(pacMan));
 			view.showMessage(2, "Move randomly", Color.WHITE);
 		}
 	}

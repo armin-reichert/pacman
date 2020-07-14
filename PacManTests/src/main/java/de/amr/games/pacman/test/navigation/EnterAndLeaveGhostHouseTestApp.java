@@ -7,6 +7,7 @@ import java.util.Random;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.test.TestUI;
@@ -57,7 +58,7 @@ class EnterGhostHouseTestUI extends TestUI {
 	public void update() {
 		if (inky.getState() == GhostState.LEAVING_HOUSE && !inky.isInsideHouse()) {
 			inky.setState(GhostState.SCATTERING);
-			inky.behavior(GhostState.SCATTERING, inky.headingFor(() -> randomCape()));
+			inky.behavior(GhostState.SCATTERING, HeadingForTargetTile.steers(inky, () -> randomCape()));
 		} else if (inky.getState() == GhostState.SCATTERING) {
 			// one round around the block, then killed at cape
 			if (capes.contains(inky.location())) {

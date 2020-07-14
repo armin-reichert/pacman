@@ -4,7 +4,6 @@ import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -16,11 +15,8 @@ import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.FollowingKeys;
-import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.controller.steering.common.MovementControl;
 import de.amr.games.pacman.controller.steering.common.MovementType;
-import de.amr.games.pacman.controller.steering.common.RandomMovement;
-import de.amr.games.pacman.controller.steering.common.TakingFixedPath;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -250,41 +246,5 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 	 */
 	public Steering followingKeys(int up, int right, int down, int left) {
 		return new FollowingKeys(this, up, right, down, left);
-	}
-
-	/**
-	 * Lets the actor move randomly through the maze while respecting the maze structure (for example,
-	 * chasing and scattering ghost may not move upwards at dedicated tiles. Also reversing the
-	 * direction is never allowed.
-	 * 
-	 * @return random move behavior
-	 */
-	public Steering movingRandomly() {
-		return new RandomMovement(this);
-	}
-
-	/**
-	 * Lets the actor head for a (probably unreachable) target tile by taking the "best" direction at
-	 * every intersection.
-	 * 
-	 * @return behavior where the actor tries to reach the target tile
-	 */
-	public Steering headingFor(Supplier<Tile> fnTargetTile) {
-		return new HeadingForTargetTile(this, fnTargetTile);
-	}
-
-	/**
-	 * Lets the actor follow a fixed path to the target. As the rules for accessing tiles are not
-	 * checked, the actor may get stuck.
-	 * 
-	 * @param path the path to follow
-	 * 
-	 * @return behavior where actor follows the given path
-	 */
-	public Steering takingFixedPath(List<Tile> path) {
-		if (path.isEmpty()) {
-			throw new IllegalArgumentException("Path must not be empty");
-		}
-		return new TakingFixedPath(this, path);
 	}
 }

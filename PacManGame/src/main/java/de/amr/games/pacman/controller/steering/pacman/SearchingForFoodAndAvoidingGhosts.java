@@ -1,4 +1,4 @@
-package de.amr.games.pacman.controller.creatures.pacman;
+package de.amr.games.pacman.controller.steering.pacman;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;

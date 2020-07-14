@@ -19,7 +19,6 @@ import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.creatures.Animal;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
@@ -289,30 +288,6 @@ public class Ghost extends Animal<GhostState> {
 
 	private boolean hasLeftGhostHouse() {
 		return entity.tf.y == world.theHouse().bed(0).row() * Tile.SIZE;
-	}
-
-	/**
-	 * Lets the actor avoid the attacker's path by walking to a "safe" maze corner.
-	 * 
-	 * @param attacker the attacking actor
-	 * @return steering where actor flees to a "safe" maze corner
-	 */
-	public Steering fleeingToSafeCorner(MobileCreature attacker) {
-		return new FleeingToSafeCorner(this, attacker, world.capeNW(), world.capeNE(), world.capeSW(), world.capeSE());
-	}
-
-	/**
-	 * @return steering for bringing ghost back to ghost house entry
-	 */
-	public Steering returningToHouse(House house) {
-		return headingFor(() -> Tile.at(house.bed(0).col(), house.bed(0).row()));
-	}
-
-	/**
-	 * @return steering which lets ghost enter the house going to bed
-	 */
-	public Steering goingToBed(Bed bed) {
-		return new EnteringGhostHouseAndGoingToBed(this, bed);
 	}
 
 	@Override

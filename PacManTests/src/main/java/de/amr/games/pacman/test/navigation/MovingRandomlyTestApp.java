@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.test.TestUI;
 
@@ -42,7 +43,7 @@ class MovingRandomlyTestUI extends TestUI {
 		ghostsOnStage().forEach(ghost -> {
 			ghost.init();
 			ghost.placeAt(Tile.at(world.pacManBed().col(), world.pacManBed().row()));
-			ghost.behavior(FRIGHTENED, ghost.movingRandomly());
+			ghost.behavior(FRIGHTENED, RandomMovement.steers(ghost));
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
 		});

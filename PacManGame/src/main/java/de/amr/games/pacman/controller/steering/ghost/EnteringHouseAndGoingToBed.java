@@ -1,14 +1,15 @@
-package de.amr.games.pacman.controller.creatures.ghost;
+package de.amr.games.pacman.controller.steering.ghost;
 
-import static de.amr.games.pacman.controller.creatures.ghost.EnteringGhostHouseAndGoingToBed.State.FALLING;
-import static de.amr.games.pacman.controller.creatures.ghost.EnteringGhostHouseAndGoingToBed.State.MOVING_LEFT;
-import static de.amr.games.pacman.controller.creatures.ghost.EnteringGhostHouseAndGoingToBed.State.MOVING_RIGHT;
-import static de.amr.games.pacman.controller.creatures.ghost.EnteringGhostHouseAndGoingToBed.State.TARGET_REACHED;
+import static de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State.FALLING;
+import static de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State.MOVING_LEFT;
+import static de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State.MOVING_RIGHT;
+import static de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State.TARGET_REACHED;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.ghost.EnteringGhostHouseAndGoingToBed.State;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.Steering;
+import de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -19,8 +20,12 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class EnteringGhostHouseAndGoingToBed extends StateMachine<State, Void> implements Steering {
+public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implements Steering {
 
+	public static EnteringHouseAndGoingToBed steers(Ghost ghost, Bed bed) {
+		return new EnteringHouseAndGoingToBed(ghost, bed);
+	}
+	
 	public enum State {
 		FALLING, MOVING_LEFT, MOVING_RIGHT, TARGET_REACHED
 	}
@@ -33,7 +38,7 @@ public class EnteringGhostHouseAndGoingToBed extends StateMachine<State, Void> i
 		return bed.center.y - Tile.SIZE / 2;
 	}
 
-	public EnteringGhostHouseAndGoingToBed(Ghost ghost, Bed bed) {
+	private EnteringHouseAndGoingToBed(Ghost ghost, Bed bed) {
 		super(State.class);
 		/*@formatter:off*/
 		beginStateMachine()

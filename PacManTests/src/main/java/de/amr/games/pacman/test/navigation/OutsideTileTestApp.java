@@ -3,6 +3,7 @@ package de.amr.games.pacman.test.navigation;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.test.TestUI;
 
@@ -39,7 +40,7 @@ class OutsideTileTestUI extends TestUI {
 		include(blinky);
 		blinky.init();
 		int row = world.portals().findFirst().map(portal -> portal.right.row).orElse((short) 100);
-		blinky.behavior(GhostState.CHASING, blinky.headingFor(() -> Tile.at(100, row)));
+		blinky.behavior(GhostState.CHASING, HeadingForTargetTile.steers(blinky, () -> Tile.at(100, row)));
 		blinky.setState(GhostState.CHASING);
 		view.turnRoutesOn();
 	}

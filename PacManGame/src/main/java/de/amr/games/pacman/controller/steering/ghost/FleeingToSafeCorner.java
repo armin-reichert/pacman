@@ -1,4 +1,4 @@
-package de.amr.games.pacman.controller.creatures.ghost;
+package de.amr.games.pacman.controller.steering.ghost;
 
 import static de.amr.datastruct.StreamUtils.permute;
 
@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import de.amr.games.pacman.controller.api.MobileCreature;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.TakingPrecomputedPath;
 import de.amr.games.pacman.model.world.api.FoodContainer;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -22,13 +23,17 @@ import de.amr.games.pacman.model.world.core.WorldGraph;
  */
 public class FleeingToSafeCorner extends TakingPrecomputedPath {
 
-	final WorldGraph graph;
-	final Tile[] corners;
+	public static FleeingToSafeCorner steer(Ghost refugee, MobileCreature attacker) {
+		return new FleeingToSafeCorner(refugee, attacker);
+	}
 
-	public FleeingToSafeCorner(Ghost refugee, MobileCreature attacker, Tile... corners) {
+	private final WorldGraph graph;
+	private final Tile[] corners;
+
+	private FleeingToSafeCorner(Ghost refugee, MobileCreature attacker) {
 		super(refugee, attacker::location);
 		graph = new WorldGraph(world);
-		this.corners = Arrays.copyOf(corners, corners.length);
+		corners = new Tile[] { world.capeNW(), world.capeNE(), world.capeSW(), world.capeSE() };
 	}
 
 	@Override

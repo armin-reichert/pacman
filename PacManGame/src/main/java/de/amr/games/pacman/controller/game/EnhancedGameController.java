@@ -17,6 +17,8 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
+import de.amr.games.pacman.controller.steering.common.RandomMovement;
+import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeCorner;
 
 /**
  * Enhanced game controller with all the bells and whistles.
@@ -144,11 +146,11 @@ public class EnhancedGameController extends GameController {
 	private void toggleGhostFrightenedBehavior() {
 		if (settings.ghostsSafeCorner) {
 			settings.ghostsSafeCorner = false;
-			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.movingRandomly()));
+			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, RandomMovement.steers(ghost)));
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;
-			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.fleeingToSafeCorner(folks.pacMan())));
+			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, FleeingToSafeCorner.steer(ghost, folks.pacMan())));
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}

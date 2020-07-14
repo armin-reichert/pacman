@@ -29,6 +29,10 @@ import de.amr.games.pacman.model.world.core.Tile;
  * @author Armin Reichert
  */
 public class HeadingForTargetTile implements PathProvidingSteering {
+	
+	public static HeadingForTargetTile steers(MobileCreature creature, Supplier<Tile> fnTargetTile) {
+		return new HeadingForTargetTile(creature, fnTargetTile);
+	}
 
 	/**
 	 * Computes the next move direction as described
@@ -58,24 +62,24 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		/*@formatter:on*/
 	}
 
-	private final MobileCreature mover;
+	private final MobileCreature creature;
 	private final Supplier<Tile> fnTargetTile;
 	private final ConcurrentLinkedDeque<Tile> path = new ConcurrentLinkedDeque<>();
 	private boolean forced;
 	private boolean pathComputed;
 
-	public HeadingForTargetTile(MobileCreature mover, Supplier<Tile> fnTargetTile) {
-		this.mover = Objects.requireNonNull(mover);
+	private HeadingForTargetTile(MobileCreature creature, Supplier<Tile> fnTargetTile) {
+		this.creature = Objects.requireNonNull(creature);
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}
 
 	@Override
 	public void steer() {
-		if (mover.enteredNewTile() || forced) {
+		if (creature.enteredNewTile() || forced) {
 			forced = false;
-			mover.setTargetTile(fnTargetTile.get());
-			if (mover.targetTile() != null) {
-				mover.setWishDir(bestDir(mover, mover.moveDir(), mover.location(), mover.targetTile()));
+			creature.setTargetTile(fnTargetTile.get());
+			if (creature.targetTile() != null) {
+				creature.setWishDir(bestDir(creature, creature.moveDir(), creature.location(), creature.targetTile()));
 				if (pathComputed) {
 					computePath();
 				}
@@ -90,13 +94,13 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * or the path would leave the map.
 	 */
 	private void computePath() {
-		World world = mover.world();
-		Tile currentTile = mover.location(), targetTile = mover.targetTile();
-		Direction currentDir = mover.moveDir();
+		World world = creature.world();
+		Tile currentTile = creature.location(), targetTile = creature.targetTile();
+		Direction currentDir = creature.moveDir();
 		path.clear();
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
-			Direction dir = bestDir(mover, currentDir, currentTile, targetTile);
+			Direction dir = bestDir(creature, currentDir, currentTile, targetTile);
 			Tile nextTile = world.neighbor(currentTile, dir);
 			if (!world.includes(nextTile) || path.contains(nextTile)) {
 				return;

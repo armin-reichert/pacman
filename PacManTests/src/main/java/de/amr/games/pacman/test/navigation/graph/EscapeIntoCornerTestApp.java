@@ -4,6 +4,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTEN
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
+import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeCorner;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.test.TestUI;
 
@@ -33,7 +34,8 @@ class EscapeIntoCornerTestUI extends TestUI {
 	public void init() {
 		super.init();
 		include(pacMan, blinky);
-		blinky.behavior(FRIGHTENED, blinky.fleeingToSafeCorner(pacMan));
+		blinky.behavior(FRIGHTENED,
+				FleeingToSafeCorner.steer(blinky, pacMan));
 		blinky.setState(FRIGHTENED);
 		view.turnRoutesOn();
 		view.turnStatesOn();
