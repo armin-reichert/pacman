@@ -50,6 +50,8 @@ import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.world.arcade.BonusControl;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.core.Bed;
+import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.MusicLoadingView;
@@ -232,7 +234,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						folks.ghostsInsideWorld().forEach(ghost -> {
 							ghost.init();
-							ghost.placeAt(world.theHouse().bed(0).tile);
+							Bed bed = world.theHouse().bed(0);
+							ghost.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 							ghost.setWishDir(new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT);
 							ghost.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});

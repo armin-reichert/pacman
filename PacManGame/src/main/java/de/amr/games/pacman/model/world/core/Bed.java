@@ -11,15 +11,13 @@ import de.amr.games.pacman.model.world.api.Direction;
 public class Bed extends Block {
 
 	public final int number;
-	public final Tile tile;
 	public final Vector2f center;
 	public final Direction exitDir;
 
-	public Bed(int number, int x, int y, Direction dir) {
-		super(x, y, 2, 1);
+	public Bed(int number, int col, int row, Direction dir) {
+		super(col, row, 2, 1);
 		this.number = number;
-		tile = Tile.at(x, y);
-		center = Vector2f.of(tile.x() + Tile.SIZE, tile.centerY());
+		center = Vector2f.of((col + 1) * Tile.SIZE, row * Tile.SIZE + Tile.SIZE / 2);
 		exitDir = dir;
 	}
 }

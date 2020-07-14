@@ -52,8 +52,9 @@ class TakeShortestPathTestUI extends TestUI {
 		Portal thePortal = world.portals().findAny().get();
 		House theHouse = world.theHouse();
 		targets = Arrays.asList(world.capeSE(), Tile.at(15, 23), Tile.at(12, 23), world.capeSW(),
-				world.neighbor(thePortal.left, Direction.RIGHT), world.capeNW(), theHouse.bed(0).tile, world.capeNE(),
-				world.neighbor(thePortal.right, Direction.LEFT), world.pacManBed().tile);
+				world.neighbor(thePortal.left, Direction.RIGHT), world.capeNW(),
+				Tile.at(theHouse.bed(0).col(), theHouse.bed(0).row()), world.capeNE(),
+				world.neighbor(thePortal.right, Direction.LEFT), Tile.at(world.pacManBed().col(), world.pacManBed().row()));
 		targetIndex = 0;
 		soundManager.snd_ghost_chase().volume(0);
 		include(blinky);

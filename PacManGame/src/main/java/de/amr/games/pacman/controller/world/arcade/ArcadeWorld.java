@@ -94,15 +94,15 @@ public class ArcadeWorld extends AbstractWorld {
 		return folks;
 	}
 
-	private House ghostHouse(int x, int y, int w, int h) {
-		Area room = new Block(x, y, w, h);
-		Door door = new Door(Direction.DOWN, Tile.at(x + 2, y - 1), Tile.at(x + 3, y - 1));
+	private House ghostHouse(int col, int row, int w, int h) {
+		Area room = new Block(col, row, w, h);
+		Door door = new Door(Direction.DOWN, Tile.at(col + 2, row - 1), Tile.at(col + 3, row - 1));
 		List<Bed> beds = Arrays.asList(
 		//@formatter:off
-			new Bed(0, x + 2, y - 2, Direction.LEFT),
-			new Bed(1, x,     y + 1, Direction.UP), 
-			new Bed(2, x + 2, y + 1, Direction.DOWN),
-			new Bed(3, x + 4, y + 1, Direction.UP)
+			new Bed(0, col + 2, row - 2, Direction.LEFT),
+			new Bed(1, col,     row + 1, Direction.UP), 
+			new Bed(2, col + 2, row + 1, Direction.DOWN),
+			new Bed(3, col + 4, row + 1, Direction.UP)
 		//@formatter:on
 		);
 		return new House(room, Arrays.asList(door), beds);
@@ -128,7 +128,7 @@ public class ArcadeWorld extends AbstractWorld {
 	}
 
 	private void placeInBed(MobileCreature creature, Bed bed) {
-		creature.placeAt(bed.tile, Tile.SIZE / 2, 0);
+		creature.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		creature.setMoveDir(bed.exitDir);
 		creature.setWishDir(bed.exitDir);
 	}

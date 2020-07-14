@@ -117,12 +117,12 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
-	public int x() {
+	public int col() {
 		return 0;
 	}
 
 	@Override
-	public int y() {
+	public int row() {
 		return 0;
 	}
 

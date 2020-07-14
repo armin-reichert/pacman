@@ -4,14 +4,14 @@ import de.amr.games.pacman.model.world.api.RectangularArea;
 
 public class Block implements RectangularArea {
 
-	private final int x;
-	private final int y;
+	private final int col;
+	private final int row;
 	private final int width;
 	private final int height;
 
-	public Block(int x, int y, int width, int height) {
-		this.x = x;
-		this.y = y;
+	public Block(int col, int row, int width, int height) {
+		this.col = col;
+		this.row = row;
 		this.width = width;
 		this.height = height;
 	}
@@ -27,17 +27,17 @@ public class Block implements RectangularArea {
 	}
 
 	@Override
-	public int x() {
-		return x;
+	public int col() {
+		return col;
 	}
 
 	@Override
-	public int y() {
-		return y;
+	public int row() {
+		return row;
 	}
 
 	@Override
 	public boolean includes(Tile tile) {
-		return x <= tile.col && tile.col < x + width && y <= tile.row && tile.row <= y + height;
+		return col <= tile.col && tile.col < col + width && row <= tile.row && tile.row < row + height;
 	}
 }

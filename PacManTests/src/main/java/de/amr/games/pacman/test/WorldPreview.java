@@ -80,11 +80,11 @@ public class WorldPreview extends JFrame {
 		if (tile.equals(world.bonusTile())) {
 			return "$";
 		}
-		if (tile.equals(world.pacManBed().tile)) {
+		if (world.pacManBed().includes(tile)) {
 			return "P";
 		}
 		for (int i = 0; i < 4; ++i) {
-			if (tile.equals(world.theHouse().bed(i).tile)) {
+			if (world.theHouse().bed(i).includes(tile)) {
 				return "" + i;
 			}
 		}

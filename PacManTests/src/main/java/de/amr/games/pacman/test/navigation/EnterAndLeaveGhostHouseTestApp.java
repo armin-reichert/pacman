@@ -7,6 +7,7 @@ import java.util.Random;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.test.TestUI;
 
@@ -45,7 +46,8 @@ class EnterGhostHouseTestUI extends TestUI {
 		super.init();
 		include(inky);
 		inky.init();
-		inky.placeAt(world.theHouse().bed(0).tile);
+		Bed bed = world.theHouse().bed(0);
+		inky.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		inky.setState(GhostState.SCATTERING);
 		view.turnRoutesOn();
 		view.turnGridOn();
