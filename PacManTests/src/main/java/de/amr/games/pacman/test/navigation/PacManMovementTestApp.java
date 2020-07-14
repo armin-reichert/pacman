@@ -79,7 +79,7 @@ class PacManMovementTestUI extends TestUI {
 					pacMan.followingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 			view.showMessage(2, "Numpad keys", Color.WHITE);
 		} else if (steeringIndex == 2) {
-			pacMan.behavior(randomMovement(pacMan).build());
+			pacMan.behavior(randomMovement(pacMan).doit());
 			view.showMessage(2, "Move randomly", Color.WHITE);
 		}
 	}

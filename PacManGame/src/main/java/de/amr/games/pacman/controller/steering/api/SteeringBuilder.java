@@ -33,7 +33,7 @@ public class SteeringBuilder {
 			return tile(Tile.at(col, row));
 		}
 
-		public Steering build() {
+		public Steering doit() {
 			return new HeadingForTargetTile(creature, fnTargetTile);
 		}
 	}
@@ -47,7 +47,7 @@ public class SteeringBuilder {
 	public static class RandomMovementBuilder {
 		private MobileCreature creature;
 
-		public Steering build() {
+		public Steering doit() {
 			return new RandomMovement(creature);
 		}
 	}
@@ -68,7 +68,7 @@ public class SteeringBuilder {
 			return this;
 		}
 
-		public Steering build() {
+		public Steering doit() {
 			return new EnteringHouseAndGoingToBed(ghost, bed);
 		}
 	}
@@ -89,7 +89,7 @@ public class SteeringBuilder {
 			return this;
 		}
 
-		public Steering build() {
+		public Steering doit() {
 			return new BouncingOnBed(ghost, bed);
 		}
 	}
@@ -110,7 +110,7 @@ public class SteeringBuilder {
 			return this;
 		}
 
-		public Steering build() {
+		public Steering doit() {
 			return new LeavingHouse(ghost, house);
 		}
 	}
@@ -120,5 +120,4 @@ public class SteeringBuilder {
 		builder.ghost = ghost;
 		return builder;
 	}
-
 }

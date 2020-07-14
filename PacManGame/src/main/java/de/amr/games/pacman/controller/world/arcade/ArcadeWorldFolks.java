@@ -56,35 +56,35 @@ public class ArcadeWorldFolks {
 		Tile houseEntry = Tile.at(house.bed(0).col(), house.bed(0).row());
 
 		ghosts().forEach(ghost -> {
-			ghost.behavior(LEAVING_HOUSE, leavingHouse(ghost).house(house).build());
-			ghost.behavior(FRIGHTENED, randomMovement(ghost).build());
-			ghost.behavior(DEAD, headingForTargetTile(ghost).tile(houseEntry).build());
-			ghost.behavior(DEAD, headingForTargetTile(ghost).tile(houseEntry).build());
+			ghost.behavior(LEAVING_HOUSE, leavingHouse(ghost).house(house).doit());
+			ghost.behavior(FRIGHTENED, randomMovement(ghost).doit());
+			ghost.behavior(DEAD, headingForTargetTile(ghost).tile(houseEntry).doit());
+			ghost.behavior(DEAD, headingForTargetTile(ghost).tile(houseEntry).doit());
 		});
 
-		blinky.behavior(LOCKED, bouncingOnBed(blinky).bed(house.bed(0)).build());
-		blinky.behavior(ENTERING_HOUSE, enteringHouseAndGoingToBed(blinky).bed(house.bed(2)).build());
-		blinky.behavior(SCATTERING, headingForTargetTile(blinky).tile(worldWidth - 3, 0).build());
-		blinky.behavior(CHASING, headingForTargetTile(blinky).tile(pacMan::location).build());
+		blinky.behavior(LOCKED, bouncingOnBed(blinky).bed(house.bed(0)).doit());
+		blinky.behavior(ENTERING_HOUSE, enteringHouseAndGoingToBed(blinky).bed(house.bed(2)).doit());
+		blinky.behavior(SCATTERING, headingForTargetTile(blinky).tile(worldWidth - 3, 0).doit());
+		blinky.behavior(CHASING, headingForTargetTile(blinky).tile(pacMan::location).doit());
 
-		inky.behavior(LOCKED, bouncingOnBed(inky).bed(house.bed(1)).build());
-		inky.behavior(ENTERING_HOUSE, enteringHouseAndGoingToBed(inky).bed(house.bed(1)).build());
-		inky.behavior(SCATTERING, headingForTargetTile(inky).tile(worldWidth - 1, worldHeight - 1).build());
+		inky.behavior(LOCKED, bouncingOnBed(inky).bed(house.bed(1)).doit());
+		inky.behavior(ENTERING_HOUSE, enteringHouseAndGoingToBed(inky).bed(house.bed(1)).doit());
+		inky.behavior(SCATTERING, headingForTargetTile(inky).tile(worldWidth - 1, worldHeight - 1).doit());
 		inky.behavior(CHASING, headingForTargetTile(inky).tile(() -> {
 			Tile b = blinky.location(), p = pacMan.tilesAhead(2);
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
-		}).build());
+		}).doit());
 
-		pinky.behavior(LOCKED, bouncingOnBed(pinky).bed(house.bed(1)).build());
-		pinky.behavior(ENTERING_HOUSE, enteringHouseAndGoingToBed(pinky).bed(house.bed(2)).build());
-		pinky.behavior(SCATTERING, headingForTargetTile(pinky).tile(2, 0).build());
-		pinky.behavior(CHASING, headingForTargetTile(pinky).tile(() -> pacMan.tilesAhead(4)).build());
+		pinky.behavior(LOCKED, bouncingOnBed(pinky).bed(house.bed(1)).doit());
+		pinky.behavior(ENTERING_HOUSE, enteringHouseAndGoingToBed(pinky).bed(house.bed(2)).doit());
+		pinky.behavior(SCATTERING, headingForTargetTile(pinky).tile(2, 0).doit());
+		pinky.behavior(CHASING, headingForTargetTile(pinky).tile(() -> pacMan.tilesAhead(4)).doit());
 
-		clyde.behavior(LOCKED, bouncingOnBed(clyde).bed(house.bed(3)).build());
-		clyde.behavior(ENTERING_HOUSE, enteringHouseAndGoingToBed(clyde).bed(house.bed(3)).build());
-		clyde.behavior(SCATTERING, headingForTargetTile(clyde).tile(0, worldHeight - 1).build());
+		clyde.behavior(LOCKED, bouncingOnBed(clyde).bed(house.bed(3)).doit());
+		clyde.behavior(ENTERING_HOUSE, enteringHouseAndGoingToBed(clyde).bed(house.bed(3)).doit());
+		clyde.behavior(SCATTERING, headingForTargetTile(clyde).tile(0, worldHeight - 1).doit());
 		clyde.behavior(CHASING, headingForTargetTile(clyde)
-				.tile(() -> clyde.distance(pacMan) > 8 ? pacMan.location() : Tile.at(0, worldHeight - 1)).build());
+				.tile(() -> clyde.distance(pacMan) > 8 ? pacMan.location() : Tile.at(0, worldHeight - 1)).doit());
 	}
 
 	public World world() {

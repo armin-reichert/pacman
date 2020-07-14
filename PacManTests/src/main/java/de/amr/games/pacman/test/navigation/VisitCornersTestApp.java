@@ -46,7 +46,7 @@ class FollowTargetTilesTestUI extends TestUI {
 		include(blinky);
 		blinky.init();
 		blinky.placeAt(targets.get(0));
-		blinky.behavior(CHASING, headingForTargetTile(blinky).tile(() -> targets.get(current)).build());
+		blinky.behavior(CHASING, headingForTargetTile(blinky).tile(() -> targets.get(current)).doit());
 		blinky.setState(CHASING);
 		blinky.steering().force();
 		view.turnRoutesOn();
