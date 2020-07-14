@@ -1,6 +1,5 @@
 package de.amr.games.pacman.view.theme.arcade;
 
-import static de.amr.easy.game.Application.loginfo;
 import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
@@ -133,8 +132,6 @@ public class ArcadeThemeSprites {
 			section(56, 192, 32, 16)
 			/*@formatter:on*/
 		};
-
-		loginfo("Theme '%s' created.", getClass().getName());
 	}
 
 	public Sprite makeSprite_number(int number) {
