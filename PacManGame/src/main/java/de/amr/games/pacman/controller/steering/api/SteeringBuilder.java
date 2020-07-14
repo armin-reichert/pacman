@@ -6,6 +6,7 @@ import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.controller.steering.common.RandomMovement;
+import de.amr.games.pacman.controller.steering.ghost.BouncingOnBed;
 import de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -68,7 +69,6 @@ public class SteeringBuilder {
 		public Steering build() {
 			return new EnteringHouseAndGoingToBed(ghost, bed);
 		}
-
 	}
 
 	public static EnteringHouseAndGoingToBedBuilder enteringHouseAndGoingToBed(Ghost ghost) {
@@ -76,4 +76,26 @@ public class SteeringBuilder {
 		builder.ghost = ghost;
 		return builder;
 	}
+
+	public static class BouncingOnBedBuilder {
+
+		private Ghost ghost;
+		private Bed bed;
+
+		public BouncingOnBedBuilder bed(Bed bed) {
+			this.bed = bed;
+			return this;
+		}
+
+		public Steering build() {
+			return new BouncingOnBed(ghost, bed);
+		}
+	}
+
+	public static BouncingOnBedBuilder bouncingOnBed(Ghost ghost) {
+		BouncingOnBedBuilder builder = new BouncingOnBedBuilder();
+		builder.ghost = ghost;
+		return builder;
+	}
+
 }

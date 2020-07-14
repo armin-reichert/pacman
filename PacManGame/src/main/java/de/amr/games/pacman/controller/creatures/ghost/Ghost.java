@@ -8,7 +8,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.game.Game.sec;
-import static de.amr.games.pacman.model.world.api.Direction.DOWN;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
@@ -30,7 +29,6 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -254,18 +252,6 @@ public class Ghost extends Animal<GhostState> {
 
 	public boolean isFlashing() {
 		return flashing;
-	}
-
-	/**
-	 * Lets the ghost jump up and down on its bed.
-	 */
-	public void bouncingOnBed(Bed bed) {
-		float dy = entity.tf.y + Tile.SIZE / 2 - bed.center.y;
-		if (dy < -4) {
-			setWishDir(DOWN);
-		} else if (dy > 3) {
-			setWishDir(UP);
-		}
 	}
 
 	/**
