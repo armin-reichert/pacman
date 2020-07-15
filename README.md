@@ -293,9 +293,7 @@ ghosts().forEach(ghost -> {
 	you(ghost).when(DEAD).headFor().tile(houseEntry).ok();
 });
 ```
-Note that for the simple steerings like "bouncing on seat" and "leaving ghost house" just a method in the Ghost class is used. For steerings which require additional "state" or have additional parameters, using an instance of a steering class (which happens behind the is... calls) is the more general approach.
-
-The only difference in ghost behavior are the target tiles in the "CHASING" and "SCATTERING" state. 
+The only difference in ghost behavior are the target tiles in the "CHASING" and "SCATTERING" state and the beds where the ghosts start and return when dead.
 
 ### Scattering
 
