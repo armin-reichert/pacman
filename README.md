@@ -292,8 +292,8 @@ The common behavior of all ghosts is defined by the following code:
 
 ```java
 ghosts().forEach(ghost -> {
-	you(ghost).when(LOCKED).bounceOnBed().bed(ghost.bed()).ok();
-	you(ghost).when(ENTERING_HOUSE).enterHouseAndGoToBed().bed(ghost.bed()).ok();
+	you(ghost).when(LOCKED).bounceOnBed().ok();
+	you(ghost).when(ENTERING_HOUSE).enterHouseAndGoToBed().ok();
 	you(ghost).when(LEAVING_HOUSE).leaveHouse().house(house).ok();
 	you(ghost).when(FRIGHTENED).moveRandomly().ok();
 	you(ghost).when(DEAD).headFor().tile(houseEntry).ok();
