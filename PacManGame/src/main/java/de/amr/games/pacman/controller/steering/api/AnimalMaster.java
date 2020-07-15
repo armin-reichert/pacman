@@ -74,7 +74,7 @@ public class AnimalMaster {
 
 		public Steering ok() {
 			Ghost ghost = (Ghost) animal;
-			Steering steering = new BouncingOnBed(ghost, bed);
+			Steering steering = new BouncingOnBed(ghost, bed != null ? bed : ghost.bed());
 			ghost.behavior(ghostState, steering);
 			return steering;
 		}
@@ -91,7 +91,7 @@ public class AnimalMaster {
 
 		public Steering ok() {
 			Ghost ghost = (Ghost) animal;
-			Steering steering = new EnteringHouseAndGoingToBed(ghost, bed);
+			Steering steering = new EnteringHouseAndGoingToBed(ghost, bed != null ? bed : ghost.bed());
 			ghost.behavior(ghostState, steering);
 			return steering;
 		}
