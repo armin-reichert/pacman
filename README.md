@@ -2,7 +2,7 @@
 
 ## Racism Alert! Ghost Lives Matter!
 
-Hasn't Pac-Man, by todays leftist standards, be named a "racist"? I mean, he is chasing ghosts of color, isn't he?
+Isn't Pac-Man the prototype of a "racist"? He is chasing ghosts of color, isn't he?
 
 ## How to run the game
 
