@@ -1,6 +1,5 @@
 package de.amr.games.pacman.controller.api;
 
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.world.api.Lifeform;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
@@ -10,7 +9,7 @@ import de.amr.games.pacman.view.theme.api.Theme;
  * 
  * @author Armin Reichert
  */
-public interface Creature extends Lifeform, View {
+public interface Creature extends Lifeform {
 
 	void setTheme(Theme theme);
 
