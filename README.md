@@ -317,22 +317,30 @@ Blinky is special because he becomes "insane" when the number of remaining pelle
 This behavior is implemented by the following state machine:
 
 ```java
-beginStateMachine(Sanity.class, Void.class)
-	.initialState(name.equals("Blinky") ? INFECTABLE : IMMUNE)
-	.description(() -> String.format("[%s sanity]", name))
-	.states()
-	.transitions()
+public class GhostSanityControl extends StateMachine<GhostSanity, Void> {
 
-		.when(INFECTABLE).then(ELROY2)
-			.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
-
-		.when(INFECTABLE).then(ELROY1)
-			.condition(() -> game.remainingFoodCount() <= game.level.elroy1DotsLeft)
-
-		.when(ELROY1).then(ELROY2)
-			.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
-
-.endStateMachine();
+	public GhostSanityControl(Game game, String ghostName, GhostSanity initialSanity) {
+		super(GhostSanity.class);
+		//@formatter:off
+		beginStateMachine()
+			.initialState(initialSanity)
+			.description(() -> String.format("[%s sanity]", ghostName))
+			.states()
+			.transitions()
+			
+				.when(INFECTABLE).then(ELROY2)
+					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
+					
+				.when(INFECTABLE).then(ELROY1)
+					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy1DotsLeft)
+				
+				.when(ELROY1).then(ELROY2)
+					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
+					
+		.endStateMachine();
+		//@formatter:on
+	}
+}
 ```
 
 where the states are from this enumeration type:
