@@ -9,7 +9,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.movesRandomly;
+import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.ghost;
 
 import java.awt.event.KeyEvent;
 
@@ -146,7 +146,7 @@ public class EnhancedGameController extends GameController {
 	private void toggleGhostFrightenedBehavior() {
 		if (settings.ghostsSafeCorner) {
 			settings.ghostsSafeCorner = false;
-			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, movesRandomly(ghost).ok()));
+			folks.ghosts().forEach(ghost -> ghost(ghost).when(FRIGHTENED).movesRandomly().ok());
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;

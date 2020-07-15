@@ -2,9 +2,11 @@ package de.amr.games.pacman.controller.steering.api;
 
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.api.MobileCreature;
+import de.amr.games.pacman.controller.creatures.Animal;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.steering.ghost.BouncingOnBed;
@@ -16,28 +18,48 @@ import de.amr.games.pacman.model.world.core.Tile;
 
 public class SteeringBuilder {
 
-	private Ghost ghost;
-	private GhostState state;
+	private Animal<?> animal;
+	private GhostState ghostState;
 
 	public static SteeringBuilder ghost(Ghost ghost) {
 		SteeringBuilder builder = new SteeringBuilder();
-		builder.ghost = ghost;
+		builder.animal = ghost;
+		return builder;
+	}
+
+	public static SteeringBuilder pacMan(PacMan pacMan) {
+		SteeringBuilder builder = new SteeringBuilder();
+		builder.animal = pacMan;
 		return builder;
 	}
 
 	public SteeringBuilder when(GhostState state) {
-		this.state = state;
+		this.ghostState = state;
 		return this;
 	}
 
 	public HeadsForTargetTileBuilder headsFor() {
-		HeadsForTargetTileBuilder builder = new HeadsForTargetTileBuilder();
-		return builder;
+		return new HeadsForTargetTileBuilder();
 	}
 
-	public static class BouncesOnBedBuilder {
+	public BouncesOnBedBuilder bouncesOnBed() {
+		return new BouncesOnBedBuilder();
+	}
 
-		private Ghost ghost;
+	public EntersHouseAndGoesToBedBuilder entersHouseAndGoesToBed() {
+		return new EntersHouseAndGoesToBedBuilder();
+	}
+
+	public LeavesHouseBuilder leavesHouse() {
+		return new LeavesHouseBuilder();
+	}
+
+	public MovesRandomlyBuilder movesRandomly() {
+		return new MovesRandomlyBuilder();
+	}
+
+	public class BouncesOnBedBuilder {
+
 		private Bed bed;
 
 		public BouncesOnBedBuilder bed(Bed bed) {
@@ -46,13 +68,15 @@ public class SteeringBuilder {
 		}
 
 		public Steering ok() {
-			return new BouncingOnBed(ghost, bed);
+			Ghost ghost = (Ghost) animal;
+			Steering steering = new BouncingOnBed(ghost, bed);
+			ghost.behavior(ghostState, steering);
+			return steering;
 		}
 	}
 
-	public static class EntersHouseAndGoesToBedBuilder {
+	public class EntersHouseAndGoesToBedBuilder {
 
-		private Ghost ghost;
 		private Bed bed;
 
 		public EntersHouseAndGoesToBedBuilder bed(Bed bed) {
@@ -61,7 +85,10 @@ public class SteeringBuilder {
 		}
 
 		public Steering ok() {
-			return new EnteringHouseAndGoingToBed(ghost, bed);
+			Ghost ghost = (Ghost) animal;
+			Steering steering = new EnteringHouseAndGoingToBed(ghost, bed);
+			ghost.behavior(ghostState, steering);
+			return steering;
 		}
 	}
 
@@ -83,15 +110,23 @@ public class SteeringBuilder {
 		}
 
 		public Steering ok() {
-			Steering steering = new HeadingForTargetTile(ghost, fnTargetTile);
-			ghost.behavior(state, steering);
-			return steering;
+			if (animal instanceof Ghost) {
+				Ghost ghost = (Ghost) animal;
+				Steering steering = new HeadingForTargetTile(ghost, fnTargetTile);
+				ghost.behavior(ghostState, steering);
+				return steering;
+			} else if (animal instanceof PacMan) {
+				PacMan pacMan = (PacMan) animal;
+				Steering steering = new HeadingForTargetTile(pacMan, fnTargetTile);
+				pacMan.behavior(PacManState.RUNNING, steering);
+				return steering;
+			}
+			throw new IllegalStateException();
 		}
 	}
 
-	public static class LeavesHouseBuilder {
+	public class LeavesHouseBuilder {
 
-		private Ghost ghost;
 		private House house;
 
 		public LeavesHouseBuilder house(House house) {
@@ -100,39 +135,27 @@ public class SteeringBuilder {
 		}
 
 		public Steering ok() {
-			return new LeavingHouse(ghost, house);
+			Ghost ghost = (Ghost) animal;
+			Steering steering = new LeavingHouse(ghost, house);
+			ghost.behavior(ghostState, steering);
+			return steering;
 		}
 	}
 
-	public static class MovesRandomlyBuilder {
-		private MobileCreature creature;
+	public class MovesRandomlyBuilder {
 
 		public Steering ok() {
-			return new RandomMovement(creature);
+			Steering steering = new RandomMovement(animal);
+			if (animal instanceof Ghost) {
+				Ghost ghost = (Ghost) animal;
+				ghost.behavior(ghostState, steering);
+			} else if (animal instanceof PacMan) {
+				PacMan pacMan = (PacMan) animal;
+				pacMan.behavior(PacManState.RUNNING, steering);
+			} else {
+				throw new IllegalStateException();
+			}
+			return steering;
 		}
-	}
-
-	public static BouncesOnBedBuilder bouncesOnBed(Ghost ghost) {
-		BouncesOnBedBuilder builder = new BouncesOnBedBuilder();
-		builder.ghost = ghost;
-		return builder;
-	}
-
-	public static EntersHouseAndGoesToBedBuilder entersHouseAndGoesToBed(Ghost ghost) {
-		EntersHouseAndGoesToBedBuilder builder = new EntersHouseAndGoesToBedBuilder();
-		builder.ghost = ghost;
-		return builder;
-	}
-
-	public static LeavesHouseBuilder leavesHouse(Ghost ghost) {
-		LeavesHouseBuilder builder = new LeavesHouseBuilder();
-		builder.ghost = ghost;
-		return builder;
-	}
-
-	public static MovesRandomlyBuilder movesRandomly(MobileCreature ghost) {
-		MovesRandomlyBuilder builder = new MovesRandomlyBuilder();
-		builder.creature = ghost;
-		return builder;
 	}
 }
