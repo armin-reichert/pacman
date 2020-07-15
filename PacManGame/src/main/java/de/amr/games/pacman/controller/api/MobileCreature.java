@@ -1,14 +1,17 @@
 package de.amr.games.pacman.controller.api;
 
+import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Tile;
 
 /**
- * Implemented by creatures that can move through the world.
+ * Implemented by entities that can move through the world.
  * 
  * @author Armin Reichert
  */
 public interface MobileCreature extends Creature {
+
+	Entity entity();
 
 	/**
 	 * @return the current move direction

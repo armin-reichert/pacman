@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.Area;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -110,38 +109,23 @@ public class ArcadeWorld extends AbstractWorld {
 
 	@Override
 	public void putIntoBed(Lifeform creature) {
-		if (creature == folks().pacMan()) {
-			placeInBed(folks().pacMan(), pacManBed());
-		} else if (creature == folks().blinky()) {
-			placeInBed(folks().blinky(), theHouse().bed(0));
-		} else if (creature == folks().inky()) {
-			placeInBed(folks().inky(), theHouse().bed(1));
-		} else if (creature == folks().pinky()) {
-			placeInBed(folks().pinky(), theHouse().bed(2));
-		} else if (creature == folks().clyde()) {
-			placeInBed(folks().clyde(), theHouse().bed(3));
+		if (creature == folks.pacMan()) {
+			putIntoBed(folks.pacMan(), pacManBed());
+		} else if (creature == folks.blinky()) {
+			putIntoBed(folks.blinky(), theHouse().bed(0));
+		} else if (creature == folks.inky()) {
+			putIntoBed(folks.inky(), theHouse().bed(1));
+		} else if (creature == folks.pinky()) {
+			putIntoBed(folks.pinky(), theHouse().bed(2));
+		} else if (creature == folks.clyde()) {
+			putIntoBed(folks.clyde(), theHouse().bed(3));
 		}
 	}
 
-	private ArcadeWorldFolks folks() {
-		return folks;
-	}
-
-	private void placeInBed(MobileCreature creature, Bed bed) {
+	private void putIntoBed(MobileCreature creature, Bed bed) {
 		creature.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		creature.setMoveDir(bed.exitDir);
 		creature.setWishDir(bed.exitDir);
-	}
-
-	@Override
-	protected void takeOut(Lifeform creature, boolean out) {
-		super.takeOut(creature, out);
-		Creature mc = (Creature) creature;
-		if (out) {
-			mc.setVisible(false);
-		} else {
-			mc.setVisible(true);
-		}
 	}
 
 	/**

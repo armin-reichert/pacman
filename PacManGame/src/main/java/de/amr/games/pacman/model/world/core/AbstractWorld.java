@@ -69,6 +69,7 @@ public abstract class AbstractWorld implements World {
 		} else {
 			outsiders.remove(creature);
 		}
+		creature.setVisible(!out);
 	}
 
 	@Override

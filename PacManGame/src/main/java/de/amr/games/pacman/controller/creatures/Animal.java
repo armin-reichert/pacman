@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.entity.Entity;
-import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -60,8 +59,8 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 	}
 
 	@Override
-	public Transform tf() {
-		return entity.tf;
+	public Entity entity() {
+		return entity;
 	}
 
 	@Override
