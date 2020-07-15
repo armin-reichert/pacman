@@ -267,7 +267,7 @@ In the code, this is implemented by setting the steering function as shown below
 to replace the manual steering by some sort of automatic steering ("AI"):
 
 ```java
-pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
 ```
 
 ## Ghost steering ("AI")
@@ -288,11 +288,9 @@ The common behavior of all ghosts is defined by the following code:
 
 ```java
 ghosts().forEach(ghost -> {
-	ghost.behavior(LOCKED, ghost::bouncingOnBed);
-	ghost.behavior(ENTERING_HOUSE, ghost.isGoingToBed(ghost.bed()));
-	ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
-	ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
-	ghost.behavior(DEAD, ghost.isReturningToHouse());
+	you(ghost).when(LEAVING_HOUSE).leaveHouse().house(house).ok();
+	you(ghost).when(FRIGHTENED).moveRandomly().ok();
+	you(ghost).when(DEAD).headFor().tile(houseEntry).ok();
 });
 ```
 Note that for the simple steerings like "bouncing on seat" and "leaving ghost house" just a method in the Ghost class is used. For steerings which require additional "state" or have additional parameters, using an instance of a steering class (which happens behind the is... calls) is the more general approach.
@@ -304,11 +302,10 @@ The only difference in ghost behavior are the target tiles in the "CHASING" and 
 In *scattering* state, each ghost tries to reach his individual "scattering target". Because ghosts cannot reverse their move direction this results in a cyclic movement around the walls in the corresponding corner of the maze. These target tiles are unreachable tiles outside of the playing area:
 
 ```java
-int w = world.width(), h = world.height();
-blinky.behavior(SCATTERING, blinky.isHeadingFor(Tile.at(w - 3, 0)));
-inky.behavior(SCATTERING, inky.isHeadingFor(Tile.at(w - 1, h - 1)));
-pinky.behavior(SCATTERING, pinky.isHeadingFor(Tile.at(2, 0)));
-clyde.behavior(SCATTERING, clyde.isHeadingFor(Tile.at(0, h - 1)));
+you(blinky).when(SCATTERING).headFor().tile(worldWidth - 3, 0).ok();
+you(inky).when(SCATTERING).headFor().tile(worldWidth - 1, worldHeight - 1).ok();
+you(pinky).when(SCATTERING).headFor().tile(2, 0).ok();
+you(clyde).when(SCATTERING).headFor().tile(0, worldHeight - 1).ok();
 ```
 
 <img src="PacManDoc/scattering.png"/>
@@ -351,7 +348,7 @@ enum Sanity {
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-blinky.behavior(CHASING, blinky.headingFor(pacMan::tile));
+you(blinky).when(CHASING).headFor().tile(pacMan::location).ok();
 ```
 <img src="PacManDoc/blinky.png"/>
 
@@ -360,7 +357,7 @@ blinky.behavior(CHASING, blinky.headingFor(pacMan::tile));
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
 
 ```java
-pinky.behavior(CHASING, pinky.headingFor(() -> pacMan.tilesAhead(4)));
+you(pinky).when(CHASING).headFor().tile(() -> pacMan.tilesAhead(4)).ok();
 ```
 
 <img src="PacManDoc/pinky.png"/>
@@ -373,10 +370,10 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-inky.behavior(CHASING, inky.headingFor(() -> {
-	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
+you(inky).when(CHASING).headFor().tile(() -> {
+	Tile b = blinky.location(), p = pacMan.tilesAhead(2);
 	return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
-}));
+}).ok();
 ```
 
 <img src="PacManDoc/inky.png"/>
@@ -386,11 +383,12 @@ inky.behavior(CHASING, inky.headingFor(() -> {
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-clyde.behavior(CHASING,	clyde.headingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, worldHeight - 1)));
+you(clyde).when(CHASING).headFor().tile(() -> clyde.distance(pacMan) > 8 ? pacMan.location() : Tile.at(0, worldHeight - 1)).ok();
 ```
+
 <img src="PacManDoc/clyde.png"/>
 
-For details, see class [PacManWorldUsingMap](PacManGame/src/main/java/de/amr/games/pacman/model/world/PacManWorldUsingMap.java).
+For details, see class [ArcadeWorldFolks](PacManGame/src/main/java/de/amr/games/pacman/controller/world/arcade/ArcadeWorldFolks.java).
 
 ### Visualization of attack behavior
 
