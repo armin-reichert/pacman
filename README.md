@@ -1,4 +1,8 @@
-## A (hopefully comprehensible) Pac-Man implementation using finite-state machines        
+## A (hopefully comprehensible) Pac-Man implementation using finite-state machines
+
+## Racism Alert! Ghost Life Matters!
+
+Is Pac-Man "racist"? He is chasing ghosts of color, isn't he?
 
 ## How to run the game
 
