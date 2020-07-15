@@ -14,7 +14,6 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.controller.steering.common.FollowingKeys;
 import de.amr.games.pacman.controller.steering.common.MovementControl;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -234,17 +233,5 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 	public void forceMoving(Direction dir) {
 		setWishDir(dir);
 		movement.update();
-	}
-
-	/**
-	 * @param up    key for moving up
-	 * @param right key for moving right
-	 * @param down  key for moving down
-	 * @param left  key for moving left
-	 * 
-	 * @return steering using the given keys
-	 */
-	public Steering followingKeys(int up, int right, int down, int left) {
-		return new FollowingKeys(this, up, right, down, left);
 	}
 }

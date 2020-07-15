@@ -1,6 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.pacMan;
+import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -72,14 +72,14 @@ class PacManMovementTestUI extends TestUI {
 
 	private void changeSteering() {
 		if (steeringIndex == 0) {
-			pacMan.behavior(pacMan.followingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
+			you(pacMan).followTheKeys().keys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT).ok();
 			view.showMessage(2, "Cursor keys", Color.WHITE);
 		} else if (steeringIndex == 1) {
-			pacMan.behavior(
-					pacMan.followingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
+			you(pacMan).followTheKeys().keys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4)
+					.ok();
 			view.showMessage(2, "Numpad keys", Color.WHITE);
 		} else if (steeringIndex == 2) {
-			pacMan(pacMan).movesRandomly().ok();
+			you(pacMan).moveRandomly().ok();
 			view.showMessage(2, "Move randomly", Color.WHITE);
 		}
 	}

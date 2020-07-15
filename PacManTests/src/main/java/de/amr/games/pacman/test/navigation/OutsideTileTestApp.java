@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.ghost;
+import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
@@ -41,7 +41,7 @@ class OutsideTileTestUI extends TestUI {
 		include(blinky);
 		blinky.init();
 		int row = world.portals().findFirst().map(portal -> portal.right.row).orElse((short) 100);
-		ghost(blinky).when(CHASING).headsFor().tile(100, row).ok();
+		you(blinky).when(CHASING).headFor().tile(100, row).ok();
 		blinky.setState(CHASING);
 		view.turnRoutesOn();
 	}

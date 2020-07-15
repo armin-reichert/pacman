@@ -12,6 +12,7 @@ import static de.amr.games.pacman.controller.game.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.game.PacManGameState.LOADING_MUSIC;
 import static de.amr.games.pacman.controller.game.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
+import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 import static de.amr.games.pacman.model.game.Game.sec;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -588,7 +589,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		} else {
 			settings.pacManImmortable = false;
 			playView.clearMessage(1);
-			folks.pacMan().behavior(folks.pacMan().followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+			you(folks.pacMan()).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
 		}
 	}
 

@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.ghost;
+import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
@@ -38,7 +38,7 @@ class FollowMouseTestUI extends TestUI {
 		super.init();
 		include(blinky);
 		blinky.init();
-		ghost(blinky).when(CHASING).headsFor().tile(() -> mousePosition).ok();
+		you(blinky).when(CHASING).headFor().tile(() -> mousePosition).ok();
 		blinky.setState(CHASING);
 		view.turnRoutesOn();
 		view.turnGridOn();

@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.ghost;
+import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -43,7 +43,7 @@ class MovingRandomlyTestUI extends TestUI {
 		ghostsOnStage().forEach(ghost -> {
 			ghost.init();
 			ghost.placeAt(Tile.at(world.pacManBed().col(), world.pacManBed().row()));
-			ghost(ghost).when(FRIGHTENED).movesRandomly().ok();
+			you(ghost).when(FRIGHTENED).moveRandomly().ok();
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
 		});
