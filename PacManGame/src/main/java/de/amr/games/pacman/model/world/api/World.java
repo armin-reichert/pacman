@@ -19,8 +19,6 @@ public interface World extends Territory, FoodContainer {
 
 	void takeOut(Lifeform creature);
 
-	void putIntoBed(Lifeform creature);
-
 	void setChangingLevel(boolean b);
 
 	boolean isChangingLevel();

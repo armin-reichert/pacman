@@ -50,32 +50,32 @@ public class ArcadeWorldFolks {
 		House house = world.theHouse();
 		Tile houseEntry = Tile.at(house.bed(0).col(), house.bed(0).row());
 
+		blinky.setBed(house.bed(0));
+		inky.setBed(house.bed(1));
+		pinky.setBed(house.bed(2));
+		clyde.setBed(house.bed(3));
+
 		ghosts().forEach(ghost -> {
+			you(ghost).when(LOCKED).bounceOnBed().bed(ghost.bed()).ok();
+			you(ghost).when(ENTERING_HOUSE).enterHouseAndGoToBed().bed(ghost.bed()).ok();
 			you(ghost).when(LEAVING_HOUSE).leaveHouse().house(house).ok();
 			you(ghost).when(FRIGHTENED).moveRandomly().ok();
 			you(ghost).when(DEAD).headFor().tile(houseEntry).ok();
 		});
 
-		you(blinky).when(LOCKED).bounceOnBed().bed(house.bed(0)).ok();
 		you(blinky).when(ENTERING_HOUSE).enterHouseAndGoToBed().bed(house.bed(2)).ok();
 		you(blinky).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
 		you(blinky).when(CHASING).headFor().tile(pacMan::location).ok();
 
-		you(inky).when(LOCKED).bounceOnBed().bed(house.bed(1)).ok();
-		you(inky).when(ENTERING_HOUSE).enterHouseAndGoToBed().bed(house.bed(1)).ok();
 		you(inky).when(SCATTERING).headFor().tile(world.width() - 1, world.height() - 1).ok();
 		you(inky).when(CHASING).headFor().tile(() -> {
 			Tile b = blinky.location(), p = pacMan.tilesAhead(2);
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}).ok();
 
-		you(pinky).when(LOCKED).bounceOnBed().bed(house.bed(2)).ok();
-		you(pinky).when(ENTERING_HOUSE).enterHouseAndGoToBed().bed(house.bed(2)).ok();
 		you(pinky).when(SCATTERING).headFor().tile(2, 0).ok();
 		you(pinky).when(CHASING).headFor().tile(() -> pacMan.tilesAhead(4)).ok();
 
-		you(clyde).when(LOCKED).bounceOnBed().bed(house.bed(3)).ok();
-		you(clyde).when(ENTERING_HOUSE).enterHouseAndGoToBed().bed(house.bed(3)).ok();
 		you(clyde).when(SCATTERING).headFor().tile(0, world.height() - 1).ok();
 		you(clyde).when(CHASING).headFor()
 				.tile(() -> clyde.distance(pacMan) > 8 ? pacMan.location() : Tile.at(0, world.height() - 1)).ok();

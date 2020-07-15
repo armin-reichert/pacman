@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.Area;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Lifeform;
 import de.amr.games.pacman.model.world.core.AbstractWorld;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Block;
@@ -107,22 +106,7 @@ public class ArcadeWorld extends AbstractWorld {
 		return new House(room, Arrays.asList(door), beds);
 	}
 
-	@Override
-	public void putIntoBed(Lifeform creature) {
-		if (creature == folks.pacMan()) {
-			putIntoBed(folks.pacMan(), pacManBed());
-		} else if (creature == folks.blinky()) {
-			putIntoBed(folks.blinky(), theHouse().bed(0));
-		} else if (creature == folks.inky()) {
-			putIntoBed(folks.inky(), theHouse().bed(1));
-		} else if (creature == folks.pinky()) {
-			putIntoBed(folks.pinky(), theHouse().bed(2));
-		} else if (creature == folks.clyde()) {
-			putIntoBed(folks.clyde(), theHouse().bed(3));
-		}
-	}
-
-	private void putIntoBed(MobileCreature creature, Bed bed) {
+	public void putIntoBed(MobileCreature creature, Bed bed) {
 		creature.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		creature.setMoveDir(bed.exitDir);
 		creature.setWishDir(bed.exitDir);

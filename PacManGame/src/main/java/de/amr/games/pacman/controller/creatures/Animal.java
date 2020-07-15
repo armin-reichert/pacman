@@ -15,6 +15,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementControl;
 import de.amr.games.pacman.controller.steering.common.MovementType;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -36,7 +37,7 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 	public final Entity entity = new Entity();
 
 	protected String name;
-	protected World world;
+	protected ArcadeWorld world;
 	protected Map<STATE, Steering> steeringMap;
 	protected MovementControl movement;
 	protected Direction moveDir;
@@ -82,7 +83,7 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 		this.theme = theme;
 	}
 
-	public void setWorld(World world) {
+	public void setWorld(ArcadeWorld world) {
 		this.world = world;
 	}
 

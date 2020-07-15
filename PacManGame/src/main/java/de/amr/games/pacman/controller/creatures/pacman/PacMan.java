@@ -51,7 +51,7 @@ public class PacMan extends Animal<PacManState> {
 					.onEntry(() -> {
 						power = digestion = 0;
 						entity.visible = true;
-						world.putIntoBed(this);
+						world.putIntoBed(this, world.pacManBed());
 					})
 
 				.state(RUNNING)

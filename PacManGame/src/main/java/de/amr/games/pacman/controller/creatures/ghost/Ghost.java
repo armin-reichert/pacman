@@ -25,6 +25,7 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.api.IRenderer;
@@ -44,6 +45,7 @@ public class Ghost extends Animal<GhostState> {
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
 	private final ArcadeWorldFolks folks;
+	private Bed bed;
 	private final int color;
 	private Supplier<GhostState> fnSubsequentState;
 	private GhostSanityControl sanityControl;
@@ -71,7 +73,7 @@ public class Ghost extends Animal<GhostState> {
 						entity.visible = true;
 						flashing = false;
 						bounty = 0;
-						world.putIntoBed(this);
+						world.putIntoBed(this, bed);
 						enteredNewTile();
 						if (sanityControl != null) {
 							sanityControl.init();
@@ -174,6 +176,14 @@ public class Ghost extends Animal<GhostState> {
 
 	public ArcadeWorldFolks folks() {
 		return folks;
+	}
+
+	public Bed bed() {
+		return bed;
+	}
+
+	public void setBed(Bed bed) {
+		this.bed = bed;
 	}
 
 	@Override
