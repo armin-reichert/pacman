@@ -292,6 +292,8 @@ The common behavior of all ghosts is defined by the following code:
 
 ```java
 ghosts().forEach(ghost -> {
+	you(ghost).when(LOCKED).bounceOnBed().bed(ghost.bed()).ok();
+	you(ghost).when(ENTERING_HOUSE).enterHouseAndGoToBed().bed(ghost.bed()).ok();
 	you(ghost).when(LEAVING_HOUSE).leaveHouse().house(house).ok();
 	you(ghost).when(FRIGHTENED).moveRandomly().ok();
 	you(ghost).when(DEAD).headFor().tile(houseEntry).ok();
@@ -304,10 +306,10 @@ The only difference in ghost behavior are the target tiles in the "CHASING" and 
 In *scattering* state, each ghost tries to reach his individual "scattering target". Because ghosts cannot reverse their move direction this results in a cyclic movement around the walls in the corresponding corner of the maze. These target tiles are unreachable tiles outside of the playing area:
 
 ```java
-you(blinky).when(SCATTERING).headFor().tile(worldWidth - 3, 0).ok();
-you(inky).when(SCATTERING).headFor().tile(worldWidth - 1, worldHeight - 1).ok();
+you(blinky).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
+you(inky).when(SCATTERING).headFor().tile(world.width() - 1, world.height() - 1).ok();
 you(pinky).when(SCATTERING).headFor().tile(2, 0).ok();
-you(clyde).when(SCATTERING).headFor().tile(0, worldHeight - 1).ok();
+you(clyde).when(SCATTERING).headFor().tile(0, world.height() - 1).ok();
 ```
 
 <img src="PacManDoc/scattering.png"/>
