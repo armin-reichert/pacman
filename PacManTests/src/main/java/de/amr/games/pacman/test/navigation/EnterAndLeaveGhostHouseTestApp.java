@@ -1,6 +1,9 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.headsForTargetTile;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.ghost;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +11,6 @@ import java.util.Random;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.test.TestUI;
@@ -50,17 +52,17 @@ class EnterGhostHouseTestUI extends TestUI {
 		inky.init();
 		Bed bed = world.theHouse().bed(0);
 		inky.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-		inky.setState(GhostState.SCATTERING);
+		inky.setState(SCATTERING);
 		view.turnRoutesOn();
 		view.turnGridOn();
 	}
 
 	@Override
 	public void update() {
-		if (inky.getState() == GhostState.LEAVING_HOUSE && !inky.isInsideHouse()) {
-			inky.setState(GhostState.SCATTERING);
-			inky.behavior(GhostState.SCATTERING, headsForTargetTile(inky).tile(this::randomCape).ok());
-		} else if (inky.getState() == GhostState.SCATTERING) {
+		if (inky.getState() == LEAVING_HOUSE && !inky.isInsideHouse()) {
+			inky.setState(SCATTERING);
+			ghost(inky).when(SCATTERING).headsFor().tile(this::randomCape).ok();
+		} else if (inky.getState() == SCATTERING) {
 			// one round around the block, then killed at cape
 			if (capes.contains(inky.location())) {
 				enteredCape = true;
@@ -72,12 +74,11 @@ class EnterGhostHouseTestUI extends TestUI {
 				}
 			}
 			if (leftCape && visits == 2) {
-				inky.setState(GhostState.DEAD);
+				inky.setState(DEAD);
 				visits = 0;
 				enteredCape = leftCape = false;
 			}
 		}
 		super.update();
 	}
-
 }

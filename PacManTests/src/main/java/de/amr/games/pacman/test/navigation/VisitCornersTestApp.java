@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.headsForTargetTile;
+import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.ghost;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +46,7 @@ class FollowTargetTilesTestUI extends TestUI {
 		include(blinky);
 		blinky.init();
 		blinky.placeAt(targets.get(0));
-		blinky.behavior(CHASING, headsForTargetTile(blinky).tile(() -> targets.get(current)).ok());
+		ghost(blinky).when(CHASING).headsFor().tile(() -> targets.get(current)).ok();
 		blinky.setState(CHASING);
 		blinky.steering().force();
 		view.turnRoutesOn();

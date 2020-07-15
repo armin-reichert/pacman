@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.steering.ghost.BouncingOnBed;
@@ -15,39 +16,57 @@ import de.amr.games.pacman.model.world.core.Tile;
 
 public class SteeringBuilder {
 
+	private Ghost ghost;
+	private GhostState state;
+
+	public static SteeringBuilder ghost(Ghost ghost) {
+		SteeringBuilder builder = new SteeringBuilder();
+		builder.ghost = ghost;
+		return builder;
+	}
+
+	public SteeringBuilder when(GhostState state) {
+		this.state = state;
+		return this;
+	}
+
+	public HeadsForTargetTileBuilder headsFor() {
+		HeadsForTargetTileBuilder builder = new HeadsForTargetTileBuilder();
+		return builder;
+	}
+
 	public static class BouncesOnBedBuilder {
-	
+
 		private Ghost ghost;
 		private Bed bed;
-	
+
 		public BouncesOnBedBuilder bed(Bed bed) {
 			this.bed = bed;
 			return this;
 		}
-	
+
 		public Steering ok() {
 			return new BouncingOnBed(ghost, bed);
 		}
 	}
 
 	public static class EntersHouseAndGoesToBedBuilder {
-	
+
 		private Ghost ghost;
 		private Bed bed;
-	
+
 		public EntersHouseAndGoesToBedBuilder bed(Bed bed) {
 			this.bed = bed;
 			return this;
 		}
-	
+
 		public Steering ok() {
 			return new EnteringHouseAndGoingToBed(ghost, bed);
 		}
 	}
 
-	public static class HeadsForTargetTileBuilder {
+	public class HeadsForTargetTileBuilder {
 
-		private MobileCreature creature;
 		private Supplier<Tile> fnTargetTile;
 
 		public HeadsForTargetTileBuilder tile(Supplier<Tile> fnTargetTile) {
@@ -64,20 +83,22 @@ public class SteeringBuilder {
 		}
 
 		public Steering ok() {
-			return new HeadingForTargetTile(creature, fnTargetTile);
+			Steering steering = new HeadingForTargetTile(ghost, fnTargetTile);
+			ghost.behavior(state, steering);
+			return steering;
 		}
 	}
 
 	public static class LeavesHouseBuilder {
-	
+
 		private Ghost ghost;
 		private House house;
-	
+
 		public LeavesHouseBuilder house(House house) {
 			this.house = house;
 			return this;
 		}
-	
+
 		public Steering ok() {
 			return new LeavingHouse(ghost, house);
 		}
@@ -100,12 +121,6 @@ public class SteeringBuilder {
 	public static EntersHouseAndGoesToBedBuilder entersHouseAndGoesToBed(Ghost ghost) {
 		EntersHouseAndGoesToBedBuilder builder = new EntersHouseAndGoesToBedBuilder();
 		builder.ghost = ghost;
-		return builder;
-	}
-
-	public static HeadsForTargetTileBuilder headsForTargetTile(Ghost ghost) {
-		HeadsForTargetTileBuilder builder = new HeadsForTargetTileBuilder();
-		builder.creature = ghost;
 		return builder;
 	}
 
