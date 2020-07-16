@@ -104,7 +104,7 @@ After having implemented this correctly, the next challenge is the logic and the
 Maybe you will start with a single ghost and implement its behavior: waiting (bouncing) in the ghost house, leaving the house to chase Pac-Man or scattering out to the ghost's maze corner. What should happen when Pac-Man and a ghost are colliding? 
 Which part of your program should coordinate this? Should the code be distributed over the actors or should you have 
 some kind of mediator, some central game control? Where should the game rules (points, lives, levels etc.) be implemented? 
-Should this be placed in some kind of [model](PacManGame/src/main/java/de/amr/games/pacman/model/Game.java) (in the sense of the Model-View-Controller pattern)?
+Should this be placed in some kind of [model](PacManGame/src/main/java/de/amr/games/pacman/model/game/Game.java) (in the sense of the Model-View-Controller pattern)?
 
 ## Finite-state machines
 
@@ -171,7 +171,7 @@ beginStateMachine()
 
 The states in this case are implemented as separate (inner) classes instead of inlined in the state machine builder expression. The reason is that each state has its own visualization which is implemented in its own draw method. Otherwise, the draw method of the intro view class would have to dispatch again depending on the current state.
 
-A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/GameController.java)). 
+A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/game/GameController.java)). 
 
 It processes game events which are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
 game states like changing the level or the dying animations of Pac-Man and the ghosts are controlled by this
@@ -180,7 +180,7 @@ has the advantage that actions which are state-specific can be realized as metho
 
 The **ghost attack waves** (scattering, chasing) with their level-specific timing are realized by the following state machine:
 
-See [GhostCommand](PacManGame/src/main/java/de/amr/games/pacman/controller/GhostCommand.java)
+See [GhostCommand](PacManGame/src/main/java/de/amr/games/pacman/controller/game/GhostCommand.java)
 
 ```java
 beginStateMachine()
@@ -199,10 +199,10 @@ beginStateMachine()
 
 The actors are also controlled by finite-state machines:
 
-- **Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/PacMan.java))
-- **Ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/Ghost.java)) 
+- **Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/pacman/PacMan.java))
+- **Ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/ghost/Ghost.java)) 
 
-Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/BonusControl.java)) which appears at certain scores is controlled by a finite-state machine:
+Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/world/arcade/BonusControl.java)) which appears at certain scores is controlled by a finite-state machine:
 
 ```java
 beginStateMachine()
@@ -234,7 +234,7 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-When an actor leaves the board inside a tunnel it leaves its normal movement mode and enters *teleporting* mode. The movement of the actors is controlled by the following state machine (PacManGame/src/main/java/de/amr/games/pacman/controller/actor/steering/MovementControl):
+When an actor leaves the board inside a tunnel it leaves its normal movement mode and enters *teleporting* mode. The movement of the actors is controlled by the following state machine (PacManGame/src/main/java/de/amr/games/pacman/controller/steering/common/MovementControl):
 
 ```java
 beginStateMachine()
