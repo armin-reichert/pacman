@@ -1,4 +1,4 @@
-## A (hopefully comprehensible) Pac-Man implementation using finite-state machines
+## A Pac-Man implementation using finite-state machines all over the place
 
 ## Ghost Lives Matter!
 
