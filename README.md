@@ -1,9 +1,15 @@
-## A (hopefully comprehensible) Pac-Man implementation using finite-state machines
+## A Pac-Man implementation using finite-state machines all over the place
 
-## Racism Alert! Ghost Lives Matter!
+## Ghost Lives Matter! Yellow man bad! Pac-Man is a racist!
 
-Isn't Pac-Man the prototype of a "racist"? He is chasing ghosts of color, isn't he?
+Pac-Man, a *racist, homophobic game*? 
 
+First of all, without any doubt, this Pac-Man guy is, as his name clearly proves, a **man**, born around 1980 even an **old man**, thank god not an **old white man** or even worse an **old orange man**, but he is and has always been (hmm, wasn't the Nintendo guy in fact an orange man?) an **old yellow man**.
+
+And what has this **old yellow man** been doing all his life? Chasing ghosts **of color**! And these ghosts, as their dresses (burkas?) prove, are most probably **females** or at least **transgenders** or any of the other 300 gender bullshit possibilities! 
+
+WTF! Why hasn't this **racist, homophobic game** long been forbidden? GLM, LGBTQ, please take over!
+ 
 ## How to run the game
 
 Download the executable "PacManGame-1.0.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. 
@@ -278,7 +284,7 @@ you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
 
 What makes the game so entertaining is the individual behavior of each ghost when chasing Pac-Man. The red ghost (Blinky) attacks Pac-Man directly, the pink ghost (Pinky) tries to ambush Pac-Man, the orange ghost (Clyde) either attacks directly or rejects, depending on its distance to Pac-Man, and the cyan ghost (Inky) uses Blinky's current position to get in Pac-Man's way. 
 
-To realize these different ghost behaviors each ghost has a map of functions mapping each state (*scattering*, *chasing*, *frightened*, ...) to the corresponding behavior implementation. In terms of OO design patterns, one could call this a *strategy pattern*. 
+To realize these different ghost behaviors each ghost has a map of functions mapping her state (*scattering*, *chasing*, *frightened*, ...) to the corresponding behavior implementation. In terms of OO design patterns, one could call this a *strategy pattern*. 
 
 <img src="PacManDoc/pacman.png"/>
 
@@ -292,8 +298,8 @@ The common behavior of all ghosts is defined by the following code:
 
 ```java
 ghosts().forEach(ghost -> {
-	you(ghost).when(LOCKED).bounceOnBed().bed(ghost.bed()).ok();
-	you(ghost).when(ENTERING_HOUSE).enterHouseAndGoToBed().bed(ghost.bed()).ok();
+	you(ghost).when(LOCKED).bounceOnBed().ok();
+	you(ghost).when(ENTERING_HOUSE).enterHouseAndGoToBed().ok();
 	you(ghost).when(LEAVING_HOUSE).leaveHouse().house(house).ok();
 	you(ghost).when(FRIGHTENED).moveRandomly().ok();
 	you(ghost).when(DEAD).headFor().tile(houseEntry).ok();
