@@ -4,8 +4,8 @@
 
 Pac-Man a *racist*? 
 
-First of all, he no doubt is a **man** (omg), even an **old** one, for heavens' sake not an **old white** or even an **old orange man**, but he's an **old yellow man**, and what he's doing all his life is chasing ghosts **of color**! And these ghosts, as their dresses (burkas?) suggest, are most probably **females** or **transgenders**! WTF! Why hasn't this racist and homophobic game long been forbidden? GLM, LGBT, please take over!
-
+First of all, he no doubt is a **man** (omg), born in 1980 he even is an **old man**, thank god not an **old white man** or even worse an **old orange man**, but in fact, he is and has always been (hmm, wasn't the Nintendo guy an orange man?) an **old yellow man**, and what was he doing all his life? Chasing ghosts **of color**! And these ghosts, as their dresses (are these burkas?) suggest, are most probably **females** or **transgenders** or any other of the gender bullshit variants! WTF! Why hasn't this racist, homophobic game long been forbidden? GLM, LGBTQ, please take over!
+ 
 ## How to run the game
 
 Download the executable "PacManGame-1.0.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. 
