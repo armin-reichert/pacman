@@ -11,17 +11,17 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 
 /**
- * Steering controlled by keyboard keys for UP, RIGHT, DOWN, LEFT direction.
+ * Steering controlling a creature using the keyboard keys for UP, RIGHT, DOWN, LEFT.
  * 
  * @author Armin Reichert
  */
 public class FollowingKeys implements Steering {
 
-	private MobileCreature actor;
+	private MobileCreature creature;
 	private EnumMap<Direction, Integer> keys = new EnumMap<>(Direction.class);
 
-	public FollowingKeys(MobileCreature actor, int upKey, int rightKey, int downKey, int leftKey) {
-		this.actor = Objects.requireNonNull(actor);
+	public FollowingKeys(MobileCreature creature, int upKey, int rightKey, int downKey, int leftKey) {
+		this.creature = Objects.requireNonNull(creature);
 		keys.put(Direction.UP, upKey);
 		keys.put(Direction.RIGHT, rightKey);
 		keys.put(Direction.DOWN, downKey);
@@ -30,7 +30,7 @@ public class FollowingKeys implements Steering {
 
 	@Override
 	public void steer() {
-		dirs().filter(dir -> Keyboard.keyDown(keys.get(dir))).findAny().ifPresent(actor::setWishDir);
+		dirs().filter(dir -> Keyboard.keyDown(keys.get(dir))).findAny().ifPresent(creature::setWishDir);
 	}
 
 	@Override

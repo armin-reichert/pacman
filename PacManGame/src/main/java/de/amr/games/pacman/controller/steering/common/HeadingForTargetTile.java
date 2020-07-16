@@ -30,33 +30,7 @@ import de.amr.games.pacman.model.world.core.Tile;
  */
 public class HeadingForTargetTile implements PathProvidingSteering {
 
-	/**
-	 * Computes the next move direction as described
-	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
-	 * <p>
-	 * When a ghost is on a portal tile and the steering has just changed, it may happen that no
-	 * direction can be computed. In that case we keep the move direction.
-	 * <p>
-	 * Note: We use separate parameters for the actor's move direction, current tile and target tile
-	 * instead of the members of the actor itself because the {@link #pathTo(Tile)} method uses this
-	 * method without actually placing the actor at each tile of the path.
-	 * 
-	 * @param mover   actor moving through the maze
-	 * @param moveDir current move direction
-	 * @param tile    current tile
-	 * @param target  target tile
-	 */
-	private static Direction bestDir(MobileCreature mover, Direction moveDir, Tile tile, Tile target) {
-		Function<Direction, Double> fnNeighborDistToTarget = dir -> mover.world().neighbor(tile, dir).distance(target);
-		/*@formatter:off*/
-		return Direction.dirs()
-			.filter(dir -> dir != moveDir.opposite())
-			.filter(dir -> mover.canMoveBetween(tile, mover.world().neighbor(tile, dir)))
-			.sorted(comparing(fnNeighborDistToTarget).thenComparingInt(asList(UP, LEFT, DOWN, RIGHT)::indexOf))
-			.findFirst()
-			.orElse(mover.moveDir());
-		/*@formatter:on*/
-	}
+	private static final List<Direction> dirSearchOrder = asList(UP, LEFT, DOWN, RIGHT);
 
 	private final MobileCreature creature;
 	private final Supplier<Tile> fnTargetTile;
@@ -83,6 +57,35 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 				path.clear();
 			}
 		}
+	}
+
+	/**
+	 * Computes the next move direction as described
+	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
+	 * <p>
+	 * When a ghost is on a portal tile and the steering has just changed, it may happen that no
+	 * direction can be computed. In that case we keep the move direction.
+	 * <p>
+	 * Note: We use separate parameters for the actor's move direction, current tile and target tile
+	 * instead of the members of the actor itself because the {@link #pathTo(Tile)} method uses this
+	 * method without actually placing the actor at each tile of the path.
+	 * 
+	 * @param creature actor moving through the maze
+	 * @param moveDir  current move direction
+	 * @param tile     current tile
+	 * @param target   target tile
+	 */
+	private Direction bestDir(MobileCreature creature, Direction moveDir, Tile tile, Tile target) {
+		World world = creature.world();
+		Function<Direction, Double> fnNeighborDistToTarget = dir -> world.neighbor(tile, dir).distance(target);
+		/*@formatter:off*/
+		return Direction.dirs()
+			.filter(dir -> dir != moveDir.opposite())
+			.filter(dir -> creature.canMoveBetween(tile, world.neighbor(tile, dir)))
+			.sorted(comparing(fnNeighborDistToTarget).thenComparingInt(dirSearchOrder::indexOf))
+			.findFirst()
+			.orElse(creature.moveDir());
+		/*@formatter:on*/
 	}
 
 	/**

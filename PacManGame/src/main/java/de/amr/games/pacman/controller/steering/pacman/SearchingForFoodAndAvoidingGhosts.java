@@ -75,26 +75,6 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 			return;
 		}
 
-		// is dangerous ghost nearby?
-//		enemy = dangerousGhostInRange(10).orElse(null);
-//		if (enemy != null) {
-//			distance = -1;
-//			Direction.dirsShuffled().forEach(dir -> {
-//				Tile neighbor = me.world().neighbor(me.tile(), dir);
-//				if (me.world().isAccessible(neighbor)) {
-//					int d = distance(neighbor, enemy.tile());
-//					if (d > distance) {
-//						d = distance;
-//						newDir = dir;
-//					}
-//				}
-//			});
-//			if (newDir != me.moveDir().opposite()) {
-//				me.setWishDir(newDir);
-//				return;
-//			}
-//		}
-
 		// determine direction for finding food
 		target = null;
 		distance = Integer.MAX_VALUE;

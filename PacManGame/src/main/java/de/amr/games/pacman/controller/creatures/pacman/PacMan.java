@@ -128,7 +128,7 @@ public class PacMan extends Animal<PacManState> {
 	public void fallAsleep() {
 		Vector2f position = entity.tf.getPosition();
 		setState(PacManState.SLEEPING);
-		entity.tf.setPosition(position);
+		entity.tf.setPosition(position); // reset position
 	}
 
 	/**
@@ -173,8 +173,7 @@ public class PacMan extends Animal<PacManState> {
 			return Optional.of(new BonusFoundEvent());
 		}
 		if (world.containsFood(tile)) {
-			boolean energizer = world.containsEnergizer(tile);
-			digestion = energizer ? DIGEST_ENERGIZER_TICKS : DIGEST_PELLET_TICKS;
+			digestion = world.containsEnergizer(tile) ? DIGEST_ENERGIZER_TICKS : DIGEST_PELLET_TICKS;
 			return Optional.of(new FoodFoundEvent(tile));
 		}
 		return Optional.empty();
