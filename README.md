@@ -1,8 +1,12 @@
 ## A (hopefully comprehensible) Pac-Man implementation using finite-state machines
 
-## Racism Alert! Ghost Lives Matter!
+## Ghost Lives Matter!
 
-Isn't Pac-Man the prototype of a "racist"? He is chasing ghosts of color, isn't he?
+Pac-Man a *racist*? 
+
+First of all, he no doubt is a **man** (omg), even an **old** one, for heavens' sake not an **old white** or even an **old orange man**, but he's an **old yellow man**, and what he's doing all his life is chasing ghosts **of color**! And these ghosts, as their dresses suggest, are most probably **females**! 
+
+WTF! Why hasn't this game long been forbidden? GLM, please take over!
 
 ## How to run the game
 
@@ -278,7 +282,7 @@ you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
 
 What makes the game so entertaining is the individual behavior of each ghost when chasing Pac-Man. The red ghost (Blinky) attacks Pac-Man directly, the pink ghost (Pinky) tries to ambush Pac-Man, the orange ghost (Clyde) either attacks directly or rejects, depending on its distance to Pac-Man, and the cyan ghost (Inky) uses Blinky's current position to get in Pac-Man's way. 
 
-To realize these different ghost behaviors each ghost has a map of functions mapping each state (*scattering*, *chasing*, *frightened*, ...) to the corresponding behavior implementation. In terms of OO design patterns, one could call this a *strategy pattern*. 
+To realize these different ghost behaviors each ghost has a map of functions mapping her state (*scattering*, *chasing*, *frightened*, ...) to the corresponding behavior implementation. In terms of OO design patterns, one could call this a *strategy pattern*. 
 
 <img src="PacManDoc/pacman.png"/>
 
