@@ -4,9 +4,7 @@
 
 Pac-Man a *racist*? 
 
-First of all, he no doubt is a **man** (omg), even an **old** one, for heavens' sake not an **old white** or even an **old orange man**, but he's an **old yellow man**, and what he's doing all his life is chasing ghosts **of color**! And these ghosts, as their dresses suggest, are most probably **females**! 
-
-WTF! Why hasn't this game long been forbidden? GLM, please take over!
+First of all, he no doubt is a **man** (omg), even an **old** one, for heavens' sake not an **old white** or even an **old orange man**, but he's an **old yellow man**, and what he's doing all his life is chasing ghosts **of color**! And these ghosts, as their dresses (burkas?) suggest, are most probably **females** or **transgenders**! WTF! Why hasn't this racist and homophobic game long been forbidden? GLM, LGBT, please take over!
 
 ## How to run the game
 
