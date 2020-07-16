@@ -1,10 +1,14 @@
 ## A Pac-Man implementation using finite-state machines all over the place
 
-## Ghost Lives Matter! Yellow man bad!
+## Ghost Lives Matter! Yellow man bad! Pac-Man is a racist!
 
-Pac-Man a *racist*? 
+Pac-Man, a *racist, homophobic game*? 
 
-First of all, he no doubt is a **man** (omg), born before 1980, he even is an **old man**, thank god not an **old white man** or even worse an **old orange man**, but in fact, he is and has always been (hmm, wasn't the Nintendo guy an orange man?) an **old yellow man**, and what was he doing all his life? Chasing ghosts **of color**! And these ghosts, as their dresses (are these burkas?) suggest, are most probably **females** or **transgenders** or any other of the gender bullshit variants! WTF! Why hasn't this racist, homophobic game long been forbidden? GLM, LGBTQ, please take over!
+First of all, without any doubt, he is, as his name clearly proves, a **man**, born around 1980 even an **old man**, thank god not an **old white man** or even worse an **old orange man**, but he is and has always been (hmm, wasn't the Nintendo guy in fact an orange man?) an **old yellow man**.
+
+And what was this **old yellow man** doing all of his life? Chasing ghosts **of color**! And these ghosts, as their dresses (burkas?) prove, are most probably **females** or at least **transgenders** or any of the other 300 gender bullshit possibilities! 
+
+WTF! Why hasn't this **racist, homophobic game** long been forbidden? GLM, LGBTQ, please take over!
  
 ## How to run the game
 
