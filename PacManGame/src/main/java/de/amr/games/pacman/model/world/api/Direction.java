@@ -3,6 +3,7 @@ package de.amr.games.pacman.model.world.api;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
@@ -27,6 +28,10 @@ public enum Direction {
 		List<Direction> dirs = Arrays.asList(Direction.values());
 		Collections.shuffle(dirs);
 		return dirs.stream();
+	}
+
+	public static Direction random() {
+		return values()[new Random().nextInt(4)];
 	}
 
 	private final Vector2f vector;
