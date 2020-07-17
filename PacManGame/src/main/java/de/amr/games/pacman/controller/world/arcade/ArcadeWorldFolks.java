@@ -35,22 +35,16 @@ public class ArcadeWorldFolks {
 
 	public ArcadeWorldFolks(ArcadeWorld world) {
 		this.world = world;
-
-		pacMan = new PacMan(world);
-		blinky = new Ghost(world, "Blinky", Ghost.RED_GHOST);
-		inky = new Ghost(world, "Inky", Ghost.CYAN_GHOST);
-		pinky = new Ghost(world, "Pinky", Ghost.PINK_GHOST);
-		clyde = new Ghost(world, "Clyde", Ghost.ORANGE_GHOST);
-
-		you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
-
 		House house = world.theHouse();
 		Tile houseEntry = Tile.at(house.bed(0).col(), house.bed(0).row());
 
-		blinky.setBed(house.bed(0));
-		inky.setBed(house.bed(1));
-		pinky.setBed(house.bed(2));
-		clyde.setBed(house.bed(3));
+		pacMan = new PacMan(world);
+		you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
+
+		blinky = new Ghost(world, pacMan, "Blinky", Ghost.RED_GHOST, house.bed(0));
+		inky = new Ghost(world, pacMan, "Inky", Ghost.CYAN_GHOST, house.bed(1));
+		pinky = new Ghost(world, pacMan, "Pinky", Ghost.PINK_GHOST, house.bed(2));
+		clyde = new Ghost(world, pacMan, "Clyde", Ghost.ORANGE_GHOST, house.bed(3));
 
 		ghosts().forEach(ghost -> {
 			you(ghost).when(LOCKED).bounceOnBed().ok();

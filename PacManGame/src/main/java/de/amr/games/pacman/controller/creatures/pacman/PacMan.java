@@ -21,6 +21,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.api.Bed;
 import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -54,8 +55,11 @@ public class PacMan extends Creature<PacManState> {
 				.state(SLEEPING)
 					.onEntry(() -> {
 						power = digestion = 0;
-						entity.visible = true;
-						world.putIntoBed(this, world.pacManBed());
+						setVisible( true);
+						Bed bed = world.pacManBed();
+						placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+						setMoveDir(bed.exitDir);
+						setWishDir(bed.exitDir);
 					})
 
 				.state(RUNNING)

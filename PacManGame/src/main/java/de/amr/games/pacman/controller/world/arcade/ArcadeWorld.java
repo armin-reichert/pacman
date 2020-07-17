@@ -11,7 +11,6 @@ import de.amr.games.pacman.model.world.api.Block;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Door;
 import de.amr.games.pacman.model.world.api.House;
-import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.OneWayTile;
 import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -105,12 +104,6 @@ public class ArcadeWorld extends MapBasedWorld {
 		//@formatter:on
 		);
 		return new House(room, Arrays.asList(door), beds);
-	}
-
-	public void putIntoBed(MobileLifeform creature, Bed bed) {
-		creature.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-		creature.setMoveDir(bed.exitDir);
-		creature.setWishDir(bed.exitDir);
 	}
 
 	/**

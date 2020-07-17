@@ -23,7 +23,6 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.game.GameSpeed;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Bed;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -46,20 +45,22 @@ public class Ghost extends Creature<GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
-	private final ArcadeWorld world;
-	private Bed bed;
+	private final World world;
+	private final Bed bed;
 	private final int color;
+
 	private Supplier<GhostState> fnSubsequentState;
-	private GhostSanityControl sanityControl;
+	private GhostSanityControl sanity;
 	private Steering previousSteering;
 	private int bounty;
 	private boolean flashing;
 	private IntSupplier fnNumFlashes = () -> 0;
 	private IRenderer renderer;
 
-	public Ghost(ArcadeWorld world, String name, int color) {
+	public Ghost(World world, PacMan pacMan, String name, int color, Bed bed) {
 		super(GhostState.class, world, name);
 		this.world = world;
+		this.bed = bed;
 		this.color = color;
 		/*@formatter:off*/
 		beginStateMachine()
@@ -72,14 +73,12 @@ public class Ghost extends Creature<GhostState> {
 				.state(LOCKED)
 					.onEntry(() -> {
 						fnSubsequentState = () -> LOCKED;
-						entity.visible = true;
+						setVisible(true);
 						flashing = false;
 						bounty = 0;
-						world.putIntoBed(this, bed);
-						enteredNewTile();
-						if (sanityControl != null) {
-							sanityControl.init();
-						}
+						placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+						setMoveDir(bed.exitDir);
+						setWishDir(bed.exitDir);
 					})
 					.onTick(this::move)
 					
@@ -93,28 +92,31 @@ public class Ghost extends Creature<GhostState> {
 				
 				.state(SCATTERING)
 					.onTick(() -> {
-						updateSanity();
-						checkPacManCollision();
+						maybeMeetPacMan(pacMan);
 						move();
 					})
 			
 				.state(CHASING)
 					.onTick(() -> {
-						updateSanity();
-						checkPacManCollision();
+						maybeMeetPacMan(pacMan);
 						move();
 					})
 				
 				.state(FRIGHTENED)
-					.onTick((state, t, remaining) -> {
-						checkPacManCollision();
+					.onTick((state, consumed, remaining) -> {
+						maybeMeetPacMan(pacMan);
 						move();
 						// one flashing animation takes 0.5 sec
-						flashing = remaining < fnNumFlashes.getAsInt() *0.5f;
+						flashing = remaining < fnNumFlashes.getAsInt() * 0.5f;
 					})
 				
 				.state(DEAD)
-					.onTick(this::move)
+					.onTick((s, consumed, remaining) -> {
+						if (remaining == 0) {
+							bounty = 0;
+							move();
+						}
+					})
 				
 			.transitions()
 			
@@ -177,16 +179,20 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	@Override
+	public void init() {
+		if (sanity != null) {
+			sanity.init();
+		}
+		super.init();
+	}
+
+	@Override
 	public World world() {
 		return world;
 	}
 
 	public Bed bed() {
 		return bed;
-	}
-
-	public void setBed(Bed bed) {
-		this.bed = bed;
 	}
 
 	@Override
@@ -200,29 +206,27 @@ public class Ghost extends Creature<GhostState> {
 		return renderer;
 	}
 
+	/**
+	 * Prepares the ghost for taking part in the game.
+	 * 
+	 * @param game game where this ghost will take part
+	 */
 	public void getReadyToRumble(Game game) {
-
+		if ("Blinky".equals(name)) {
+			sanity = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
+			PacManApp.fsm_register(sanity);
+		}
+		fnNumFlashes = () -> sec(game.level.numFlashes * 0.5f);
 		setSpeed(() -> GameSpeed.ghostSpeed(this, game));
-
-		// frightened time is defined by the game level
 		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
-		this.fnNumFlashes = () -> sec(game.level.numFlashes * 0.5f);
-
-		// when dead, the ghost first appears as a number (its value) for one second, then it
-		// appears as eyes returning to the ghost house
 		state(DEAD).setTimer(sec(1));
 		state(DEAD).entryAction = () -> bounty = game.killedGhostPoints();
-		state(DEAD).tickAction = (s, consumed, remaining) -> {
-			if (remaining == 0) {
-				bounty = 0;
-				move();
-			}
-		};
+	}
 
-		// Blinky can get insane ("cruise elroy")
-		if ("Blinky".equals(name)) {
-			sanityControl = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
-			PacManApp.fsm_register(sanityControl);
+	private void maybeMeetPacMan(PacMan pacMan) {
+		if (tileLocation().equals(pacMan.tileLocation()) && !isTeleporting() && !pacMan.isTeleporting()
+				&& !pacMan.is(PacManState.DEAD)) {
+			publish(new PacManGhostCollisionEvent(this));
 		}
 	}
 
@@ -235,13 +239,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public GhostSanity getSanity() {
-		return sanityControl != null ? sanityControl.getState() : GhostSanity.IMMUNE;
-	}
-
-	private void updateSanity() {
-		if (sanityControl != null) {
-			sanityControl.update();
-		}
+		return sanity != null ? sanity.getState() : GhostSanity.IMMUNE;
 	}
 
 	public int getColor() {
@@ -289,17 +287,12 @@ public class Ghost extends Creature<GhostState> {
 		}
 		currentSteering.steer();
 		movement.update();
+		if (sanity != null) {
+			sanity.update();
+		}
 	}
 
 	public boolean isInsideHouse() {
 		return world.insideHouseOrDoor(tileLocation());
-	}
-
-	private void checkPacManCollision() {
-		PacMan pacMan = world.getFolks().pacMan();
-		if (tileLocation().equals(pacMan.tileLocation()) && !isTeleporting() && !pacMan.isTeleporting()
-				&& !pacMan.is(PacManState.DEAD)) {
-			publish(new PacManGhostCollisionEvent(this));
-		}
 	}
 }
