@@ -21,6 +21,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
+import de.amr.games.pacman.controller.game.GameSpeed;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.game.Game;
@@ -200,6 +201,9 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public void getReadyToRumble(Game game) {
+
+		setSpeed(() -> GameSpeed.ghostSpeed(this, game));
+
 		// frightened time is defined by the game level
 		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
 		this.fnNumFlashes = () -> sec(game.level.numFlashes * 0.5f);

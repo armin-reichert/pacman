@@ -466,7 +466,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		doorMan = new DoorMan(world.theHouse(), game, folks);
 		bonusControl = new BonusControl(game, world);
 		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
-		folks.ghosts().forEach(ghost -> ghost.setSpeed(() -> GameSpeed.ghostSpeed(ghost, game)));
 		folks.pacMan().setSpeed(() -> GameSpeed.pacManSpeed(folks.pacMan(), game));
 		folks.all().forEach(world::include);
 		folks.all().forEach(Creature::init);
