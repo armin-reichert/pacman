@@ -62,13 +62,13 @@ public class GridRenderer implements IRenderer {
 	public void drawBeds(Graphics2D g) {
 		Color[] colors = { Color.RED, Color.CYAN, Color.PINK, Color.ORANGE };
 		for (int i = 0; i < 4; ++i) {
-			drawBed(g, world.theHouse().bed(i), colors[i]);
+			drawBed(g, world.theHouse().bed(i), i + "", colors[i]);
 		}
-		drawBed(g, world.pacManBed(), Color.YELLOW);
+		drawBed(g, world.pacManBed(), "P", Color.YELLOW);
 	}
 
-	private void drawBed(Graphics2D g, Bed bed, Color color) {
-		int x = bed.center.roundedX() - Tile.SIZE, y = bed.center.roundedY() - Tile.SIZE / 2;
+	private void drawBed(Graphics2D g, Bed bed, String text, Color color) {
+		int x = bed.center().roundedX() - Tile.SIZE, y = bed.center().roundedY() - Tile.SIZE / 2;
 		g.setColor(color);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.drawRoundRect(x, y, 2 * Tile.SIZE - 1, Tile.SIZE, 2, 2);
@@ -77,7 +77,7 @@ public class GridRenderer implements IRenderer {
 			pen.turnSmoothRenderingOn();
 			pen.color(Color.WHITE);
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 7));
-			pen.drawCentered("" + bed.number, bed.center.roundedX(), bed.center.roundedY() + Tile.SIZE + 1);
+			pen.drawCentered(text, bed.center().roundedX(), bed.center().roundedY() + Tile.SIZE + 1);
 		}
 	}
 }

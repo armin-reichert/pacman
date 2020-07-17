@@ -20,7 +20,7 @@ public class BouncingOnBed implements Steering {
 
 	@Override
 	public void steer() {
-		float dy = ghost.entity.tf.y + Tile.SIZE / 2 - bed.center.y;
+		float dy = ghost.entity.tf.y + Tile.SIZE / 2 - bed.center().y;
 		if (dy < -4) {
 			ghost.setWishDir(DOWN);
 		} else if (dy > 3) {

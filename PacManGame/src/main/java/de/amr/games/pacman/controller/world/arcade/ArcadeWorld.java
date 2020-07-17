@@ -69,7 +69,7 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	public ArcadeWorld() {
 		map = new WorldMap(DATA);
-		pacManBed = new Bed(4, 13, 26, Direction.RIGHT);
+		pacManBed = new Bed(13, 26, Direction.RIGHT);
 		houses.add(ghostHouse(11, 16, 6, 4));
 		bonusTile = Tile.at(13, 20);
 		portals.add(new Portal(Tile.at(-1, 17), Tile.at(28, 17)));
@@ -97,10 +97,10 @@ public class ArcadeWorld extends MapBasedWorld {
 		Door door = new Door(Direction.DOWN, Tile.at(col + 2, row - 1), Tile.at(col + 3, row - 1));
 		List<Bed> beds = Arrays.asList(
 		//@formatter:off
-			new Bed(0, col + 2, row - 2, Direction.LEFT),
-			new Bed(1, col,     row + 1, Direction.UP), 
-			new Bed(2, col + 2, row + 1, Direction.DOWN),
-			new Bed(3, col + 4, row + 1, Direction.UP)
+			new Bed(col + 2, row - 2, Direction.LEFT),
+			new Bed(col,     row + 1, Direction.UP), 
+			new Bed(col + 2, row + 1, Direction.DOWN),
+			new Bed(col + 4, row + 1, Direction.UP)
 		//@formatter:on
 		);
 		return new House(room, Arrays.asList(door), beds);

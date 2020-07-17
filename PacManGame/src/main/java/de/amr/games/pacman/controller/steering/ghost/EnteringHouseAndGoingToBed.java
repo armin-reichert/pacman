@@ -27,11 +27,11 @@ public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implem
 	}
 
 	private float targetX(Bed bed) {
-		return bed.center.x - Tile.SIZE / 2;
+		return bed.center().x - Tile.SIZE / 2;
 	}
 
 	private float targetY(Bed bed) {
-		return bed.center.y - Tile.SIZE / 2;
+		return bed.center().y - Tile.SIZE / 2;
 	}
 
 	public EnteringHouseAndGoingToBed(Ghost ghost, Bed bed) {
@@ -46,7 +46,7 @@ public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implem
 				.state(FALLING)
 					.onEntry(() -> {
 						// place the ghost centered over the ghost house entry and start falling
-						Vector2f houseEntry = ghost.world().theHouse().bed(0).center; 
+						Vector2f houseEntry = ghost.world().theHouse().bed(0).center(); 
 						ghost.entity.tf.setPosition(houseEntry.x - Tile.SIZE / 2, houseEntry.y - Tile.SIZE / 2);
 						ghost.setWishDir(Direction.DOWN);					
 					})
