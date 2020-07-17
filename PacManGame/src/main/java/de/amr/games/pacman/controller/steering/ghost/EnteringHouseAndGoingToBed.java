@@ -39,7 +39,7 @@ public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implem
 		/*@formatter:off*/
 		beginStateMachine()
 			.initialState(FALLING)
-			.description(String.format("[%s entering house]", ghost.name()))
+			.description(String.format("[%s entering house]", ghost.name))
 
 			.states()
 			

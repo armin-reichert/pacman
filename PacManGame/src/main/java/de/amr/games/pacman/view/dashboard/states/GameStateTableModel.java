@@ -155,7 +155,7 @@ class GameStateTableModel extends AbstractTableModel {
 	void fillGhostRecord(GameStateRecord r, Game game, GhostCommand ghostCommand, Ghost ghost, PacMan pacMan) {
 		r.creature = ghost;
 		r.included = world.contains(ghost);
-		r.name = ghost.name();
+		r.name = ghost.name;
 		r.tile = ghost.location();
 		r.target = ghost.targetTile();
 		r.moveDir = ghost.moveDir();

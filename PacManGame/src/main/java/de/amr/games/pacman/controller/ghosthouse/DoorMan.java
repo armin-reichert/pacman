@@ -205,22 +205,22 @@ public class DoorMan implements Lifecycle {
 			return confirmed("Ghost is not locked");
 		}
 		if (ghost == folks.blinky()) {
-			return confirmed("%s can always leave", ghost.name());
+			return confirmed("%s can always leave", ghost.name);
 		}
 		if (pacManStarvingTicks >= pacManStarvingTimeLimit()) {
 			pacManStarvingTicks = 0;
-			return confirmed("%s can leave house: Pac-Man's starving time limit (%d ticks) reached", ghost.name(),
+			return confirmed("%s can leave house: Pac-Man's starving time limit (%d ticks) reached", ghost.name,
 					pacManStarvingTimeLimit());
 		}
 		if (globalCounter.enabled) {
 			int globalLimit = globalDotLimit(ghost);
 			if (globalCounter.dots >= globalLimit) {
-				return confirmed("%s can leave house: global dot limit (%d) reached", ghost.name(), globalLimit);
+				return confirmed("%s can leave house: global dot limit (%d) reached", ghost.name, globalLimit);
 			}
 		} else {
 			int personalLimit = personalDotLimit(ghost);
 			if (ghostCounters[number(ghost)] >= personalLimit) {
-				return confirmed("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), personalLimit);
+				return confirmed("%s can leave house: ghost's dot limit (%d) reached", ghost.name, personalLimit);
 			}
 		}
 		return rejected("");

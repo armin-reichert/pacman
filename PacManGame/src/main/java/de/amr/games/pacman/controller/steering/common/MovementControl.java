@@ -23,7 +23,9 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class MovementControl extends StateMachine<MovementType, Void> {
 
-	protected Supplier<Float> fnSpeedLimit = () -> SpeedLimits.BASE_SPEED;
+	public Direction moveDir;
+	public Direction wishDir;
+	public Supplier<Float> fnSpeedLimit = () -> SpeedLimits.BASE_SPEED;
 	private Portal portalEntered;
 
 	public MovementControl(Creature<?> creature) {
@@ -31,7 +33,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 		PacManApp.fsm_register(this);
 		//@formatter:off
 		beginStateMachine()
-			.description(String.format("[%s movement]", creature.name()))
+			.description(String.format("[%s movement]", creature.name))
 			.initialState(WALKING)
 			.states()
 				.state(WALKING)
@@ -53,14 +55,6 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 					})
 		.endStateMachine();
 		//@formatter:on
-	}
-
-	public float getSpeedLimit() {
-		return fnSpeedLimit.get();
-	}
-
-	public void setSpeedLimit(Supplier<Float> fnSpeedLimit) {
-		this.fnSpeedLimit = fnSpeedLimit;
 	}
 
 	public boolean hasEnteredPortal() {

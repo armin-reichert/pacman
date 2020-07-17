@@ -168,8 +168,8 @@ public class PacMan extends Creature<PacManState> {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		Tile tileAhead = world.tileToDir(location(), moveDir, numTiles);
-		if (moveDir == UP && !settings.fixOverflowBug) {
+		Tile tileAhead = world.tileToDir(location(), moveDir(), numTiles);
+		if (moveDir() == UP && !settings.fixOverflowBug) {
 			return world.tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;

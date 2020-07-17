@@ -77,7 +77,7 @@ public class StatesRenderer implements IRenderer {
 		}
 		StringBuilder text = new StringBuilder();
 		// show ghost name if not obvious
-		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name() : "");
+		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name : "");
 		// timer values
 		int duration = ghost.state().getDuration();
 		int remaining = ghost.state().getTicksRemaining();

@@ -51,16 +51,16 @@ public class LettersTheme extends AbstractTheme {
 
 	private String ghostLetter(Ghost ghost) {
 		if (ghost.getState() == null) {
-			return ghost.name().substring(0, 1);
+			return ghost.name.substring(0, 1);
 		}
 		switch (ghost.getState()) {
 		case FRIGHTENED:
-			return ghost.name().substring(0, 1).toLowerCase();
+			return ghost.name.substring(0, 1).toLowerCase();
 		case DEAD:
 		case ENTERING_HOUSE:
 			return Rendering.INFTY;
 		default:
-			return ghost.name().substring(0, 1);
+			return ghost.name.substring(0, 1);
 		}
 	}
 

@@ -362,14 +362,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			Ghost ghost = collision.ghost;
 			if (ghost.is(FRIGHTENED)) {
 				int livesBefore = game.lives;
-				game.scoreGhostKilled(ghost.name());
+				game.scoreGhostKilled(ghost.name);
 				if (game.lives > livesBefore) {
 					sound.extraLife();
 				}
 				sound.ghostEaten();
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
-				loginfo("%s got killed at %s", ghost.name(), ghost.location());
+				loginfo("%s got killed at %s", ghost.name, ghost.location());
 				return;
 			}
 
@@ -378,7 +378,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				sound.stopAll();
 				folks.pacMan().process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
-				loginfo("Pac-Man killed by %s at %s", ghost.name(), ghost.location());
+				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.location());
 			}
 		}
 

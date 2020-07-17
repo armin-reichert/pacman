@@ -33,11 +33,10 @@ import de.amr.statemachine.core.StateMachine;
 public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEvent> implements MobileLifeform {
 
 	public final Entity entity = new Entity();
-	protected String name;
+	public final String name;
+	
 	protected Map<STATE, Steering> steeringMap;
 	protected MovementControl movement;
-	protected Direction moveDir;
-	protected Direction wishDir;
 	protected Tile targetTile;
 	protected boolean enteredNewTile;
 	protected Theme theme;
@@ -49,10 +48,6 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 		entity.tf.width = entity.tf.height = Tile.SIZE;
 		movement = new MovementControl(this);
 		steeringMap = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
-	}
-
-	public String name() {
-		return name;
 	}
 
 	@Override
@@ -89,11 +84,11 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	 * @return how fast (px/s) this creature can move at most
 	 */
 	public float speedLimit() {
-		return movement.getSpeedLimit();
+		return movement.fnSpeedLimit.get();
 	}
 
 	public void setSpeedLimit(Supplier<Float> fnSpeedLimit) {
-		movement.setSpeedLimit(fnSpeedLimit);
+		movement.fnSpeedLimit = fnSpeedLimit;
 	}
 
 	/**
@@ -136,10 +131,10 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 
 	@Override
 	public void init() {
-		moveDir = wishDir = RIGHT;
 		targetTile = null;
 		enteredNewTile = true;
 		movement.init();
+		movement.moveDir = movement.wishDir = RIGHT;
 		super.init();
 	}
 
@@ -173,22 +168,22 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 
 	@Override
 	public Direction moveDir() {
-		return moveDir;
+		return movement.moveDir;
 	}
 
 	@Override
 	public void setMoveDir(Direction dir) {
-		moveDir = Objects.requireNonNull(dir);
+		movement.moveDir = Objects.requireNonNull(dir);
 	}
 
 	@Override
 	public Direction wishDir() {
-		return wishDir;
+		return movement.wishDir;
 	}
 
 	@Override
 	public void setWishDir(Direction dir) {
-		wishDir = dir;
+		movement.wishDir = dir;
 	}
 
 	@Override

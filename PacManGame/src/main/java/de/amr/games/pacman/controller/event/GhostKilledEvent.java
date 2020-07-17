@@ -12,6 +12,6 @@ public class GhostKilledEvent implements PacManGameEvent {
 
 	@Override
 	public String toString() {
-		return String.format("GhostKilled(%s)", ghost.name());
+		return String.format("GhostKilled(%s)", ghost.name);
 	}
 }
