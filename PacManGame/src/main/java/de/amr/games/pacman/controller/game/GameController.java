@@ -30,7 +30,6 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.api.IntelligentCreature;
 import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
@@ -481,7 +480,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return folks;
 	}
 
-	public Stream<IntelligentCreature<?>> folksInsideWorld() {
+	public Stream<Creature<?>> folksInsideWorld() {
 		return folks.all().filter(world::contains);
 	}
 

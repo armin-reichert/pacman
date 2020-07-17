@@ -186,7 +186,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			ghostPointsAnimation.start();
 			chasePacMan.tf.centerX(width);
 			chasePacMan.initPositions(width / 2 + 5 * Tile.SIZE);
-			chasePacMan.folks().all().forEach(c -> c.entity().tf.vx = 0);
+			chasePacMan.folks().all().forEach(c -> c.entity.tf.vx = 0);
 			gitHubLink.visible = true;
 		}
 

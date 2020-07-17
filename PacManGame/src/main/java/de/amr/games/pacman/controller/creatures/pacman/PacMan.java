@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.api.IntelligentCreature;
+import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -32,7 +32,7 @@ import de.amr.games.pacman.view.theme.api.Theme;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends IntelligentCreature<PacManState> {
+public class PacMan extends Creature<PacManState> {
 
 	private final ArcadeWorld world;
 	private int power;

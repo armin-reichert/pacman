@@ -14,7 +14,7 @@ import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.api.IntelligentCreature;
+import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -41,7 +41,7 @@ import de.amr.games.pacman.view.theme.api.Theme;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends IntelligentCreature<GhostState> {
+public class Ghost extends Creature<GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 

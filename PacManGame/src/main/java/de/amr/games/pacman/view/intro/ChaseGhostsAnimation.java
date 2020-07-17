@@ -37,7 +37,7 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	@Override
 	public boolean isComplete() {
-		return folks.all().allMatch(creature -> creature.entity().tf.x > world.width() * Tile.SIZE);
+		return folks.all().allMatch(creature -> creature.entity.tf.x > world.width() * Tile.SIZE);
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class ChaseGhostsAnimation extends GameObject {
 				points *= 2;
 			});
 		//@formatter:on
-		folks.all().forEach(creature -> creature.entity().tf.move());
+		folks.all().forEach(creature -> creature.entity.tf.move());
 	}
 
 	@Override

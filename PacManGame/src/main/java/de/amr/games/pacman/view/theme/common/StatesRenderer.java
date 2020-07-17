@@ -101,7 +101,7 @@ public class StatesRenderer implements IRenderer {
 		folks.ghosts().forEach(ghost -> drawActorOffTrack(g, ghost));
 	}
 
-	private void drawActorOffTrack(Graphics2D g, Creature creature) {
+	private void drawActorOffTrack(Graphics2D g, Creature<?> creature) {
 		if (!creature.isVisible()) {
 			return;
 		}
@@ -109,18 +109,18 @@ public class StatesRenderer implements IRenderer {
 		Stroke fine = new BasicStroke(0.2f);
 		g.setStroke(fine);
 		g.setColor(Color.RED);
-		g.translate(creature.entity().tf.x, creature.entity().tf.y);
-		int w = creature.entity().tf.width, h = creature.entity().tf.height;
+		g.translate(creature.entity.tf.x, creature.entity.tf.y);
+		int w = creature.entity.tf.width, h = creature.entity.tf.height;
 		Direction moveDir = creature.moveDir();
-		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(creature.entity().tf.y) % Tile.SIZE != 0) {
+		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(creature.entity.tf.y) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(creature.entity().tf.x) % Tile.SIZE != 0) {
+		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(creature.entity.tf.x) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
-		g.translate(-creature.entity().tf.x, -creature.entity().tf.y);
+		g.translate(-creature.entity.tf.x, -creature.entity.tf.y);
 		g.setStroke(normal);
 	}
 }

@@ -78,7 +78,7 @@ public class ChasePacManAnimation extends GameObject {
 
 	@Override
 	public void update() {
-		folks.all().forEach(c -> c.entity().tf.move());
+		folks.all().forEach(c -> c.entity.tf.move());
 		if (pelletTimer > 0) {
 			if (pelletTimer % Game.sec(0.5f) == 0)
 				if (pelletDisplay == PelletDisplay.FIFTY) {
@@ -101,12 +101,12 @@ public class ChasePacManAnimation extends GameObject {
 	@Override
 	public void stop() {
 		sounds.snd_ghost_chase().stop();
-		folks.all().forEach(c -> c.entity().tf.vx = 0);
+		folks.all().forEach(c -> c.entity.tf.vx = 0);
 	}
 
 	@Override
 	public boolean isComplete() {
-		return folks.all().map(c -> c.entity().tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
+		return folks.all().map(c -> c.entity.tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
 	}
 
 	@Override
