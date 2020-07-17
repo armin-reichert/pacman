@@ -43,29 +43,36 @@ public class TestUI implements Lifecycle, VisualController {
 	}
 
 	protected void include(Creature<?>... creatures) {
-		Stream.of(creatures).forEach(world::bringIn);
+		Stream.of(creatures).forEach(world::include);
+	}
+
+	protected Theme theme() {
+		return themes[currentThemeIndex];
 	}
 
 	public TestUI() {
 		world = new ArcadeWorld();
 		world.clearFood();
-		folks = new ArcadeWorldFolks(world);
 
+		folks = new ArcadeWorldFolks(world);
 		pacMan = folks.pacMan();
 		blinky = folks.blinky();
 		pinky = folks.pinky();
 		inky = folks.inky();
 		clyde = folks.clyde();
 
+		world.setFolks(folks);
+		folks.all().forEach(world::exclude);
+
 		soundManager = new PacManSounds(world, folks);
 
 		game = new Game(1, world.totalFoodCount());
+
 		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
-
-		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		folks.ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> speedLimit(ghost, game)));
+		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 
-		view = new PlayView(world, themes[currentThemeIndex], folks, game, null, null);
+		view = new PlayView(world, theme(), folks, game, null, null);
 		view.turnScoresOff();
 		view.init();
 	}
@@ -73,14 +80,14 @@ public class TestUI implements Lifecycle, VisualController {
 	@Override
 	public void init() {
 		folks.all().forEach(Creature::init);
-		folks.all().forEach(creature -> world.takeOut(creature));
+		folks.all().forEach(creature -> world.exclude(creature));
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce("z")) {
 			currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-			view.setTheme(themes[currentThemeIndex]);
+			view.setTheme(theme());
 		}
 		if (Keyboard.keyPressedOnce("g")) {
 			if (view.isShowingGrid()) {

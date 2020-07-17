@@ -35,7 +35,6 @@ public class ArcadeWorldFolks {
 
 	public ArcadeWorldFolks(ArcadeWorld world) {
 		this.world = world;
-		world.setFolks(this);
 
 		pacMan = new PacMan(world);
 		blinky = new Ghost(world, "Blinky", Ghost.RED_GHOST);

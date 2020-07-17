@@ -33,6 +33,7 @@ public class ChasePacManAnimation extends GameObject {
 	public ChasePacManAnimation(Theme theme, PacManSounds sounds) {
 		this.sounds = sounds;
 		setTheme(theme);
+		world.setFolks(folks);
 	}
 
 	public void setTheme(Theme theme) {

@@ -86,6 +86,7 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	public void setFolks(ArcadeWorldFolks folks) {
 		this.folks = folks;
+		folks.all().forEach(this::include);
 	}
 
 	public ArcadeWorldFolks getFolks() {

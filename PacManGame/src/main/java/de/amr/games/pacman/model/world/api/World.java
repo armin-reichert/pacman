@@ -27,14 +27,14 @@ public interface World extends Territory, FoodContainer {
 	 * 
 	 * @param creature a creature
 	 */
-	void bringIn(Lifeform creature);
+	void include(Lifeform creature);
 
 	/**
 	 * Takes the creature out of the world.
 	 * 
 	 * @param creature a creature
 	 */
-	void takeOut(Lifeform creature);
+	void exclude(Lifeform creature);
 
 	/**
 	 * Signals that the game level is changing. TODO: not sure if this belongs into the model

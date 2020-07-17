@@ -126,9 +126,9 @@ public class EnhancedGameController extends GameController {
 
 	private void toggleGhostOnStage(Ghost ghost) {
 		if (world.contains(ghost)) {
-			world.takeOut(ghost);
+			world.exclude(ghost);
 		} else {
-			world.bringIn(ghost);
+			world.include(ghost);
 			ghost.init();
 		}
 	}

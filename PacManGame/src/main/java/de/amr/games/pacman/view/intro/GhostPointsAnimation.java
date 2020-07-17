@@ -45,6 +45,7 @@ public class GhostPointsAnimation extends GameObject {
 		setTheme(theme);
 		tf.width = 6 * dx;
 		tf.height = 2 * Tile.SIZE;
+		world.setFolks(folks);
 	}
 
 	public void setTheme(Theme theme) {

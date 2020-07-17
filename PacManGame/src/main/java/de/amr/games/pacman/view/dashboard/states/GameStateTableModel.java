@@ -105,9 +105,9 @@ class GameStateTableModel extends AbstractTableModel {
 		GameStateRecord r = records[row];
 		if (r.creature instanceof Ghost) {
 			if (r.included) {
-				world.bringIn(r.creature);
+				world.include(r.creature);
 			} else {
-				world.takeOut(r.creature);
+				world.exclude(r.creature);
 			}
 		}
 	}

@@ -38,7 +38,7 @@ class ScatteringTestUI extends TestUI {
 	public void init() {
 		super.init();
 		folks.ghosts().forEach(ghost -> {
-			world.bringIn(ghost);
+			world.include(ghost);
 			ghost.init();
 			ghost.nextStateToEnter(() -> SCATTERING);
 		});

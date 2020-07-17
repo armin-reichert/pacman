@@ -60,16 +60,16 @@ public abstract class MapBasedWorld implements World {
 	}
 
 	@Override
-	public void bringIn(Lifeform creature) {
-		takeOut(creature, false);
+	public void include(Lifeform creature) {
+		exclude(creature, false);
 	}
 
 	@Override
-	public void takeOut(Lifeform creature) {
-		takeOut(creature, true);
+	public void exclude(Lifeform creature) {
+		exclude(creature, true);
 	}
 
-	protected void takeOut(Lifeform creature, boolean out) {
+	protected void exclude(Lifeform creature, boolean out) {
 		if (out) {
 			excludedGuys.add(creature);
 		} else {

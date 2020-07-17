@@ -432,7 +432,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		selectTheme(settings.theme);
 		world = new ArcadeWorld();
 		folks = new ArcadeWorldFolks(world);
-		folks.all().forEach(world::bringIn);
+		world.setFolks(folks);
+		folks.all().forEach(world::include);
 		folks.pacMan().addEventListener(this::process);
 		folks.ghosts().forEach(ghost -> ghost.addEventListener(this::process));
 		sound = new PacManSounds(world, folks);
@@ -467,7 +468,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
 		folks.ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> SpeedLimits.speedLimit(ghost, game)));
 		folks.pacMan().setSpeedLimit(() -> SpeedLimits.pacManSpeedLimit(folks.pacMan(), game));
-		folks.all().forEach(world::bringIn);
+		folks.all().forEach(world::include);
 		folks.all().forEach(Creature::init);
 		playView = new PlayView(world, theme(), folks, game, ghostCommand, doorMan);
 	}
