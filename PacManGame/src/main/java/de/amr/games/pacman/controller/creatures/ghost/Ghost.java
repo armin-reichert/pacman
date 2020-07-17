@@ -124,10 +124,10 @@ public class Ghost extends Creature<GhostState> {
 					.on(GhostUnlockedEvent.class)
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> hasLeftGhostHouse() && fnSubsequentState.get() == SCATTERING)
+					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == SCATTERING)
 				
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> hasLeftGhostHouse() && fnSubsequentState.get() == CHASING)
+					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == CHASING)
 				
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> steering().isComplete())
@@ -140,7 +140,7 @@ public class Ghost extends Creature<GhostState> {
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
-					.condition(() -> fnSubsequentState.get() == SCATTERING)
+					.condition(() -> getNextStateToEnter() == SCATTERING)
 					.act(() -> reverseDirection())
 					
 				.when(SCATTERING).then(FRIGHTENED)
@@ -151,7 +151,7 @@ public class Ghost extends Creature<GhostState> {
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
-					.condition(() -> fnSubsequentState.get() == CHASING)
+					.condition(() -> getNextStateToEnter() == CHASING)
 					.act(() -> reverseDirection())
 					
 				.stay(FRIGHTENED)
@@ -163,11 +163,11 @@ public class Ghost extends Creature<GhostState> {
 				
 				.when(FRIGHTENED).then(SCATTERING)
 					.onTimeout()
-					.condition(() -> fnSubsequentState.get() == SCATTERING)
+					.condition(() -> getNextStateToEnter() == SCATTERING)
 					
 				.when(FRIGHTENED).then(CHASING)
 					.onTimeout()
-					.condition(() -> fnSubsequentState.get() == CHASING)
+					.condition(() -> getNextStateToEnter() == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> world.isHouseEntry(tileLocation()))
@@ -259,7 +259,8 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private boolean hasLeftGhostHouse() {
-		return entity.tf.y == world.theHouse().bed(0).row() * Tile.SIZE;
+		Tile location = tileLocation();
+		return world.isHouseEntry(location) && entity.tf.y == location.row * Tile.SIZE;
 	}
 
 	@Override
