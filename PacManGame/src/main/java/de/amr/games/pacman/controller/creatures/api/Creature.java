@@ -46,7 +46,7 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 		this.name = name;
 		entity = new Entity();
 		entity.tf.width = entity.tf.height = Tile.SIZE;
-		movement = new Movement(world, this, entity.tf, name);
+		movement = new Movement(world, this, name, entity.tf);
 		steeringsByState = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
 	}
 
@@ -154,7 +154,7 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 
 	@Override
 	public Tile tileLocation() {
-		return movement.currentTile();
+		return movement.tileLocation();
 	}
 
 	@Override
