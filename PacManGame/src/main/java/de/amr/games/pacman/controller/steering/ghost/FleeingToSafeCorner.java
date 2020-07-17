@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.TakingPrecomputedPath;
 import de.amr.games.pacman.model.world.api.FoodContainer;
+import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 
@@ -23,14 +23,14 @@ import de.amr.games.pacman.model.world.core.WorldGraph;
  */
 public class FleeingToSafeCorner extends TakingPrecomputedPath {
 
-	public static FleeingToSafeCorner steer(Ghost refugee, MobileCreature attacker) {
+	public static FleeingToSafeCorner steer(Ghost refugee, MobileLifeform attacker) {
 		return new FleeingToSafeCorner(refugee, attacker);
 	}
 
 	private final WorldGraph graph;
 	private final Tile[] corners;
 
-	private FleeingToSafeCorner(Ghost refugee, MobileCreature attacker) {
+	private FleeingToSafeCorner(Ghost refugee, MobileLifeform attacker) {
 		super(refugee, attacker::location);
 		graph = new WorldGraph(world);
 		corners = new Tile[] { world.capeNW(), world.capeNE(), world.capeSW(), world.capeSE() };
@@ -42,7 +42,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 	}
 
 	@Override
-	protected List<Tile> pathToTarget(MobileCreature refugee, Tile targetTile) {
+	protected List<Tile> pathToTarget(MobileLifeform refugee, Tile targetTile) {
 		Tile target = refugee.location();
 		while (target.equals(refugee.location())) {
 			target = safeCorner(refugee);
@@ -50,7 +50,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 		return graph.shortestPath(refugee.location(), target);
 	}
 
-	private Tile safeCorner(MobileCreature refugee) {
+	private Tile safeCorner(MobileLifeform refugee) {
 		Tile refugeeTile = refugee.location();
 		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off

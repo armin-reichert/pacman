@@ -7,9 +7,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 
@@ -28,12 +28,12 @@ public abstract class TakingPrecomputedPath implements PathProvidingSteering {
 		return list.isEmpty() ? null : list.get(list.size() - 1);
 	}
 
-	protected final MobileCreature actor;
+	protected final MobileLifeform actor;
 	protected final World world;
 	protected final Supplier<Tile> fnTargetTile;
 	protected List<Tile> targetPath;
 
-	public TakingPrecomputedPath(MobileCreature actor, Supplier<Tile> fnTargetTile) {
+	public TakingPrecomputedPath(MobileLifeform actor, Supplier<Tile> fnTargetTile) {
 		this.actor = Objects.requireNonNull(actor);
 		this.world = actor.world();
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
@@ -77,9 +77,9 @@ public abstract class TakingPrecomputedPath implements PathProvidingSteering {
 	public void setPathComputed(boolean enabled) {
 	}
 
-	protected abstract List<Tile> pathToTarget(MobileCreature actor, Tile targetTile);
+	protected abstract List<Tile> pathToTarget(MobileLifeform actor, Tile targetTile);
 
-	protected boolean isPathInvalid(MobileCreature actor) {
+	protected boolean isPathInvalid(MobileLifeform actor) {
 		return actor.wishDir() == null || targetPath.size() == 0 || !first(targetPath).equals(actor.location())
 				|| !last(targetPath).equals(actor.targetTile());
 	}

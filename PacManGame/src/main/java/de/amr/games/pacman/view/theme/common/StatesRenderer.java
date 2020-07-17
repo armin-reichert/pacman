@@ -17,7 +17,7 @@ import java.awt.Stroke;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.controller.api.MobileCreature;
+import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GhostCommand;
@@ -101,7 +101,7 @@ public class StatesRenderer implements IRenderer {
 		folks.ghosts().forEach(ghost -> drawActorOffTrack(g, ghost));
 	}
 
-	private void drawActorOffTrack(Graphics2D g, MobileCreature creature) {
+	private void drawActorOffTrack(Graphics2D g, Creature creature) {
 		if (!creature.isVisible()) {
 			return;
 		}

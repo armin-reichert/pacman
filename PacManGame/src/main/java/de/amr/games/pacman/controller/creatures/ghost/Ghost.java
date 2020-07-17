@@ -14,7 +14,7 @@ import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.Animal;
+import de.amr.games.pacman.controller.creatures.api.IntelligentCreature;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -22,12 +22,13 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Bed;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.OneWayTile;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 
@@ -40,11 +41,11 @@ import de.amr.games.pacman.view.theme.api.Theme;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Animal<GhostState> {
+public class Ghost extends IntelligentCreature<GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
-	private final ArcadeWorldFolks folks;
+	private final ArcadeWorld world;
 	private Bed bed;
 	private final int color;
 	private Supplier<GhostState> fnSubsequentState;
@@ -55,9 +56,9 @@ public class Ghost extends Animal<GhostState> {
 	private IntSupplier fnNumFlashes = () -> 0;
 	private IRenderer renderer;
 
-	public Ghost(ArcadeWorldFolks folks, String name, int color) {
+	public Ghost(ArcadeWorld world, String name, int color) {
 		super(GhostState.class, name);
-		this.folks = folks;
+		this.world = world;
 		this.color = color;
 		/*@formatter:off*/
 		beginStateMachine()
@@ -174,8 +175,9 @@ public class Ghost extends Animal<GhostState> {
 		PacManApp.fsm_register(this);
 	}
 
-	public ArcadeWorldFolks folks() {
-		return folks;
+	@Override
+	public World world() {
+		return world;
 	}
 
 	public Bed bed() {
@@ -214,7 +216,7 @@ public class Ghost extends Animal<GhostState> {
 		};
 
 		// Blinky can get insane ("cruise elroy")
-		if (this == folks.blinky()) {
+		if ("Blinky".equals(name)) {
 			sanityControl = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
 			PacManApp.fsm_register(sanityControl);
 		}
@@ -290,7 +292,7 @@ public class Ghost extends Animal<GhostState> {
 	}
 
 	private void checkPacManCollision() {
-		PacMan pacMan = folks.pacMan();
+		PacMan pacMan = world.getFolks().pacMan();
 		if (location().equals(pacMan.location()) && !isTeleporting() && !pacMan.isTeleporting()
 				&& !pacMan.is(PacManState.DEAD)) {
 			publish(new PacManGhostCollisionEvent(this));

@@ -15,7 +15,7 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.creatures.Animal;
+import de.amr.games.pacman.controller.creatures.api.IntelligentCreature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.House;
@@ -37,13 +37,11 @@ public class ArcadeWorldFolks {
 		this.world = world;
 		world.setFolks(this);
 
-		pacMan = new PacMan();
-		blinky = new Ghost(this, "Blinky", Ghost.RED_GHOST);
-		inky = new Ghost(this, "Inky", Ghost.CYAN_GHOST);
-		pinky = new Ghost(this, "Pinky", Ghost.PINK_GHOST);
-		clyde = new Ghost(this, "Clyde", Ghost.ORANGE_GHOST);
-
-		all().forEach(creature -> creature.setWorld(world));
+		pacMan = new PacMan(world);
+		blinky = new Ghost(world, "Blinky", Ghost.RED_GHOST);
+		inky = new Ghost(world, "Inky", Ghost.CYAN_GHOST);
+		pinky = new Ghost(world, "Pinky", Ghost.PINK_GHOST);
+		clyde = new Ghost(world, "Clyde", Ghost.ORANGE_GHOST);
 
 		you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
 
@@ -109,7 +107,7 @@ public class ArcadeWorldFolks {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
-	public Stream<Animal<?>> all() {
+	public Stream<IntelligentCreature<?>> all() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 

@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
@@ -26,7 +26,7 @@ import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
  */
 public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering {
 
-	private final MobileCreature me;
+	private final MobileLifeform me;
 	private final ArcadeWorldFolks folks;
 	private WorldGraph graph;
 	private Ghost enemy;
@@ -34,7 +34,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	private Direction newDir;
 	private Tile target;
 
-	public SearchingForFoodAndAvoidingGhosts(MobileCreature me, ArcadeWorldFolks folks) {
+	public SearchingForFoodAndAvoidingGhosts(MobileLifeform me, ArcadeWorldFolks folks) {
 		this.me = me;
 		this.folks = folks;
 		graph = new WorldGraph(me.world());

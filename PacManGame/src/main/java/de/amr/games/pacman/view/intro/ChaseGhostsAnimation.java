@@ -3,7 +3,7 @@ package de.amr.games.pacman.view.intro;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.api.Creature;
+import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;

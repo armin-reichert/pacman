@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.view.theme.api.IRenderer;
@@ -43,11 +44,14 @@ public class GhostRenderer extends SpriteRenderer implements IRenderer {
 				selectSprite("color-" + ghost.moveDir());
 				break;
 			case LOCKED:
-				if (ghost.folks().pacMan().getPower() > 0) {
-					selectSprite("frightened");
-				} else {
-					selectSprite("color-" + ghost.moveDir());
+				if (ghost.world() instanceof ArcadeWorld) {
+					ArcadeWorld arcadeWorld = (ArcadeWorld) ghost.world();
+					if (arcadeWorld.getFolks().pacMan().getPower() > 0) {
+						selectSprite("frightened");
+						return;
+					}
 				}
+				selectSprite("color-" + ghost.moveDir());
 				break;
 			case FRIGHTENED:
 				selectSprite(ghost.isFlashing() ? "flashing" : "frightened");

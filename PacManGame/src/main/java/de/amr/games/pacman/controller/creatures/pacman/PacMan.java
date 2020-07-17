@@ -13,15 +13,17 @@ import java.util.Optional;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.Animal;
+import de.amr.games.pacman.controller.creatures.api.IntelligentCreature;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 
@@ -30,15 +32,17 @@ import de.amr.games.pacman.view.theme.api.Theme;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Animal<PacManState> {
+public class PacMan extends IntelligentCreature<PacManState> {
 
+	private final ArcadeWorld world;
 	private int power;
 	private int digestion;
 	private boolean collapsing;
 	private IPacManRenderer renderer;
 
-	public PacMan() {
+	public PacMan(ArcadeWorld world) {
 		super(PacManState.class, "Pac-Man");
+		this.world = world;
 		/*@formatter:off*/
 		beginStateMachine()
 
@@ -114,6 +118,11 @@ public class PacMan extends Animal<PacManState> {
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 		renderer = theme.createPacManRenderer(this);
+	}
+
+	@Override
+	public World world() {
+		return world;
 	}
 
 	@Override

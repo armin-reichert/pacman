@@ -1,4 +1,4 @@
-package de.amr.games.pacman.controller.creatures;
+package de.amr.games.pacman.controller.creatures.api;
 
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 
@@ -10,34 +10,29 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementControl;
 import de.amr.games.pacman.controller.steering.common.MovementType;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * An entity with a visual appearance that can move through the world and with a behavior defined by
- * a finite-state machine. The appearance is exchangeable via theming. The physical size is one tile
- * by default. The visual size however is normally larger. Depending on its state, an animal has a
- * specific steering.
+ * A creature with "intelligence". Can make decisions that change its behavior and can react on game
+ * events.
+ * <p>
+ * The physical size is one tile, however the visual appearance is larger.
  * 
  * @param <STATE> state (identifier) type
  * 
  * @author Armin Reichert
  */
-public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent> implements MobileCreature {
+public abstract class IntelligentCreature<STATE> extends StateMachine<STATE, PacManGameEvent> implements Creature {
 
 	public final Entity entity = new Entity();
-
 	protected String name;
-	protected ArcadeWorld world;
 	protected Map<STATE, Steering> steeringMap;
 	protected MovementControl movement;
 	protected Direction moveDir;
@@ -47,7 +42,7 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 	protected Theme theme;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Animal(Class<STATE> stateClass, String name) {
+	public IntelligentCreature(Class<STATE> stateClass, String name) {
 		super(stateClass);
 		this.name = name;
 		entity.tf.width = entity.tf.height = Tile.SIZE;
@@ -83,17 +78,13 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 		this.theme = theme;
 	}
 
-	public void setWorld(ArcadeWorld world) {
-		this.world = world;
-	}
-
 	/**
 	 * Euclidean distance (in tiles) between this and the other animal.
 	 * 
 	 * @param other other animal
 	 * @return Euclidean distance measured in tiles
 	 */
-	public double distance(Animal<?> other) {
+	public double distance(IntelligentCreature<?> other) {
 		return location().distance(other.location());
 	}
 
@@ -138,11 +129,6 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 	 */
 	public void behavior(STATE state, Steering steering) {
 		steeringMap.put(state, steering);
-	}
-
-	@Override
-	public World world() {
-		return world;
 	}
 
 	@Override
@@ -220,13 +206,13 @@ public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent>
 
 	@Override
 	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = location(), neighbor = world.neighbor(currentTile, dir);
+		Tile currentTile = location(), neighbor = world().neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		return world.isAccessible(neighbor);
+		return world().isAccessible(neighbor);
 	}
 
 	@Override

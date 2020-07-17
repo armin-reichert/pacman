@@ -6,9 +6,9 @@ import java.util.EnumMap;
 import java.util.Objects;
 
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.MobileLifeform;
 
 /**
  * Steering controlling a creature using the keyboard keys for UP, RIGHT, DOWN, LEFT.
@@ -17,10 +17,10 @@ import de.amr.games.pacman.model.world.api.Direction;
  */
 public class FollowingKeys implements Steering {
 
-	private MobileCreature creature;
+	private MobileLifeform creature;
 	private EnumMap<Direction, Integer> keys = new EnumMap<>(Direction.class);
 
-	public FollowingKeys(MobileCreature creature, int upKey, int rightKey, int downKey, int leftKey) {
+	public FollowingKeys(MobileLifeform creature, int upKey, int rightKey, int downKey, int leftKey) {
 		this.creature = Objects.requireNonNull(creature);
 		keys.put(Direction.UP, upKey);
 		keys.put(Direction.RIGHT, rightKey);

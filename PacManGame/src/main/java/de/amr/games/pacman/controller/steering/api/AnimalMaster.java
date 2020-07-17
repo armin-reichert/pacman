@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller.steering.api;
 
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.creatures.Animal;
+import de.amr.games.pacman.controller.creatures.api.IntelligentCreature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.world.api.Tile;
 
 public class AnimalMaster {
 
-	private Animal<?> animal;
+	private IntelligentCreature<?> animal;
 	private GhostState ghostState;
 
 	public static AnimalMaster you(Ghost ghost) {

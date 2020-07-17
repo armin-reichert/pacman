@@ -12,11 +12,10 @@ import org.junit.Test;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
 
 public class WorldTests {
 
-	private World world;
+	private ArcadeWorld world;
 
 	@Before
 	public void setup() {
@@ -52,7 +51,7 @@ public class WorldTests {
 		assertEquals(4, Tile.at(0, 0).distance(Tile.at(0, 4)), 0);
 		assertEquals(4, Tile.at(0, 0).distance(Tile.at(4, 0)), 0);
 		assertEquals(Math.sqrt(32), Tile.at(0, 0).distance(Tile.at(4, 4)), 0);
-		PacMan pacMan = new PacMan();
+		PacMan pacMan = new PacMan(world);
 		pacMan.placeAt(Tile.at(-10, 4));
 		assertEquals(-10, pacMan.location().col);
 		assertEquals(4, pacMan.location().row);
