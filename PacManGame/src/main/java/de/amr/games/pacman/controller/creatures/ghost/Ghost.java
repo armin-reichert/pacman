@@ -224,7 +224,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private void maybeMeetPacMan(PacMan pacMan) {
-		if (tileLocation().equals(pacMan.tileLocation()) && !isTeleporting() && !pacMan.isTeleporting()
+		if (tileLocation().equals(pacMan.tileLocation()) && isVisible() && pacMan.isVisible()
 				&& !pacMan.is(PacManState.DEAD)) {
 			publish(new PacManGhostCollisionEvent(this));
 		}
