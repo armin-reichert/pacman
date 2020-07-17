@@ -49,7 +49,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 			forced = false;
 			creature.setTargetTile(fnTargetTile.get());
 			if (creature.targetTile() != null) {
-				creature.setWishDir(bestDir(creature, creature.moveDir(), creature.location(), creature.targetTile()));
+				creature.setWishDir(bestDir(creature, creature.moveDir(), creature.tileLocation(), creature.targetTile()));
 				if (pathComputed) {
 					computePath();
 				}
@@ -94,7 +94,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 */
 	private void computePath() {
 		World world = creature.world();
-		Tile currentTile = creature.location(), targetTile = creature.targetTile();
+		Tile currentTile = creature.tileLocation(), targetTile = creature.targetTile();
 		Direction currentDir = creature.moveDir();
 		path.clear();
 		path.add(currentTile);

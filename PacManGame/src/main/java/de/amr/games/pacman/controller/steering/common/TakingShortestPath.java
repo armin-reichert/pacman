@@ -23,6 +23,6 @@ public class TakingShortestPath extends TakingPrecomputedPath {
 
 	@Override
 	protected List<Tile> pathToTarget(MobileLifeform actor, Tile targetTile) {
-		return graph.shortestPath(actor.location(), targetTile);
+		return graph.shortestPath(actor.tileLocation(), targetTile);
 	}
 }

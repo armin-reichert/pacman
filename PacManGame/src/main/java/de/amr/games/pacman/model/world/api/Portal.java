@@ -1,6 +1,6 @@
 package de.amr.games.pacman.model.world.api;
 
-import de.amr.easy.game.entity.Entity;
+import de.amr.easy.game.entity.Transform;
 
 public class Portal {
 
@@ -15,14 +15,14 @@ public class Portal {
 		return tile.equals(left) || tile.equals(right);
 	}
 
-	public void teleport(Entity entity, Tile entryTile, Direction moveDir) {
+	public void teleport(Transform tf, Tile entryTile, Direction moveDir) {
 		Tile exitTile = exitTile(entryTile, moveDir);
 		if (exitTile != null) {
 			if (moveDir == Direction.RIGHT) {
-				entity.tf.setPosition(exitTile.x() + Tile.SIZE, exitTile.y());
+				tf.setPosition(exitTile.x() + Tile.SIZE, exitTile.y());
 			}
 			if (moveDir == Direction.LEFT) {
-				entity.tf.setPosition(exitTile.x() - Tile.SIZE, exitTile.y());
+				tf.setPosition(exitTile.x() - Tile.SIZE, exitTile.y());
 			}
 		}
 	}

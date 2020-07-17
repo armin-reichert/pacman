@@ -71,7 +71,7 @@ public class ChaseGhostsAnimation extends GameObject {
 		//@formatter:off
 		folks.ghosts()
 			.filter(ghost -> ghost.getState() != GhostState.DEAD)
-			.filter(ghost -> ghost.location().equals(folks.pacMan().location()))
+			.filter(ghost -> ghost.tileLocation().equals(folks.pacMan().tileLocation()))
 			.forEach(ghost -> {
 				ghost.setState(GhostState.DEAD);
 				ghost.setBounty(points);

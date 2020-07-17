@@ -53,7 +53,7 @@ public class WorldTests {
 		assertEquals(Math.sqrt(32), Tile.at(0, 0).distance(Tile.at(4, 4)), 0);
 		PacMan pacMan = new PacMan(world);
 		pacMan.placeAt(Tile.at(-10, 4));
-		assertEquals(-10, pacMan.location().col);
-		assertEquals(4, pacMan.location().row);
+		assertEquals(-10, pacMan.tileLocation().col);
+		assertEquals(4, pacMan.tileLocation().row);
 	}
 }

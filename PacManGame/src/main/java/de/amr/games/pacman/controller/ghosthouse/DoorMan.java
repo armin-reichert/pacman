@@ -182,9 +182,9 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private boolean isGhostNearDoor(Ghost ghost, Door door) {
-		Tile fromGhostTowardsHouse = world.neighbor(ghost.location(), door.intoHouse);
-		Tile fromGhostAwayFromHouse = world.neighbor(ghost.location(), door.intoHouse.opposite());
-		return door.includes(ghost.location()) || door.includes(fromGhostAwayFromHouse)
+		Tile fromGhostTowardsHouse = world.neighbor(ghost.tileLocation(), door.intoHouse);
+		Tile fromGhostAwayFromHouse = world.neighbor(ghost.tileLocation(), door.intoHouse.opposite());
+		return door.includes(ghost.tileLocation()) || door.includes(fromGhostAwayFromHouse)
 				|| door.includes(fromGhostTowardsHouse);
 	}
 

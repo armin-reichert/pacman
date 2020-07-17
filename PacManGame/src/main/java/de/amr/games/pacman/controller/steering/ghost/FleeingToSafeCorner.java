@@ -31,7 +31,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 	private final Tile[] corners;
 
 	private FleeingToSafeCorner(Ghost refugee, MobileLifeform attacker) {
-		super(refugee, attacker::location);
+		super(refugee, attacker::tileLocation);
 		graph = new WorldGraph(world);
 		corners = new Tile[] { world.capeNW(), world.capeNE(), world.capeSW(), world.capeSE() };
 	}
@@ -43,15 +43,15 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 
 	@Override
 	protected List<Tile> pathToTarget(MobileLifeform refugee, Tile targetTile) {
-		Tile target = refugee.location();
-		while (target.equals(refugee.location())) {
+		Tile target = refugee.tileLocation();
+		while (target.equals(refugee.tileLocation())) {
 			target = safeCorner(refugee);
 		}
-		return graph.shortestPath(refugee.location(), target);
+		return graph.shortestPath(refugee.tileLocation(), target);
 	}
 
 	private Tile safeCorner(MobileLifeform refugee) {
-		Tile refugeeTile = refugee.location();
+		Tile refugeeTile = refugee.tileLocation();
 		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off
 		return permute(Arrays.stream(corners))

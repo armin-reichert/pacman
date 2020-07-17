@@ -63,11 +63,11 @@ public class ArcadeWorldFolks {
 
 		you(blinky).when(ENTERING_HOUSE).enterHouseAndGoToBed().bed(house.bed(2)).ok();
 		you(blinky).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
-		you(blinky).when(CHASING).headFor().tile(pacMan::location).ok();
+		you(blinky).when(CHASING).headFor().tile(pacMan::tileLocation).ok();
 
 		you(inky).when(SCATTERING).headFor().tile(world.width() - 1, world.height() - 1).ok();
 		you(inky).when(CHASING).headFor().tile(() -> {
-			Tile b = blinky.location(), p = pacMan.tilesAhead(2);
+			Tile b = blinky.tileLocation(), p = pacMan.tilesAhead(2);
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}).ok();
 
@@ -76,7 +76,7 @@ public class ArcadeWorldFolks {
 
 		you(clyde).when(SCATTERING).headFor().tile(0, world.height() - 1).ok();
 		you(clyde).when(CHASING).headFor()
-				.tile(() -> clyde.distance(pacMan) > 8 ? pacMan.location() : Tile.at(0, world.height() - 1)).ok();
+				.tile(() -> clyde.distance(pacMan) > 8 ? pacMan.tileLocation() : Tile.at(0, world.height() - 1)).ok();
 	}
 
 	public World world() {

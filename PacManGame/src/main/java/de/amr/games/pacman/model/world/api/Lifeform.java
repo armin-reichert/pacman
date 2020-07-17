@@ -9,7 +9,7 @@ import de.amr.easy.game.controller.Lifecycle;
  */
 public interface Lifeform extends Lifecycle {
 
-	Tile location();
+	Tile tileLocation();
 
 	void placeAt(Tile tile, float offsetX, float offsetY);
 

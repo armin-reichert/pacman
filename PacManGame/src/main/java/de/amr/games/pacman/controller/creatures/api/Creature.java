@@ -1,7 +1,5 @@
 package de.amr.games.pacman.controller.creatures.api;
 
-import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
-
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,20 +7,21 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.entity.Entity;
-import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.controller.steering.common.MovementControl;
+import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * A creature has "intelligence" and makes decisions changing its behavior.
+ * A creature can move through the world and has "intelligence", i.e. it can make decisions changing
+ * its behavior.
  * <p>
  * The physical size is one tile, however the visual appearance may be larger.
  * 
@@ -32,22 +31,23 @@ import de.amr.statemachine.core.StateMachine;
  */
 public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEvent> implements MobileLifeform {
 
-	public final Entity entity = new Entity();
+	public final Entity entity;
 	public final String name;
-	
-	protected Map<STATE, Steering> steeringMap;
-	protected MovementControl movement;
-	protected Tile targetTile;
-	protected boolean enteredNewTile;
+
+	protected final Map<STATE, Steering> steeringsByState;
+	protected final Movement movement;
+
 	protected Theme theme;
+	protected Tile targetTile;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Creature(Class<STATE> stateClass, String name) {
+	public Creature(Class<STATE> stateClass, World world, String name) {
 		super(stateClass);
 		this.name = name;
+		entity = new Entity();
 		entity.tf.width = entity.tf.height = Tile.SIZE;
-		movement = new MovementControl(this);
-		steeringMap = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
+		movement = new Movement(world, this, entity.tf, name);
+		steeringsByState = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
 	}
 
 	@Override
@@ -60,8 +60,6 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 		entity.visible = visible;
 	}
 
-	public abstract IRenderer renderer();
-
 	public Theme getTheme() {
 		return theme;
 	}
@@ -70,6 +68,8 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 		this.theme = theme;
 	}
 
+	public abstract IRenderer renderer();
+
 	/**
 	 * Euclidean distance (in tiles) between this and the other animal.
 	 * 
@@ -77,16 +77,19 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	 * @return Euclidean distance measured in tiles
 	 */
 	public double distance(Creature<?> other) {
-		return location().distance(other.location());
+		return tileLocation().distance(other.tileLocation());
 	}
 
 	/**
-	 * @return how fast (px/s) this creature can move at most
+	 * @return upper bound (px/s) for this creatures' speed
 	 */
 	public float speedLimit() {
 		return movement.fnSpeedLimit.get();
 	}
 
+	/**
+	 * @param fnSpeedLimit function providing the speed limit
+	 */
 	public void setSpeedLimit(Supplier<Float> fnSpeedLimit) {
 		movement.fnSpeedLimit = fnSpeedLimit;
 	}
@@ -95,8 +98,7 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	 * @return the current steering for this actor.
 	 */
 	public Steering steering() {
-		return steeringMap.getOrDefault(getState(), () -> {
-			// do nothing
+		return steeringsByState.getOrDefault(getState(), () -> {
 		});
 	}
 
@@ -107,8 +109,8 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	 * @return steering defined for this state
 	 */
 	public Steering steering(STATE state) {
-		if (steeringMap.containsKey(state)) {
-			return steeringMap.get(state);
+		if (steeringsByState.containsKey(state)) {
+			return steeringsByState.get(state);
 		}
 		throw new IllegalArgumentException(String.format("%s: No steering found for state %s", this, state));
 	}
@@ -120,29 +122,30 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	 * @param steering steering defined for this state
 	 */
 	public void behavior(STATE state, Steering steering) {
-		steeringMap.put(state, steering);
+		steeringsByState.put(state, steering);
+	}
+
+	@Override
+	public boolean requiresGridAlignment() {
+		return steering().requiresGridAlignment();
 	}
 
 	@Override
 	public String toString() {
-		Tile tile = location();
+		Tile tile = tileLocation();
 		return String.format("(%s, col:%d, row:%d, %s)", name, tile.col, tile.row, getState());
 	}
 
 	@Override
 	public void init() {
 		targetTile = null;
-		enteredNewTile = true;
 		movement.init();
-		movement.moveDir = movement.wishDir = RIGHT;
 		super.init();
 	}
 
 	@Override
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
-		Tile oldTile = location();
-		entity.tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
-		enteredNewTile = !location().equals(oldTile);
+		movement.placeCreatureAt(tile, xOffset, yOffset);
 	}
 
 	public boolean isTeleporting() {
@@ -150,20 +153,13 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	}
 
 	@Override
-	public Tile location() {
-		Vector2f center = entity.tf.getCenter();
-		int col = (int) (center.x >= 0 ? center.x / Tile.SIZE : Math.floor(center.x / Tile.SIZE));
-		int row = (int) (center.y >= 0 ? center.y / Tile.SIZE : Math.floor(center.y / Tile.SIZE));
-		return Tile.at(col, row);
+	public Tile tileLocation() {
+		return movement.currentTile();
 	}
 
 	@Override
 	public boolean enteredNewTile() {
-		return enteredNewTile;
-	}
-
-	public void setEnteredNewTile(boolean enteredNewTile) {
-		this.enteredNewTile = enteredNewTile;
+		return movement.enteredNewTile;
 	}
 
 	@Override
@@ -198,7 +194,7 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 
 	@Override
 	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = location(), neighbor = world().neighbor(currentTile, dir);
+		Tile currentTile = tileLocation(), neighbor = world().neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
 

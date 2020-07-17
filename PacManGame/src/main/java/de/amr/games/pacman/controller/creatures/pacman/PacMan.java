@@ -41,7 +41,7 @@ public class PacMan extends Creature<PacManState> {
 	private IPacManRenderer renderer;
 
 	public PacMan(ArcadeWorld world) {
-		super(PacManState.class, "Pac-Man");
+		super(PacManState.class, world, "Pac-Man");
 		this.world = world;
 		/*@formatter:off*/
 		beginStateMachine()
@@ -168,7 +168,7 @@ public class PacMan extends Creature<PacManState> {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		Tile tileAhead = world.tileToDir(location(), moveDir(), numTiles);
+		Tile tileAhead = world.tileToDir(tileLocation(), moveDir(), numTiles);
 		if (moveDir() == UP && !settings.fixOverflowBug) {
 			return world.tileToDir(tileAhead, LEFT, numTiles);
 		}
@@ -176,7 +176,7 @@ public class PacMan extends Creature<PacManState> {
 	}
 
 	private Optional<PacManGameEvent> findSomethingInteresting() {
-		Tile tile = location();
+		Tile tile = tileLocation();
 		if (tile.equals(world.bonusTile())
 				&& world.getBonus().filter(bonus -> bonus.state == BonusState.ACTIVE).isPresent()) {
 			return Optional.of(new BonusFoundEvent());

@@ -57,7 +57,7 @@ public class Ghost extends Creature<GhostState> {
 	private IRenderer renderer;
 
 	public Ghost(ArcadeWorld world, String name, int color) {
-		super(GhostState.class, name);
+		super(GhostState.class, world, name);
 		this.world = world;
 		this.color = color;
 		/*@formatter:off*/
@@ -167,7 +167,7 @@ public class Ghost extends Creature<GhostState> {
 					.condition(() -> fnSubsequentState.get() == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> world.isHouseEntry(location()))
+					.condition(() -> world.isHouseEntry(tileLocation()))
 					
 		.endStateMachine();
 		/*@formatter:on*/
@@ -288,12 +288,12 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public boolean isInsideHouse() {
-		return world.insideHouseOrDoor(location());
+		return world.insideHouseOrDoor(tileLocation());
 	}
 
 	private void checkPacManCollision() {
 		PacMan pacMan = world.getFolks().pacMan();
-		if (location().equals(pacMan.location()) && !isTeleporting() && !pacMan.isTeleporting()
+		if (tileLocation().equals(pacMan.tileLocation()) && !isTeleporting() && !pacMan.isTeleporting()
 				&& !pacMan.is(PacManState.DEAD)) {
 			publish(new PacManGhostCollisionEvent(this));
 		}

@@ -37,6 +37,11 @@ public interface MobileLifeform extends Lifeform {
 	boolean enteredNewTile();
 
 	/**
+	 * @return tells if this lifeform is moving exactly along the grid
+	 */
+	boolean requiresGridAlignment();
+
+	/**
 	 * @return the (optional) target tile
 	 */
 	Tile targetTile();
