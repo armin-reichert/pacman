@@ -81,17 +81,17 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	}
 
 	/**
-	 * @return upper bound (px/s) for this creatures' speed
+	 * @return this creatures' current speed (pixels/sec)
 	 */
-	public float speedLimit() {
-		return movement.fnSpeedLimit.get();
+	public float speed() {
+		return movement.fnSpeed.get();
 	}
 
 	/**
-	 * @param fnSpeedLimit function providing the speed limit
+	 * @param fnSpeed function providing the current speed
 	 */
-	public void setSpeedLimit(Supplier<Float> fnSpeedLimit) {
-		movement.fnSpeedLimit = fnSpeedLimit;
+	public void setSpeed(Supplier<Float> fnSpeed) {
+		movement.fnSpeed = fnSpeed;
 	}
 
 	/**

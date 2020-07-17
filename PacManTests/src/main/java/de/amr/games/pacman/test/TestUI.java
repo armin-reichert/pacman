@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test;
 
-import static de.amr.games.pacman.controller.game.SpeedLimits.pacManSpeedLimit;
-import static de.amr.games.pacman.controller.game.SpeedLimits.speedLimit;
+import static de.amr.games.pacman.controller.game.GameSpeed.pacManSpeed;
+import static de.amr.games.pacman.controller.game.GameSpeed.ghostSpeed;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -69,8 +69,8 @@ public class TestUI implements Lifecycle, VisualController {
 		game = new Game(1, world.totalFoodCount());
 
 		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
-		folks.ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> speedLimit(ghost, game)));
-		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
+		folks.ghosts().forEach(ghost -> ghost.setSpeed(() -> ghostSpeed(ghost, game)));
+		pacMan.setSpeed(() -> pacManSpeed(pacMan, game));
 
 		view = new PlayView(world, theme(), folks, game, null, null);
 		view.turnScoresOff();

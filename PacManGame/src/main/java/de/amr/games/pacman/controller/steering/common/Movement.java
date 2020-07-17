@@ -11,7 +11,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.game.SpeedLimits;
+import de.amr.games.pacman.controller.game.GameSpeed;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Portal;
@@ -32,7 +32,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 	public Direction moveDir;
 	public Direction wishDir;
 	public boolean enteredNewTile;
-	public Supplier<Float> fnSpeedLimit = () -> SpeedLimits.BASE_SPEED;
+	public Supplier<Float> fnSpeed = () -> GameSpeed.BASE_SPEED;
 	private Portal portalEntered;
 
 	public Movement(World world, MobileLifeform creature, Transform tf, String name) {
@@ -99,7 +99,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 
 	private void move() {
 		final Tile tileBeforeMove = currentTile();
-		float speedLimit = fnSpeedLimit.get();
+		float speedLimit = fnSpeed.get();
 		float speed = maxSpeedToDir(moveDir, speedLimit);
 		if (wishDir != null && wishDir != moveDir) {
 			float wishDirSpeed = maxSpeedToDir(wishDir, speedLimit);

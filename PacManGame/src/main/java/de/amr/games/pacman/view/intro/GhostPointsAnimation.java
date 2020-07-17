@@ -86,11 +86,11 @@ public class GhostPointsAnimation extends GameObject {
 
 		folks.pacMan().setMoveDir(Direction.RIGHT);
 		folks.pacMan().setState(PacManState.RUNNING);
-		folks.pacMan().setSpeedLimit(() -> 0f);
+		folks.pacMan().setSpeed(() -> 0f);
 		folks.pacMan().renderer().stopAnimationWhenStanding(false);
 
 		folks.ghosts().forEach(ghost -> {
-			ghost.setSpeedLimit(() -> 0f);
+			ghost.setSpeed(() -> 0f);
 			ghost.setState(GhostState.FRIGHTENED);
 			ghost.state().removeTimer();
 		});

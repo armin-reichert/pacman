@@ -1,13 +1,11 @@
 package de.amr.games.pacman.controller.game;
 
-import static de.amr.games.pacman.controller.creatures.pacman.PacManState.RUNNING;
-
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.game.GameLevel;
 
-public class SpeedLimits {
+public class GameSpeed {
 
 	/**
 	 * In Shaun William's <a href="https://github.com/masonicGIT/pacman">Pac-Man remake</a> there is a
@@ -26,42 +24,44 @@ public class SpeedLimits {
 		return fraction * BASE_SPEED;
 	}
 
-	public static float speedLimit(Ghost ghost, Game game) {
-		GameLevel level = game.level;
+	public static float ghostSpeed(Ghost ghost, Game game) {
 		switch (ghost.getState()) {
 		case LOCKED:
-			return speed(ghost.isInsideHouse() ? level.ghostSpeed / 2 : 0);
+			return speed(ghost.isInsideHouse() ? game.level.ghostSpeed / 2 : 0);
 		case LEAVING_HOUSE:
-			return speed(level.ghostSpeed / 2);
+			return speed(game.level.ghostSpeed / 2);
 		case ENTERING_HOUSE:
-			return speed(level.ghostSpeed);
+			return speed(game.level.ghostSpeed);
 		case CHASING:
 		case SCATTERING:
 			if (ghost.world().isTunnel(ghost.tileLocation())) {
-				return speed(level.ghostTunnelSpeed);
+				return speed(game.level.ghostTunnelSpeed);
 			}
 			switch (ghost.getSanity()) {
 			case ELROY1:
-				return speed(level.elroy1Speed);
+				return speed(game.level.elroy1Speed);
 			case ELROY2:
-				return speed(level.elroy2Speed);
+				return speed(game.level.elroy2Speed);
 			case INFECTABLE:
 			case IMMUNE:
-				return speed(level.ghostSpeed);
+				return speed(game.level.ghostSpeed);
 			default:
 				throw new IllegalArgumentException("Illegal ghost sanity state: " + ghost.getSanity());
 			}
 		case FRIGHTENED:
-			return speed(ghost.world().isTunnel(ghost.tileLocation()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
+			return speed(
+					ghost.world().isTunnel(ghost.tileLocation()) ? game.level.ghostTunnelSpeed : game.level.ghostFrightenedSpeed);
 		case DEAD:
-			return speed(2 * level.ghostSpeed);
+			return speed(2 * game.level.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s", ghost.getState()));
 		}
 	}
 
-	public static float pacManSpeedLimit(PacMan pacMan, Game game) {
-		GameLevel level = game.level;
-		return pacMan.is(RUNNING) ? speed(pacMan.getPower() > 0 ? level.pacManPowerSpeed : level.pacManSpeed) : 0;
+	public static float pacManSpeed(PacMan pacMan, Game game) {
+		if (pacMan.is(PacManState.SLEEPING, PacManState.DEAD)) {
+			return 0;
+		}
+		return pacMan.getPower() > 0 ? speed(game.level.pacManPowerSpeed) : speed(game.level.pacManSpeed);
 	}
 }
