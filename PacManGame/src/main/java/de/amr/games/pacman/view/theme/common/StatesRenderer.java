@@ -23,7 +23,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 
 public class StatesRenderer implements IRenderer {

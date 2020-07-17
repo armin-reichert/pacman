@@ -12,8 +12,8 @@ import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Animal;
 import de.amr.games.pacman.controller.game.SpeedLimits;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.core.Portal;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Portal;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**

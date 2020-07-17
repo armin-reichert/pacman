@@ -3,7 +3,7 @@ package de.amr.games.pacman.view.dashboard.states;
 import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.GhostSanity;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 
 /**
  * Holds the actor data displayed in the game state view.

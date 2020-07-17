@@ -24,10 +24,10 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.api.Bed;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.core.Bed;
-import de.amr.games.pacman.model.world.core.OneWayTile;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.OneWayTile;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 
@@ -166,7 +166,7 @@ public class Ghost extends Animal<GhostState> {
 					.condition(() -> fnSubsequentState.get() == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> world.isJustBeforeDoor(location()))
+					.condition(() -> world.isHouseEntry(location()))
 					
 		.endStateMachine();
 		/*@formatter:on*/

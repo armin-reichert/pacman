@@ -13,10 +13,10 @@ import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.world.arcade.Symbol;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.api.BonusState;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.BonusState;
-import de.amr.games.pacman.model.world.core.Door.DoorState;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Door.DoorState;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 
 public class WorldRenderer implements IWorldRenderer {
@@ -80,13 +80,13 @@ public class WorldRenderer implements IWorldRenderer {
 
 	private void drawMazeContent(Graphics2D g) {
 		// hide eaten food
-		world.habitatTiles().filter(world::didContainFood).forEach(tile -> {
+		world.habitatArea().filter(world::didContainFood).forEach(tile -> {
 			g.setColor(fnEatenFoodColor.apply(tile));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
 		// simulate energizer blinking animation
 		if (energizerAnimation.isEnabled() && energizerAnimation.currentFrameIndex() == 1) {
-			world.habitatTiles().filter(world::containsEnergizer).forEach(tile -> {
+			world.habitatArea().filter(world::containsEnergizer).forEach(tile -> {
 				g.setColor(fnEatenFoodColor.apply(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});

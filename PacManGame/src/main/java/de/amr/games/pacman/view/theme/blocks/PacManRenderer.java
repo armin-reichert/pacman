@@ -7,7 +7,7 @@ import java.awt.Stroke;
 
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 
 class PacManRenderer implements IPacManRenderer {

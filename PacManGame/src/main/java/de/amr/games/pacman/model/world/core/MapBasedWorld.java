@@ -14,24 +14,30 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.model.world.api.Bed;
+import de.amr.games.pacman.model.world.api.Bonus;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Door;
+import de.amr.games.pacman.model.world.api.House;
 import de.amr.games.pacman.model.world.api.Lifeform;
+import de.amr.games.pacman.model.world.api.OneWayTile;
+import de.amr.games.pacman.model.world.api.Portal;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 
-public abstract class AbstractWorld implements World {
+public abstract class MapBasedWorld implements World {
 
+	protected WorldMap map;
 	protected Bed pacManBed;
-	protected Tile bonusTile;
 	protected List<House> houses = new ArrayList<>();
 	protected List<Portal> portals = new ArrayList<>();
 	protected List<OneWayTile> oneWayTiles = new ArrayList<>();
 	protected Bonus bonus;
+	protected Tile bonusTile;
 	protected boolean changingLevel;
 	protected boolean frozen;
 
-	protected WorldMap worldMap;
-
-	private Set<Lifeform> outsiders = new HashSet<>();
+	private Set<Lifeform> excludedGuys = new HashSet<>();
 
 	@Override
 	public boolean isFrozen() {
@@ -65,56 +71,56 @@ public abstract class AbstractWorld implements World {
 
 	protected void takeOut(Lifeform creature, boolean out) {
 		if (out) {
-			outsiders.add(creature);
+			excludedGuys.add(creature);
 		} else {
-			outsiders.remove(creature);
+			excludedGuys.remove(creature);
 		}
 		creature.setVisible(!out);
 	}
 
 	@Override
 	public boolean contains(Lifeform creature) {
-		return !outsiders.contains(creature);
+		return !excludedGuys.contains(creature);
 	}
 
 	protected void addPortal(Tile left, Tile right) {
-		worldMap.set0(left.row, left.col, B_WALL);
-		worldMap.set1(left.row, left.col, B_TUNNEL);
-		worldMap.set0(right.row, right.col, B_WALL);
-		worldMap.set1(right.row, right.col, B_TUNNEL);
+		map.set0(left.row, left.col, B_WALL);
+		map.set1(left.row, left.col, B_TUNNEL);
+		map.set0(right.row, right.col, B_WALL);
+		map.set1(right.row, right.col, B_TUNNEL);
 		portals.add(new Portal(Tile.at(left.col - 1, left.row), Tile.at(right.col + 1, right.row)));
 	}
 
 	protected void setEnergizer(Tile tile) {
-		worldMap.set0(tile.row, tile.col, B_WALL);
-		worldMap.set1(tile.row, tile.col, B_FOOD);
-		worldMap.set1(tile.row, tile.col, B_ENERGIZER);
+		map.set0(tile.row, tile.col, B_WALL);
+		map.set1(tile.row, tile.col, B_FOOD);
+		map.set1(tile.row, tile.col, B_ENERGIZER);
 	}
 
 	protected boolean is(Tile tile, byte bit) {
-		return includes(tile) && worldMap.is(tile.row, tile.col, bit);
+		return includes(tile) && map.is(tile.row, tile.col, bit);
 	}
 
 	protected void set(Tile tile, byte bit) {
 		if (includes(tile)) {
-			worldMap.set1(tile.row, tile.col, bit);
+			map.set1(tile.row, tile.col, bit);
 		}
 	}
 
 	protected void clear(Tile tile, byte bit) {
 		if (includes(tile)) {
-			worldMap.set0(tile.row, tile.col, bit);
+			map.set0(tile.row, tile.col, bit);
 		}
 	}
 
 	@Override
 	public int width() {
-		return worldMap.data[0].length;
+		return map.data[0].length;
 	}
 
 	@Override
 	public int height() {
-		return worldMap.data.length;
+		return map.data.length;
 	}
 
 	@Override
@@ -165,7 +171,7 @@ public abstract class AbstractWorld implements World {
 	@Override
 	public boolean isAccessible(Tile tile) {
 		boolean inside = includes(tile);
-		return inside && !is(tile, B_WALL) || !inside && anyPortalContains(tile);
+		return inside && !is(tile, B_WALL) || !inside && isInsidePortal(tile);
 	}
 
 	@Override
@@ -190,7 +196,7 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
-	public boolean isJustBeforeDoor(Tile tile) {
+	public boolean isHouseEntry(Tile tile) {
 		for (Direction dir : Direction.values()) {
 			Tile neighbor = neighbor(tile, dir);
 			if (isDoor(neighbor)) {
@@ -210,15 +216,15 @@ public abstract class AbstractWorld implements World {
 
 	@Override
 	public int totalFoodCount() {
-		return worldMap.totalFoodCount;
+		return map.totalFoodCount;
 	}
 
 	@Override
 	public void clearFood() {
 		for (int row = 0; row < height(); ++row) {
 			for (int col = 0; col < width(); ++col) {
-				if (worldMap.is(row, col, B_FOOD)) {
-					worldMap.set1(row, col, B_EATEN);
+				if (map.is(row, col, B_FOOD)) {
+					map.set1(row, col, B_EATEN);
 				}
 			}
 		}
@@ -228,8 +234,8 @@ public abstract class AbstractWorld implements World {
 	public void fillFood() {
 		for (int row = 0; row < height(); ++row) {
 			for (int col = 0; col < width(); ++col) {
-				if (worldMap.is(row, col, B_FOOD)) {
-					worldMap.set0(row, col, B_EATEN);
+				if (map.is(row, col, B_FOOD)) {
+					map.set0(row, col, B_EATEN);
 				}
 			}
 		}

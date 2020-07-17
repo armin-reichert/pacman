@@ -17,8 +17,8 @@ import de.amr.games.pacman.controller.steering.common.MovementControl;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.statemachine.core.StateMachine;
 

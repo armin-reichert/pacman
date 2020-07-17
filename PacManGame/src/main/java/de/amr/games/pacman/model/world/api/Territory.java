@@ -2,12 +2,6 @@ package de.amr.games.pacman.model.world.api;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.world.core.Bed;
-import de.amr.games.pacman.model.world.core.House;
-import de.amr.games.pacman.model.world.core.OneWayTile;
-import de.amr.games.pacman.model.world.core.Portal;
-import de.amr.games.pacman.model.world.core.Tile;
-
 public interface Territory extends RectangularArea {
 
 	/**
@@ -72,6 +66,11 @@ public interface Territory extends RectangularArea {
 	boolean isDoor(Tile tile);
 
 	/**
+	 * @return Pac-Man's sleep location
+	 */
+	Bed pacManBed();
+
+	/**
 	 * @return the houses in this territory
 	 */
 	Stream<House> houses();
@@ -84,11 +83,6 @@ public interface Territory extends RectangularArea {
 	}
 
 	/**
-	 * @return Pac-Man's sleep location
-	 */
-	Bed pacManBed();
-
-	/**
 	 * @param tile some tile
 	 * @return if there is a door at this tile or the tile is located inside a house
 	 */
@@ -96,12 +90,12 @@ public interface Territory extends RectangularArea {
 
 	/**
 	 * @param tile some tile
-	 * @return if this tile lies outside a house and a door to the house is its neighbor
+	 * @return if this tile is the entry to a house
 	 */
-	boolean isJustBeforeDoor(Tile tile);
+	boolean isHouseEntry(Tile tile);
 
 	/**
-	 * @return the portals in this territory
+	 * @return all portals in this territory
 	 */
 	Stream<Portal> portals();
 
@@ -109,9 +103,14 @@ public interface Territory extends RectangularArea {
 	 * @param tile some tile
 	 * @return if there is some portal at this tile
 	 */
-	default boolean anyPortalContains(Tile tile) {
+	default boolean isInsidePortal(Tile tile) {
 		return portals().anyMatch(portal -> portal.includes(tile));
 	}
+
+	/**
+	 * @return all one-way tiles in this territory
+	 */
+	Stream<OneWayTile> oneWayTiles();
 
 	/**
 	 * @param tile some tile
@@ -121,11 +120,6 @@ public interface Territory extends RectangularArea {
 	default boolean isOneWayTile(Tile tile, Direction dir) {
 		return oneWayTiles().anyMatch(oneWay -> oneWay.tile.equals(tile) && oneWay.dir == dir);
 	}
-
-	/**
-	 * @return all one-way tiles in this territory
-	 */
-	Stream<OneWayTile> oneWayTiles();
 
 	/**
 	 * @return the bonus location of this territory

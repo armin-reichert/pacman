@@ -1,6 +1,4 @@
-package de.amr.games.pacman.model.world.core;
-
-import de.amr.games.pacman.model.world.api.RectangularArea;
+package de.amr.games.pacman.model.world.api;
 
 public class Block implements RectangularArea {
 

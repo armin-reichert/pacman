@@ -18,9 +18,9 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.creatures.Animal;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.model.world.api.House;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.House;
-import de.amr.games.pacman.model.world.core.Tile;
 
 /**
  * The folks from the original game with their individual behaviors.

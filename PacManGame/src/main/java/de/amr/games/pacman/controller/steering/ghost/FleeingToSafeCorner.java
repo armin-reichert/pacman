@@ -10,7 +10,7 @@ import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.TakingPrecomputedPath;
 import de.amr.games.pacman.model.world.api.FoodContainer;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 
 /**

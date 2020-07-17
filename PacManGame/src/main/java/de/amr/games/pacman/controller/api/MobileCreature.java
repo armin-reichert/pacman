@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller.api;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 
 /**
  * Implemented by entities that can move through the world.

@@ -11,8 +11,8 @@ import org.junit.Test;
 
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Tile;
 
 public class WorldTests {
 
@@ -39,8 +39,8 @@ public class WorldTests {
 
 	@Test
 	public void testMazeContent() {
-		assertEquals(4, world.habitatTiles().filter(world::containsEnergizer).count());
-		assertEquals(244, world.habitatTiles().filter(world::containsFood).count());
+		assertEquals(4, world.habitatArea().filter(world::containsEnergizer).count());
+		assertEquals(244, world.habitatArea().filter(world::containsFood).count());
 		assertTrue(world.containsSimplePellet(Tile.at(1, 4)));
 		assertTrue(world.containsEnergizer(Tile.at(1, 6)));
 	}

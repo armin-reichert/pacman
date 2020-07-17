@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.impl.Grid4Topology;
@@ -34,11 +35,11 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 
 	public WorldGraph(World world) {
 		super(world.width(), world.height(), Grid4Topology.get(), v -> null, (u, v) -> null, UndirectedEdge::new);
-		setDefaultVertexLabel(this::tile);
 		this.world = world;
 		fill();
 		edges().filter(edge -> !world.isAccessible(tile(edge.either())) || !world.isAccessible(tile(edge.other())))
 				.forEach(this::removeEdge);
+		setDefaultVertexLabel(this::tile);
 		pathFinder = getPathFinder(settings.pathFinder);
 	}
 
@@ -47,7 +48,7 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 	}
 
 	private PathFinder getPathFinder(String spec) {
-		switch (spec) {
+		switch (spec.toLowerCase()) {
 		case "bfs":
 			return PathFinder.BREADTH_FIRST_SEARCH;
 		case "bestfs":
@@ -79,14 +80,15 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 	}
 
 	public List<Tile> shortestPath(Tile source, Tile target) {
+		List<Tile> pathTiles = Collections.emptyList();
 		if (world.includes(source) && world.includes(target)) {
 			Path path = createSearch(target).findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
 				loginfo("%d'th pathfinding (%s) executed", pathFinderCalls, pathFinder);
 			}
-			return path.vertexStream().map(this::tile).collect(Collectors.toList());
+			pathTiles = path.vertexStream().map(this::tile).collect(Collectors.toList());
 		}
-		return Collections.emptyList();
+		return pathTiles;
 	}
 }

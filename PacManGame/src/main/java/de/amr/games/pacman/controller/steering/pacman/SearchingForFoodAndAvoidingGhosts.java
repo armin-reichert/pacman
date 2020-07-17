@@ -13,9 +13,9 @@ import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.core.BonusState;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
 
@@ -57,7 +57,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 
 	@Override
 	public void steer() {
-		if (!me.enteredNewTile() && me.canCrossBorderTo(me.moveDir()) || me.world().anyPortalContains(me.location())) {
+		if (!me.enteredNewTile() && me.canCrossBorderTo(me.moveDir()) || me.world().isInsidePortal(me.location())) {
 			return;
 		}
 
@@ -134,7 +134,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	private Stream<Tile> foodTiles() {
-		return me.world().habitatTiles().filter(me.world()::containsFood);
+		return me.world().habitatArea().filter(me.world()::containsFood);
 	}
 
 	private Optional<Tile> preferredFoodLocationFrom(Tile here) {

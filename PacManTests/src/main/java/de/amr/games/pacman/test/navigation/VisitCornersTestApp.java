@@ -8,7 +8,7 @@ import java.util.List;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.test.TestUI;
 
 public class VisitCornersTestApp extends Application {

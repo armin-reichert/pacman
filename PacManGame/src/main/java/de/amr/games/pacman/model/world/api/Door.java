@@ -1,10 +1,7 @@
-package de.amr.games.pacman.model.world.core;
+package de.amr.games.pacman.model.world.api;
 
 import java.util.Arrays;
 import java.util.List;
-
-import de.amr.games.pacman.model.world.api.Area;
-import de.amr.games.pacman.model.world.api.Direction;
 
 /**
  * A door into a house.

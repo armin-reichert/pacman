@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.world.core;
+package de.amr.games.pacman.model.world.api;
 
 public class Bonus {
 

@@ -9,8 +9,8 @@ import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
@@ -97,7 +97,7 @@ public class WorldPreview extends JFrame {
 		if (world.containsEnergizer(tile)) {
 			return "Ö";
 		}
-		if (world.anyPortalContains(tile)) {
+		if (world.isInsidePortal(tile)) {
 			return "@";
 		}
 		return "";

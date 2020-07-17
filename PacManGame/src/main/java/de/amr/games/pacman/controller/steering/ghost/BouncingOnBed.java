@@ -5,8 +5,8 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.model.world.core.Bed;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Bed;
+import de.amr.games.pacman.model.world.api.Tile;
 
 public class BouncingOnBed implements Steering {
 

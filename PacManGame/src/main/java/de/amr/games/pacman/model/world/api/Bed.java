@@ -1,7 +1,6 @@
-package de.amr.games.pacman.model.world.core;
+package de.amr.games.pacman.model.world.api;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.model.world.api.Direction;
 
 /**
  * A bed is a place defining an exit direction.

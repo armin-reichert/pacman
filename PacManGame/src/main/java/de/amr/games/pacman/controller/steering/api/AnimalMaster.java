@@ -13,9 +13,9 @@ import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.steering.ghost.BouncingOnBed;
 import de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed;
 import de.amr.games.pacman.controller.steering.ghost.LeavingHouse;
-import de.amr.games.pacman.model.world.core.Bed;
-import de.amr.games.pacman.model.world.core.House;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Bed;
+import de.amr.games.pacman.model.world.api.House;
+import de.amr.games.pacman.model.world.api.Tile;
 
 public class AnimalMaster {
 

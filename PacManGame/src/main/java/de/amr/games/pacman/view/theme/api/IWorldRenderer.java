@@ -3,7 +3,7 @@ package de.amr.games.pacman.view.theme.api;
 import java.awt.Color;
 import java.util.function.Function;
 
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 
 public interface IWorldRenderer extends IRenderer {
 

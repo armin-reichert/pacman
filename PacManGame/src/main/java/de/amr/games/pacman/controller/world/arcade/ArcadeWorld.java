@@ -7,15 +7,15 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.Area;
+import de.amr.games.pacman.model.world.api.Bed;
+import de.amr.games.pacman.model.world.api.Block;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.core.AbstractWorld;
-import de.amr.games.pacman.model.world.core.Bed;
-import de.amr.games.pacman.model.world.core.Block;
-import de.amr.games.pacman.model.world.core.Door;
-import de.amr.games.pacman.model.world.core.House;
-import de.amr.games.pacman.model.world.core.OneWayTile;
-import de.amr.games.pacman.model.world.core.Portal;
-import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.api.Door;
+import de.amr.games.pacman.model.world.api.House;
+import de.amr.games.pacman.model.world.api.OneWayTile;
+import de.amr.games.pacman.model.world.api.Portal;
+import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.core.MapBasedWorld;
 import de.amr.games.pacman.model.world.core.WorldMap;
 
 /**
@@ -23,7 +23,7 @@ import de.amr.games.pacman.model.world.core.WorldMap;
  * 
  * @author Armin Reichert
  */
-public class ArcadeWorld extends AbstractWorld {
+public class ArcadeWorld extends MapBasedWorld {
 
 	static final byte[][] DATA = {
 			//@formatter:off
@@ -69,7 +69,7 @@ public class ArcadeWorld extends AbstractWorld {
 	private ArcadeWorldFolks folks;
 
 	public ArcadeWorld() {
-		worldMap = new WorldMap(DATA);
+		map = new WorldMap(DATA);
 		pacManBed = new Bed(4, 13, 26, Direction.RIGHT);
 		houses.add(ghostHouse(11, 16, 6, 4));
 		bonusTile = Tile.at(13, 20);
@@ -118,7 +118,7 @@ public class ArcadeWorld extends AbstractWorld {
 	 * @return the habitat tiles
 	 */
 	@Override
-	public Stream<Tile> habitatTiles() {
+	public Stream<Tile> habitatArea() {
 		return IntStream.range(3 * width(), (height() + 4) * width()).mapToObj(i -> Tile.at(i % width(), i / width()));
 	}
 

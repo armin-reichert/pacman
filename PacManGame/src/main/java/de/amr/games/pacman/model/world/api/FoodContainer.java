@@ -2,9 +2,6 @@ package de.amr.games.pacman.model.world.api;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.model.world.core.Bonus;
-import de.amr.games.pacman.model.world.core.Tile;
-
 /**
  * Provides food-related functionality.
  * 
