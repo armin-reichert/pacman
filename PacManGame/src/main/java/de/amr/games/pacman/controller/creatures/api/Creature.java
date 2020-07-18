@@ -71,16 +71,6 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	public abstract IRenderer renderer();
 
 	/**
-	 * Euclidean distance (in tiles) between this and the other animal.
-	 * 
-	 * @param other other animal
-	 * @return Euclidean distance measured in tiles
-	 */
-	public double distance(Creature<?> other) {
-		return tileLocation().distance(other.tileLocation());
-	}
-
-	/**
 	 * @return this creatures' current speed (pixels/sec)
 	 */
 	public float speed() {

@@ -11,6 +11,16 @@ public interface Lifeform extends Lifecycle {
 
 	Tile tileLocation();
 
+	/**
+	 * Euclidean distance (in tiles) between this and the other lifeform.
+	 * 
+	 * @param other other animal
+	 * @return Euclidean distance measured in tiles
+	 */
+	default double distance(Lifeform other) {
+		return tileLocation().distance(other.tileLocation());
+	}
+
 	void placeAt(Tile tile, float offsetX, float offsetY);
 
 	default void placeAt(Tile tile) {
