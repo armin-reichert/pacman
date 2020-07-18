@@ -129,6 +129,9 @@ public class Ghost extends Creature<GhostState> {
 				.when(LEAVING_HOUSE).then(CHASING)
 					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == CHASING)
 				
+				.when(LEAVING_HOUSE).then(FRIGHTENED)
+					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == FRIGHTENED)
+					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> steering().isComplete())
 				

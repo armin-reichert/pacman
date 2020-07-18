@@ -5,7 +5,8 @@ import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeCorner;
+import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.test.TestUI;
 
@@ -20,7 +21,7 @@ public class EscapeIntoCornerTestApp extends Application {
 		settings.width = 28 * Tile.SIZE;
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
-		settings.title = "Escape Into Corner";
+		settings.title = "Escape To Safe Tile";
 	}
 
 	@Override
@@ -34,9 +35,12 @@ class EscapeIntoCornerTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		include(pacMan, blinky);
-		blinky.behavior(FRIGHTENED, new FleeingToSafeCorner(blinky, pacMan));
+		include(pacMan, blinky, inky);
+		blinky.behavior(FRIGHTENED, new FleeingToSafeTile(blinky, pacMan));
 		blinky.setState(FRIGHTENED);
+		inky.behavior(FRIGHTENED, new FleeingToSafeTile(inky, pacMan));
+		inky.nextStateToEnter(() -> FRIGHTENED);
+		inky.setState(GhostState.LEAVING_HOUSE);
 		you(pacMan).moveRandomly().ok();
 		pacMan.startRunning();
 		view.turnRoutesOn();
