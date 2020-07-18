@@ -1,11 +1,18 @@
 package de.amr.games.pacman.model.world.api;
 
+import de.amr.easy.game.entity.Transform;
+
 /**
  * Implemented by entities that can move through the world.
  * 
  * @author Armin Reichert
  */
 public interface MobileLifeform extends Lifeform {
+
+	/**
+	 * @return the transform for this lifeform
+	 */
+	Transform tf();
 
 	/**
 	 * @return the current move direction
@@ -40,18 +47,6 @@ public interface MobileLifeform extends Lifeform {
 	 * @return tells if this lifeform is moving exactly along the grid
 	 */
 	boolean requiresAlignment();
-
-	/**
-	 * @return the (optional) target tile
-	 */
-	Tile targetTile();
-
-	/**
-	 * Sets the target tile.
-	 * 
-	 * @param tile target tile of this entity
-	 */
-	void setTargetTile(Tile tile);
 
 	/**
 	 * @param dir direction

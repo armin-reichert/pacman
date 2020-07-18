@@ -1,16 +1,15 @@
 package de.amr.games.pacman.controller.steering.ghost;
 
-import static de.amr.datastruct.StreamUtils.permute;
-
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.steering.common.TakingPrecomputedPath;
+import de.amr.datastruct.StreamUtils;
+import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.model.world.api.FoodContainer;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 
 /**
@@ -21,19 +20,35 @@ import de.amr.games.pacman.model.world.core.WorldGraph;
  * 
  * @author Armin Reichert
  */
-public class FleeingToSafeCorner extends TakingPrecomputedPath {
+public class FleeingToSafeCorner extends FollowingPath {
 
-	public static FleeingToSafeCorner steer(Ghost refugee, MobileLifeform attacker) {
-		return new FleeingToSafeCorner(refugee, attacker);
-	}
-
+	private final MobileLifeform refugee;
+	private final MobileLifeform attacker;
 	private final WorldGraph graph;
 	private final Tile[] corners;
+	private Tile safeCorner;
 
-	private FleeingToSafeCorner(Ghost refugee, MobileLifeform attacker) {
-		super(refugee, attacker::tileLocation);
+	public FleeingToSafeCorner(MobileLifeform refugee, MobileLifeform attacker) {
+		super(refugee);
+		this.refugee = refugee;
+		this.attacker = attacker;
+		World world = refugee.world();
 		graph = new WorldGraph(world);
 		corners = new Tile[] { world.capeNW(), world.capeNE(), world.capeSW(), world.capeSE() };
+	}
+
+	@Override
+	public void steer() {
+		if (path.size() == 0 || isComplete()) {
+			safeCorner = computeSafeCorner();
+			setPath(graph.shortestPath(refugee.tileLocation(), safeCorner));
+		}
+		super.steer();
+	}
+
+	@Override
+	public boolean isComplete() {
+		return refugee.tileLocation().equals(safeCorner);
 	}
 
 	@Override
@@ -41,30 +56,21 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 		return true;
 	}
 
-	@Override
-	protected List<Tile> pathToTarget(MobileLifeform refugee, Tile targetTile) {
-		Tile target = refugee.tileLocation();
-		while (target.equals(refugee.tileLocation())) {
-			target = safeCorner(refugee);
-		}
-		return graph.shortestPath(refugee.tileLocation(), target);
-	}
-
-	private Tile safeCorner(MobileLifeform refugee) {
-		Tile refugeeTile = refugee.tileLocation();
-		Tile chaserTile = fnTargetTile.get();
+	private Tile computeSafeCorner() {
 		//@formatter:off
-		return permute(Arrays.stream(corners))
-			.filter(corner -> !corner.equals(refugeeTile))
-			.sorted(byDist(world,refugeeTile, chaserTile).reversed())
+		return StreamUtils.permute(Arrays.stream(corners))
+			.filter(corner -> !corner.equals(refugee.tileLocation()))
+			.sorted(byDist().reversed())
 			.findFirst().get();
 		//@formatter:on
 	}
 
-	private Comparator<Tile> byDist(FoodContainer world, Tile refugeeTile, Tile chaserTile) {
+	private Comparator<Tile> byDist() {
 		return (corner1, corner2) -> {
-			double dist1 = minDistFromPath(world, graph.shortestPath(refugeeTile, corner1), chaserTile);
-			double dist2 = minDistFromPath(world, graph.shortestPath(refugeeTile, corner2), chaserTile);
+			Tile refugeeLocation = refugee.tileLocation();
+			Tile attackerLocation = attacker.tileLocation();
+			double dist1 = minDistFromPath(attacker.world(), graph.shortestPath(refugeeLocation, corner1), attackerLocation);
+			double dist2 = minDistFromPath(attacker.world(), graph.shortestPath(refugeeLocation, corner2), attackerLocation);
 			return Double.compare(dist1, dist2);
 		};
 	}

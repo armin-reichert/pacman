@@ -39,6 +39,7 @@ class EnterGhostHouseTestUI extends TestUI {
 
 	private final List<Tile> capes = Arrays.asList(world.capeNW(), world.capeSE(), world.capeSW());
 	private int visits;
+	private Tile nextCapeToVisit;
 	private boolean enteredCape, leftCape;
 
 	private Tile randomCape() {
@@ -55,13 +56,14 @@ class EnterGhostHouseTestUI extends TestUI {
 		inky.setState(SCATTERING);
 		view.turnRoutesOn();
 		view.turnGridOn();
+		nextCapeToVisit = randomCape();
 	}
 
 	@Override
 	public void update() {
 		if (inky.getState() == LEAVING_HOUSE && !inky.isInsideHouse()) {
 			inky.setState(SCATTERING);
-			you(inky).when(SCATTERING).headFor().tile(this::randomCape).ok();
+			you(inky).when(SCATTERING).headFor().tile(nextCapeToVisit).ok();
 		} else if (inky.getState() == SCATTERING) {
 			// one round around the block, then killed at cape
 			if (capes.contains(inky.tileLocation())) {
@@ -77,6 +79,7 @@ class EnterGhostHouseTestUI extends TestUI {
 				inky.setState(DEAD);
 				visits = 0;
 				enteredCape = leftCape = false;
+				nextCapeToVisit = randomCape();
 			}
 		}
 		super.update();

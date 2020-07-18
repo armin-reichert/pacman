@@ -157,7 +157,7 @@ class GameStateTableModel extends AbstractTableModel {
 		r.included = world.contains(ghost);
 		r.name = ghost.name;
 		r.tile = ghost.tileLocation();
-		r.target = ghost.targetTile();
+		r.target = ghost.targetTile().orElse(null);
 		r.moveDir = ghost.moveDir();
 		r.wishDir = ghost.wishDir();
 		if (ghost.getState() != null) {

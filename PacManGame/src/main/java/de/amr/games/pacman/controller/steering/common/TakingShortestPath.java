@@ -1,6 +1,5 @@
 package de.amr.games.pacman.controller.steering.common;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.model.world.api.MobileLifeform;
@@ -8,21 +7,26 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 
 /**
- * Lets an actor follow the shortest path (using graph path finding) to the target tile.
+ * Lets a lifeform follow the shortest path (using graph path finding) to the target tile.
  *
  * @author Armin Reichert
  */
-public class TakingShortestPath extends TakingPrecomputedPath {
+public class TakingShortestPath extends FollowingPath {
 
-	protected WorldGraph graph;
+	private final WorldGraph graph;
+	private final Supplier<Tile> fnTargetTile;
 
-	public TakingShortestPath(MobileLifeform actor, Supplier<Tile> fnTargetTile) {
-		super(actor, fnTargetTile);
-		graph = new WorldGraph(world);
+	public TakingShortestPath(MobileLifeform mover, Supplier<Tile> fnTargetTile) {
+		super(mover);
+		this.fnTargetTile = fnTargetTile;
+		graph = new WorldGraph(mover.world());
 	}
 
 	@Override
-	protected List<Tile> pathToTarget(MobileLifeform actor, Tile targetTile) {
-		return graph.shortestPath(actor.tileLocation(), targetTile);
+	public void steer() {
+		if (path.size() == 0 || isComplete()) {
+			setPath(graph.shortestPath(mover.tileLocation(), fnTargetTile.get()));
+		}
+		super.steer();
 	}
 }

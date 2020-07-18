@@ -13,11 +13,16 @@ import de.amr.games.pacman.model.world.api.MobileLifeform;
  */
 public class RandomMovement implements Steering {
 
-	private MobileLifeform creature;
+	private MobileLifeform mover;
 	private boolean forced;
 
-	public RandomMovement(MobileLifeform creature) {
-		this.creature = Objects.requireNonNull(creature);
+	public RandomMovement(MobileLifeform mover) {
+		this.mover = Objects.requireNonNull(mover);
+	}
+
+	@Override
+	public boolean requiresGridAlignment() {
+		return true;
 	}
 
 	@Override
@@ -27,21 +32,15 @@ public class RandomMovement implements Steering {
 
 	@Override
 	public void steer() {
-		creature.setTargetTile(null);
-		if (forced || creature.enteredNewTile() || !creature.canCrossBorderTo(creature.moveDir())) {
+		if (forced || mover.enteredNewTile() || !mover.canCrossBorderTo(mover.moveDir())) {
 			/*@formatter:off*/
 			Direction.dirsShuffled()
-				.filter(dir -> dir != creature.moveDir().opposite())
-				.filter(creature::canCrossBorderTo)
+				.filter(dir -> dir != mover.moveDir().opposite())
+				.filter(mover::canCrossBorderTo)
 				.findFirst()
-				.ifPresent(creature::setWishDir);
+				.ifPresent(mover::setWishDir);
 			/*@formatter:on*/
 			forced = false;
 		}
-	}
-
-	@Override
-	public boolean requiresGridAlignment() {
-		return true;
 	}
 }

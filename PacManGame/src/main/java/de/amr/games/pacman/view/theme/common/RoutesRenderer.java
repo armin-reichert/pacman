@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.util.List;
+import java.util.Optional;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -68,8 +69,8 @@ public class RoutesRenderer implements IRenderer {
 		}
 	}
 
-	private void drawTargetTileRubberband(Graphics2D g, Ghost ghost, Tile targetTile) {
-		if (targetTile == null) {
+	private void drawTargetTileRubberband(Graphics2D g, Ghost ghost, Optional<Tile> targetTile) {
+		if (targetTile.isEmpty()) {
 			return;
 		}
 		g = (Graphics2D) g.create();
@@ -78,18 +79,16 @@ public class RoutesRenderer implements IRenderer {
 		// draw dashed line from ghost position to target tile
 		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 		int x1 = ghost.entity.tf.getCenter().roundedX(), y1 = ghost.entity.tf.getCenter().roundedY();
-		int x2 = targetTile.centerX(), y2 = targetTile.centerY();
+		int x2 = targetTile.get().centerX(), y2 = targetTile.get().centerY();
 		g.setStroke(dashed);
 		g.setColor(alpha(ghostColor(ghost), 200));
 		g.drawLine(x1, y1, x2, y2);
 
 		// draw solid rectangle indicating target tile
-		g.translate(targetTile.x(), targetTile.y());
+		g.translate(targetTile.get().x(), targetTile.get().y());
 		g.setColor(ghostColor(ghost));
 		g.setStroke(new BasicStroke(0.5f));
 		g.fillRect(2, 2, 4, 4);
-		g.translate(-targetTile.x(), -targetTile.y());
-
 		g.dispose();
 	}
 
@@ -118,14 +117,14 @@ public class RoutesRenderer implements IRenderer {
 	private void drawInkyChasing(Graphics2D g, Ghost inky) {
 		PacMan pacMan = folks.pacMan();
 		Ghost blinky = folks.blinky();
-		if (!inky.is(CHASING) || inky.targetTile() == null || !folks.world().contains(blinky)) {
+		if (!inky.is(CHASING) || inky.targetTile().isEmpty() || !folks.world().contains(blinky)) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
 		x1 = blinky.tileLocation().centerX();
 		y1 = blinky.tileLocation().centerY();
-		x2 = inky.targetTile().centerX();
-		y2 = inky.targetTile().centerY();
+		x2 = inky.targetTile().get().centerX();
+		y2 = inky.targetTile().get().centerY();
 		g.setColor(Color.GRAY);
 		g.drawLine(x1, y1, x2, y2);
 		Tile pacManTile = pacMan.tileLocation();

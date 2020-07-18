@@ -4,11 +4,14 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.entity.Entity;
+import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
+import de.amr.games.pacman.controller.steering.api.TargetTileSteering;
 import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -31,23 +34,22 @@ import de.amr.statemachine.core.StateMachine;
  */
 public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEvent> implements MobileLifeform {
 
-	public final Entity entity;
 	public final String name;
+	public final Entity entity;
 
 	protected final Map<STATE, Steering> steeringsByState;
 	protected final Movement movement;
 
 	protected Theme theme;
-	protected Tile targetTile;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Creature(Class<STATE> stateClass, World world, String name) {
 		super(stateClass);
 		this.name = name;
+		steeringsByState = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
+		movement = new Movement(this, name);
 		entity = new Entity();
 		entity.tf.width = entity.tf.height = Tile.SIZE;
-		movement = new Movement(world, this, name, entity.tf);
-		steeringsByState = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
 	}
 
 	@Override
@@ -92,6 +94,14 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 		});
 	}
 
+	public Optional<Tile> targetTile() {
+		if (steering() instanceof TargetTileSteering) {
+			TargetTileSteering steering = (TargetTileSteering) steering();
+			return Optional.ofNullable(steering.targetTile());
+		}
+		return Optional.empty();
+	}
+
 	/**
 	 * Returns the steering for the given state.
 	 * 
@@ -128,9 +138,13 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 
 	@Override
 	public void init() {
-		targetTile = null;
 		movement.init();
 		super.init();
+	}
+
+	@Override
+	public Transform tf() {
+		return entity.tf;
 	}
 
 	@Override
@@ -185,16 +199,6 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	@Override
 	public void setWishDir(Direction dir) {
 		movement.wishDir = dir;
-	}
-
-	@Override
-	public Tile targetTile() {
-		return targetTile;
-	}
-
-	@Override
-	public void setTargetTile(Tile tile) {
-		targetTile = tile;
 	}
 
 	@Override
