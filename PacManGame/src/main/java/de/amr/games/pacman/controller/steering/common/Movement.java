@@ -74,9 +74,9 @@ public class Movement extends StateMachine<MovementType, Void> {
 	}
 
 	public void moveToTile(Tile tile, float xOffset, float yOffset) {
-		Tile oldLocation = tileLocation();
+		Tile oldLocation = movedLifeform.tileLocation();
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
-		enteredNewTile = !tileLocation().equals(oldLocation);
+		enteredNewTile = !movedLifeform.tileLocation().equals(oldLocation);
 	}
 
 	private boolean insidePortal() {
@@ -84,13 +84,13 @@ public class Movement extends StateMachine<MovementType, Void> {
 	}
 
 	private void teleport() {
-		portal.teleport(tf, tileLocation(), moveDir);
+		portal.teleport(tf, movedLifeform.tileLocation(), moveDir);
 		portal = null;
-		loginfo("%s left portal at %s", lifeformName, tileLocation());
+		loginfo("%s left portal at %s", lifeformName, movedLifeform.tileLocation());
 	}
 
 	private void move() {
-		final Tile tileBeforeMove = tileLocation();
+		final Tile tileBeforeMove = movedLifeform.tileLocation();
 		final float maxSpeed = fnSpeed.get();
 		float speed = possibleSpeed(moveDir, maxSpeed);
 		if (wishDir != null && wishDir != moveDir) {
@@ -106,7 +106,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 		tf.setVelocity(Vector2f.smul(speed, moveDir.vector()));
 		tf.move();
 		// new tile entered?
-		Tile tileAfterMove = tileLocation();
+		Tile tileAfterMove = movedLifeform.tileLocation();
 		enteredNewTile = !tileBeforeMove.equals(tileAfterMove);
 		// portal entered?
 		world.portals().filter(p -> p.includes(tileAfterMove)).findFirst().ifPresent(p -> {
@@ -126,26 +126,17 @@ public class Movement extends StateMachine<MovementType, Void> {
 		if (movedLifeform.canCrossBorderTo(dir)) {
 			return speed;
 		}
-		float offsetX = tf.x - tileLocation().x();
-		float offsetY = tf.y - tileLocation().y();
 		switch (dir) {
 		case UP:
-			return Math.min(offsetY, speed);
+			return Math.min(movedLifeform.tileOffsetY(), speed);
 		case DOWN:
-			return Math.min(-offsetY, speed);
+			return Math.min(-movedLifeform.tileOffsetY(), speed);
 		case LEFT:
-			return Math.min(offsetX, speed);
+			return Math.min(movedLifeform.tileOffsetX(), speed);
 		case RIGHT:
-			return Math.min(-offsetX, speed);
+			return Math.min(-movedLifeform.tileOffsetX(), speed);
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
-	}
-
-	public Tile tileLocation() {
-		Vector2f center = tf.getCenter();
-		int col = (int) (center.x >= 0 ? center.x / Tile.SIZE : Math.floor(center.x / Tile.SIZE));
-		int row = (int) (center.y >= 0 ? center.y / Tile.SIZE : Math.floor(center.y / Tile.SIZE));
-		return Tile.at(col, row);
 	}
 }

@@ -45,7 +45,7 @@ class FollowTargetTilesTestUI extends TestUI {
 		soundManager.snd_ghost_chase().volume(0);
 		include(blinky);
 		blinky.init();
-		blinky.placeAt(targets.get(0));
+		blinky.placeAt(targets.get(0), 0, 0);
 		you(blinky).when(CHASING).headFor().tile(() -> targets.get(current)).ok();
 		blinky.setState(CHASING);
 		blinky.steering().force();

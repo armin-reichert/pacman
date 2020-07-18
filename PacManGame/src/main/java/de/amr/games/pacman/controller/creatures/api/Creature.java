@@ -134,6 +134,16 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	}
 
 	@Override
+	public float centerX() {
+		return entity.tf.getCenter().x;
+	}
+
+	@Override
+	public float centerY() {
+		return entity.tf.getCenter().y;
+	}
+
+	@Override
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		movement.moveToTile(tile, xOffset, yOffset);
 	}
@@ -150,11 +160,6 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 
 	public boolean isTeleporting() {
 		return movement.is(MovementType.TELEPORTING);
-	}
-
-	@Override
-	public Tile tileLocation() {
-		return movement.tileLocation();
 	}
 
 	@Override

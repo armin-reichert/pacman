@@ -9,7 +9,21 @@ import de.amr.easy.game.controller.Lifecycle;
  */
 public interface Lifeform extends Lifecycle {
 
-	Tile tileLocation();
+	float centerX();
+
+	float centerY();
+
+	/**
+	 * The tile location is defined as the tile containing the center of the lifeforms body.
+	 * 
+	 * @return tile location of this lifeform
+	 */
+	default Tile tileLocation() {
+		float cx = centerX(), cy = centerY();
+		int col = (int) (cx >= 0 ? cx / Tile.SIZE : Math.floor(cx / Tile.SIZE));
+		int row = (int) (cy >= 0 ? cy / Tile.SIZE : Math.floor(cy / Tile.SIZE));
+		return Tile.at(col, row);
+	}
 
 	float tileOffsetX();
 
@@ -26,10 +40,6 @@ public interface Lifeform extends Lifecycle {
 	}
 
 	void placeAt(Tile tile, float offsetX, float offsetY);
-
-	default void placeAt(Tile tile) {
-		placeAt(tile, 0, 0);
-	}
 
 	World world();
 

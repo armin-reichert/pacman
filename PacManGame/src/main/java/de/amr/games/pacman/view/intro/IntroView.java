@@ -165,7 +165,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		public void onExit() {
 			chasePacMan.stop();
 			chaseGhosts.stop();
-			chasePacMan.tf.centerX(width);
+			chasePacMan.tf.centerHorizontally(0, width);
 		}
 
 		@Override
@@ -182,9 +182,9 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		@Override
 		public void onEntry() {
 			ghostPointsAnimation.tf.y = 200;
-			ghostPointsAnimation.tf.centerX(width);
+			ghostPointsAnimation.tf.centerHorizontally(0, width);
 			ghostPointsAnimation.start();
-			chasePacMan.tf.centerX(width);
+			chasePacMan.tf.centerHorizontally(0, width);
 			chasePacMan.initPositions(width / 2 + 5 * Tile.SIZE);
 			chasePacMan.folks().all().forEach(c -> c.entity.tf.vx = 0);
 			gitHubLink.visible = true;
@@ -229,10 +229,10 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	public void init() {
 		ArcadeThemeSprites arcadeSprites = ArcadeTheme.IT.$value("sprites");
 		pacManLogo = new ImageWidget(arcadeSprites.image_logo());
-		pacManLogo.tf.centerX(width);
+		pacManLogo.tf.centerHorizontally(0, width);
 		pacManLogo.tf.y = 20;
 		chasePacMan = new ChasePacManAnimation(theme, sounds);
-		chasePacMan.tf.centerX(width);
+		chasePacMan.tf.centerHorizontally(0, width);
 		chasePacMan.tf.y = 100;
 		chaseGhosts = new ChaseGhostsAnimation(theme, sounds);
 		ghostPointsAnimation = new GhostPointsAnimation(theme, sounds);
@@ -245,7 +245,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			.build();
 		/*@formatter:on*/
 		gitHubLink.tf.y = (height - 16);
-		gitHubLink.tf.centerX(width);
+		gitHubLink.tf.centerHorizontally(0, width);
 		super.init();
 	}
 
