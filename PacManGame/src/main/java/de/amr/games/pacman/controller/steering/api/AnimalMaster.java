@@ -12,9 +12,11 @@ import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.steering.ghost.BouncingOnBed;
 import de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed;
+import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.controller.steering.ghost.LeavingHouse;
 import de.amr.games.pacman.model.world.api.Bed;
 import de.amr.games.pacman.model.world.api.House;
+import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 
 public class AnimalMaster {
@@ -57,6 +59,10 @@ public class AnimalMaster {
 
 	public MovesRandomlyBuilder moveRandomly() {
 		return new MovesRandomlyBuilder();
+	}
+
+	public FleeToSafeTileBuilder fleeToSafeTile() {
+		return new FleeToSafeTileBuilder();
 	}
 
 	public FollowsKeysBuilder followTheKeys() {
@@ -162,6 +168,24 @@ public class AnimalMaster {
 			}
 			return steering;
 		}
+	}
+
+	public class FleeToSafeTileBuilder {
+
+		private MobileLifeform attacker;
+
+		public FleeToSafeTileBuilder from(MobileLifeform attacker) {
+			this.attacker = attacker;
+			return this;
+		}
+
+		public Steering ok() {
+			Steering steering = new FleeingToSafeTile(animal, attacker);
+			Ghost ghost = (Ghost) animal;
+			ghost.behavior(ghostState, steering);
+			return steering;
+		}
+
 	}
 
 	public class FollowsKeysBuilder {
