@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Controls the movement of a creature through the world.
+ * Controls the movement of a lifeform through the world.
  * 
  * @author Armin Reichert
  */
@@ -73,7 +73,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 		moveDir = wishDir = RIGHT;
 	}
 
-	public void placeCreatureAt(Tile tile, float xOffset, float yOffset) {
+	public void moveToTile(Tile tile, float xOffset, float yOffset) {
 		Tile oldLocation = tileLocation();
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
 		enteredNewTile = !tileLocation().equals(oldLocation);
@@ -91,15 +91,14 @@ public class Movement extends StateMachine<MovementType, Void> {
 
 	private void move() {
 		final Tile tileBeforeMove = tileLocation();
-		float speedLimit = fnSpeed.get();
-		float speed = maxSpeedToDir(moveDir, speedLimit);
+		final float maxSpeed = fnSpeed.get();
+		float speed = possibleSpeed(moveDir, maxSpeed);
 		if (wishDir != null && wishDir != moveDir) {
-			float wishDirSpeed = maxSpeedToDir(wishDir, speedLimit);
+			float wishDirSpeed = possibleSpeed(wishDir, maxSpeed);
 			if (wishDirSpeed > 0) {
 				speed = wishDirSpeed;
-				boolean curve = wishDir == moveDir.left() || wishDir == moveDir.right();
-				if (curve && movedLifeform.requiresGridAlignment()) {
-					placeCreatureAt(tileBeforeMove, 0, 0);
+				if (movedLifeform.requiresAlignment() && (wishDir == moveDir.left() || wishDir == moveDir.right())) {
+					moveToTile(tileBeforeMove, 0, 0);
 				}
 				moveDir = wishDir;
 			}
@@ -110,7 +109,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 		Tile tileAfterMove = tileLocation();
 		enteredNewTile = !tileBeforeMove.equals(tileAfterMove);
 		// portal entered?
-		world.portals().filter(p -> p.includes(tileAfterMove)).findAny().ifPresent(p -> {
+		world.portals().filter(p -> p.includes(tileAfterMove)).findFirst().ifPresent(p -> {
 			portal = p;
 			loginfo("%s entered portal at %s", lifeformName, tileAfterMove);
 		});
@@ -123,7 +122,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 	 * @param dir           a direction
 	 * @param speed         the creature's current speed
 	 */
-	private float maxSpeedToDir(Direction dir, float speed) {
+	private float possibleSpeed(Direction dir, float speed) {
 		if (movedLifeform.canCrossBorderTo(dir)) {
 			return speed;
 		}

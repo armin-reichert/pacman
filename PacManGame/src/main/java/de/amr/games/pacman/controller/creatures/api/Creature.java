@@ -116,7 +116,7 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	}
 
 	@Override
-	public boolean requiresGridAlignment() {
+	public boolean requiresAlignment() {
 		return steering().requiresGridAlignment();
 	}
 
@@ -135,7 +135,17 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 
 	@Override
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
-		movement.placeCreatureAt(tile, xOffset, yOffset);
+		movement.moveToTile(tile, xOffset, yOffset);
+	}
+
+	@Override
+	public float tileOffsetX() {
+		return entity.tf.x - tileLocation().x();
+	}
+
+	@Override
+	public float tileOffsetY() {
+		return entity.tf.y - tileLocation().y();
 	}
 
 	public boolean isTeleporting() {

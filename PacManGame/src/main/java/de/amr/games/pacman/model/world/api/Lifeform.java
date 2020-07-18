@@ -11,6 +11,10 @@ public interface Lifeform extends Lifecycle {
 
 	Tile tileLocation();
 
+	float tileOffsetX();
+
+	float tileOffsetY();
+
 	/**
 	 * Euclidean distance (in tiles) between this and the other lifeform.
 	 * 
