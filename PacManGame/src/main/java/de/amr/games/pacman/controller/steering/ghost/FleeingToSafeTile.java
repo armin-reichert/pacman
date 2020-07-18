@@ -39,11 +39,10 @@ public class FleeingToSafeTile extends FollowingPath {
 		corners = List.of(world.capeNW(), world.capeNE(), world.capeSW(), world.capeSE());
 		portalEntries = new ArrayList<Tile>();
 		world.portals().forEach(portal -> {
-			portalEntries.add(Tile.at(portal.left.col + 1, portal.left.row));
-			portalEntries.add(Tile.at(portal.right.col - 1, portal.right.row));
+			portalEntries.add(portal.leftEntry());
+			portalEntries.add(portal.rightEntry());
 		});
-		safeTiles = new ArrayList<>();
-		safeTiles.addAll(corners);
+		safeTiles = new ArrayList<>(corners);
 		safeTiles.addAll(portalEntries);
 	}
 
@@ -55,6 +54,13 @@ public class FleeingToSafeTile extends FollowingPath {
 		}
 		super.steer();
 	}
+	
+	@Override
+	public void init() {
+		path.clear();
+		safeTile = null;
+	}
+	
 
 	@Override
 	public boolean isComplete() {

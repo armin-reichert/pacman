@@ -10,6 +10,14 @@ public class Portal {
 		this.left = left;
 		this.right = right;
 	}
+	
+	public Tile leftEntry() {
+		return Tile.at(left.col + 1, left.row);
+	}
+	
+	public Tile rightEntry() {
+		return Tile.at(right.col - 1, right.row);
+	}
 
 	public boolean includes(Tile tile) {
 		return tile.equals(left) || tile.equals(right);

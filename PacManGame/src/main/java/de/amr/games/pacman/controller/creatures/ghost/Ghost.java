@@ -87,7 +87,7 @@ public class Ghost extends Creature<GhostState> {
 					.onExit(() -> forceMoving(Direction.LEFT))
 				
 				.state(ENTERING_HOUSE)
-					.onEntry(() -> steering().init()) //TODO should not be necessary
+					.onEntry(() -> steering().init())
 					.onTick(this::move)
 				
 				.state(SCATTERING)
@@ -103,6 +103,7 @@ public class Ghost extends Creature<GhostState> {
 					})
 				
 				.state(FRIGHTENED)
+					.onEntry(() -> steering().init())
 					.onTick((state, consumed, remaining) -> {
 						maybeMeetPacMan(pacMan);
 						move();
