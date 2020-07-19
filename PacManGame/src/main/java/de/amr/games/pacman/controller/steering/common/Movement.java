@@ -32,7 +32,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 	public Direction wishDir;
 	public boolean enteredNewTile;
 
-	private Portal portal;
+	private Portal activePortal;
 
 	public Movement(MobileLifeform mover, String moverName) {
 		super(MovementType.class);
@@ -76,12 +76,12 @@ public class Movement extends StateMachine<MovementType, Void> {
 	}
 
 	private boolean insidePortal() {
-		return portal != null;
+		return activePortal != null;
 	}
 
 	private void teleport() {
-		portal.teleport(mover.tf(), mover.tileLocation(), moveDir);
-		portal = null;
+		activePortal.teleport(mover.tf(), mover.tileLocation(), moveDir);
+		activePortal = null;
 		loginfo("%s left portal at %s", moverName, mover.tileLocation());
 	}
 
@@ -106,8 +106,17 @@ public class Movement extends StateMachine<MovementType, Void> {
 		enteredNewTile = !tileBeforeMove.equals(tileAfterMove);
 		// portal entered?
 		mover.world().portals().filter(p -> p.includes(tileAfterMove)).findFirst().ifPresent(p -> {
-			portal = p;
-			loginfo("%s entered portal at %s", moverName, tileAfterMove);
+			if (p.vertical) {
+				// TODO fine tuning
+				activePortal = p;
+				loginfo("%s entered vertical portal at %s", moverName, tileAfterMove);
+			} else {
+				if (mover.moveDir() == Direction.RIGHT && mover.tileOffsetX() > 2
+						|| mover.moveDir() == Direction.LEFT && mover.tileOffsetX() < 2) {
+					activePortal = p;
+					loginfo("%s entered horizontal portal at %s", moverName, tileAfterMove);
+				}
+			}
 		});
 	}
 

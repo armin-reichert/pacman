@@ -39,8 +39,8 @@ public class FleeingToSafeTile extends FollowingPath {
 		corners = List.of(world.capeNW(), world.capeNE(), world.capeSW(), world.capeSE());
 		portalEntries = new ArrayList<Tile>();
 		world.portals().forEach(portal -> {
-			portalEntries.add(portal.leftEntry());
-			portalEntries.add(portal.rightEntry());
+			portalEntries.add(portal.eitherEntry());
+			portalEntries.add(portal.otherEntry());
 		});
 		safeTiles = new ArrayList<>(corners);
 		safeTiles.addAll(portalEntries);

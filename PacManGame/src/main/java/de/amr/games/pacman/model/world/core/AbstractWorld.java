@@ -35,6 +35,17 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
+	public Tile tileToDir(Tile tile, Direction dir, int n) {
+		//@formatter:off
+		return portals()
+			.filter(portal -> portal.includes(tile))
+			.findAny()
+			.map(portal -> portal.otherEntry())
+			.orElse(Tile.at(tile.col + n * dir.vector().roundedX(), tile.row + n * dir.vector().roundedY()));
+		//@formatter:on
+	}
+
+	@Override
 	public boolean insideHouseOrDoor(Tile tile) {
 		return isDoor(tile) || houses().map(House::layout).anyMatch(layout -> layout.includes(tile));
 	}

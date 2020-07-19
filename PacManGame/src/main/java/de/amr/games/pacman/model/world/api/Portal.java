@@ -4,44 +4,63 @@ import de.amr.easy.game.entity.Transform;
 
 public class Portal {
 
-	public final Tile left, right;
+	/** left resp. top tile */
+	public final Tile either;
 
-	public Portal(Tile left, Tile right) {
-		this.left = left;
-		this.right = right;
+	/** right resp. bottom tile */
+	public final Tile other;
+
+	public final boolean vertical;
+
+	public Portal(Tile either, Tile other, boolean vertical) {
+		this.either = either;
+		this.other = other;
+		this.vertical = vertical;
 	}
-	
-	public Tile leftEntry() {
-		return Tile.at(left.col + 1, left.row);
+
+	/** left resp. top entry tile */
+	public Tile eitherEntry() {
+		return vertical ? Tile.at(either.col, either.row + 1) : Tile.at(either.col + 1, either.row);
 	}
-	
-	public Tile rightEntry() {
-		return Tile.at(right.col - 1, right.row);
+
+	/** right resp. bottom entry tile */
+	public Tile otherEntry() {
+		return vertical ? Tile.at(other.col, other.row - 1) : Tile.at(other.col - 1, other.row);
 	}
 
 	public boolean includes(Tile tile) {
-		return tile.equals(left) || tile.equals(right);
+		return tile.equals(either) || tile.equals(other);
 	}
 
-	public void teleport(Transform tf, Tile entryTile, Direction moveDir) {
-		Tile exitTile = exitTile(entryTile, moveDir);
-		if (exitTile != null) {
-			if (moveDir == Direction.RIGHT) {
-				tf.setPosition(exitTile.x() + Tile.SIZE, exitTile.y());
-			}
-			if (moveDir == Direction.LEFT) {
-				tf.setPosition(exitTile.x() - Tile.SIZE, exitTile.y());
-			}
+	public void teleport(Transform tf, Tile entered, Direction moveDir) {
+		if (vertical) {
+			Tile leave = verticalExit(moveDir);
+			int offsetY = moveDir == Direction.DOWN ? 0 : 0;
+			tf.setPosition(leave.x(), leave.y() + offsetY);
+		} else {
+			Tile leave = horizontalExit(moveDir);
+			int offsetX = moveDir == Direction.RIGHT ? 4 : -4;
+			tf.setPosition(leave.x() + offsetX, leave.y());
 		}
 	}
 
-	public Tile exitTile(Tile entryTile, Direction moveDir) {
-		if (entryTile.equals(left) && moveDir == Direction.LEFT) {
-			return right;
+	private Tile horizontalExit(Direction moveDir) {
+		if (moveDir == Direction.RIGHT) {
+			return either;
 		}
-		if (entryTile.equals(right) && moveDir == Direction.RIGHT) {
-			return left;
+		if (moveDir == Direction.LEFT) {
+			return other;
 		}
-		return null;
+		throw new IllegalArgumentException();
+	}
+
+	private Tile verticalExit(Direction moveDir) {
+		if (moveDir == Direction.DOWN) {
+			return either;
+		}
+		if (moveDir == Direction.UP) {
+			return other;
+		}
+		throw new IllegalArgumentException();
 	}
 }

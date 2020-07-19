@@ -7,7 +7,6 @@ import static de.amr.games.pacman.model.world.core.WorldMap.B_INTERSECTION;
 import static de.amr.games.pacman.model.world.core.WorldMap.B_TUNNEL;
 import static de.amr.games.pacman.model.world.core.WorldMap.B_WALL;
 
-import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
 
@@ -31,7 +30,17 @@ public abstract class MapBasedWorld extends AbstractWorld {
 		map.set1(left.row, left.col, B_TUNNEL);
 		map.set0(right.row, right.col, B_WALL);
 		map.set1(right.row, right.col, B_TUNNEL);
-		return new Portal(left, right);
+		return new Portal(left, right, false);
+	}
+
+	protected Portal verticalPortal(Tile topEntry, Tile bottomEntry) {
+		Tile top = Tile.at(topEntry.col, topEntry.row - 1);
+		Tile bottom = Tile.at(bottomEntry.col, bottomEntry.row + 1);
+		map.set0(top.row, top.col, B_WALL);
+		map.set1(top.row, top.col, B_TUNNEL);
+		map.set0(bottom.row, bottom.col, B_WALL);
+		map.set1(bottom.row, bottom.col, B_TUNNEL);
+		return new Portal(top, bottom, false);
 	}
 
 	protected void setEnergizer(Tile tile) {
@@ -70,17 +79,6 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	public boolean isAccessible(Tile tile) {
 		boolean inside = includes(tile);
 		return inside && !is(tile, B_WALL) || !inside && isInsidePortal(tile);
-	}
-
-	@Override
-	public Tile tileToDir(Tile tile, Direction dir, int n) {
-		//@formatter:off
-		return portals()
-			.filter(portal -> portal.includes(tile))
-			.findAny()
-			.map(portal -> portal.exitTile(tile, dir))
-			.orElse(Tile.at(tile.col + n * dir.vector().roundedX(), tile.row + n * dir.vector().roundedY()));
-		//@formatter:on
 	}
 
 	@Override

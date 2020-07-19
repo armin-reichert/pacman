@@ -40,7 +40,7 @@ class OutsideTileTestUI extends TestUI {
 		soundManager.snd_ghost_chase().volume(0);
 		include(blinky);
 		blinky.init();
-		int row = world.portals().findFirst().map(portal -> portal.right.row).orElse((short) 100);
+		int row = world.portals().findFirst().map(portal -> portal.other.row).orElse((short) 100);
 		you(blinky).when(CHASING).headFor().tile(100, row).ok();
 		blinky.setState(CHASING);
 		view.turnRoutesOn();

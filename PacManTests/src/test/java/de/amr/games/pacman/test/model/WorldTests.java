@@ -29,8 +29,8 @@ public class WorldTests {
 		assertNotNull(world.theHouse().bed(1));
 		assertNotNull(world.theHouse().bed(2));
 		assertNotNull(world.theHouse().bed(3));
-		assertTrue(world.portals().findFirst().get().left.equals(Tile.at(-1, 17)));
-		assertTrue(world.portals().findFirst().get().right.equals(Tile.at(28, 17)));
+		assertTrue(world.portals().findFirst().get().either.equals(Tile.at(-1, 17)));
+		assertTrue(world.portals().findFirst().get().other.equals(Tile.at(28, 17)));
 		assertFalse(world.isAccessible(Tile.at(0, 3)));
 		assertTrue(world.isDoor(Tile.at(13, 15)));
 	}
