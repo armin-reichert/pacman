@@ -34,7 +34,7 @@ public class HouseBuilder {
 		return this;
 	}
 
-	public House ok() {
+	public House build() {
 		return new House(layout, doors, beds);
 	}
 }

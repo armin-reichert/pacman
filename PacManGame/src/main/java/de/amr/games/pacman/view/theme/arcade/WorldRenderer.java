@@ -66,6 +66,12 @@ public class WorldRenderer implements IWorldRenderer {
 				g.setColor(Color.BLACK);
 				door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
 			});
+			// draw portals
+			world.portals().forEach(portal -> {
+				g.setColor(Color.BLACK);
+				g.fillRect(portal.left.x(), portal.left.y(), Tile.SIZE, Tile.SIZE);
+				g.fillRect(portal.right.x(), portal.right.y(), Tile.SIZE, Tile.SIZE);
+			});
 		}
 		energizerAnimation.setEnabled(!world.isFrozen());
 		energizerAnimation.update();

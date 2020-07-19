@@ -2,7 +2,6 @@ package de.amr.games.pacman.model.world.arcade;
 
 import static de.amr.games.pacman.model.world.api.HouseBuilder.house;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -66,10 +65,10 @@ public class ArcadeWorld extends MapBasedWorld {
 			//@formatter:on
 	};
 
+	protected List<House> houses;
+	protected List<Portal> portals;
+	protected List<OneWayTile> oneWayTiles;
 	protected Bed pacManBed;
-	protected final List<House> houses = new ArrayList<>();
-	protected final List<Portal> portals = new ArrayList<>();
-	protected final List<OneWayTile> oneWayTiles = new ArrayList<>();
 	protected Bonus bonus;
 	protected boolean changing;
 	protected boolean frozen;
@@ -77,25 +76,31 @@ public class ArcadeWorld extends MapBasedWorld {
 	public ArcadeWorld() {
 		super(DATA);
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
-		houses.add(house()
 		//@formatter:off
-			.layout(11, 16, 6, 4)
-			.door(new Door(Direction.DOWN, 13, 15, 2, 1))
-			.bed(13, 14, Direction.LEFT)
-			.bed(11, 17, Direction.UP) 
-			.bed(13, 17, Direction.DOWN)
-			.bed(15, 17, Direction.UP)
-			.ok());
-		//@formatter:on
-		portals.add(new Portal(Tile.at(-1, 17), Tile.at(28, 17)));
-		oneWayTiles.addAll(List.of(
-		//@formatter:off
+		houses = List.of(
+			house()
+				.layout(11, 16, 6, 4)
+				.door(new Door(Direction.DOWN, 13, 15, 2, 1))
+				.bed(13, 14, Direction.LEFT)
+				.bed(11, 17, Direction.UP)
+				.bed(13, 17, Direction.DOWN)
+				.bed(15, 17, Direction.UP)
+			.build()
+		);
+		
+		portals = List.of(
+			horizontalPortal(Tile.at(1, 17), Tile.at(26, 17))
+		 ,horizontalPortal(Tile.at(1, 11), Tile.at(26, 11))
+		 ,horizontalPortal(Tile.at(1, 23), Tile.at(26, 23))
+		);
+		
+		oneWayTiles = List.of(
 			new OneWayTile(12, 13, Direction.DOWN), 
 			new OneWayTile(15, 13, Direction.DOWN),
 			new OneWayTile(12, 25, Direction.DOWN), 
 			new OneWayTile(15, 25, Direction.DOWN)
+		);
 		//@formatter:on
-		));
 	}
 
 	@Override
@@ -116,12 +121,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	@Override
 	public void setChanging(boolean changing) {
 		this.changing = changing;
-	}
-
-	@Override
-	protected void addPortal(Tile left, Tile right) {
-		super.addPortal(left, right);
-		portals.add(new Portal(Tile.at(left.col - 1, left.row), Tile.at(right.col + 1, right.row)));
 	}
 
 	@Override

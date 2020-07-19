@@ -8,6 +8,7 @@ import static de.amr.games.pacman.model.world.core.WorldMap.B_TUNNEL;
 import static de.amr.games.pacman.model.world.core.WorldMap.B_WALL;
 
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
 
 /**
@@ -23,11 +24,14 @@ public abstract class MapBasedWorld extends AbstractWorld {
 		map = new WorldMap(data);
 	}
 
-	protected void addPortal(Tile left, Tile right) {
+	protected Portal horizontalPortal(Tile leftEntry, Tile rightEntry) {
+		Tile left = Tile.at(leftEntry.col - 1, leftEntry.row);
+		Tile right = Tile.at(rightEntry.col + 1, rightEntry.row);
 		map.set0(left.row, left.col, B_WALL);
 		map.set1(left.row, left.col, B_TUNNEL);
 		map.set0(right.row, right.col, B_WALL);
 		map.set1(right.row, right.col, B_TUNNEL);
+		return new Portal(left, right);
 	}
 
 	protected void setEnergizer(Tile tile) {

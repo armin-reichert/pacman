@@ -52,6 +52,9 @@ public class WorldPreview extends JFrame {
 			if (!world.isAccessible(tile)) {
 				return Color.LIGHT_GRAY;
 			}
+			if (world.isInsidePortal(tile)) {
+				return Color.YELLOW;
+			}
 			if (world.isTunnel(tile)) {
 				return Color.GRAY;
 			}
@@ -95,7 +98,7 @@ public class WorldPreview extends JFrame {
 			return "Ö";
 		}
 		if (world.isInsidePortal(tile)) {
-			return "@";
+			return "~";
 		}
 		return "";
 	}
