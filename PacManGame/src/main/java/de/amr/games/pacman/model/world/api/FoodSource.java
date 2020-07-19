@@ -7,7 +7,7 @@ import java.util.Optional;
  * 
  * @author Armin Reichert
  */
-public interface FoodContainer {
+public interface FoodSource {
 
 	int totalFoodCount();
 

@@ -155,13 +155,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (passed == sec(2)) {
 							folks.ghostsInsideWorld().forEach(ghost -> ghost.setVisible(false));
 							if (flashingSeconds > 0) {
-								world.setChangingLevel(true);
+								world.setChanging(true);
 							}
 						}
 	
 						// After flashing, show empty maze.
 						if (passed == sec(2 + flashingSeconds)) {
-							world.setChangingLevel(false);
+							world.setChanging(false);
 						}
 						
 						// After two more seconds, change level and show crowded maze.

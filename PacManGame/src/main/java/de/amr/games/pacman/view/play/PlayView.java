@@ -104,7 +104,7 @@ public class PlayView implements PacManGameView {
 	@Override
 	public void init() {
 		clearMessages();
-		world.setChangingLevel(false);
+		world.setChanging(false);
 	}
 
 	@Override

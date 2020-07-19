@@ -31,7 +31,7 @@ class WorldRenderer implements IWorldRenderer {
 	@Override
 	public void render(Graphics2D g) {
 		drawEmptyMaze(g);
-		if (!world.isChangingLevel()) {
+		if (!world.isChanging()) {
 			drawMazeContent(g);
 		}
 		// draw doors depending on their state
@@ -126,7 +126,7 @@ class WorldRenderer implements IWorldRenderer {
 
 	private void drawWall(Graphics2D g, int row, int col) {
 
-		if (world.isChangingLevel() && app().clock().getTotalTicks() % 30 < 15) {
+		if (world.isChanging() && app().clock().getTotalTicks() % 30 < 15) {
 			g.setColor(Color.WHITE);
 		} else {
 			g.setColor(new Color(139, 69, 19));

@@ -66,6 +66,33 @@ public interface Territory extends RectangularArea {
 	boolean isDoor(Tile tile);
 
 	/**
+	 * Part of the territoty where creatures live.
+	 * 
+	 * @return stream of tiles of habitat area
+	 */
+	Stream<Tile> habitatArea();
+
+	/**
+	 * @param creature a creature
+	 * @return {@code true} if the creature is currently included
+	 */
+	boolean contains(Lifeform creature);
+
+	/**
+	 * Includes the creature into the territory.
+	 * 
+	 * @param creature a creature
+	 */
+	void include(Lifeform creature);
+
+	/**
+	 * Temporarily excludes the creature from the territory.
+	 * 
+	 * @param creature a creature
+	 */
+	void exclude(Lifeform creature);
+
+	/**
 	 * @return Pac-Man's sleep location
 	 */
 	Bed pacManBed();

@@ -1,52 +1,23 @@
 package de.amr.games.pacman.model.world.api;
 
-import java.util.stream.Stream;
-
 /**
- * The Pac-Man game world is a territory and a habitat for the creatures.
+ * The Pac-Man game world is a territory where creatures can live and get their food.
  * 
  * @author Armin Reichert
  */
-public interface World extends Territory, FoodContainer {
+public interface World extends Territory, FoodSource {
 
 	/**
-	 * Part of the word where the creatures live.
+	 * Signals that the world is changing.
 	 * 
-	 * @return stream of tiles of habitat area
+	 * @param changing if the world is changing
 	 */
-	Stream<Tile> habitatArea();
+	void setChanging(boolean changing);
 
 	/**
-	 * @param creature a creature
-	 * @return {@code true} if the creature is currently inside the world
+	 * @return if the world is just changing
 	 */
-	boolean contains(Lifeform creature);
-
-	/**
-	 * Brings the creature into the world.
-	 * 
-	 * @param creature a creature
-	 */
-	void include(Lifeform creature);
-
-	/**
-	 * Takes the creature out of the world.
-	 * 
-	 * @param creature a creature
-	 */
-	void exclude(Lifeform creature);
-
-	/**
-	 * Signals that the game level is changing. TODO: not sure if this belongs into the model
-	 * 
-	 * @param changing if the game level is changing
-	 */
-	void setChangingLevel(boolean changing);
-
-	/**
-	 * @return if the game level is just changing
-	 */
-	boolean isChangingLevel();
+	boolean isChanging();
 
 	/**
 	 * Sets the world into "frozen" state where the creatures do not move and are not animated.

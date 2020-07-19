@@ -54,7 +54,7 @@ public class WorldRenderer implements IWorldRenderer {
 
 	@Override
 	public void render(Graphics2D g) {
-		if (world.isChangingLevel()) {
+		if (world.isChanging()) {
 			mazeSprites.select("maze-flashing");
 			mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
 		} else {

@@ -50,12 +50,12 @@ public abstract class MapBasedWorld implements World {
 	}
 
 	@Override
-	public boolean isChangingLevel() {
+	public boolean isChanging() {
 		return changingLevel;
 	}
 
 	@Override
-	public void setChangingLevel(boolean b) {
+	public void setChanging(boolean b) {
 		changingLevel = b;
 	}
 
