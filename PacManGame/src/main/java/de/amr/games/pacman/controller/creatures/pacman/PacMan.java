@@ -128,12 +128,12 @@ public class PacMan extends Creature<PacManState> {
 	public World world() {
 		return world;
 	}
-	
+
 	@Override
 	public void draw(Graphics2D g) {
 		renderer.render(g);
 	}
-	
+
 	public IPacManRenderer renderer() {
 		return renderer;
 	}

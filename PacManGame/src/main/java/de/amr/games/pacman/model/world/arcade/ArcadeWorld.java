@@ -126,7 +126,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	public Stream<House> houses() {
 		return houses.stream();
 	}
-	
+
 	@Override
 	public House house(int i) {
 		return houses.get(i);

@@ -434,7 +434,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		loginfo("Initializing game controller");
 		selectTheme(settings.theme);
 		world = new ArcadeWorld();
-		folks = new Folks(world);
+		folks = new Folks(world, world.house(0));
 		folks.all().forEach(world::include);
 		folks.pacMan.addEventListener(this::process);
 		folks.ghosts().forEach(ghost -> ghost.addEventListener(this::process));

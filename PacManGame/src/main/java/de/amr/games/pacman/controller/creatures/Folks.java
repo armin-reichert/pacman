@@ -33,8 +33,7 @@ public class Folks {
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
-	public Folks(World world) {
-		House ghostHouse = world.house(0);
+	public Folks(World world, House ghostHouse) {
 		Door door = ghostHouse.door(0);
 		Tile houseEntry = world.neighbor(door.tiles().findFirst().get(), door.intoHouse.opposite());
 

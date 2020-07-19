@@ -30,7 +30,7 @@ import de.amr.games.pacman.view.theme.api.Theme;
 public class GhostPointsAnimation extends GameObject {
 
 	private final ArcadeWorld world = new ArcadeWorld();
-	private final Folks folks = new Folks(world);
+	private final Folks folks = new Folks(world, world.house(0));
 	private final Ghost[] ghosts = folks.ghosts().toArray(Ghost[]::new);
 	private final PacManSounds sounds;
 	private final BitSet killed = new BitSet(5);

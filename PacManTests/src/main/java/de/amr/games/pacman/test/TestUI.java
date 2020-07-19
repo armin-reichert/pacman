@@ -54,7 +54,7 @@ public class TestUI implements Lifecycle, VisualController {
 		world = new ArcadeWorld();
 		world.clearFood();
 
-		folks = new Folks(world);
+		folks = new Folks(world, world.house(0));
 		pacMan = folks.pacMan;
 		blinky = folks.blinky;
 		pinky = folks.pinky;

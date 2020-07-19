@@ -20,5 +20,4 @@ public interface IRenderer {
 	default void smoothDrawingOff(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
-
 }

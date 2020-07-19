@@ -9,7 +9,7 @@ import de.amr.games.pacman.view.theme.api.ThemeParameters;
 public class ParameterMap extends HashMap<String, Object> implements ThemeParameters {
 
 	private static final Font DEFAULT_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 8);
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T $value(String key) {

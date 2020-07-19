@@ -9,7 +9,7 @@ import java.util.stream.Stream;
  *
  */
 public interface Area {
-	
+
 	Stream<Tile> tiles();
 
 	boolean includes(Tile tile);
