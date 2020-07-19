@@ -134,7 +134,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	private Stream<Tile> foodTiles() {
-		return me.world().habitatArea().filter(me.world()::containsFood);
+		return me.world().habitat().filter(me.world()::containsFood);
 	}
 
 	private Optional<Tile> preferredFoodLocationFrom(Tile here) {
@@ -159,9 +159,9 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	private Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
 		//@formatter:off
 		return me.world().getBonus()
-				.filter(bonus -> bonus.state == BonusState.ACTIVE)
-				.filter(bonus -> here.manhattanDistance(me.world().bonusTile()) <= maxDistance)
-				.map(bonus -> me.world().bonusTile());
+			.filter(bonus -> bonus.state == BonusState.ACTIVE)
+			.filter(bonus -> here.manhattanDistance(bonus.location) <= maxDistance)
+			.map(bonus -> bonus.location);
 		//@formatter:on
 	}
 

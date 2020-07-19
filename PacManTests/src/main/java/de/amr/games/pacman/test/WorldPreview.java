@@ -77,9 +77,6 @@ public class WorldPreview extends JFrame {
 
 	private String text(int cell) {
 		Tile tile = graph.tile(cell);
-		if (tile.equals(world.bonusTile())) {
-			return "$";
-		}
 		if (world.pacManBed().includes(tile)) {
 			return "P";
 		}

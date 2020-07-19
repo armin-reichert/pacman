@@ -179,7 +179,7 @@ public class EnhancedGameController extends GameController {
 		if (getState() != PLAYING) {
 			return;
 		}
-		world.habitatArea().filter(world::containsSimplePellet).forEach(tile -> {
+		world.habitat().filter(world::containsSimplePellet).forEach(tile -> {
 			world.clearFood(tile);
 			game.scoreSimplePelletFound();
 			doorMan().ifPresent(houseAccess -> {

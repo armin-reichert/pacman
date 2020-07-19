@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.world.api.Bonus;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Door;
 import de.amr.games.pacman.model.world.api.House;
-import de.amr.games.pacman.model.world.api.Lifeform;
+import de.amr.games.pacman.model.world.api.Life;
 import de.amr.games.pacman.model.world.api.OneWayTile;
 import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -37,7 +37,7 @@ public abstract class MapBasedWorld implements World {
 	protected boolean changingLevel;
 	protected boolean frozen;
 
-	private Set<Lifeform> excludedGuys = new HashSet<>();
+	private Set<Life> excludedGuys = new HashSet<>();
 
 	@Override
 	public boolean isFrozen() {
@@ -60,16 +60,16 @@ public abstract class MapBasedWorld implements World {
 	}
 
 	@Override
-	public void include(Lifeform creature) {
+	public void include(Life creature) {
 		exclude(creature, false);
 	}
 
 	@Override
-	public void exclude(Lifeform creature) {
+	public void exclude(Life creature) {
 		exclude(creature, true);
 	}
 
-	protected void exclude(Lifeform creature, boolean out) {
+	protected void exclude(Life creature, boolean out) {
 		if (out) {
 			excludedGuys.add(creature);
 		} else {
@@ -79,7 +79,7 @@ public abstract class MapBasedWorld implements World {
 	}
 
 	@Override
-	public boolean contains(Lifeform creature) {
+	public boolean contains(Life creature) {
 		return !excludedGuys.contains(creature);
 	}
 
@@ -146,11 +146,6 @@ public abstract class MapBasedWorld implements World {
 	@Override
 	public Bed pacManBed() {
 		return pacManBed;
-	}
-
-	@Override
-	public Tile bonusTile() {
-		return bonusTile;
 	}
 
 	@Override

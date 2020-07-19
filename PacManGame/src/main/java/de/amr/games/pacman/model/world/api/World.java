@@ -5,7 +5,7 @@ package de.amr.games.pacman.model.world.api;
  * 
  * @author Armin Reichert
  */
-public interface World extends Territory, FoodSource {
+public interface World extends Territory, FoodSource, RectangularArea {
 
 	/**
 	 * Signals that the world is changing.

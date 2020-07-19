@@ -2,7 +2,7 @@ package de.amr.games.pacman.model.world.api;
 
 import java.util.stream.Stream;
 
-public interface Territory extends RectangularArea {
+public interface Territory {
 
 	/**
 	 * @return outmost accessible tile at north-west
@@ -66,31 +66,31 @@ public interface Territory extends RectangularArea {
 	boolean isDoor(Tile tile);
 
 	/**
-	 * Part of the territoty where creatures live.
+	 * Part of the territory where creatures live.
 	 * 
-	 * @return stream of tiles of habitat area
+	 * @return stream of tiles constituting the habitat
 	 */
-	Stream<Tile> habitatArea();
+	Stream<Tile> habitat();
 
 	/**
-	 * @param creature a creature
-	 * @return {@code true} if the creature is currently included
+	 * @param life a life
+	 * @return {@code true} if the life is currently included
 	 */
-	boolean contains(Lifeform creature);
+	boolean contains(Life life);
 
 	/**
-	 * Includes the creature into the territory.
+	 * Includes the life into the territory.
 	 * 
-	 * @param creature a creature
+	 * @param life a life
 	 */
-	void include(Lifeform creature);
+	void include(Life life);
 
 	/**
-	 * Temporarily excludes the creature from the territory.
+	 * Temporarily excludes the life from the territory.
 	 * 
-	 * @param creature a creature
+	 * @param life a life
 	 */
-	void exclude(Lifeform creature);
+	void exclude(Life life);
 
 	/**
 	 * @return Pac-Man's sleep location
@@ -147,9 +147,4 @@ public interface Territory extends RectangularArea {
 	default boolean isOneWayTile(Tile tile, Direction dir) {
 		return oneWayTiles().anyMatch(oneWay -> oneWay.tile.equals(tile) && oneWay.dir == dir);
 	}
-
-	/**
-	 * @return the bonus location of this territory
-	 */
-	Tile bonusTile();
 }

@@ -7,7 +7,7 @@ import de.amr.easy.game.entity.Transform;
  * 
  * @author Armin Reichert
  */
-public interface MobileLifeform extends Lifeform {
+public interface MobileLifeform extends Life {
 
 	/**
 	 * @return the transform for this lifeform

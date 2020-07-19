@@ -54,7 +54,7 @@ class WorldRenderer implements IWorldRenderer {
 		}
 		// draw bonus as image when active or as number when consumed
 		world.getBonus().ifPresent(bonus -> {
-			Vector2f center = Vector2f.of(world.bonusTile().x() + Tile.SIZE, world.bonusTile().y() + Tile.SIZE / 2);
+			Vector2f center = Vector2f.of(bonus.location.x() + Tile.SIZE, bonus.location.y() + Tile.SIZE / 2);
 			if (bonus.state == BonusState.ACTIVE) {
 				drawActiveBonus(g, center, bonus);
 			} else if (bonus.state == BonusState.CONSUMED) {

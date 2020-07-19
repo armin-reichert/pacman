@@ -176,7 +176,7 @@ class GameStateTableModel extends AbstractTableModel {
 			Bonus bonus = world.getBonus().orElse(null);
 			r.included = bonus != null && bonus.state != BonusState.INACTIVE;
 			r.name = bonus != null ? bonus.symbol : "Bonus";
-			r.tile = world.bonusTile();
+			r.tile = bonus.location;
 			r.state = bonusControl.getState().name();
 			r.ticksRemaining = bonusControl.state().getTicksRemaining();
 			r.duration = bonusControl.state().getDuration();

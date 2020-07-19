@@ -39,7 +39,7 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 				.state(ACTIVE)
 					.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
 					.onEntry(() -> {
-						Bonus bonus = new Bonus(game.level.bonusSymbol.name(), game.level.bonusValue, ACTIVE);
+						Bonus bonus = new Bonus(Game.BONUS_LOCATION, game.level.bonusSymbol.name(), game.level.bonusValue, ACTIVE);
 						world.setBonus(bonus);
 						loginfo("Bonus %s activated, time: %.2f sec", world.getBonus().get().symbol, state().getDuration() / 60f);
 					})

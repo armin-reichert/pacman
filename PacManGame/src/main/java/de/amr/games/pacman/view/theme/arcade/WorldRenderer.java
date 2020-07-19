@@ -80,20 +80,20 @@ public class WorldRenderer implements IWorldRenderer {
 
 	private void drawMazeContent(Graphics2D g) {
 		// hide eaten food
-		world.habitatArea().filter(world::didContainFood).forEach(tile -> {
+		world.habitat().filter(world::didContainFood).forEach(tile -> {
 			g.setColor(fnEatenFoodColor.apply(tile));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
 		// simulate energizer blinking animation
 		if (energizerAnimation.isEnabled() && energizerAnimation.currentFrameIndex() == 1) {
-			world.habitatArea().filter(world::containsEnergizer).forEach(tile -> {
+			world.habitat().filter(world::containsEnergizer).forEach(tile -> {
 				g.setColor(fnEatenFoodColor.apply(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 		}
 		// draw bonus as image when active or as number when consumed
 		world.getBonus().ifPresent(bonus -> {
-			Vector2f position = Vector2f.of(world.bonusTile().x(), world.bonusTile().y() - Tile.SIZE / 2);
+			Vector2f position = Vector2f.of(bonus.location.x(), bonus.location.y() - Tile.SIZE / 2);
 			if (bonus.state == BonusState.ACTIVE) {
 				g.drawImage(symbolImages.get(bonus.symbol), position.roundedX(), position.roundedY(), null);
 			} else if (bonus.state == BonusState.CONSUMED) {

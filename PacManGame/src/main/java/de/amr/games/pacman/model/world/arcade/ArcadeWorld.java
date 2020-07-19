@@ -94,7 +94,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	 * @return the habitat tiles
 	 */
 	@Override
-	public Stream<Tile> habitatArea() {
+	public Stream<Tile> habitat() {
 		return IntStream.range(3 * width(), (height() + 4) * width()).mapToObj(i -> Tile.at(i % width(), i / width()));
 	}
 

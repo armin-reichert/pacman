@@ -7,7 +7,7 @@ import de.amr.easy.game.controller.Lifecycle;
  * 
  * @author Armin Reichert
  */
-public interface Lifeform extends Lifecycle {
+public interface Life extends Lifecycle {
 
 	float centerX();
 
@@ -35,7 +35,7 @@ public interface Lifeform extends Lifecycle {
 	 * @param other other animal
 	 * @return Euclidean distance measured in tiles
 	 */
-	default double distance(Lifeform other) {
+	default double distance(Life other) {
 		return tileLocation().distance(other.tileLocation());
 	}
 

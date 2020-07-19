@@ -4,8 +4,6 @@ import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.RUNNING;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
-import static de.amr.games.pacman.model.game.Game.DIGEST_ENERGIZER_TICKS;
-import static de.amr.games.pacman.model.game.Game.DIGEST_PELLET_TICKS;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
@@ -20,7 +18,9 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
+import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Bed;
+import de.amr.games.pacman.model.world.api.Bonus;
 import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -180,14 +180,17 @@ public class PacMan extends Creature<PacManState> {
 	}
 
 	private Optional<PacManGameEvent> findSomethingInteresting() {
-		Tile tile = tileLocation();
-		if (tile.equals(world.bonusTile())
-				&& world.getBonus().filter(bonus -> bonus.state == BonusState.ACTIVE).isPresent()) {
-			return Optional.of(new BonusFoundEvent());
+		Tile pacManLocation = tileLocation();
+		Optional<Bonus> maybeBonus = world.getBonus().filter(bonus -> bonus.state == BonusState.ACTIVE);
+		if (maybeBonus.isPresent()) {
+			Bonus bonus = maybeBonus.get();
+			if (pacManLocation.equals(bonus.location)) {
+				return Optional.of(new BonusFoundEvent(bonus));
+			}
 		}
-		if (world.containsFood(tile)) {
-			digestion = world.containsEnergizer(tile) ? DIGEST_ENERGIZER_TICKS : DIGEST_PELLET_TICKS;
-			return Optional.of(new FoodFoundEvent(tile));
+		if (world.containsFood(pacManLocation)) {
+			digestion = world.containsEnergizer(pacManLocation) ? Game.DIGEST_ENERGIZER_TICKS : Game.DIGEST_PELLET_TICKS;
+			return Optional.of(new FoodFoundEvent(pacManLocation));
 		}
 		return Optional.empty();
 	}
