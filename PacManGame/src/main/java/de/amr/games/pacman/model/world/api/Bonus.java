@@ -7,10 +7,10 @@ public class Bonus {
 	public final int value;
 	public BonusState state;
 
-	public Bonus(Tile location, String symbol, int value, BonusState state) {
+	public Bonus(Tile location, String symbol, int value) {
 		this.location = location;
 		this.symbol = symbol;
 		this.value = value;
-		this.state = state;
+		this.state = BonusState.INACTIVE;
 	}
 }

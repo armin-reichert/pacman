@@ -37,17 +37,21 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 				.state(INACTIVE)
 					.onEntry(() -> world.setBonus(null))
 				.state(ACTIVE)
-					.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
+					.timeoutAfter(() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()))
 					.onEntry(() -> {
-						Bonus bonus = new Bonus(Game.BONUS_LOCATION, game.level.bonusSymbol.name(), game.level.bonusValue, ACTIVE);
+						Bonus bonus = new Bonus(Game.BONUS_LOCATION, game.level.bonusSymbol.name(), game.level.bonusValue);
+						bonus.state = ACTIVE;
 						world.setBonus(bonus);
-						loginfo("Bonus %s activated, time: %.2f sec", world.getBonus().get().symbol, state().getDuration() / 60f);
+						loginfo("Bonus '%s' (value %d) activated for %.2f sec", 
+								bonus.symbol, bonus.value, state().getDuration() / 60f);
 					})
 				.state(CONSUMED)
 					.timeoutAfter(() -> sec(3))
 					.onEntry(() -> {
-						world.getBonus().get().state = CONSUMED;
-						loginfo("Bonus %s consumed after %.2f sec", world.getBonus().get().symbol, state().getTicksConsumed() / 60f);
+						Bonus bonus = world.getBonus().get();
+						bonus.state = CONSUMED;
+						loginfo("Bonus '%s' (value %d) consumed after %.2f sec", 
+								bonus.symbol, bonus.value, state(ACTIVE).getTicksConsumed() / 60f);
 					})
 			.transitions()
 				.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
@@ -56,13 +60,5 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 		.endStateMachine();
 		/*@formatter:on*/
 		init();
-	}
-
-	public void activateBonus() {
-		setState(ACTIVE);
-	}
-
-	public void deactivateBonus() {
-		setState(INACTIVE);
 	}
 }

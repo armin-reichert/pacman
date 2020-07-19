@@ -49,6 +49,8 @@ import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.world.arcade.BonusControl;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Bed;
+import de.amr.games.pacman.model.world.api.Bonus;
+import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
@@ -210,7 +212,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 								dyingStartTime = waitTime + sec(1.5f),
 								dyingEndTime = dyingStartTime + sec(3f);
 						if (t == waitTime) {
-							bonusControl.deactivateBonus();
+							bonusControl.setState(BonusState.INACTIVE);
 							folks.ghostsInsideWorld().forEach(ghost -> ghost.setVisible(false));
 						}
 						else if (t == dyingStartTime) {
@@ -383,9 +385,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			loginfo("PacMan found %s and wins %d points", game.level.bonusSymbol, game.level.bonusValue);
+			BonusFoundEvent bonusFound = (BonusFoundEvent) event;
+			Bonus bonus = bonusFound.bonus;
+			loginfo("PacMan found bonus '%s' of value %d", bonus.symbol, bonus.value);
 			int livesBefore = game.lives;
-			game.score(game.level.bonusValue);
+			game.score(bonus.value);
 			sound.bonusEaten();
 			if (game.lives > livesBefore) {
 				sound.extraLife();
@@ -415,7 +419,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			if (game.isBonusDue()) {
-				bonusControl.activateBonus();
+				bonusControl.setState(BonusState.ACTIVE);
 			}
 			if (energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();
