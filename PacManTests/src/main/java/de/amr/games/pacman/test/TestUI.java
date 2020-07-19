@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test;
 
-import static de.amr.games.pacman.controller.game.GameSpeed.pacManSpeed;
 import static de.amr.games.pacman.controller.game.GameSpeed.ghostSpeed;
+import static de.amr.games.pacman.controller.game.GameSpeed.pacManSpeed;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -14,9 +14,9 @@ import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.sound.PacManSounds;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.Themes;
 import de.amr.games.pacman.view.theme.api.Theme;
@@ -61,7 +61,6 @@ public class TestUI implements Lifecycle, VisualController {
 		inky = folks.inky();
 		clyde = folks.clyde();
 
-		world.setFolks(folks);
 		folks.all().forEach(world::exclude);
 
 		soundManager = new PacManSounds(world, folks);

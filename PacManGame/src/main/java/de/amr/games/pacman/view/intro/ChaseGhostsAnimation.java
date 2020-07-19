@@ -8,10 +8,10 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.sound.PacManSounds;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.theme.api.Theme;
 
 public class ChaseGhostsAnimation extends GameObject {
@@ -24,7 +24,6 @@ public class ChaseGhostsAnimation extends GameObject {
 	public ChaseGhostsAnimation(Theme theme, PacManSounds pacManSounds) {
 		this.pacManSounds = pacManSounds;
 		setTheme(theme);
-		world.setFolks(folks);
 	}
 
 	public void setTheme(Theme theme) {

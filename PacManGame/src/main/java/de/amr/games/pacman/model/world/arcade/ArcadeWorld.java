@@ -1,4 +1,4 @@
-package de.amr.games.pacman.controller.world.arcade;
+package de.amr.games.pacman.model.world.arcade;
 
 import static de.amr.games.pacman.model.world.api.HouseBuilder.house;
 
@@ -63,8 +63,6 @@ public class ArcadeWorld extends MapBasedWorld {
 			//@formatter:on
 	};
 
-	private ArcadeWorldFolks folks;
-
 	public ArcadeWorld() {
 		map = new WorldMap(DATA);
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
@@ -88,15 +86,6 @@ public class ArcadeWorld extends MapBasedWorld {
 			new OneWayTile(15, 25, Direction.DOWN)
 		//@formatter:on
 		));
-	}
-
-	public void setFolks(ArcadeWorldFolks folks) {
-		this.folks = folks;
-		folks.all().forEach(this::include);
-	}
-
-	public ArcadeWorldFolks getFolks() {
-		return folks;
 	}
 
 	/**
