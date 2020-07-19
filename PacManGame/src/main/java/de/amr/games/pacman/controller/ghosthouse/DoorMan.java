@@ -13,9 +13,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
+import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
-import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Door;
 import de.amr.games.pacman.model.world.api.Door.DoorState;

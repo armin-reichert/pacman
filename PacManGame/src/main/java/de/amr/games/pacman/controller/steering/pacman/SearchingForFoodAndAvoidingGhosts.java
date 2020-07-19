@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
-import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;

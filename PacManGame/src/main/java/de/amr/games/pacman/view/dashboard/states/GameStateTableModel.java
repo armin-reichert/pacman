@@ -7,12 +7,12 @@ import static de.amr.games.pacman.model.game.Game.sec;
 
 import javax.swing.table.AbstractTableModel;
 
+import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostSanity;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.GhostCommand;
-import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Bonus;
 import de.amr.games.pacman.model.world.api.BonusState;

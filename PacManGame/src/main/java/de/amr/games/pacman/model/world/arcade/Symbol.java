@@ -1,4 +1,4 @@
-package de.amr.games.pacman.controller.world.arcade;
+package de.amr.games.pacman.model.world.arcade;
 
 /**
  * Symbols in sprite sheet order.

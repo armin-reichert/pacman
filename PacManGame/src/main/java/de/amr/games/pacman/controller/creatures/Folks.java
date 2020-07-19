@@ -1,4 +1,4 @@
-package de.amr.games.pacman.controller.world.arcade;
+package de.amr.games.pacman.controller.creatures;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;

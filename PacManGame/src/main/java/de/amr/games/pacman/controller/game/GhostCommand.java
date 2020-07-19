@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.statemachine.core.StateMachine;
 

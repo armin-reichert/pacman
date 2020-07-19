@@ -17,10 +17,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import de.amr.easy.game.controller.Lifecycle;
+import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
-import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeThemeSprites;
 import net.miginfocom.swing.MigLayout;
