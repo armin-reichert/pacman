@@ -5,7 +5,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -37,7 +36,7 @@ public class EnterAndLeaveGhostHouseTestApp extends Application {
 
 class EnterGhostHouseTestUI extends TestUI {
 
-	private final List<Tile> capes = Arrays.asList(world.capeNW(), world.capeSE(), world.capeSW());
+	private final List<Tile> capes = world.capes();
 	private int visits;
 	private Tile nextCapeToVisit;
 	private boolean enteredCape, leftCape;

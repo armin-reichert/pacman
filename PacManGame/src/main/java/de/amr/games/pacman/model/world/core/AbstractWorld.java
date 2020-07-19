@@ -2,6 +2,7 @@ package de.amr.games.pacman.model.world.core;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Door;
@@ -16,6 +17,23 @@ import de.amr.games.pacman.model.world.api.World;
  * @author Armin Reichert
  */
 public abstract class AbstractWorld implements World {
+
+	private int distFromCornerNW(Tile t1, Tile t2) {
+		return Integer.compare(t1.col + t1.row, t2.col + t2.row);
+	}
+
+	private int distFromCornerNE(Tile t1, Tile t2) {
+		return Integer.compare(width() - t1.col + t1.row, width() - t2.col + t2.row);
+	}
+
+	@Override
+	public List<Tile> capes() {
+		Tile capeNW = habitat().filter(this::isAccessible).min((t1, t2) -> distFromCornerNW(t1, t2)).get();
+		Tile capeNE = habitat().filter(this::isAccessible).min((t1, t2) -> distFromCornerNE(t1, t2)).get();
+		Tile capeSE = habitat().filter(this::isAccessible).max((t1, t2) -> distFromCornerNW(t1, t2)).get();
+		Tile capeSW = habitat().filter(this::isAccessible).max((t1, t2) -> distFromCornerNE(t1, t2)).get();
+		return List.of(capeNW, capeNE, capeSE, capeSW);
+	}
 
 	private final Collection<Life> excluded = new HashSet<>();
 

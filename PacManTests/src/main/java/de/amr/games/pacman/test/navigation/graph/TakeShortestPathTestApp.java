@@ -49,17 +49,18 @@ class TakeShortestPathTestUI extends TestUI {
 	public void init() {
 		super.init();
 
+		List<Tile> capes = world.capes();
 		Portal thePortal = world.portals().findAny().get();
 		//@formatter:off
 		targets = Arrays.asList(
-				world.capeSE(), 
+				capes.get(2), 
 				Tile.at(15, 23), 
 				Tile.at(12, 23), 
-				world.capeSW(),
+				capes.get(3),
 				world.neighbor(thePortal.either, RIGHT), 
-				world.capeNW(),
+				capes.get(0),
 				Tile.at(blinky.bed().col(), blinky.bed().row()), 
-				world.capeNE(),
+				capes.get(1),
 				world.neighbor(thePortal.other, LEFT), 
 				Tile.at(world.pacManBed().col(), 
 				world.pacManBed().row()));

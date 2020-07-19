@@ -90,8 +90,8 @@ public class ArcadeWorld extends MapBasedWorld {
 		
 		portals = List.of(
 			horizontalPortal(Tile.at(1, 17), Tile.at(26, 17))
-		 ,horizontalPortal(Tile.at(1, 11), Tile.at(26, 11))
-		 ,horizontalPortal(Tile.at(1, 23), Tile.at(26, 23))
+//		 ,horizontalPortal(Tile.at(1, 11), Tile.at(26, 11))
+//		 ,horizontalPortal(Tile.at(1, 23), Tile.at(26, 23))
 		);
 		
 		oneWayTiles = List.of(
@@ -161,25 +161,5 @@ public class ArcadeWorld extends MapBasedWorld {
 	@Override
 	public Stream<Tile> habitat() {
 		return IntStream.range(3 * width(), (height() + 4) * width()).mapToObj(i -> Tile.at(i % width(), i / width()));
-	}
-
-	@Override
-	public Tile capeNW() {
-		return Tile.at(1, 4);
-	}
-
-	@Override
-	public Tile capeNE() {
-		return Tile.at(width() - 2, 4);
-	}
-
-	@Override
-	public Tile capeSW() {
-		return Tile.at(1, height() - 4);
-	}
-
-	@Override
-	public Tile capeSE() {
-		return Tile.at(width() - 2, height() - 4);
 	}
 }

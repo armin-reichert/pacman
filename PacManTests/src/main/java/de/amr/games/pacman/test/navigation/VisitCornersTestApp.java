@@ -39,8 +39,9 @@ class FollowTargetTilesTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		targets = Arrays.asList(world.capeNW(), world.capeNE(), world.capeSE(),
-				Tile.at(world.pacManBed().col(), world.pacManBed().row()), world.capeSW());
+		List<Tile> capes = world.capes();
+		targets = Arrays.asList(capes.get(0), capes.get(1), capes.get(2),
+				Tile.at(world.pacManBed().col(), world.pacManBed().row()), capes.get(3));
 		current = 0;
 		soundManager.snd_ghost_chase().volume(0);
 		include(blinky);

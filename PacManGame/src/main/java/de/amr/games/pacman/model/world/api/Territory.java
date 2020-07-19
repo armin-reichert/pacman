@@ -1,28 +1,9 @@
 package de.amr.games.pacman.model.world.api;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public interface Territory {
-
-	/**
-	 * @return outmost accessible tile at north-west
-	 */
-	Tile capeNW();
-
-	/**
-	 * @return outmost accessible tile at north-east
-	 */
-	Tile capeNE();
-
-	/**
-	 * @return outmost accessible tile at south-west
-	 */
-	Tile capeSW();
-
-	/**
-	 * @return outmost accessible tile at south-east
-	 */
-	Tile capeSE();
 
 	/**
 	 * @param tile reference tile
@@ -91,6 +72,11 @@ public interface Territory {
 	 * @param life a life
 	 */
 	void exclude(Life life);
+
+	/**
+	 * @return list of "capes" in order NW, NE, SE, SW
+	 */
+	List<Tile> capes();
 
 	/**
 	 * @return Pac-Man's sleep location

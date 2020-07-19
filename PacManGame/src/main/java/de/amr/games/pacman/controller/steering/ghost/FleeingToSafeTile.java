@@ -24,7 +24,7 @@ public class FleeingToSafeTile extends FollowingPath {
 
 	private final MobileLifeform attacker;
 	private final WorldGraph graph;
-	private final List<Tile> corners;
+	private final List<Tile> capes;
 	private final List<Tile> portalEntries;
 	private final List<Tile> safeTiles;
 	private Tile safeTile;
@@ -36,13 +36,13 @@ public class FleeingToSafeTile extends FollowingPath {
 		World world = refugee.world();
 		graph = new WorldGraph(world);
 		graph.setPathFinder(PathFinder.BEST_FIRST_SEARCH);
-		corners = List.of(world.capeNW(), world.capeNE(), world.capeSW(), world.capeSE());
+		capes = world.capes();
 		portalEntries = new ArrayList<Tile>();
 		world.portals().forEach(portal -> {
-			portalEntries.add(portal.eitherEntry());
-			portalEntries.add(portal.otherEntry());
+			portalEntries.add(portal.either);
+			portalEntries.add(portal.other);
 		});
-		safeTiles = new ArrayList<>(corners);
+		safeTiles = new ArrayList<>(capes);
 		safeTiles.addAll(portalEntries);
 	}
 
@@ -54,13 +54,12 @@ public class FleeingToSafeTile extends FollowingPath {
 		}
 		super.steer();
 	}
-	
+
 	@Override
 	public void init() {
 		path.clear();
 		safeTile = null;
 	}
-	
 
 	@Override
 	public boolean isComplete() {
@@ -70,7 +69,7 @@ public class FleeingToSafeTile extends FollowingPath {
 			return true;
 		}
 		if (mover.tileLocation().equals(safeTile)) {
-			if (corners.contains(safeTile)) {
+			if (capes.contains(safeTile)) {
 				return true;
 			} else {
 				// let refugee go through portal
