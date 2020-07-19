@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
@@ -26,7 +26,7 @@ import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 public class MusicLoadingView implements PacManGameView {
 
 	private final ArcadeWorld world = new ArcadeWorld();
-	private final ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
+	private final Folks folks = new Folks(world);
 	private final PacMan pacMan = folks.pacMan;
 	private final List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
 	private Theme theme;

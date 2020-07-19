@@ -11,7 +11,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.sound.PacManSounds;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -25,7 +25,7 @@ public class ChasePacManAnimation extends GameObject {
 	}
 
 	private ArcadeWorld world = new ArcadeWorld();
-	private ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
+	private Folks folks = new Folks(world);
 	private PacManSounds sounds;
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
@@ -39,7 +39,7 @@ public class ChasePacManAnimation extends GameObject {
 		folks.all().forEach(c -> c.setTheme(theme));
 	}
 
-	public ArcadeWorldFolks folks() {
+	public Folks folks() {
 		return folks;
 	}
 

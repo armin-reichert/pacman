@@ -73,7 +73,6 @@ public class BlocksTheme extends AbstractTheme {
 	public IRenderer createScoreRenderer(World world, Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
 		renderer.setFont($font("font"));
-		renderer.setSmoothText(true);
 		return renderer;
 	}
 

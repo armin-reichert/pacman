@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Door;
 import de.amr.games.pacman.model.world.api.Door.DoorState;
@@ -34,14 +34,14 @@ import de.amr.games.pacman.model.world.api.World;
 public class DoorMan implements Lifecycle {
 
 	private final House house;
-	private final ArcadeWorldFolks folks;
+	private final Folks folks;
 	private final Game game;
 	private final World world;
 	private final DotCounter globalCounter;
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
 
-	public DoorMan(World world, House house, Game game, ArcadeWorldFolks folks) {
+	public DoorMan(World world, House house, Game game, Folks folks) {
 		this.house = house;
 		this.folks = folks;
 		this.game = game;

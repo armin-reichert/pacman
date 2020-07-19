@@ -21,19 +21,22 @@ import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GhostCommand;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 
 public class StatesRenderer implements IRenderer {
 
 	private static final Font SMALL_FONT = new Font("Arial", Font.PLAIN, 6);
 
-	private final ArcadeWorldFolks folks;
+	private final World world;
+	private final Folks folks;
 	private final GhostCommand ghostCommand;
 
-	public StatesRenderer(ArcadeWorldFolks folks, GhostCommand ghostCommand) {
+	public StatesRenderer(World world, Folks folks, GhostCommand ghostCommand) {
+		this.world = world;
 		this.folks = folks;
 		this.ghostCommand = ghostCommand;
 	}
@@ -45,7 +48,7 @@ public class StatesRenderer implements IRenderer {
 	}
 
 	private void drawActorStates(Graphics2D g) {
-		folks.ghostsInsideWorld().forEach(ghost -> drawGhostState(g, ghost, ghostCommand));
+		folks.ghosts().filter(world::contains).forEach(ghost -> drawGhostState(g, ghost, ghostCommand));
 		drawPacManState(g, folks.pacMan);
 	}
 

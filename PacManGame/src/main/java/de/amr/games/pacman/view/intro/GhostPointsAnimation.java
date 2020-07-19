@@ -15,7 +15,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.sound.PacManSounds;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
@@ -30,7 +30,7 @@ import de.amr.games.pacman.view.theme.api.Theme;
 public class GhostPointsAnimation extends GameObject {
 
 	private final ArcadeWorld world = new ArcadeWorld();
-	private final ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
+	private final Folks folks = new Folks(world);
 	private final Ghost[] ghosts = folks.ghosts().toArray(Ghost[]::new);
 	private final PacManSounds sounds;
 	private final BitSet killed = new BitSet(5);

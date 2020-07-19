@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.world.api.World;
 
 /**
@@ -17,11 +17,11 @@ import de.amr.games.pacman.model.world.api.World;
 public class PacManSounds {
 
 	private final World world;
-	private final ArcadeWorldFolks folks;
+	private final Folks folks;
 	private CompletableFuture<Void> musicLoading;
 	private long lastPelletEatenTimeMillis;
 
-	public PacManSounds(World world, ArcadeWorldFolks folks) {
+	public PacManSounds(World world, Folks folks) {
 		this.world = world;
 		this.folks = folks;
 	}

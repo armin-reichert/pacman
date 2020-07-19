@@ -8,7 +8,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.sound.PacManSounds;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
@@ -17,7 +17,7 @@ import de.amr.games.pacman.view.theme.api.Theme;
 public class ChaseGhostsAnimation extends GameObject {
 
 	private ArcadeWorld world = new ArcadeWorld();
-	private ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
+	private Folks folks = new Folks(world);
 	private PacManSounds pacManSounds;
 	private int points;
 

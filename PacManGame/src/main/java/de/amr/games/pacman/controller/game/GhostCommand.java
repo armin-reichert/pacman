@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.statemachine.core.StateMachine;
 
@@ -41,7 +41,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	private int round; // starts with 1
 	private boolean suspended;
 
-	public GhostCommand(Game game, ArcadeWorldFolks folks) {
+	public GhostCommand(Game game, Folks folks) {
 		super(GhostState.class);
 		this.game = game;
 		this.ghosts = folks.ghosts().collect(Collectors.toList());

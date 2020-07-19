@@ -17,7 +17,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -31,9 +31,9 @@ import de.amr.games.pacman.view.theme.api.IRenderer;
 public class RoutesRenderer implements IRenderer {
 
 	private final World world;
-	private final ArcadeWorldFolks folks;
+	private final Folks folks;
 
-	public RoutesRenderer(World world, ArcadeWorldFolks folks) {
+	public RoutesRenderer(World world, Folks folks) {
 		this.world = world;
 		this.folks = folks;
 	}
@@ -43,7 +43,7 @@ public class RoutesRenderer implements IRenderer {
 		if (folks.pacMan.isVisible()) {
 			drawPacManRoute(g, folks.pacMan);
 		}
-		folks.ghostsInsideWorld().filter(Ghost::isVisible).forEach(ghost -> drawGhostRoute(g, ghost));
+		folks.ghosts().filter(world::contains).filter(Ghost::isVisible).forEach(ghost -> drawGhostRoute(g, ghost));
 		if (folks.inky.isInsideWorld() && folks.inky.isVisible()) {
 			drawInkyChasing(g, folks.inky);
 		}

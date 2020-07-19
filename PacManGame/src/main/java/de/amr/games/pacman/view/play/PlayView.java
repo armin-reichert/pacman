@@ -5,13 +5,14 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -46,7 +47,7 @@ public class PlayView implements PacManGameView {
 	}
 
 	private final World world;
-	private final ArcadeWorldFolks folks;
+	private final Folks folks;
 	private Game game;
 
 	private final Message[] messages;
@@ -69,17 +70,20 @@ public class PlayView implements PacManGameView {
 	private boolean showingRoutes;
 	private boolean showingStates;
 
-	public PlayView(World world, Theme theme, ArcadeWorldFolks folks, Game game, GhostCommand ghostCommand,
-			DoorMan doorMan) {
+	public PlayView(World world, Theme theme, Folks folks, Game game, GhostCommand ghostCommand, DoorMan doorMan) {
 		this.world = world;
 		this.folks = folks;
 		this.game = game;
 		messages = new Message[] { new Message(15), new Message(21) };
 		gridRenderer = new GridRenderer(world);
 		routesRenderer = new RoutesRenderer(world, folks);
-		statesRenderer = new StatesRenderer(folks, ghostCommand);
+		statesRenderer = new StatesRenderer(world, folks, ghostCommand);
 		frameRateDisplay = new FrameRateWidget();
 		setTheme(theme);
+	}
+
+	public Stream<Ghost> ghostsInsideWorld() {
+		return folks.ghosts().filter(world::contains);
 	}
 
 	@Override
@@ -256,10 +260,8 @@ public class PlayView implements PacManGameView {
 
 	private void drawActors(Graphics2D g) {
 		folks.pacMan.renderer().render(g);
-		folks.ghostsInsideWorld().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghost.renderer().render(g));
-		folks.ghostsInsideWorld().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghost.renderer().render(g));
+		ghostsInsideWorld().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.renderer().render(g));
+		ghostsInsideWorld().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.renderer().render(g));
 	}
 
 	private void drawScores(Graphics2D g) {

@@ -28,15 +28,12 @@ import de.amr.games.pacman.model.world.api.World;
  * 
  * @author Armin Reichert
  */
-public class ArcadeWorldFolks {
+public class Folks {
 
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
-	private final World world;
 
-	public ArcadeWorldFolks(World world) {
-		this.world = world;
-
+	public Folks(World world) {
 		House ghostHouse = world.house(0);
 		Door door = ghostHouse.door(0);
 		Tile houseEntry = world.neighbor(door.tiles().findFirst().get(), door.intoHouse.opposite());
@@ -81,9 +78,5 @@ public class ArcadeWorldFolks {
 
 	public Stream<Creature<?>> all() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
-	}
-
-	public Stream<Ghost> ghostsInsideWorld() {
-		return ghosts().filter(world::contains);
 	}
 }

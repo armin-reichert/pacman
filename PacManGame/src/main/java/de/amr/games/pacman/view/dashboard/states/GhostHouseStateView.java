@@ -20,7 +20,7 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeThemeSprites;
 import net.miginfocom.swing.MigLayout;
@@ -33,7 +33,7 @@ import net.miginfocom.swing.MigLayout;
 public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	private GameController gameController;
-	private ArcadeWorldFolks folks;
+	private Folks folks;
 
 	private JTextField tfPinkyDots;
 	private JTextField tfInkyDots;
@@ -119,7 +119,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		tfPacManStarvingTime.setColumns(8);
 	}
 
-	public void attachTo(GameController gameController, ArcadeWorldFolks folks) {
+	public void attachTo(GameController gameController, Folks folks) {
 		this.gameController = gameController;
 		this.folks = folks;
 		init();

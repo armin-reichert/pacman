@@ -14,16 +14,11 @@ public class ScoreRenderer implements IRenderer {
 
 	private final Game game;
 	private Font font = new Font(Font.MONOSPACED, Font.PLAIN, Tile.SIZE);
-	private boolean smoothText = false;
 	private int topMargin = 1;
 	private int baselineOffset = Tile.SIZE;
 
 	public ScoreRenderer(Game game) {
 		this.game = game;
-	}
-
-	public void setSmoothText(boolean smoothText) {
-		this.smoothText = smoothText;
 	}
 
 	public void setFont(Font font) {
@@ -47,9 +42,7 @@ public class ScoreRenderer implements IRenderer {
 			int col;
 			pen.down(baselineOffset);
 			pen.font(font);
-			if (smoothText) {
-				pen.turnSmoothRenderingOn();
-			}
+			pen.turnSmoothRenderingOn();
 
 			// Game score
 			col = 1;

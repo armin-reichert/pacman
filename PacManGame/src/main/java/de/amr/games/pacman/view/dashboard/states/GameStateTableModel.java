@@ -12,7 +12,7 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostSanity;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.GhostCommand;
-import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.world.arcade.Folks;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Bonus;
 import de.amr.games.pacman.model.world.api.BonusState;
@@ -124,7 +124,7 @@ class GameStateTableModel extends AbstractTableModel {
 		if (gameController != null) {
 			gameController.game().ifPresent(game -> {
 				gameController.ghostCommand().ifPresent(ghostCommand -> {
-					ArcadeWorldFolks folks = gameController.folks();
+					Folks folks = gameController.folks();
 					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, folks.blinky, folks.pacMan);
 					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, folks.pinky, folks.pacMan);
 					fillGhostRecord(records[ROW_INKY], game, ghostCommand, folks.inky, folks.pacMan);
