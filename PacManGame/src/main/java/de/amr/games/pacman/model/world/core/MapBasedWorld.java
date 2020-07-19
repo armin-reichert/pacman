@@ -7,84 +7,20 @@ import static de.amr.games.pacman.model.world.core.WorldMap.B_INTERSECTION;
 import static de.amr.games.pacman.model.world.core.WorldMap.B_TUNNEL;
 import static de.amr.games.pacman.model.world.core.WorldMap.B_WALL;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import de.amr.games.pacman.model.world.api.Bed;
-import de.amr.games.pacman.model.world.api.Bonus;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Door;
-import de.amr.games.pacman.model.world.api.House;
-import de.amr.games.pacman.model.world.api.Life;
-import de.amr.games.pacman.model.world.api.OneWayTile;
-import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
 
-public abstract class MapBasedWorld implements World {
+/**
+ * Base class for worlds using a map.
+ * 
+ * @author Armin Reichert
+ */
+public abstract class MapBasedWorld extends AbstractWorld {
 
 	protected final WorldMap map;
-	protected Bed pacManBed;
-	protected final List<House> houses = new ArrayList<>();
-	protected final List<Portal> portals = new ArrayList<>();
-	protected final List<OneWayTile> oneWayTiles = new ArrayList<>();
-	protected Bonus bonus;
-	protected Tile bonusTile;
-	protected boolean changingLevel;
-	protected boolean frozen;
-
-	private Set<Life> excludedGuys = new HashSet<>();
 
 	public MapBasedWorld(byte[][] data) {
 		map = new WorldMap(data);
-	}
-
-	@Override
-	public boolean isFrozen() {
-		return frozen;
-	}
-
-	@Override
-	public void setFrozen(boolean frozen) {
-		this.frozen = frozen;
-	}
-
-	@Override
-	public boolean isChanging() {
-		return changingLevel;
-	}
-
-	@Override
-	public void setChanging(boolean b) {
-		changingLevel = b;
-	}
-
-	@Override
-	public void include(Life creature) {
-		exclude(creature, false);
-	}
-
-	@Override
-	public void exclude(Life creature) {
-		exclude(creature, true);
-	}
-
-	protected void exclude(Life creature, boolean out) {
-		if (out) {
-			excludedGuys.add(creature);
-		} else {
-			excludedGuys.remove(creature);
-		}
-		creature.setVisible(!out);
-	}
-
-	@Override
-	public boolean contains(Life creature) {
-		return !excludedGuys.contains(creature);
 	}
 
 	protected void addPortal(Tile left, Tile right) {
@@ -92,7 +28,6 @@ public abstract class MapBasedWorld implements World {
 		map.set1(left.row, left.col, B_TUNNEL);
 		map.set0(right.row, right.col, B_WALL);
 		map.set1(right.row, right.col, B_TUNNEL);
-		portals.add(new Portal(Tile.at(left.col - 1, left.row), Tile.at(right.col + 1, right.row)));
 	}
 
 	protected void setEnergizer(Tile tile) {
@@ -128,46 +63,6 @@ public abstract class MapBasedWorld implements World {
 	}
 
 	@Override
-	public int col() {
-		return 0;
-	}
-
-	@Override
-	public int row() {
-		return 0;
-	}
-
-	@Override
-	public boolean includes(Tile tile) {
-		return 0 <= tile.row && tile.row < height() && 0 <= tile.col && tile.col < width();
-	}
-
-	@Override
-	public Stream<House> houses() {
-		return houses.stream();
-	}
-
-	@Override
-	public Bed pacManBed() {
-		return pacManBed;
-	}
-
-	@Override
-	public Stream<Portal> portals() {
-		return portals.stream();
-	}
-
-	@Override
-	public Stream<OneWayTile> oneWayTiles() {
-		return oneWayTiles.stream();
-	}
-
-	@Override
-	public boolean insideHouseOrDoor(Tile tile) {
-		return isDoor(tile) || houses().map(House::layout).anyMatch(room -> room.includes(tile));
-	}
-
-	@Override
 	public boolean isAccessible(Tile tile) {
 		boolean inside = includes(tile);
 		return inside && !is(tile, B_WALL) || !inside && isInsidePortal(tile);
@@ -187,23 +82,6 @@ public abstract class MapBasedWorld implements World {
 	@Override
 	public boolean isIntersection(Tile tile) {
 		return is(tile, B_INTERSECTION);
-	}
-
-	@Override
-	public boolean isDoor(Tile tile) {
-		return houses().flatMap(House::doors).anyMatch(door -> door.includes(tile));
-	}
-
-	@Override
-	public boolean isHouseEntry(Tile tile) {
-		for (Direction dir : Direction.values()) {
-			Tile neighbor = neighbor(tile, dir);
-			if (isDoor(neighbor)) {
-				Door door = houses().flatMap(House::doors).filter(d -> d.includes(neighbor)).findFirst().get();
-				return door.intoHouse == dir;
-			}
-		}
-		return false;
 	}
 
 	@Override
@@ -272,15 +150,5 @@ public abstract class MapBasedWorld implements World {
 	@Override
 	public boolean containsEnergizer(Tile tile) {
 		return containsFood(tile) && is(tile, B_ENERGIZER);
-	}
-
-	@Override
-	public Optional<Bonus> getBonus() {
-		return Optional.ofNullable(bonus);
-	}
-
-	@Override
-	public void setBonus(Bonus bonus) {
-		this.bonus = bonus;
 	}
 }

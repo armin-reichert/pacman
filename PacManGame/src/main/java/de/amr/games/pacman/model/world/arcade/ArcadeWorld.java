@@ -2,13 +2,17 @@ package de.amr.games.pacman.model.world.arcade;
 
 import static de.amr.games.pacman.model.world.api.HouseBuilder.house;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.api.Bed;
+import de.amr.games.pacman.model.world.api.Bonus;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Door;
+import de.amr.games.pacman.model.world.api.House;
 import de.amr.games.pacman.model.world.api.OneWayTile;
 import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -62,6 +66,14 @@ public class ArcadeWorld extends MapBasedWorld {
 			//@formatter:on
 	};
 
+	protected Bed pacManBed;
+	protected final List<House> houses = new ArrayList<>();
+	protected final List<Portal> portals = new ArrayList<>();
+	protected final List<OneWayTile> oneWayTiles = new ArrayList<>();
+	protected Bonus bonus;
+	protected boolean changing;
+	protected boolean frozen;
+
 	public ArcadeWorld() {
 		super(DATA);
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
@@ -75,7 +87,6 @@ public class ArcadeWorld extends MapBasedWorld {
 			.bed(15, 17, Direction.UP)
 			.ok());
 		//@formatter:on
-		bonusTile = Tile.at(13, 20);
 		portals.add(new Portal(Tile.at(-1, 17), Tile.at(28, 17)));
 		oneWayTiles.addAll(List.of(
 		//@formatter:off
@@ -85,6 +96,62 @@ public class ArcadeWorld extends MapBasedWorld {
 			new OneWayTile(15, 25, Direction.DOWN)
 		//@formatter:on
 		));
+	}
+
+	@Override
+	public boolean isFrozen() {
+		return frozen;
+	}
+
+	@Override
+	public void setFrozen(boolean frozen) {
+		this.frozen = frozen;
+	}
+
+	@Override
+	public boolean isChanging() {
+		return changing;
+	}
+
+	@Override
+	public void setChanging(boolean changing) {
+		this.changing = changing;
+	}
+
+	@Override
+	protected void addPortal(Tile left, Tile right) {
+		super.addPortal(left, right);
+		portals.add(new Portal(Tile.at(left.col - 1, left.row), Tile.at(right.col + 1, right.row)));
+	}
+
+	@Override
+	public Stream<House> houses() {
+		return houses.stream();
+	}
+
+	@Override
+	public Bed pacManBed() {
+		return pacManBed;
+	}
+
+	@Override
+	public Stream<Portal> portals() {
+		return portals.stream();
+	}
+
+	@Override
+	public Stream<OneWayTile> oneWayTiles() {
+		return oneWayTiles.stream();
+	}
+
+	@Override
+	public Optional<Bonus> getBonus() {
+		return Optional.ofNullable(bonus);
+	}
+
+	@Override
+	public void setBonus(Bonus bonus) {
+		this.bonus = bonus;
 	}
 
 	/**

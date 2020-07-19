@@ -31,7 +31,7 @@ public class WorldPreview extends JFrame {
 	public WorldPreview() {
 		world = new ArcadeWorld();
 		graph = new WorldGraph(world);
-		setTitle("Pac-Man Maze Preview");
+		setTitle("Pac-Man World Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		GridCanvas canvas = new GridCanvas(graph, TS);
 		canvas.pushRenderer(createRenderer());
