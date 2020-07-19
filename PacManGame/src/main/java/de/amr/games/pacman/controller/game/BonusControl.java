@@ -1,4 +1,4 @@
-package de.amr.games.pacman.controller.world.arcade;
+package de.amr.games.pacman.controller.game;
 
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.model.game.Game.sec;
@@ -19,7 +19,7 @@ import de.amr.statemachine.core.StateMachine;
 
 /**
  * Bonus symbols (fruit or other symbol) appear at the bonus position for around 9 seconds. When
- * consumed, the bonus is displayed for 3 seconds as a number representing its value and then
+ * consumed, the bonus is displayed for 3 seconds as a number representing its value and then it
  * disappears.
  * 
  * @author Armin Reichert

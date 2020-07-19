@@ -46,7 +46,6 @@ import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.world.arcade.BonusControl;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Bed;
 import de.amr.games.pacman.model.world.api.Bonus;
