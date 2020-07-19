@@ -128,6 +128,12 @@ public class Movement extends StateMachine<MovementType, Void> {
 	 * @param speed the creature's current speed
 	 */
 	private float possibleSpeed(Direction dir, float speed) {
+		// in tunnel no turn is allowed
+		if (mover.world().isTunnel(mover.tileLocation())) {
+			if (dir == mover.moveDir().left() || dir == mover.moveDir().right()) {
+				return 0;
+			}
+		}
 		if (mover.canCrossBorderTo(dir)) {
 			return speed;
 		}
