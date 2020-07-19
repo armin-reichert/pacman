@@ -202,30 +202,31 @@ The actors are also controlled by finite-state machines:
 - **Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/pacman/PacMan.java))
 - **Ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/ghost/Ghost.java)) 
 
-Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/world/arcade/BonusControl.java)) which appears at certain scores is controlled by a finite-state machine:
+Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/game/BonusControl.java)) which appears at certain scores is controlled by a finite-state machine:
 
 ```java
 beginStateMachine()
-	.description(String.format("[%s]", "Bonus"))
+	.description("[BonusControl]")
 	.initialState(INACTIVE)
 	.states()
 		.state(INACTIVE)
-			.onEntry(() -> {
-				world.setBonus(null);
-			})
+			.onEntry(() -> world.setBonus(null))
 		.state(ACTIVE)
-			.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
+			.timeoutAfter(() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()))
 			.onEntry(() -> {
-				Bonus bonus = new Bonus(game.level.bonusSymbol.name(), game.level.bonusValue);
+				Bonus bonus = new Bonus(Game.BONUS_LOCATION, game.level.bonusSymbol.name(), game.level.bonusValue);
 				bonus.state = ACTIVE;
 				world.setBonus(bonus);
+				loginfo("Bonus '%s' (value %d) activated for %.2f sec", 
+						bonus.symbol, bonus.value, state().getDuration() / 60f);
 			})
 		.state(CONSUMED)
 			.timeoutAfter(() -> sec(3))
 			.onEntry(() -> {
-				world.getBonus().ifPresent(bonus -> {
-					bonus.state = CONSUMED;
-				});
+				Bonus bonus = world.getBonus().get();
+				bonus.state = CONSUMED;
+				loginfo("Bonus '%s' (value %d) consumed after %.2f sec", 
+						bonus.symbol, bonus.value, state(ACTIVE).getTicksConsumed() / 60f);
 			})
 	.transitions()
 		.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
@@ -234,30 +235,27 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-When an actor leaves the board inside a tunnel it leaves its normal movement mode and enters *teleporting* mode. The movement of the actors is controlled by the following state machine (PacManGame/src/main/java/de/amr/games/pacman/controller/steering/common/MovementControl):
+When an actor leaves the board inside a tunnel it leaves its normal movement mode and enters *teleporting* mode. The movement of the actors is controlled by the following state machine (PacManGame/src/main/java/de/amr/games/pacman/controller/steering/common/Movement):
 
 ```java
 beginStateMachine()
-	.description(String.format("[%s movement]", creature.name))
+	.description(String.format("[%s movement]", moverName))
 	.initialState(WALKING)
 	.states()
 		.state(WALKING)
 			.onTick(() -> {
-				move(creature);
-				checkIfPortalEntered(creature);
+				move();
 			})
 		.state(TELEPORTING)
 			.timeoutAfter(sec(0.5f))
+			.onEntry(() -> mover.setVisible(false))
+			.onExit(() -> mover.setVisible(true))
 	.transitions()
 		.when(WALKING).then(TELEPORTING)
-			.condition(() -> hasEnteredPortal())
-			.act(() -> creature.visible = false)
+			.condition(() -> insidePortal())
 		.when(TELEPORTING).then(WALKING)
 			.onTimeout()
-			.act(() -> {
-				teleport(creature);
-				creature.visible = true;
-			})
+			.act(() -> teleport())
 .endStateMachine();
 ```
 
@@ -406,7 +404,7 @@ you(clyde).when(CHASING).headFor().tile(() -> clyde.distance(pacMan) > 8 ? pacMa
 
 <img src="PacManDoc/clyde.png"/>
 
-For details, see class [ArcadeWorldFolks](PacManGame/src/main/java/de/amr/games/pacman/controller/world/arcade/ArcadeWorldFolks.java).
+For details, see class [Folks](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/Folks.java).
 
 ### Visualization of attack behavior
 
@@ -480,4 +478,4 @@ A home-brew library is used for the basic game infrastructure (active rendering,
 keyboard and mouse handling etc.), but it should be no problem to implement these parts from scratch or 
 use some real game library instead.
 
-*Armin Reichert, November 2019*
+*Armin Reichert, July 2020*
