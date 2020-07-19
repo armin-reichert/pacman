@@ -158,7 +158,7 @@ public class LettersTheme extends AbstractTheme {
 			world.houses().flatMap(House::doors).forEach(door -> {
 				if (door.state == DoorState.CLOSED) {
 					g.setColor(Color.PINK);
-					door.tiles.forEach(tile -> {
+					door.tiles().forEach(tile -> {
 						g.drawString("_", tile.x() + 1, tile.y());
 					});
 				}

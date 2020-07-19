@@ -10,12 +10,12 @@ import java.util.stream.Stream;
  */
 public class House implements Area {
 
-	private final Area room;
+	private final Area layout;
 	private final List<Door> doors;
 	private final List<Bed> beds;
 
-	public House(Area room, List<Door> doors, List<Bed> beds) {
-		this.room = room;
+	public House(Area layout, List<Door> doors, List<Bed> beds) {
+		this.layout = layout;
 		this.doors = doors;
 		this.beds = beds;
 	}
@@ -24,11 +24,11 @@ public class House implements Area {
 		return doors.stream();
 	}
 
-	public Area room() {
-		return room;
+	public Area layout() {
+		return layout;
 	}
 
-	public Stream<Bed> seats() {
+	public Stream<Bed> beds() {
 		return beds.stream();
 	}
 
@@ -38,6 +38,11 @@ public class House implements Area {
 
 	@Override
 	public boolean includes(Tile tile) {
-		return room.includes(tile);
+		return layout.includes(tile);
+	}
+
+	@Override
+	public Stream<Tile> tiles() {
+		return layout.tiles();
 	}
 }

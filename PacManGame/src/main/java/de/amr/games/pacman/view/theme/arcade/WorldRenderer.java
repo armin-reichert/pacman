@@ -64,7 +64,7 @@ public class WorldRenderer implements IWorldRenderer {
 			// draw doors depending on their state
 			world.theHouse().doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
 				g.setColor(Color.BLACK);
-				door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
+				door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
 			});
 		}
 		energizerAnimation.setEnabled(!world.isFrozen());

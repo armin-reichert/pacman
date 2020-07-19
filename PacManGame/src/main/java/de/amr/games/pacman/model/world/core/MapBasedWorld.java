@@ -29,9 +29,9 @@ public abstract class MapBasedWorld implements World {
 
 	protected WorldMap map;
 	protected Bed pacManBed;
-	protected List<House> houses = new ArrayList<>();
-	protected List<Portal> portals = new ArrayList<>();
-	protected List<OneWayTile> oneWayTiles = new ArrayList<>();
+	protected final List<House> houses = new ArrayList<>();
+	protected final List<Portal> portals = new ArrayList<>();
+	protected final List<OneWayTile> oneWayTiles = new ArrayList<>();
 	protected Bonus bonus;
 	protected Tile bonusTile;
 	protected boolean changingLevel;
@@ -165,7 +165,7 @@ public abstract class MapBasedWorld implements World {
 
 	@Override
 	public boolean insideHouseOrDoor(Tile tile) {
-		return isDoor(tile) || houses().map(House::room).anyMatch(room -> room.includes(tile));
+		return isDoor(tile) || houses().map(House::layout).anyMatch(room -> room.includes(tile));
 	}
 
 	@Override

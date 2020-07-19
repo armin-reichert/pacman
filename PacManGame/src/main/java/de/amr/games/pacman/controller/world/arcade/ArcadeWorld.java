@@ -1,16 +1,14 @@
 package de.amr.games.pacman.controller.world.arcade;
 
-import java.util.Arrays;
+import static de.amr.games.pacman.model.world.api.HouseBuilder.house;
+
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.world.api.Area;
 import de.amr.games.pacman.model.world.api.Bed;
-import de.amr.games.pacman.model.world.api.Block;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Door;
-import de.amr.games.pacman.model.world.api.House;
 import de.amr.games.pacman.model.world.api.OneWayTile;
 import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -70,10 +68,19 @@ public class ArcadeWorld extends MapBasedWorld {
 	public ArcadeWorld() {
 		map = new WorldMap(DATA);
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
-		houses.add(ghostHouse(11, 16, 6, 4));
+		houses.add(house()
+		//@formatter:off
+			.layout(11, 16, 6, 4)
+			.door(new Door(Direction.DOWN, 13, 15, 2, 1))
+			.bed(13, 14, Direction.LEFT)
+			.bed(11, 17, Direction.UP) 
+			.bed(13, 17, Direction.DOWN)
+			.bed(15, 17, Direction.UP)
+			.ok());
+		//@formatter:on
 		bonusTile = Tile.at(13, 20);
 		portals.add(new Portal(Tile.at(-1, 17), Tile.at(28, 17)));
-		oneWayTiles.addAll(Arrays.asList(
+		oneWayTiles.addAll(List.of(
 		//@formatter:off
 			new OneWayTile(12, 13, Direction.DOWN), 
 			new OneWayTile(15, 13, Direction.DOWN),
@@ -90,20 +97,6 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	public ArcadeWorldFolks getFolks() {
 		return folks;
-	}
-
-	private House ghostHouse(int col, int row, int w, int h) {
-		Area room = new Block(col, row, w, h);
-		Door door = new Door(Direction.DOWN, Tile.at(col + 2, row - 1), Tile.at(col + 3, row - 1));
-		List<Bed> beds = Arrays.asList(
-		//@formatter:off
-			new Bed(col + 2, row - 2, Direction.LEFT),
-			new Bed(col,     row + 1, Direction.UP), 
-			new Bed(col + 2, row + 1, Direction.DOWN),
-			new Bed(col + 4, row + 1, Direction.UP)
-		//@formatter:on
-		);
-		return new House(room, Arrays.asList(door), beds);
 	}
 
 	/**

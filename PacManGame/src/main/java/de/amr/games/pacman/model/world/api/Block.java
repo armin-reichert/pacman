@@ -33,9 +33,4 @@ public class Block implements RectangularArea {
 	public int row() {
 		return row;
 	}
-
-	@Override
-	public boolean includes(Tile tile) {
-		return col <= tile.col && tile.col < col + width && row <= tile.row && tile.row < row + height;
-	}
 }
