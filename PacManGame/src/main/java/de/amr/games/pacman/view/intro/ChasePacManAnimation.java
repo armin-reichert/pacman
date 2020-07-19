@@ -111,7 +111,7 @@ public class ChasePacManAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
-		folks.all().map(Creature::renderer).forEach(r -> r.render(g));
+		folks.all().forEach(creature -> creature.draw(g));
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		int x = (int) folks.pacMan.entity.tf.x - Tile.SIZE;
 		int y = (int) folks.pacMan.entity.tf.y;

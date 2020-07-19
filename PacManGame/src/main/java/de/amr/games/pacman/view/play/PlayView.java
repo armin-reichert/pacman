@@ -259,9 +259,9 @@ public class PlayView implements PacManGameView {
 	}
 
 	private void drawActors(Graphics2D g) {
-		folks.pacMan.renderer().render(g);
-		ghostsInsideWorld().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.renderer().render(g));
-		ghostsInsideWorld().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.renderer().render(g));
+		folks.pacMan.draw(g);
+		ghostsInsideWorld().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.draw(g));
+		ghostsInsideWorld().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.draw(g));
 	}
 
 	private void drawScores(Graphics2D g) {

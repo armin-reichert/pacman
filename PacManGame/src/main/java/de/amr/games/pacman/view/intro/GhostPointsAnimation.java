@@ -53,7 +53,7 @@ public class GhostPointsAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
-		folks.all().map(Creature::renderer).forEach(r -> r.render(g));
+		folks.all().forEach(creature -> creature.draw(g));
 		g.translate(tf.x + dx, tf.y);
 		renderPellet(g);
 		g.translate(-(tf.x + dx), -tf.y);

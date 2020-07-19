@@ -9,6 +9,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.game.Game.sec;
 
+import java.awt.Graphics2D;
 import java.util.Optional;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -206,6 +207,10 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	@Override
+	public void draw(Graphics2D g) {
+		renderer.render(g);
+	}
+
 	public IRenderer renderer() {
 		return renderer;
 	}

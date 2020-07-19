@@ -7,6 +7,7 @@ import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPI
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
+import java.awt.Graphics2D;
 import java.util.Optional;
 
 import de.amr.easy.game.math.Vector2f;
@@ -127,8 +128,12 @@ public class PacMan extends Creature<PacManState> {
 	public World world() {
 		return world;
 	}
-
+	
 	@Override
+	public void draw(Graphics2D g) {
+		renderer.render(g);
+	}
+	
 	public IPacManRenderer renderer() {
 		return renderer;
 	}

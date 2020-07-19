@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.entity.Transform;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.api.TargetTileSteering;
@@ -18,7 +19,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.theme.api.IRenderer;
+import de.amr.games.pacman.view.api.Themeable;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.statemachine.core.StateMachine;
 
@@ -32,7 +33,8 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEvent> implements MobileLifeform {
+public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEvent>
+		implements MobileLifeform, Themeable, View {
 
 	public final String name;
 	public final Entity entity;
@@ -62,15 +64,15 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 		entity.visible = visible;
 	}
 
+	@Override
 	public Theme getTheme() {
 		return theme;
 	}
 
+	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 	}
-
-	public abstract IRenderer renderer();
 
 	/**
 	 * @return this creatures' current speed (pixels/sec)
