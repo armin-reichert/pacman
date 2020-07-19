@@ -50,10 +50,10 @@ public class ChasePacManAnimation extends GameObject {
 
 		folks.all().forEach(Creature::init);
 
-		folks.pacMan().entity.tf.vx = -0.55f;
-		folks.pacMan().setMoveDir(Direction.LEFT);
-		folks.pacMan().setState(PacManState.RUNNING);
-		folks.pacMan().renderer().stopAnimationWhenStanding(false);
+		folks.pacMan.entity.tf.vx = -0.55f;
+		folks.pacMan.setMoveDir(Direction.LEFT);
+		folks.pacMan.setState(PacManState.RUNNING);
+		folks.pacMan.renderer().stopAnimationWhenStanding(false);
 
 		folks.ghosts().forEach(ghost -> {
 			ghost.entity.tf.setVelocity(-0.55f, 0);
@@ -73,7 +73,7 @@ public class ChasePacManAnimation extends GameObject {
 			ghosts[i].entity.tf.setPosition(x, tf.y);
 			x -= size;
 		}
-		folks.pacMan().entity.tf.setPosition(x, tf.y);
+		folks.pacMan.entity.tf.setPosition(x, tf.y);
 	}
 
 	@Override
@@ -113,8 +113,8 @@ public class ChasePacManAnimation extends GameObject {
 	public void draw(Graphics2D g) {
 		folks.all().map(Creature::renderer).forEach(r -> r.render(g));
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		int x = (int) folks.pacMan().entity.tf.x - Tile.SIZE;
-		int y = (int) folks.pacMan().entity.tf.y;
+		int x = (int) folks.pacMan.entity.tf.x - Tile.SIZE;
+		int y = (int) folks.pacMan.entity.tf.y;
 		switch (pelletDisplay) {
 		case SIMPLE:
 			g.setColor(Color.PINK);

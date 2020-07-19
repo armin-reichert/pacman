@@ -83,10 +83,10 @@ public class GhostPointsAnimation extends GameObject {
 
 		folks.all().forEach(Creature::init);
 
-		folks.pacMan().setMoveDir(Direction.RIGHT);
-		folks.pacMan().setState(PacManState.RUNNING);
-		folks.pacMan().setSpeed(() -> 0f);
-		folks.pacMan().renderer().stopAnimationWhenStanding(false);
+		folks.pacMan.setMoveDir(Direction.RIGHT);
+		folks.pacMan.setState(PacManState.RUNNING);
+		folks.pacMan.setSpeed(() -> 0f);
+		folks.pacMan.renderer().stopAnimationWhenStanding(false);
 
 		folks.ghosts().forEach(ghost -> {
 			ghost.setSpeed(() -> 0f);
@@ -99,7 +99,7 @@ public class GhostPointsAnimation extends GameObject {
 
 	private void initPositions() {
 		float x = tf.x;
-		folks.pacMan().entity.tf.setPosition(x, tf.y);
+		folks.pacMan.entity.tf.setPosition(x, tf.y);
 		x += 2 * dx; // space for drawing pellet
 		for (int i = 0; i < ghosts.length; ++i) {
 			ghosts[i].entity.tf.setPosition(x, tf.y);

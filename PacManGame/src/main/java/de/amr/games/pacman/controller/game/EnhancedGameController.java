@@ -50,11 +50,11 @@ public class EnhancedGameController extends GameController {
 
 	private void handlePlayViewInput() {
 		if (Keyboard.keyPressedOnce("b")) {
-			toggleGhostOnStage(folks.blinky());
+			toggleGhostOnStage(folks.blinky);
 		}
 
 		else if (Keyboard.keyPressedOnce("c")) {
-			toggleGhostOnStage(folks.clyde());
+			toggleGhostOnStage(folks.clyde);
 		}
 
 		else if (Keyboard.keyPressedOnce("d")) {
@@ -74,7 +74,7 @@ public class EnhancedGameController extends GameController {
 		}
 
 		else if (Keyboard.keyPressedOnce("i")) {
-			toggleGhostOnStage(folks.inky());
+			toggleGhostOnStage(folks.inky);
 		}
 
 		else if (Keyboard.keyPressedOnce("k")) {
@@ -94,7 +94,7 @@ public class EnhancedGameController extends GameController {
 		}
 
 		else if (Keyboard.keyPressedOnce("p")) {
-			toggleGhostOnStage(folks.pinky());
+			toggleGhostOnStage(folks.pinky);
 		}
 
 		else if (Keyboard.keyPressedOnce("s")) {
@@ -149,7 +149,7 @@ public class EnhancedGameController extends GameController {
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;
-			folks.ghosts().forEach(ghost -> you(ghost).when(FRIGHTENED).fleeToSafeTile().from(folks.pacMan()).ok());
+			folks.ghosts().forEach(ghost -> you(ghost).when(FRIGHTENED).fleeToSafeTile().from(folks.pacMan).ok());
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}

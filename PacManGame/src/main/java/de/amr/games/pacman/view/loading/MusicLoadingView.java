@@ -27,7 +27,7 @@ public class MusicLoadingView implements PacManGameView {
 
 	private final ArcadeWorld world = new ArcadeWorld();
 	private final ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
-	private final PacMan pacMan = folks.pacMan();
+	private final PacMan pacMan = folks.pacMan;
 	private final List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
 	private Theme theme;
 	private MessagesRenderer messagesRenderer;

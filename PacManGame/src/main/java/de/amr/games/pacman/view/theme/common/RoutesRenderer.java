@@ -20,6 +20,7 @@ import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 
 /**
@@ -29,23 +30,25 @@ import de.amr.games.pacman.view.theme.api.IRenderer;
  */
 public class RoutesRenderer implements IRenderer {
 
+	private final World world;
 	private final ArcadeWorldFolks folks;
 
-	public RoutesRenderer(ArcadeWorldFolks folks) {
+	public RoutesRenderer(World world, ArcadeWorldFolks folks) {
+		this.world = world;
 		this.folks = folks;
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		if (folks.pacMan().isVisible()) {
-			drawPacManRoute(g, folks.pacMan());
+		if (folks.pacMan.isVisible()) {
+			drawPacManRoute(g, folks.pacMan);
 		}
 		folks.ghostsInsideWorld().filter(Ghost::isVisible).forEach(ghost -> drawGhostRoute(g, ghost));
-		if (folks.inky().isInsideWorld() && folks.inky().isVisible()) {
-			drawInkyChasing(g, folks.inky());
+		if (folks.inky.isInsideWorld() && folks.inky.isVisible()) {
+			drawInkyChasing(g, folks.inky);
 		}
-		if (folks.clyde().isInsideWorld() && folks.clyde().isVisible()) {
-			drawClydeChasingArea(g, folks.clyde());
+		if (folks.clyde.isInsideWorld() && folks.clyde.isVisible()) {
+			drawClydeChasingArea(g, folks.clyde);
 		}
 	}
 
@@ -115,9 +118,9 @@ public class RoutesRenderer implements IRenderer {
 	}
 
 	private void drawInkyChasing(Graphics2D g, Ghost inky) {
-		PacMan pacMan = folks.pacMan();
-		Ghost blinky = folks.blinky();
-		if (!inky.is(CHASING) || inky.targetTile().isEmpty() || !folks.world().contains(blinky)) {
+		PacMan pacMan = folks.pacMan;
+		Ghost blinky = folks.blinky;
+		if (!inky.is(CHASING) || inky.targetTile().isEmpty() || !world.contains(blinky)) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
@@ -132,8 +135,8 @@ public class RoutesRenderer implements IRenderer {
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
 		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
-			Tile twoAhead = folks.world().tileToDir(pacManTile, pacManDir, 2);
-			Tile twoLeft = folks.world().tileToDir(twoAhead, Direction.LEFT, 2);
+			Tile twoAhead = world.tileToDir(pacManTile, pacManDir, 2);
+			Tile twoLeft = world.tileToDir(twoAhead, Direction.LEFT, 2);
 			x1 = pacManTile.centerX();
 			y1 = pacManTile.centerY();
 			x2 = twoAhead.centerX();

@@ -143,7 +143,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(CHANGING_LEVEL)
 					.timeoutAfter(() -> sec(6 + game.level.numFlashes * theme().$float("maze-flash-sec")))
 					.onEntry(() -> {
-						folks.pacMan().fallAsleep();
+						folks.pacMan.fallAsleep();
 						doorMan.onLevelChange();
 						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
@@ -187,7 +187,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GHOST_DYING)
 					.timeoutAfter(sec(1))
 					.onEntry(() -> {
-						folks.pacMan().setVisible(false);
+						folks.pacMan.setVisible(false);
 					})
 					.onTick(() -> {
 						bonusControl.update();
@@ -196,7 +196,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							.forEach(Ghost::update);
 					})
 					.onExit(() -> {
-						folks.pacMan().setVisible(true);
+						folks.pacMan.setVisible(true);
 					})
 				
 				.state(PACMAN_DYING)
@@ -215,11 +215,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							folks.ghostsInsideWorld().forEach(ghost -> ghost.setVisible(false));
 						}
 						else if (t == dyingStartTime) {
-							folks.pacMan().setCollapsing(true);
+							folks.pacMan.setCollapsing(true);
 							sound.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
-							folks.pacMan().setCollapsing(false);
+							folks.pacMan.setCollapsing(false);
 							folksInsideWorld().forEach(Creature::init);
 							playView.init();
 						}
@@ -333,7 +333,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			bonusControl.init();
 			ghostCommand.init();
 			folksInsideWorld().forEach(Creature::init);
-			folks.pacMan().startRunning();
+			folks.pacMan.startRunning();
 			playView.init();
 			playView.enableGhostAnimations(true);
 			sound.resumePlayingMusic();
@@ -377,7 +377,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (!settings.ghostsHarmless) {
 				doorMan.onLifeLost();
 				sound.stopAll();
-				folks.pacMan().process(new PacManKilledEvent(ghost));
+				folks.pacMan.process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tileLocation());
 			}
@@ -423,7 +423,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();
 				ghostCommand.suspend();
-				folks.pacMan().setPower(sec(game.level.pacManPowerSeconds));
+				folks.pacMan.setPower(sec(game.level.pacManPowerSeconds));
 				folks.ghostsInsideWorld().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 			}
 		}
@@ -436,7 +436,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		world = new ArcadeWorld();
 		folks = new ArcadeWorldFolks(world);
 		folks.all().forEach(world::include);
-		folks.pacMan().addEventListener(this::process);
+		folks.pacMan.addEventListener(this::process);
 		folks.ghosts().forEach(ghost -> ghost.addEventListener(this::process));
 		sound = new PacManSounds(world, folks);
 		super.init();
@@ -465,10 +465,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void newGame() {
 		game = new Game(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, folks);
-		doorMan = new DoorMan(world.house(0), game, folks);
+		doorMan = new DoorMan(world, world.house(0), game, folks);
 		bonusControl = new BonusControl(game, world);
 		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
-		folks.pacMan().setSpeed(() -> GameSpeed.pacManSpeed(folks.pacMan(), game));
+		folks.pacMan.setSpeed(() -> GameSpeed.pacManSpeed(folks.pacMan, game));
 		folks.all().forEach(world::include);
 		folks.all().forEach(Creature::init);
 		playView = new PlayView(world, theme(), folks, game, ghostCommand, doorMan);
@@ -586,11 +586,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (demoMode) {
 			settings.pacManImmortable = true;
 			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
-			folks.pacMan().behavior(new SearchingForFoodAndAvoidingGhosts(folks.pacMan(), folks));
+			folks.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(folks.pacMan, folks));
 		} else {
 			settings.pacManImmortable = false;
 			playView.clearMessage(1);
-			you(folks.pacMan()).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
+			you(folks.pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
 		}
 	}
 

@@ -41,11 +41,11 @@ public class DoorMan implements Lifecycle {
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
 
-	public DoorMan(House house, Game game, ArcadeWorldFolks folks) {
+	public DoorMan(World world, House house, Game game, ArcadeWorldFolks folks) {
 		this.house = house;
 		this.folks = folks;
 		this.game = game;
-		world = folks.world();
+		this.world = world;
 		globalCounter = new DotCounter();
 		ghostCounters = new int[4];
 	}
@@ -76,7 +76,7 @@ public class DoorMan implements Lifecycle {
 		pacManStarvingTicks = 0;
 		if (globalCounter.enabled) {
 			globalCounter.dots++;
-			if (globalCounter.dots == 32 && folks.clyde().is(LOCKED)) {
+			if (globalCounter.dots == 32 && folks.clyde.is(LOCKED)) {
 				globalCounter.dots = 0;
 				globalCounter.enabled = false;
 				loginfo("Global dot counter reset and disabled (Clyde was locked when counter reached 32)");
@@ -125,26 +125,26 @@ public class DoorMan implements Lifecycle {
 	}
 
 	public int personalDotLimit(Ghost ghost) {
-		if (ghost == folks.pinky()) {
+		if (ghost == folks.pinky) {
 			return 0;
 		}
-		if (ghost == folks.inky()) {
+		if (ghost == folks.inky) {
 			return game.level.number == 1 ? 30 : 0;
 		}
-		if (ghost == folks.clyde()) {
+		if (ghost == folks.clyde) {
 			return game.level.number == 1 ? 60 : game.level.number == 2 ? 50 : 0;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
 
 	public int globalDotLimit(Ghost ghost) {
-		if (ghost == folks.pinky()) {
+		if (ghost == folks.pinky) {
 			return 7;
 		}
-		if (ghost == folks.inky()) {
+		if (ghost == folks.inky) {
 			return 17;
 		}
-		if (ghost == folks.clyde()) {
+		if (ghost == folks.clyde) {
 			return 32;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
@@ -155,7 +155,7 @@ public class DoorMan implements Lifecycle {
 	}
 
 	public Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(folks.blinky(), folks.pinky(), folks.inky(), folks.clyde()).filter(world::contains)
+		return Stream.of(folks.blinky, folks.pinky, folks.inky, folks.clyde).filter(world::contains)
 				.filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
@@ -204,7 +204,7 @@ public class DoorMan implements Lifecycle {
 		if (!ghost.is(LOCKED)) {
 			return confirmed("Ghost is not locked");
 		}
-		if (ghost == folks.blinky()) {
+		if (ghost == folks.blinky) {
 			return confirmed("%s can always leave", ghost.name);
 		}
 		if (pacManStarvingTicks >= pacManStarvingTimeLimit()) {
@@ -232,16 +232,16 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private int number(Ghost ghost) {
-		if (ghost == folks.blinky()) {
+		if (ghost == folks.blinky) {
 			return 0;
 		}
-		if (ghost == folks.inky()) {
+		if (ghost == folks.inky) {
 			return 1;
 		}
-		if (ghost == folks.pinky()) {
+		if (ghost == folks.pinky) {
 			return 2;
 		}
-		if (ghost == folks.clyde()) {
+		if (ghost == folks.clyde) {
 			return 2;
 		}
 		throw new IllegalArgumentException();

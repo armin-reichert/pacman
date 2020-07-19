@@ -125,11 +125,11 @@ class GameStateTableModel extends AbstractTableModel {
 			gameController.game().ifPresent(game -> {
 				gameController.ghostCommand().ifPresent(ghostCommand -> {
 					ArcadeWorldFolks folks = gameController.folks();
-					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, folks.blinky(), folks.pacMan());
-					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, folks.pinky(), folks.pacMan());
-					fillGhostRecord(records[ROW_INKY], game, ghostCommand, folks.inky(), folks.pacMan());
-					fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, folks.clyde(), folks.pacMan());
-					fillPacManRecord(records[ROW_PACMAN], game, folks.pacMan());
+					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, folks.blinky, folks.pacMan);
+					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, folks.pinky, folks.pacMan);
+					fillGhostRecord(records[ROW_INKY], game, ghostCommand, folks.inky, folks.pacMan);
+					fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, folks.clyde, folks.pacMan);
+					fillPacManRecord(records[ROW_PACMAN], game, folks.pacMan);
 					fillBonusRecord(records[ROW_BONUS], gameController, world);
 					fireTableDataChanged();
 				});

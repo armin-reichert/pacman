@@ -76,7 +76,7 @@ public class PlayView implements PacManGameView {
 		this.game = game;
 		messages = new Message[] { new Message(15), new Message(21) };
 		gridRenderer = new GridRenderer(world);
-		routesRenderer = new RoutesRenderer(folks);
+		routesRenderer = new RoutesRenderer(world, folks);
 		statesRenderer = new StatesRenderer(folks, ghostCommand);
 		frameRateDisplay = new FrameRateWidget();
 		setTheme(theme);
@@ -91,7 +91,7 @@ public class PlayView implements PacManGameView {
 			liveCounterRenderer = theme.createLiveCounterRenderer(world, game);
 			levelCounterRenderer = theme.createLevelCounterRenderer(world, game);
 			messagesRenderer = theme.createMessagesRenderer();
-			folks.pacMan().setTheme(theme);
+			folks.pacMan.setTheme(theme);
 			folks.ghosts().forEach(ghost -> ghost.setTheme(theme));
 		}
 	}
@@ -255,7 +255,7 @@ public class PlayView implements PacManGameView {
 	}
 
 	private void drawActors(Graphics2D g) {
-		folks.pacMan().renderer().render(g);
+		folks.pacMan.renderer().render(g);
 		folks.ghostsInsideWorld().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
 				.forEach(ghost -> ghost.renderer().render(g));
 		folks.ghostsInsideWorld().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))

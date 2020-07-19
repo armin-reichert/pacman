@@ -46,7 +46,7 @@ public class StatesRenderer implements IRenderer {
 
 	private void drawActorStates(Graphics2D g) {
 		folks.ghostsInsideWorld().forEach(ghost -> drawGhostState(g, ghost, ghostCommand));
-		drawPacManState(g, folks.pacMan());
+		drawPacManState(g, folks.pacMan);
 	}
 
 	private void drawPacManState(Graphics2D g, PacMan pacMan) {
@@ -97,7 +97,7 @@ public class StatesRenderer implements IRenderer {
 	}
 
 	private void drawActorsOffTrack(Graphics2D g) {
-		drawActorOffTrack(g, folks.pacMan());
+		drawActorOffTrack(g, folks.pacMan);
 		folks.ghosts().forEach(ghost -> drawActorOffTrack(g, ghost));
 	}
 

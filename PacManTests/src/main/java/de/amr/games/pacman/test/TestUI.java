@@ -55,11 +55,11 @@ public class TestUI implements Lifecycle, VisualController {
 		world.clearFood();
 
 		folks = new ArcadeWorldFolks(world);
-		pacMan = folks.pacMan();
-		blinky = folks.blinky();
-		pinky = folks.pinky();
-		inky = folks.inky();
-		clyde = folks.clyde();
+		pacMan = folks.pacMan;
+		blinky = folks.blinky;
+		pinky = folks.pinky;
+		inky = folks.inky;
+		clyde = folks.clyde;
 
 		folks.all().forEach(world::exclude);
 

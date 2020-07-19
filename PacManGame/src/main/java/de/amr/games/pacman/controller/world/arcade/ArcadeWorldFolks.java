@@ -30,9 +30,9 @@ import de.amr.games.pacman.model.world.api.World;
  */
 public class ArcadeWorldFolks {
 
+	public final PacMan pacMan;
+	public final Ghost blinky, pinky, inky, clyde;
 	private final World world;
-	private final PacMan pacMan;
-	private final Ghost blinky, pinky, inky, clyde;
 
 	public ArcadeWorldFolks(World world) {
 		this.world = world;
@@ -73,30 +73,6 @@ public class ArcadeWorldFolks {
 		you(clyde).when(SCATTERING).headFor().tile(0, world.height() - 1).ok();
 		you(clyde).when(CHASING).headFor()
 				.tile(() -> clyde.distance(pacMan) > 8 ? pacMan.tileLocation() : Tile.at(0, world.height() - 1)).ok();
-	}
-
-	public World world() {
-		return world;
-	}
-
-	public PacMan pacMan() {
-		return pacMan;
-	}
-
-	public Ghost blinky() {
-		return blinky;
-	}
-
-	public Ghost inky() {
-		return inky;
-	}
-
-	public Ghost pinky() {
-		return pinky;
-	}
-
-	public Ghost clyde() {
-		return clyde;
 	}
 
 	public Stream<Ghost> ghosts() {
