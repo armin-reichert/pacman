@@ -36,14 +36,16 @@ public class Folks {
 	public Folks(World world, House ghostHouse) {
 		Door door = ghostHouse.door(0);
 		Tile houseEntry = world.neighbor(door.tiles().findFirst().get(), door.intoHouse.opposite());
-
 		pacMan = new PacMan(world);
-		you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
-
 		blinky = new Ghost(world, pacMan, "Blinky", Ghost.RED_GHOST, ghostHouse.bed(0));
 		inky = new Ghost(world, pacMan, "Inky", Ghost.CYAN_GHOST, ghostHouse.bed(1));
 		pinky = new Ghost(world, pacMan, "Pinky", Ghost.PINK_GHOST, ghostHouse.bed(2));
 		clyde = new Ghost(world, pacMan, "Clyde", Ghost.ORANGE_GHOST, ghostHouse.bed(3));
+		tellThemWhatToDo(world, ghostHouse, houseEntry);
+	}
+
+	private void tellThemWhatToDo(World world, House ghostHouse, Tile houseEntry) {
+		you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
 
 		ghosts().forEach(ghost -> {
 			you(ghost).when(LOCKED).bounceOnBed().ok();
