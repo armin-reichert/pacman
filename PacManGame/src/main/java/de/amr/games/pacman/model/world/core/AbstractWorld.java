@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import de.amr.games.pacman.model.world.api.Block;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Door;
 import de.amr.games.pacman.model.world.api.House;
@@ -16,7 +17,7 @@ import de.amr.games.pacman.model.world.api.World;
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractWorld implements World {
+public abstract class AbstractWorld extends Block implements World {
 
 	private int distFromCornerNW(Tile t1, Tile t2) {
 		return Integer.compare(t1.col + t1.row, t2.col + t2.row);
@@ -37,14 +38,8 @@ public abstract class AbstractWorld implements World {
 
 	private final Collection<Life> excluded = new HashSet<>();
 
-	@Override
-	public int col() {
-		return 0;
-	}
-
-	@Override
-	public int row() {
-		return 0;
+	public AbstractWorld(int width, int height) {
+		super(0, 0, width, height);
 	}
 
 	@Override

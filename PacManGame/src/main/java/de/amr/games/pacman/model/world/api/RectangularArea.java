@@ -1,7 +1,6 @@
 package de.amr.games.pacman.model.world.api;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public interface RectangularArea extends Area {
@@ -33,13 +32,7 @@ public interface RectangularArea extends Area {
 
 	@Override
 	default Stream<Tile> tiles() {
-		// TODO how to do this without collecting tiles?
-		List<Tile> tiles = new ArrayList<>();
-		for (int c = col(); c < col() + width(); ++c) {
-			for (int r = row(); r < row() + height(); ++r) {
-				tiles.add(Tile.at(c, r));
-			}
-		}
-		return tiles.stream();
+		int minIndex = row() * width(), maxIndex = (row() + height() + 1) * width();
+		return IntStream.range(minIndex, maxIndex).mapToObj(i -> Tile.at(i % width(), i / width()));
 	}
 }

@@ -20,6 +20,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	protected final WorldMap map;
 
 	public MapBasedWorld(byte[][] data) {
+		super(data.length, data[0].length);
 		map = new WorldMap(data);
 	}
 
