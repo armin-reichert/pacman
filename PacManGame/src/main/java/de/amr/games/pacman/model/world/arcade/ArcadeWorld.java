@@ -1,7 +1,5 @@
 package de.amr.games.pacman.model.world.arcade;
 
-import static de.amr.games.pacman.model.world.api.HouseBuilder.house;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -12,6 +10,7 @@ import de.amr.games.pacman.model.world.api.Bonus;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Door;
 import de.amr.games.pacman.model.world.api.House;
+import de.amr.games.pacman.model.world.api.HouseBuilder;
 import de.amr.games.pacman.model.world.api.OneWayTile;
 import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -78,7 +77,7 @@ public class ArcadeWorld extends MapBasedWorld {
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
 		//@formatter:off
 		houses = List.of(
-			house()
+			HouseBuilder.house()
 				.layout(11, 16, 6, 4)
 				.door(new Door(Direction.DOWN, 13, 15, 2, 1))
 				.bed(13, 14, Direction.LEFT)
@@ -126,6 +125,11 @@ public class ArcadeWorld extends MapBasedWorld {
 	@Override
 	public Stream<House> houses() {
 		return houses.stream();
+	}
+	
+	@Override
+	public House house(int i) {
+		return houses.get(i);
 	}
 
 	@Override

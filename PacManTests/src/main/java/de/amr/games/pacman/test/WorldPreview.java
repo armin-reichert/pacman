@@ -84,7 +84,7 @@ public class WorldPreview extends JFrame {
 			return "P";
 		}
 		for (int i = 0; i < 4; ++i) {
-			if (world.theHouse().bed(i).includes(tile)) {
+			if (world.house(0).bed(i).includes(tile)) {
 				return "" + i;
 			}
 		}

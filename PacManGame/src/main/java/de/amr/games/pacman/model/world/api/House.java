@@ -24,6 +24,10 @@ public class House implements Area {
 		return doors.stream();
 	}
 
+	public Door door(int i) {
+		return doors.get(i);
+	}
+
 	public Area layout() {
 		return layout;
 	}

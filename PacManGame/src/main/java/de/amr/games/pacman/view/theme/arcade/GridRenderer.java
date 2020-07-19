@@ -62,7 +62,7 @@ public class GridRenderer implements IRenderer {
 	public void drawBeds(Graphics2D g) {
 		Color[] colors = { Color.RED, Color.CYAN, Color.PINK, Color.ORANGE };
 		for (int i = 0; i < 4; ++i) {
-			drawBed(g, world.theHouse().bed(i), i + "", colors[i]);
+			drawBed(g, world.house(0).bed(i), i + "", colors[i]);
 		}
 		drawBed(g, world.pacManBed(), "P", Color.YELLOW);
 	}

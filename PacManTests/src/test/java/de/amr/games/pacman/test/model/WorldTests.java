@@ -25,10 +25,11 @@ public class WorldTests {
 	@Test
 	public void testStructure() {
 		assertNotNull(world.pacManBed());
-		assertNotNull(world.theHouse().bed(0));
-		assertNotNull(world.theHouse().bed(1));
-		assertNotNull(world.theHouse().bed(2));
-		assertNotNull(world.theHouse().bed(3));
+		assertTrue(world.houses().count() > 0);
+		assertNotNull(world.house(0).bed(0));
+		assertNotNull(world.house(0).bed(1));
+		assertNotNull(world.house(0).bed(2));
+		assertNotNull(world.house(0).bed(3));
 		assertTrue(world.portals().findFirst().get().either.equals(Tile.at(-1, 17)));
 		assertTrue(world.portals().findFirst().get().other.equals(Tile.at(28, 17)));
 		assertFalse(world.isAccessible(Tile.at(0, 3)));

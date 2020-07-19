@@ -35,7 +35,7 @@ class WorldRenderer implements IWorldRenderer {
 			drawMazeContent(g);
 		}
 		// draw doors depending on their state
-		world.theHouse().doors().forEach(door -> {
+		world.house(0).doors().forEach(door -> {
 			g.setColor(door.state == DoorState.CLOSED ? Color.PINK : Color.BLACK);
 			door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE / 4));
 		});

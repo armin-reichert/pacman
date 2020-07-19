@@ -50,7 +50,7 @@ class EnterGhostHouseTestUI extends TestUI {
 		super.init();
 		include(inky);
 		inky.init();
-		Bed bed = world.theHouse().bed(0);
+		Bed bed = world.house(0).bed(0);
 		inky.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		inky.setState(SCATTERING);
 		view.turnRoutesOn();

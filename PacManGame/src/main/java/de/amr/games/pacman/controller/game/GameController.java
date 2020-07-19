@@ -235,7 +235,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						folks.ghostsInsideWorld().forEach(ghost -> {
 							ghost.init();
-							Bed bed = world.theHouse().bed(0);
+							Bed bed = world.house(0).bed(0);
 							ghost.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 							ghost.setWishDir(new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT);
 							ghost.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
@@ -465,7 +465,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void newGame() {
 		game = new Game(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, folks);
-		doorMan = new DoorMan(world.theHouse(), game, folks);
+		doorMan = new DoorMan(world.house(0), game, folks);
 		bonusControl = new BonusControl(game, world);
 		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
 		folks.pacMan().setSpeed(() -> GameSpeed.pacManSpeed(folks.pacMan(), game));

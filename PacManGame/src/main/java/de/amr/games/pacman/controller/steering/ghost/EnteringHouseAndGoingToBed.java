@@ -46,7 +46,7 @@ public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implem
 				.state(FALLING)
 					.onEntry(() -> {
 						// place the ghost centered over the ghost house entry and start falling
-						Vector2f houseEntry = ghost.world().theHouse().bed(0).center(); 
+						Vector2f houseEntry = ghost.world().house(0).bed(0).center(); 
 						ghost.entity.tf.setPosition(houseEntry.x - Tile.SIZE / 2, houseEntry.y - Tile.SIZE / 2);
 						ghost.setWishDir(Direction.DOWN);					
 					})

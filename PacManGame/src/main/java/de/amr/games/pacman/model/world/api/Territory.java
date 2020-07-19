@@ -89,11 +89,10 @@ public interface Territory {
 	Stream<House> houses();
 
 	/**
-	 * @return the single house if there is only one
+	 * @param i index
+	 * @return i'th house
 	 */
-	default House theHouse() {
-		return houses().findFirst().get();
-	}
+	House house(int i);
 
 	/**
 	 * @param tile some tile
