@@ -66,7 +66,7 @@ public class WorldRenderer implements IWorldRenderer {
 				g.setColor(Color.BLACK);
 				door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
 			});
-			// draw portals
+			// draw portals not in original maze
 			world.portals().forEach(portal -> {
 				g.setColor(Color.BLACK);
 				g.fillRect(portal.either.x(), portal.either.y(), Tile.SIZE, Tile.SIZE);

@@ -1,7 +1,10 @@
 package de.amr.games.pacman.model.world.api;
 
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
+
+import de.amr.easy.game.math.Vector2f;
 
 public interface RectangularArea extends Area {
 
@@ -32,7 +35,16 @@ public interface RectangularArea extends Area {
 
 	@Override
 	default Stream<Tile> tiles() {
-		int minIndex = row() * width(), maxIndex = (row() + height() + 1) * width();
-		return IntStream.range(minIndex, maxIndex).mapToObj(i -> Tile.at(i % width(), i / width()));
+		List<Tile> tiles = new ArrayList<>();
+		for (int col = col(); col < col() + width(); ++col) {
+			for (int row = row(); row < row() + height(); ++row) {
+				tiles.add(Tile.at(col, row));
+			}
+		}
+		return tiles.stream();
+	}
+
+	default Vector2f center() {
+		return Vector2f.of(((col() + 0.5f * width()) * Tile.SIZE), (row() + 0.5f * height()) * Tile.SIZE);
 	}
 }

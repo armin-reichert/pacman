@@ -41,7 +41,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 		map.set1(top.row, top.col, B_TUNNEL);
 		map.set0(bottom.row, bottom.col, B_WALL);
 		map.set1(bottom.row, bottom.col, B_TUNNEL);
-		return new Portal(top, bottom, false);
+		return new Portal(top, bottom, true);
 	}
 
 	protected void setEnergizer(Tile tile) {
