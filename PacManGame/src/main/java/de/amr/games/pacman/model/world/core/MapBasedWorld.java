@@ -27,7 +27,7 @@ import de.amr.games.pacman.model.world.api.World;
 
 public abstract class MapBasedWorld implements World {
 
-	protected WorldMap map;
+	protected final WorldMap map;
 	protected Bed pacManBed;
 	protected final List<House> houses = new ArrayList<>();
 	protected final List<Portal> portals = new ArrayList<>();
@@ -38,6 +38,10 @@ public abstract class MapBasedWorld implements World {
 	protected boolean frozen;
 
 	private Set<Life> excludedGuys = new HashSet<>();
+
+	public MapBasedWorld(byte[][] data) {
+		map = new WorldMap(data);
+	}
 
 	@Override
 	public boolean isFrozen() {

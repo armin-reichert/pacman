@@ -13,7 +13,6 @@ import de.amr.games.pacman.model.world.api.OneWayTile;
 import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.MapBasedWorld;
-import de.amr.games.pacman.model.world.core.WorldMap;
 
 /**
  * Map-based Pac-Man game world implementation.
@@ -64,7 +63,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	};
 
 	public ArcadeWorld() {
-		map = new WorldMap(DATA);
+		super(DATA);
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
 		houses.add(house()
 		//@formatter:off
