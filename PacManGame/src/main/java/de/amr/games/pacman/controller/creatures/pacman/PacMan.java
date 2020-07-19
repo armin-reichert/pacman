@@ -24,7 +24,6 @@ import de.amr.games.pacman.model.world.api.Bonus;
 import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 
@@ -35,13 +34,13 @@ import de.amr.games.pacman.view.theme.api.Theme;
  */
 public class PacMan extends Creature<PacManState> {
 
-	private final ArcadeWorld world;
+	private final World world;
 	private int power;
 	private int digestion;
 	private boolean collapsing;
 	private IPacManRenderer renderer;
 
-	public PacMan(ArcadeWorld world) {
+	public PacMan(World world) {
 		super(PacManState.class, world, "Pac-Man");
 		this.world = world;
 		/*@formatter:off*/

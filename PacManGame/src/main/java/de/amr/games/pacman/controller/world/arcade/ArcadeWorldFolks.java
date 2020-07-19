@@ -22,7 +22,6 @@ import de.amr.games.pacman.model.world.api.Door;
 import de.amr.games.pacman.model.world.api.House;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 
 /**
  * The folks from the original game with their individual behaviors.
@@ -35,7 +34,7 @@ public class ArcadeWorldFolks {
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
 
-	public ArcadeWorldFolks(ArcadeWorld world) {
+	public ArcadeWorldFolks(World world) {
 		this.world = world;
 
 		House ghostHouse = world.house(0);
