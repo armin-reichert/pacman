@@ -238,7 +238,7 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-When an actor leaves the board inside a tunnel it leaves its normal movement mode and enters *teleporting* mode. The movement of the actors is controlled by the following state machine (PacManGame/src/main/java/de/amr/games/pacman/controller/steering/common/Movement):
+When an actor leaves the board inside a tunnel it leaves its normal movement mode and enters *teleporting* mode. The [movement](PacManGame/src/main/java/de/amr/games/pacman/controller/steering/common/Movement) of the actors is controlled by the following state machine:
 
 ```java
 beginStateMachine()
