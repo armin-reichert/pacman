@@ -45,9 +45,9 @@ General command-line arguments:
   - Full-screen mode on start: `-fullScreenOnStart`
   - Full-screen resolution & depth: e.g. `-fullScreenMode 800,600,32`
   - Window title: e.g. `-title "Pac-Man Game"`
-	- Muted: `-muted`
-	- Antialiased rendering: `-smoothRendering`
-	- Clock speed: e.g. `-fps 100`
+  - Muted: `-muted`
+  - Antialiased rendering: `-smoothRendering`
+  - Clock speed: e.g. `-fps 100`
 
 Game-specific command-line arguments:
   - `-help`, `-usage`: list all available command-line parameters
