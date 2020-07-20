@@ -515,11 +515,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	public Optional<DoorMan> doorMan() {
-		return Optional.of(doorMan);
+		return Optional.ofNullable(doorMan);
 	}
 
 	public Optional<BonusControl> bonusControl() {
-		return Optional.of(bonusControl);
+		return Optional.ofNullable(bonusControl);
 	}
 
 	protected void showView(PacManGameView view) {
