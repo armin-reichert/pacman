@@ -23,7 +23,7 @@ public class BouncingOnBed implements Steering {
 		float dy = ghost.entity.tf.y + Tile.SIZE / 2 - bed.center().y;
 		if (dy < -4) {
 			ghost.setWishDir(DOWN);
-		} else if (dy > 3) {
+		} else if (dy > 5) {
 			ghost.setWishDir(UP);
 		}
 	}
