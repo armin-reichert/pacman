@@ -15,6 +15,7 @@ import de.amr.easy.game.ui.f2dialog.F2Dialog;
 import de.amr.games.pacman.controller.game.EnhancedGameController;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.view.Localized;
+import de.amr.games.pacman.view.dashboard.fsm.FsmView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
 import de.amr.games.pacman.view.dashboard.theme.ThemeSelectionView;
@@ -37,7 +38,7 @@ public class PacManApp extends Application {
 	// Finite-state machine tracing
 
 	private static final Logger FSM_LOGGER = Logger.getLogger(PacManApp.class.getName() + "-fsm");
-	private static final Map<String, StateMachine<?, ?>> FSM_LIST = new HashMap<>();
+	public static final Map<String, StateMachine<?, ?>> REGISTERED_FSMs = new HashMap<>();
 
 	public static void fsm_loginfo(String message, Object... args) {
 		FSM_LOGGER.info(String.format(message, args));
@@ -52,13 +53,13 @@ public class PacManApp extends Application {
 	}
 
 	public static void fsm_register(StateMachine<?, ?> fsm) {
-		FSM_LIST.put(fsm.getDescription(), fsm);
+		REGISTERED_FSMs.put(fsm.getDescription(), fsm);
 		fsm.getTracer().setLogger(FSM_LOGGER);
 	}
 
 	public static void fsm_print_dot(PrintStream out) {
 		DotPrinter dp = new DotPrinter(out);
-		FSM_LIST.values().forEach(dp::print);
+		REGISTERED_FSMs.values().forEach(dp::print);
 	}
 
 	// Application configuration
@@ -136,11 +137,13 @@ public class PacManApp extends Application {
 		ThemeSelectionView themeSelectionView = new ThemeSelectionView();
 		GameStateView gameStateView = new GameStateView();
 		GameLevelView gameLevelView = new GameLevelView();
+		FsmView fsmView = new FsmView();
 		GameController gameController = (GameController) getController();
 		gameStateView.attachTo(gameController, gameController.folks());
 		gameLevelView.attachTo(gameController);
 		themeSelectionView.attachTo(gameController);
 		f2.addCustomTab("Theme", themeSelectionView, () -> true);
+		f2.addCustomTab("State Machines", fsmView, () -> true);
 		f2.addCustomTab("Game State", gameStateView, () -> gameController.game().isPresent());
 		f2.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
 	}

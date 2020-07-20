@@ -101,7 +101,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		//@formatter:off
 		beginStateMachine()
 			
-			.description("[GameController]")
+			.description("GameController")
 			.initialState(LOADING_MUSIC)
 			
 			.states()

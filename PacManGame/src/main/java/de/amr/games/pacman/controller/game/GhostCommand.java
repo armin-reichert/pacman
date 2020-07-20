@@ -47,7 +47,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 		this.ghosts = folks.ghosts().collect(Collectors.toList());
 		/*@formatter:off*/
 		beginStateMachine()
-			.description("[GhostCommand]")
+			.description("GhostCommand")
 			.initialState(SCATTERING)
 		.states()
 			.state(SCATTERING)

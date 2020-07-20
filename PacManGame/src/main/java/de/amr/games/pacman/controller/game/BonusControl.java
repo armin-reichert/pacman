@@ -31,7 +31,7 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 		PacManApp.fsm_register(this);
 		/*@formatter:off*/
 		beginStateMachine()
-			.description("[BonusControl]")
+			.description("BonusControl")
 			.initialState(INACTIVE)
 			.states()
 				.state(INACTIVE)

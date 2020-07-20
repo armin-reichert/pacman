@@ -38,10 +38,9 @@ public class Movement extends StateMachine<MovementType, Void> {
 		super(MovementType.class);
 		this.mover = mover;
 		this.moverName = moverName;
-		PacManApp.fsm_register(this);
 		//@formatter:off
 		beginStateMachine()
-			.description(String.format("[%s movement]", moverName))
+			.description(String.format("%s movement", moverName))
 			.initialState(WALKING)
 			.states()
 				.state(WALKING)
@@ -60,6 +59,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 					.act(() -> teleport())
 		.endStateMachine();
 		//@formatter:on
+		PacManApp.fsm_register(this);
 	}
 
 	@Override

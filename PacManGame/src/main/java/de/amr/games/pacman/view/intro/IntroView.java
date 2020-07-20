@@ -70,10 +70,9 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		this.sounds = soundManager;
 		this.width = width;
 		this.height = height;
-		PacManApp.fsm_register(this);
 		/*@formatter:off*/
 		beginStateMachine()
-			.description("[IntroView]")
+			.description("IntroView")
 			.initialState(SCROLLING_LOGO_ANIMATION)
 			.states()
 				
@@ -105,6 +104,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	
 		.endStateMachine();
 	  /*@formatter:on*/
+		PacManApp.fsm_register(this);
 	}
 
 	@Override
