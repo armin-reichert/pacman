@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
@@ -41,6 +42,10 @@ public class EnhancedGameController extends GameController {
 		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
 			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
+		}
+		
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, "d")) {
+			PacManApp.fsm_print_dot(System.out);
 		}
 
 		if (currentView == playView) {

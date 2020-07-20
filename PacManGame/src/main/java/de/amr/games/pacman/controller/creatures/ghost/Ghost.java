@@ -66,7 +66,7 @@ public class Ghost extends Creature<GhostState> {
 		/*@formatter:off*/
 		beginStateMachine()
 			 
-			.description(this::toString)
+			.description(name)
 			.initialState(LOCKED)
 		
 			.states()

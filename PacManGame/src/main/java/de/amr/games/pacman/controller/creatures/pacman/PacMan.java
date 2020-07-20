@@ -47,7 +47,7 @@ public class PacMan extends Creature<PacManState> {
 		/*@formatter:off*/
 		beginStateMachine()
 
-			.description(this::toString)
+			.description(name)
 			.initialState(SLEEPING)
 
 			.states()
