@@ -38,13 +38,16 @@ mvn clean install assembly:single
 - CTRL+P pauses/resumes the game
 - F2 opens a settings dialog where the game clock frequency and (full-)screen resolution can be changed
 - F11 toggles between window and full-screen exclusive mode
-- The settings dialog contains two custom tabs displaying the game and actor state and the values used by the current level.
+- The settings dialog contains three custom tabs for selecting the theme, displaying game and actor states and the data of the current level.
 
 General command-line arguments:
   - Scaling: e.g. `-scale 2.5`
   - Full-screen mode on start: `-fullScreenOnStart`
   - Full-screen resolution & depth: e.g. `-fullScreenMode 800,600,32`
   - Window title: e.g. `-title "Pac-Man Game"`
+	- Muted: `-muted`
+	- Antialiased rendering: `-smoothRendering`
+	- Clock speed: e.g. `-fps 100`
 
 Game-specific command-line arguments:
   - `-help`, `-usage`: list all available command-line parameters
