@@ -8,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -56,7 +59,13 @@ public class FsmView extends JPanel implements Lifecycle {
 		public void actionPerformed(ActionEvent e) {
 			NodeInfo info = getSelectedNodeInfo();
 			if (info != null) {
-				openURL("https://dreampuf.github.io/GraphvizOnline/#" + info.dotText);
+				try {
+					String hashValue = URLEncoder.encode(info.dotText, StandardCharsets.UTF_8.toString());
+					hashValue = hashValue.replace('+', ' ');
+					openURL("https://dreampuf.github.io/GraphvizOnline/#" + hashValue);
+				} catch (UnsupportedEncodingException x) {
+					x.printStackTrace();
+				}
 			}
 		}
 	};
