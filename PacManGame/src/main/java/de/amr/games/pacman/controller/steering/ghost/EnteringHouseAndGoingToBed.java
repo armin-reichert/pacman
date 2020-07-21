@@ -56,19 +56,24 @@ public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implem
 				.when(FALLING).then(MOVING_LEFT)
 					.condition(() -> ghost.entity.tf.y >= targetY(bed) && ghost.entity.tf.x > targetX(bed))
 					.act(() -> ghost.setWishDir(Direction.LEFT))
+					.annotation("Reached ghost house floor")
 				
 				.when(FALLING).then(MOVING_RIGHT)
 					.condition(() -> ghost.entity.tf.y >= targetY(bed) && ghost.entity.tf.x < targetX(bed))
 					.act(() -> ghost.setWishDir(Direction.RIGHT))
+					.annotation("Reached ghost house floor")
 	
 				.when(FALLING).then(TARGET_REACHED)
 					.condition(() -> ghost.entity.tf.y >= targetY(bed) && ghost.entity.tf.x == targetX(bed))
+					.annotation("Reached ghost house floor")
 				
 				.when(MOVING_LEFT).then(TARGET_REACHED)
 					.condition(() -> ghost.entity.tf.x <= targetX(bed))
+					.annotation("Reached bed inside ghost house")
 					
 				.when(MOVING_RIGHT).then(TARGET_REACHED)
 					.condition(() -> ghost.entity.tf.x >= targetX(bed))
+					.annotation("Reached bed inside ghost house")
 					
 		.endStateMachine();
 		/*@formatter:on*/

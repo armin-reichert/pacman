@@ -28,7 +28,6 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 
 	public BonusControl(Game game, World world) {
 		super(BonusState.class);
-		PacManApp.fsm_register(this);
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("BonusControl")
@@ -59,6 +58,7 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 				.when(CONSUMED).then(INACTIVE).onTimeout()
 		.endStateMachine();
 		/*@formatter:on*/
+		PacManApp.fsm_register(this);
 		init();
 	}
 }

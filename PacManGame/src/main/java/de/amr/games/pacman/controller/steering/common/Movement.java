@@ -54,6 +54,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 			.transitions()
 				.when(WALKING).then(TELEPORTING)
 					.condition(() -> insidePortal())
+					.annotation("Portal entered")
 				.when(TELEPORTING).then(WALKING)
 					.onTimeout()
 					.act(() -> teleport())

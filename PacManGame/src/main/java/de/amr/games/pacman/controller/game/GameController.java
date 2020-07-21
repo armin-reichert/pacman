@@ -97,7 +97,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
-		PacManApp.fsm_register(this);
 		//@formatter:off
 		beginStateMachine()
 			
@@ -331,6 +330,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							
 		.endStateMachine();
 		//@formatter:on
+		PacManApp.fsm_register(this);
 	}
 
 	/**
