@@ -161,6 +161,8 @@ public class FsmView extends JPanel implements Lifecycle {
 		for (StateMachine<?, ?> fsm : machines) {
 			root.add(new DefaultMutableTreeNode(new NodeInfo(fsm)));
 		}
+		DefaultTreeModel treeModel = (DefaultTreeModel) fsmTree.getModel();
+		treeModel.nodeStructureChanged(root);
 		fsmTree.revalidate();
 	}
 
