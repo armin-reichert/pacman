@@ -40,8 +40,8 @@ mvn clean install assembly:single
 - F11 toggles between window and full-screen exclusive mode
 - The settings dialog contains four custom tabs:
   - theme selection
-	- used state machine overview with Graphviz export and preview 
-	- game and actor states inspection
+  - used state machine overview with Graphviz export and preview 
+  - game and actor states inspection
   - current level inspection
 
 General command-line arguments:
