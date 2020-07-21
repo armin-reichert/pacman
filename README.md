@@ -174,7 +174,9 @@ beginStateMachine()
 
 The states in this case are implemented as separate (inner) classes instead of inlined in the state machine builder expression. The reason is that each state has its own visualization which is implemented in its own draw method. Otherwise, the draw method of the intro view class would have to dispatch again depending on the current state.
 
-A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/game/GameController.java)). 
+A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/game/GameController.java)).
+
+<img src="PacManDoc/GameController.png">
 
 It processes game events which are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
 game states like changing the level or the dying animations of Pac-Man and the ghosts are controlled by this
