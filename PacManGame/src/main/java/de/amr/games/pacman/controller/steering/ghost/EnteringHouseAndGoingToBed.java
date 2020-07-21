@@ -1,9 +1,9 @@
 package de.amr.games.pacman.controller.steering.ghost;
 
+import static de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State.BED_REACHED;
 import static de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State.FALLING;
 import static de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State.MOVING_LEFT;
 import static de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State.MOVING_RIGHT;
-import static de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State.TARGET_REACHED;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
@@ -23,7 +23,7 @@ import de.amr.statemachine.core.StateMachine;
 public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implements Steering {
 
 	public enum State {
-		FALLING, MOVING_LEFT, MOVING_RIGHT, TARGET_REACHED
+		FALLING, MOVING_LEFT, MOVING_RIGHT, BED_REACHED
 	}
 
 	private float targetX(Bed bed) {
@@ -63,15 +63,15 @@ public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implem
 					.act(() -> ghost.setWishDir(Direction.RIGHT))
 					.annotation("Reached ghost house floor")
 	
-				.when(FALLING).then(TARGET_REACHED)
+				.when(FALLING).then(BED_REACHED)
 					.condition(() -> ghost.entity.tf.y >= targetY(bed) && ghost.entity.tf.x == targetX(bed))
-					.annotation("Reached ghost house floor")
+					.annotation("Reached bed inside ghost house")
 				
-				.when(MOVING_LEFT).then(TARGET_REACHED)
+				.when(MOVING_LEFT).then(BED_REACHED)
 					.condition(() -> ghost.entity.tf.x <= targetX(bed))
 					.annotation("Reached bed inside ghost house")
 					
-				.when(MOVING_RIGHT).then(TARGET_REACHED)
+				.when(MOVING_RIGHT).then(BED_REACHED)
 					.condition(() -> ghost.entity.tf.x >= targetX(bed))
 					.annotation("Reached bed inside ghost house")
 					
@@ -87,6 +87,6 @@ public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implem
 
 	@Override
 	public boolean isComplete() {
-		return is(TARGET_REACHED);
+		return is(BED_REACHED);
 	}
 }

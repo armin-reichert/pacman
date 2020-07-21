@@ -146,5 +146,7 @@ public class PacManApp extends Application {
 		f2.addCustomTab("State Machines", fsmView, () -> true);
 		f2.addCustomTab("Game State", gameStateView, () -> gameController.game().isPresent());
 		f2.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
+		f2.window().setSize(700, shell().get().getHeight());
+		f2.window().setLocation(shell().get().getX() + 120, shell().get().getY() + 30);
 	}
 }
