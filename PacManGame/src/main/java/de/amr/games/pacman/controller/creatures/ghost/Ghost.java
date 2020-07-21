@@ -55,7 +55,7 @@ public class Ghost extends Creature<GhostState> {
 	private Steering previousSteering;
 	private int bounty;
 	private boolean flashing;
-	private IntSupplier fnNumFlashes = () -> 0;
+	private IntSupplier fnFlashTimeTicks = () -> 0;
 	private IRenderer renderer;
 
 	public Ghost(World world, PacMan pacMan, String name, int color, Bed bed) {
@@ -63,6 +63,7 @@ public class Ghost extends Creature<GhostState> {
 		this.world = world;
 		this.bed = bed;
 		this.color = color;
+		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		/*@formatter:off*/
 		beginStateMachine()
 			 
@@ -109,7 +110,7 @@ public class Ghost extends Creature<GhostState> {
 						maybeMeetPacMan(pacMan);
 						move();
 						// one flashing animation takes 0.5 sec
-						flashing = remaining < fnNumFlashes.getAsInt() * 0.5f;
+						flashing = remaining < fnFlashTimeTicks.getAsInt() * 0.5f;
 					})
 				
 				.state(DEAD)
@@ -127,19 +128,19 @@ public class Ghost extends Creature<GhostState> {
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
 					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == SCATTERING)
-					.annotation("has left house")
+					.annotation("ghost left house")
 		
 				.when(LEAVING_HOUSE).then(CHASING)
 					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == CHASING)
-					.annotation("has left house")
+					.annotation("ghost left house")
 				
 				.when(LEAVING_HOUSE).then(FRIGHTENED)
 					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == FRIGHTENED)
-					.annotation("has left house")
+					.annotation("ghost left house")
 					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> steering().isComplete())
-					.annotation("reached bed")
+					.annotation("ghost reached bed")
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -151,7 +152,7 @@ public class Ghost extends Creature<GhostState> {
 				.when(CHASING).then(SCATTERING)
 					.condition(() -> getNextStateToEnter() == SCATTERING)
 					.act(() -> reverseDirection())
-					.annotation("got scattering command")
+					.annotation("ghost got scattering command")
 					
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -163,7 +164,7 @@ public class Ghost extends Creature<GhostState> {
 				.when(SCATTERING).then(CHASING)
 					.condition(() -> getNextStateToEnter() == CHASING)
 					.act(() -> reverseDirection())
-					.annotation("got chasing command")
+					.annotation("ghost got chasing command")
 					
 				.stay(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -182,11 +183,10 @@ public class Ghost extends Creature<GhostState> {
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> world.isHouseEntry(tileLocation()))
-					.annotation("reached house")
+					.annotation("ghost reached house")
 					
 		.endStateMachine();
 		/*@formatter:on*/
-		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		PacManApp.fsm_register(this);
 	}
 
@@ -231,7 +231,7 @@ public class Ghost extends Creature<GhostState> {
 		if ("Blinky".equals(name)) {
 			sanity = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
 		}
-		fnNumFlashes = () -> sec(game.level.numFlashes * 0.5f);
+		fnFlashTimeTicks = () -> game.level.numFlashes * sec(0.5f);
 		setSpeed(() -> GameSpeed.ghostSpeed(this, game));
 		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
 		state(DEAD).setTimer(sec(1));

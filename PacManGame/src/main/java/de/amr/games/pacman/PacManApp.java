@@ -11,6 +11,7 @@ import com.beust.jcommander.Parameter;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
+import de.amr.easy.game.ui.AppShell;
 import de.amr.easy.game.ui.f2dialog.F2Dialog;
 import de.amr.games.pacman.controller.game.EnhancedGameController;
 import de.amr.games.pacman.controller.game.GameController;
@@ -146,7 +147,8 @@ public class PacManApp extends Application {
 		f2.addCustomTab("State Machines", fsmView, () -> true);
 		f2.addCustomTab("Game State", gameStateView, () -> gameController.game().isPresent());
 		f2.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
-		f2.window().setSize(700, shell().get().getHeight());
-		f2.window().setLocation(shell().get().getX() + 120, shell().get().getY() + 30);
+		AppShell shell = shell().get();
+		f2.setSize(700, shell.getHeight());
+		f2.setRelativeLocation(shell.getWidth() + 10, 0);
 	}
 }
