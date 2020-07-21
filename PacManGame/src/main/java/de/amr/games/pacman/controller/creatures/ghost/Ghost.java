@@ -230,7 +230,6 @@ public class Ghost extends Creature<GhostState> {
 	public void getReadyToRumble(Game game) {
 		if ("Blinky".equals(name)) {
 			sanity = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
-			PacManApp.fsm_register(sanity);
 		}
 		fnNumFlashes = () -> sec(game.level.numFlashes * 0.5f);
 		setSpeed(() -> GameSpeed.ghostSpeed(this, game));

@@ -124,6 +124,22 @@ public class FsmView extends JPanel implements Lifecycle {
 		btnPreview = new JButton("Preview");
 		toolBar.add(btnPreview);
 		btnPreview.setAction(actionExternalPreview);
+
+		actionExternalPreview.setEnabled(false);
+		actionSave.setEnabled(false);
+		fsmTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		fsmTree.addTreeSelectionListener(e -> {
+			NodeInfo info = getSelectedNodeInfo();
+			if (info != null) {
+				dotPreview.setText(info.dotText);
+				actionExternalPreview.setEnabled(true);
+				actionSave.setEnabled(true);
+			} else {
+				dotPreview.setText(HINT_TEXT);
+				actionExternalPreview.setEnabled(false);
+				actionSave.setEnabled(false);
+			}
+		});
 	}
 
 	@Override
@@ -132,28 +148,20 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (machines == null) {
-			actionExternalPreview.setEnabled(false);
-			actionSave.setEnabled(false);
-			fsmTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-			fsmTree.addTreeSelectionListener(e -> {
-				NodeInfo info = getSelectedNodeInfo();
-				if (info != null) {
-					dotPreview.setText(info.dotText);
-					actionExternalPreview.setEnabled(true);
-					actionSave.setEnabled(true);
-				} else {
-					dotPreview.setText(HINT_TEXT);
-					actionExternalPreview.setEnabled(false);
-					actionSave.setEnabled(false);
-				}
-			});
+		if (machines == null || machines.size() != PacManApp.REGISTERED_FSMs.size()) {
 			buildTree();
-		} else {
-			if (machines.size() != PacManApp.REGISTERED_FSMs.values().size()) {
-				buildTree();
-			}
 		}
+	}
+
+	private void buildTree() {
+		machines = new ArrayList<>(PacManApp.REGISTERED_FSMs.values());
+		machines.sort(Comparator.comparing(StateMachine::getDescription));
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) fsmTree.getModel().getRoot();
+		root.removeAllChildren();
+		for (StateMachine<?, ?> fsm : machines) {
+			root.add(new DefaultMutableTreeNode(new NodeInfo(fsm)));
+		}
+		fsmTree.revalidate();
 	}
 
 	private NodeInfo getSelectedNodeInfo() {
@@ -162,16 +170,6 @@ public class FsmView extends JPanel implements Lifecycle {
 			return (NodeInfo) selectedNode.getUserObject();
 		}
 		return null;
-	}
-
-	private void buildTree() {
-		machines = new ArrayList<>(PacManApp.REGISTERED_FSMs.values());
-		machines.sort(Comparator.comparing(StateMachine::getDescription));
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode) fsmTree.getModel().getRoot();
-		for (StateMachine<?, ?> fsm : machines) {
-			root.add(new DefaultMutableTreeNode(new NodeInfo(fsm)));
-		}
-		fsmTree.revalidate();
 	}
 
 	private void saveDotFile(String fileName, String dotText) {
