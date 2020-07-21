@@ -108,8 +108,10 @@ public class RoutesRenderer implements IRenderer {
 		while (to < tiles.length) {
 			g.drawLine(tiles[from].centerX(), tiles[from].centerY(), tiles[to].centerX(), tiles[to].centerY());
 			if (to == tiles.length - 1) {
-				drawDirectionIndicator(g, ghostColor, true, tiles[from].dirTo(tiles[to]).get(), tiles[to].centerX(),
-						tiles[to].centerY());
+				Optional<Direction> optDir = tiles[from].dirTo(tiles[to]);
+				if (optDir.isPresent()) {
+					drawDirectionIndicator(g, ghostColor, true, optDir.get(), tiles[to].centerX(), tiles[to].centerY());
+				}
 			}
 			++from;
 			++to;
