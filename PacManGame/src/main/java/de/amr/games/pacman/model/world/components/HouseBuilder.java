@@ -1,7 +1,10 @@
-package de.amr.games.pacman.model.world.api;
+package de.amr.games.pacman.model.world.components;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.amr.games.pacman.model.world.api.Area;
+import de.amr.games.pacman.model.world.api.Direction;
 
 public class HouseBuilder {
 

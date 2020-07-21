@@ -14,11 +14,11 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.Bonus;
-import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.components.Bonus;
+import de.amr.games.pacman.model.world.components.BonusState;
 
 /**
  * Data model of the table displaying actor data.

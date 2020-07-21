@@ -15,8 +15,8 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.controller.steering.common.TakingShortestPath;
-import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.test.TestUI;
 
 public class TakeShortestPathTestApp extends Application {

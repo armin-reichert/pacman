@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.model.world.api.Bonus;
+import de.amr.games.pacman.model.world.components.Bonus;
 
 public class BonusFoundEvent implements PacManGameEvent {
 

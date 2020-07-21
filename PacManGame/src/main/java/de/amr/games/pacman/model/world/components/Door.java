@@ -1,4 +1,6 @@
-package de.amr.games.pacman.model.world.api;
+package de.amr.games.pacman.model.world.components;
+
+import de.amr.games.pacman.model.world.api.Direction;
 
 /**
  * A door into a house.

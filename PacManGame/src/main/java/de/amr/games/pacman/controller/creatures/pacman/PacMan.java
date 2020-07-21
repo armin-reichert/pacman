@@ -20,11 +20,11 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.Bed;
-import de.amr.games.pacman.model.world.api.Bonus;
-import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.Bonus;
+import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 
@@ -159,7 +159,7 @@ public class PacMan extends Creature<PacManState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (world.isDoor(neighbor)) {
+		if (world.isDoorAt(neighbor)) {
 			return false;
 		}
 		return super.canMoveBetween(tile, neighbor);

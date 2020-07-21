@@ -6,8 +6,8 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.model.world.api.House;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.components.House;
 
 public class LeavingHouse implements Steering {
 

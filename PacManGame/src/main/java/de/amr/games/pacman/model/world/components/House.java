@@ -1,7 +1,10 @@
-package de.amr.games.pacman.model.world.api;
+package de.amr.games.pacman.model.world.components;
 
 import java.util.List;
 import java.util.stream.Stream;
+
+import de.amr.games.pacman.model.world.api.Area;
+import de.amr.games.pacman.model.world.api.Tile;
 
 /**
  * A house has a room with beds and some doors.

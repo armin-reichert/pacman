@@ -25,11 +25,11 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.Bed;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.OneWayTile;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 
@@ -280,7 +280,7 @@ public class Ghost extends Creature<GhostState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (world.isDoor(neighbor)) {
+		if (world.isDoorAt(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		Optional<OneWayTile> maybeOneWay = world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst();

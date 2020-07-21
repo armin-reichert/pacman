@@ -1,4 +1,6 @@
-package de.amr.games.pacman.model.world.api;
+package de.amr.games.pacman.model.world.components;
+
+import de.amr.games.pacman.model.world.api.Direction;
 
 /**
  * A bed is a 2x1-area in the world with a dedicated exit direction.

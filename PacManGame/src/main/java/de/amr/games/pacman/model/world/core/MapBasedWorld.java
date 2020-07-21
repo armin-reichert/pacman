@@ -7,8 +7,8 @@ import static de.amr.games.pacman.model.world.core.WorldMap.B_INTERSECTION;
 import static de.amr.games.pacman.model.world.core.WorldMap.B_TUNNEL;
 import static de.amr.games.pacman.model.world.core.WorldMap.B_WALL;
 
-import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.components.Portal;
 
 /**
  * Base class for worlds using a map.
@@ -79,7 +79,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	@Override
 	public boolean isAccessible(Tile tile) {
 		boolean inside = includes(tile);
-		return inside && !is(tile, B_WALL) || !inside && isInsidePortal(tile);
+		return inside && !is(tile, B_WALL) || !inside && isPortalAt(tile);
 	}
 
 	@Override

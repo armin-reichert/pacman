@@ -12,10 +12,10 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
-import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
 
@@ -57,7 +57,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 
 	@Override
 	public void steer() {
-		if (!me.enteredNewTile() && me.canCrossBorderTo(me.moveDir()) || me.world().isInsidePortal(me.tileLocation())) {
+		if (!me.enteredNewTile() && me.canCrossBorderTo(me.moveDir()) || me.world().isPortalAt(me.tileLocation())) {
 			return;
 		}
 

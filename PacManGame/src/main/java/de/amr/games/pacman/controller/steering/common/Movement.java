@@ -13,8 +13,8 @@ import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
-import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.statemachine.core.StateMachine;
 
 /**

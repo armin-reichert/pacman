@@ -5,15 +5,15 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.world.api.Bed;
-import de.amr.games.pacman.model.world.api.Bonus;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Door;
-import de.amr.games.pacman.model.world.api.House;
-import de.amr.games.pacman.model.world.api.HouseBuilder;
-import de.amr.games.pacman.model.world.api.OneWayTile;
-import de.amr.games.pacman.model.world.api.Portal;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.Bonus;
+import de.amr.games.pacman.model.world.components.Door;
+import de.amr.games.pacman.model.world.components.House;
+import de.amr.games.pacman.model.world.components.HouseBuilder;
+import de.amr.games.pacman.model.world.components.OneWayTile;
+import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.core.MapBasedWorld;
 
 /**

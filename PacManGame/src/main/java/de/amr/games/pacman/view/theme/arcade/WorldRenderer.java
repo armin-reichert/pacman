@@ -12,11 +12,11 @@ import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.BonusState;
-import de.amr.games.pacman.model.world.api.Door.DoorState;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
+import de.amr.games.pacman.model.world.components.BonusState;
+import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 
 public class WorldRenderer implements IWorldRenderer {

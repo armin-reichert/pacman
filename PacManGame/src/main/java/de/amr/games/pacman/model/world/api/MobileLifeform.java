@@ -3,7 +3,7 @@ package de.amr.games.pacman.model.world.api;
 import de.amr.easy.game.entity.Transform;
 
 /**
- * Implemented by entities that can move through the world.
+ * A life form that can move through the world.
  * 
  * @author Armin Reichert
  */

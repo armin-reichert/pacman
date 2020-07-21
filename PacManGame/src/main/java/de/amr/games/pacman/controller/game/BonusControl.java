@@ -2,9 +2,9 @@ package de.amr.games.pacman.controller.game;
 
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.model.game.Game.sec;
-import static de.amr.games.pacman.model.world.api.BonusState.ACTIVE;
-import static de.amr.games.pacman.model.world.api.BonusState.CONSUMED;
-import static de.amr.games.pacman.model.world.api.BonusState.INACTIVE;
+import static de.amr.games.pacman.model.world.components.BonusState.ACTIVE;
+import static de.amr.games.pacman.model.world.components.BonusState.CONSUMED;
+import static de.amr.games.pacman.model.world.components.BonusState.INACTIVE;
 
 import java.util.Random;
 
@@ -12,9 +12,9 @@ import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.Bonus;
-import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.components.Bonus;
+import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.statemachine.core.StateMachine;
 
 /**

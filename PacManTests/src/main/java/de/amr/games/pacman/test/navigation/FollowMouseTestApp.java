@@ -10,8 +10,8 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Mouse;
 import de.amr.easy.game.ui.AppShell;
-import de.amr.games.pacman.model.world.api.Bed;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.test.TestUI;
 
 public class FollowMouseTestApp extends Application {

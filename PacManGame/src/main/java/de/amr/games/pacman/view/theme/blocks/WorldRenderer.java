@@ -9,11 +9,11 @@ import java.util.function.Function;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.model.world.api.Bonus;
-import de.amr.games.pacman.model.world.api.BonusState;
-import de.amr.games.pacman.model.world.api.Door.DoorState;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.components.Bonus;
+import de.amr.games.pacman.model.world.components.BonusState;
+import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 
 class WorldRenderer implements IWorldRenderer {

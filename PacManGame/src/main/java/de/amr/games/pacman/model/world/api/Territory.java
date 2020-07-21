@@ -3,6 +3,11 @@ package de.amr.games.pacman.model.world.api;
 import java.util.List;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.House;
+import de.amr.games.pacman.model.world.components.OneWayTile;
+import de.amr.games.pacman.model.world.components.Portal;
+
 public interface Territory {
 
 	/**
@@ -44,7 +49,7 @@ public interface Territory {
 	 * @param tile some tile
 	 * @return if a door is located at this tile
 	 */
-	boolean isDoor(Tile tile);
+	boolean isDoorAt(Tile tile);
 
 	/**
 	 * Part of the territory where creatures live.
@@ -115,7 +120,7 @@ public interface Territory {
 	 * @param tile some tile
 	 * @return if there is some portal at this tile
 	 */
-	default boolean isInsidePortal(Tile tile) {
+	default boolean isPortalAt(Tile tile) {
 		return portals().anyMatch(portal -> portal.includes(tile));
 	}
 

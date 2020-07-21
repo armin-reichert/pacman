@@ -1,5 +1,12 @@
-package de.amr.games.pacman.model.world.api;
+package de.amr.games.pacman.model.world.components;
 
+import de.amr.games.pacman.model.world.api.RectangularArea;
+
+/**
+ * A rectangular tile area.
+ * 
+ * @author Armin Reichert
+ */
 public class Block implements RectangularArea {
 
 	private final int col;

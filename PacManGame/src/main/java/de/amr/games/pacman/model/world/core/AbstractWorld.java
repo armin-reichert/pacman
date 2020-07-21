@@ -4,13 +4,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import de.amr.games.pacman.model.world.api.Block;
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Door;
-import de.amr.games.pacman.model.world.api.House;
 import de.amr.games.pacman.model.world.api.Life;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.components.Block;
+import de.amr.games.pacman.model.world.components.Door;
+import de.amr.games.pacman.model.world.components.House;
+import de.amr.games.pacman.model.world.components.Portal;
 
 /**
  * World base class.
@@ -49,22 +51,47 @@ public abstract class AbstractWorld extends Block implements World {
 
 	@Override
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
-		//@formatter:off
-		return portals()
-			.filter(portal -> portal.includes(tile))
-			.findAny()
-			.map(portal -> portal.otherEntry())
-			.orElse(Tile.at(tile.col + n * dir.vector().roundedX(), tile.row + n * dir.vector().roundedY()));
-		//@formatter:on
+		if (n < 0) {
+			dir = dir.opposite();
+		}
+		if (n == 0) {
+			return tile;
+		}
+		Vector2f dirVector = dir.vector();
+		int dx = dirVector.roundedX(), dy = dirVector.roundedY();
+		int col = tile.col, row = tile.row;
+		while (n-- > 0) {
+			Tile t = Tile.at(col, row);
+			if (isPortalAt(t)) {
+				Portal portal = portals().filter(p -> p.includes(t)).findAny().get();
+				if (portal.vertical) {
+					if (t.equals(portal.either) && dir == Direction.UP) {
+						col = portal.other.col;
+					} else if (t.equals(portal.other) && dir == Direction.DOWN) {
+						col = portal.either.col;
+					}
+				} else {
+					if (t.equals(portal.either) && dir == Direction.LEFT) {
+						col = portal.other.col;
+					} else if (t.equals(portal.other) && dir == Direction.RIGHT) {
+						col = portal.either.col;
+					}
+				}
+			} else {
+				col += dx;
+				row += dy;
+			}
+		}
+		return Tile.at(col, row);
 	}
 
 	@Override
 	public boolean insideHouseOrDoor(Tile tile) {
-		return isDoor(tile) || houses().map(House::layout).anyMatch(layout -> layout.includes(tile));
+		return isDoorAt(tile) || houses().map(House::layout).anyMatch(layout -> layout.includes(tile));
 	}
 
 	@Override
-	public boolean isDoor(Tile tile) {
+	public boolean isDoorAt(Tile tile) {
 		return houses().flatMap(House::doors).anyMatch(door -> door.includes(tile));
 	}
 
@@ -72,7 +99,7 @@ public abstract class AbstractWorld extends Block implements World {
 	public boolean isHouseEntry(Tile tile) {
 		for (Direction dir : Direction.values()) {
 			Tile neighbor = neighbor(tile, dir);
-			if (isDoor(neighbor)) {
+			if (isDoorAt(neighbor)) {
 				Door door = houses().flatMap(House::doors).filter(d -> d.includes(neighbor)).findFirst().get();
 				return door.intoHouse == dir;
 			}

@@ -17,9 +17,9 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.Door;
-import de.amr.games.pacman.model.world.api.Door.DoorState;
-import de.amr.games.pacman.model.world.api.House;
+import de.amr.games.pacman.model.world.components.Door;
+import de.amr.games.pacman.model.world.components.House;
+import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 

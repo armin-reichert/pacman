@@ -52,13 +52,13 @@ public class WorldPreview extends JFrame {
 			if (!world.isAccessible(tile)) {
 				return Color.LIGHT_GRAY;
 			}
-			if (world.isInsidePortal(tile)) {
+			if (world.isPortalAt(tile)) {
 				return Color.YELLOW;
 			}
 			if (world.isTunnel(tile)) {
 				return Color.GRAY;
 			}
-			if (world.isDoor(tile)) {
+			if (world.isDoorAt(tile)) {
 				return Color.PINK;
 			}
 			if (world.insideHouseOrDoor(tile)) {
@@ -97,7 +97,7 @@ public class WorldPreview extends JFrame {
 		if (world.containsEnergizer(tile)) {
 			return "Ö";
 		}
-		if (world.isInsidePortal(tile)) {
+		if (world.isPortalAt(tile)) {
 			return "~";
 		}
 		return "";

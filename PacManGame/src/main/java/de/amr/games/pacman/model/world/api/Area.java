@@ -3,10 +3,9 @@ package de.amr.games.pacman.model.world.api;
 import java.util.stream.Stream;
 
 /**
- * An area is a set of tiles.
+ * An area is composed of tiles.
  * 
  * @author Armin Reichert
- *
  */
 public interface Area {
 

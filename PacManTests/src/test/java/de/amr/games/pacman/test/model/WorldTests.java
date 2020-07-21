@@ -10,8 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.components.Portal;
 
 public class WorldTests {
 
@@ -30,10 +32,10 @@ public class WorldTests {
 		assertNotNull(world.house(0).bed(1));
 		assertNotNull(world.house(0).bed(2));
 		assertNotNull(world.house(0).bed(3));
-		assertTrue(world.portals().findFirst().get().either.equals(Tile.at(-1, 17)));
-		assertTrue(world.portals().findFirst().get().other.equals(Tile.at(28, 17)));
+		assertTrue(world.portals().findFirst().get().either.equals(Tile.at(0, 17)));
+		assertTrue(world.portals().findFirst().get().other.equals(Tile.at(27, 17)));
 		assertFalse(world.isAccessible(Tile.at(0, 3)));
-		assertTrue(world.isDoor(Tile.at(13, 15)));
+		assertTrue(world.isDoorAt(Tile.at(13, 15)));
 	}
 
 	@Test
@@ -55,5 +57,16 @@ public class WorldTests {
 		pacMan.placeAt(Tile.at(-10, 4), 0, 0);
 		assertEquals(-10, pacMan.tileLocation().col);
 		assertEquals(4, pacMan.tileLocation().row);
+	}
+
+	@Test
+	public void testPortal() {
+		Portal portal = world.portals().findAny().get();
+		assertEquals(portal.either, Tile.at(0, 17));
+		assertEquals(portal.other, Tile.at(27, 17));
+		assertEquals(world.tileToDir(portal.other, Direction.RIGHT, 1), portal.either);
+		assertEquals(world.tileToDir(portal.either, Direction.LEFT, 1), portal.other);
+		assertEquals(world.tileToDir(Tile.at(26, 17), Direction.RIGHT, 2), portal.either);
+		assertEquals(world.tileToDir(Tile.at(1, 17), Direction.LEFT, 2), portal.other);
 	}
 }
