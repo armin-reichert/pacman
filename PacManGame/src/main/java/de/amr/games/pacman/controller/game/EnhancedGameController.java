@@ -10,7 +10,12 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTEN
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_LEFT;
+import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.VK_UP;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.input.Keyboard;
@@ -19,6 +24,7 @@ import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
+import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 
 /**
  * Enhanced game controller with all the bells and whistles.
@@ -26,6 +32,11 @@ import de.amr.games.pacman.controller.event.LevelCompletedEvent;
  * @author Armin Reichert
  */
 public class EnhancedGameController extends GameController {
+
+	private boolean showingGrid;
+	private boolean showingRoutes;
+	private boolean showingStates;
+	private boolean showingScores = true;
 
 	@Override
 	public void update() {
@@ -43,7 +54,7 @@ public class EnhancedGameController extends GameController {
 			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
-		
+
 		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, "d")) {
 			PacManApp.fsm_print_dot(System.out);
 		}
@@ -128,6 +139,58 @@ public class EnhancedGameController extends GameController {
 
 	}
 
+	public void setShowingRoutes(boolean selected) {
+		showingRoutes = selected;
+		if (selected) {
+			playView.turnRoutesOn();
+		} else {
+			playView.turnRoutesOff();
+		}
+	}
+
+	public boolean isShowingRoutes() {
+		return showingRoutes;
+	}
+
+	public void setShowingGrid(boolean selected) {
+		showingGrid = selected;
+		if (selected) {
+			playView.turnGridOn();
+		} else {
+			playView.turnGridOff();
+		}
+	}
+
+	public boolean isShowingGrid() {
+		return showingGrid;
+	}
+
+	public void setShowingStates(boolean selected) {
+		showingStates = selected;
+		if (selected) {
+			playView.turnStatesOn();
+		} else {
+			playView.turnStatesOff();
+		}
+	}
+
+	public boolean isShowingStates() {
+		return showingStates;
+	}
+
+	public void setShowingScores(boolean selected) {
+		showingScores = selected;
+		if (selected) {
+			playView.turnScoresOn();
+		} else {
+			playView.turnScoresOff();
+		}
+	}
+
+	public boolean isShowingScores() {
+		return showingScores;
+	}
+
 	private void toggleGhostOnStage(Ghost ghost) {
 		if (world.contains(ghost)) {
 			world.exclude(ghost);
@@ -168,6 +231,18 @@ public class EnhancedGameController extends GameController {
 		settings.demoMode = !settings.demoMode;
 		setDemoMode(settings.demoMode);
 		loginfo("Demo mode is %s", settings.demoMode ? "on" : "off");
+	}
+
+	private void setDemoMode(boolean demoMode) {
+		if (demoMode) {
+			settings.pacManImmortable = true;
+			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
+			folks.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(folks.pacMan, folks));
+		} else {
+			settings.pacManImmortable = false;
+			playView.clearMessage(1);
+			you(folks.pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
+		}
 	}
 
 	private void toggleMakePacManImmortable() {

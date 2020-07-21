@@ -12,15 +12,9 @@ import static de.amr.games.pacman.controller.game.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.game.PacManGameState.LOADING_MUSIC;
 import static de.amr.games.pacman.controller.game.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
-import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 import static de.amr.games.pacman.model.game.Game.sec;
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
-import static java.awt.event.KeyEvent.VK_UP;
 import static java.util.stream.IntStream.range;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.Random;
@@ -47,7 +41,6 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.sound.PacManSounds;
-import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Bed;
 import de.amr.games.pacman.model.world.api.Bonus;
@@ -146,11 +139,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected PacManGameView currentView;
 	protected IntroView introView;
 	protected PlayView playView;
-
-	private boolean showingGrid;
-	private boolean showingRoutes;
-	private boolean showingStates;
-	private boolean showingScores = true;
 
 	public GameController() {
 		super(PacManGameState.class);
@@ -604,74 +592,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(currentView);
 	}
 
-	public void setShowingRoutes(boolean selected) {
-		showingRoutes = selected;
-		if (selected) {
-			playView.turnRoutesOn();
-		} else {
-			playView.turnRoutesOff();
-		}
-	}
-
-	public boolean isShowingRoutes() {
-		return showingRoutes;
-	}
-
-	public void setShowingGrid(boolean selected) {
-		showingGrid = selected;
-		if (selected) {
-			playView.turnGridOn();
-		} else {
-			playView.turnGridOff();
-		}
-	}
-
-	public boolean isShowingGrid() {
-		return showingGrid;
-	}
-
-	public void setShowingStates(boolean selected) {
-		showingStates = selected;
-		if (selected) {
-			playView.turnStatesOn();
-		} else {
-			playView.turnStatesOff();
-		}
-	}
-
-	public boolean isShowingStates() {
-		return showingStates;
-	}
-
-	public void setShowingScores(boolean selected) {
-		showingScores = selected;
-		if (selected) {
-			playView.turnScoresOn();
-		} else {
-			playView.turnScoresOff();
-		}
-	}
-
-	public boolean isShowingScores() {
-		return showingScores;
-	}
-
-	public void setDemoMode(boolean demoMode) {
-		if (demoMode) {
-			settings.pacManImmortable = true;
-			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
-			folks.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(folks.pacMan, folks));
-		} else {
-			settings.pacManImmortable = false;
-			playView.clearMessage(1);
-			you(folks.pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
-		}
-	}
-
-	protected void changeClockFrequency(int newValue) {
-		if (app().clock().getTargetFramerate() != newValue) {
-			app().clock().setTargetFrameRate(newValue);
-			loginfo("Clock frequency changed to %d ticks/sec", newValue);
+	public void changeClockFrequency(int ticksPerSecond) {
+		if (app().clock().getTargetFramerate() != ticksPerSecond) {
+			app().clock().setTargetFrameRate(ticksPerSecond);
+			loginfo("Clock frequency changed to %d ticks/sec", ticksPerSecond);
 		}
 	}
 }

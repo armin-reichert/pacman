@@ -135,11 +135,14 @@ public class PacManApp extends Application {
 
 	@Override
 	public void configureF2Dialog(F2Dialog f2) {
+		if (settings.simpleMode) {
+			return;
+		}
 		ThemeSelectionView themeSelectionView = new ThemeSelectionView();
 		GameStateView gameStateView = new GameStateView();
 		GameLevelView gameLevelView = new GameLevelView();
 		FsmView fsmView = new FsmView();
-		GameController gameController = (GameController) getController();
+		EnhancedGameController gameController = (EnhancedGameController) getController();
 		gameStateView.attachTo(gameController, gameController.folks());
 		gameLevelView.attachTo(gameController);
 		themeSelectionView.attachTo(gameController);
