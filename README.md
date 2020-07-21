@@ -6,7 +6,7 @@ Pac-Man, a *racist, homophobic game*?
 
 First of all, without any doubt, this Pac-Man guy is, as his name clearly proves, a **man**, born around 1980 even an **old man**, thank god not an **old white man** or even worse an **old orange man**, but he is and has always been (hmm, wasn't the Nintendo guy in fact an orange man?) an **old yellow man**.
 
-And what has this **old yellow man** been doing all his life? Chasing ghosts **of color**! And these ghosts, as their dresses (burkas?) prove, are most probably **females** or at least **transgenders** or any of the other 300 gender bullshit possibilities! 
+And what has this **old yellow man** been doing all his life? Chasing ghosts **of color**! And these ghosts, as their dresses (burkas?) prove, are **females** or even **transgenders** or any of the other 300 gender possibilities! 
 
 WTF! Why hasn't this **racist, homophobic game** long been forbidden? GLM, LGBTQ, please take over!
  
@@ -174,7 +174,9 @@ beginStateMachine()
 
 The states in this case are implemented as separate (inner) classes instead of inlined in the state machine builder expression. The reason is that each state has its own visualization which is implemented in its own draw method. Otherwise, the draw method of the intro view class would have to dispatch again depending on the current state.
 
-A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/game/GameController.java)). 
+A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/game/GameController.java)).
+
+<img src="PacManDoc/GameController.png">
 
 It processes game events which are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
 game states like changing the level or the dying animations of Pac-Man and the ghosts are controlled by this
