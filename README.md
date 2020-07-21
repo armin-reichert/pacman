@@ -38,7 +38,11 @@ mvn clean install assembly:single
 - CTRL+P pauses/resumes the game
 - F2 opens a settings dialog where the game clock frequency and (full-)screen resolution can be changed
 - F11 toggles between window and full-screen exclusive mode
-- The settings dialog contains three custom tabs for selecting the theme, displaying game and actor states and the data of the current level.
+- The settings dialog contains four custom tabs:
+  - theme selection
+  - used state machine overview with Graphviz export and preview 
+  - game and actor states inspection
+  - current level inspection
 
 General command-line arguments:
   - Scaling: e.g. `-scale 2.5`
