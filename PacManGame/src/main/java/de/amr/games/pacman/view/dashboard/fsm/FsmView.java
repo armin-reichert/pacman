@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -57,21 +58,19 @@ public class FsmView extends JPanel implements Lifecycle {
 	private Action actionPreviewOnline = new AbstractAction("Preview Online") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			NodeInfo info = getSelectedNodeInfo();
-			if (info != null) {
+			getSelectedNodeInfo().ifPresent(info -> {
 				String hash = URLEncoder.encode(info.dotText, StandardCharsets.UTF_8).replace('+', ' ');
 				openURL(GRAPHVIZ_ONLINE + "#" + hash);
-			}
+			});
 		}
 	};
 
 	private Action actionSave = new AbstractAction("Save") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			NodeInfo info = getSelectedNodeInfo();
-			if (info != null) {
+			getSelectedNodeInfo().ifPresent(info -> {
 				saveDotFile(info.fsm.getDescription() + ".dot", info.dotText);
-			}
+			});
 		}
 	};
 
@@ -124,16 +123,15 @@ public class FsmView extends JPanel implements Lifecycle {
 		actionSave.setEnabled(false);
 		fsmTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		fsmTree.addTreeSelectionListener(e -> {
-			NodeInfo info = getSelectedNodeInfo();
-			if (info != null) {
+			getSelectedNodeInfo().ifPresentOrElse(info -> {
 				dotPreview.setText(info.dotText);
 				actionPreviewOnline.setEnabled(true);
 				actionSave.setEnabled(true);
-			} else {
+			}, () -> {
 				dotPreview.setText(HINT_TEXT);
 				actionPreviewOnline.setEnabled(false);
 				actionSave.setEnabled(false);
-			}
+			});
 		});
 	}
 
@@ -161,12 +159,12 @@ public class FsmView extends JPanel implements Lifecycle {
 		fsmTree.revalidate();
 	}
 
-	private NodeInfo getSelectedNodeInfo() {
+	private Optional<NodeInfo> getSelectedNodeInfo() {
 		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) fsmTree.getLastSelectedPathComponent();
 		if (selectedNode != null && selectedNode.getUserObject() instanceof NodeInfo) {
-			return (NodeInfo) selectedNode.getUserObject();
+			return Optional.of((NodeInfo) selectedNode.getUserObject());
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	private void saveDotFile(String fileName, String dotText) {
