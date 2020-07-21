@@ -19,7 +19,6 @@ import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 
 /**
  * Data model of the table displaying actor data.
@@ -68,7 +67,7 @@ class GameStateTableModel extends AbstractTableModel {
 	};
 
 	private GameController gameController;
-	private ArcadeWorld world;
+	private World world;
 	private GameStateRecord[] records;
 
 	public GameStateTableModel() {

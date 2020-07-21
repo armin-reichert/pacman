@@ -47,6 +47,7 @@ import de.amr.games.pacman.model.world.api.Bonus;
 import de.amr.games.pacman.model.world.api.BonusState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
@@ -560,7 +561,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return themes[currentThemeIndex];
 	}
 
-	public ArcadeWorld world() {
+	public World world() {
 		return world;
 	}
 
