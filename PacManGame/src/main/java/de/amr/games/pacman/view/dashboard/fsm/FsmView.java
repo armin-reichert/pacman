@@ -4,12 +4,11 @@ import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -59,8 +58,12 @@ public class FsmView extends JPanel implements Lifecycle {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			getSelectedNodeInfo().ifPresent(info -> {
-				String hash = URLEncoder.encode(info.dotText, StandardCharsets.UTF_8).replace('+', ' ');
-				openURL(GRAPHVIZ_ONLINE + "#" + hash);
+				try {
+					URI uri = new URI(null, GRAPHVIZ_ONLINE, info.dotText);
+					Desktop.getDesktop().browse(uri);
+				} catch (Exception x) {
+					x.printStackTrace();
+				}
 			});
 		}
 	};
@@ -179,15 +182,6 @@ public class FsmView extends JPanel implements Lifecycle {
 			} catch (Exception x) {
 				loginfo("DOT file could not be written", file);
 			}
-		}
-	}
-
-	// TODO only works under Windows
-	private void openURL(String url) {
-		try {
-			Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 }
