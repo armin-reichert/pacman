@@ -1,9 +1,13 @@
 package de.amr.games.pacman.view.dashboard.fsm;
 
+import static de.amr.easy.game.Application.app;
+import static de.amr.easy.game.Application.loginfo;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -11,6 +15,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -33,9 +38,11 @@ public class FsmView extends JPanel implements Lifecycle {
 	static class NodeInfo {
 
 		final StateMachine<?, ?> fsm;
+		final String dotText;
 
 		public NodeInfo(StateMachine<?, ?> fsm) {
 			this.fsm = fsm;
+			dotText = DotPrinter.dotText(fsm);
 		}
 
 		@Override
@@ -49,7 +56,17 @@ public class FsmView extends JPanel implements Lifecycle {
 		public void actionPerformed(ActionEvent e) {
 			NodeInfo info = getSelectedNodeInfo();
 			if (info != null) {
-				openURL("https://dreampuf.github.io/GraphvizOnline/#" + dotPreview.getText());
+				openURL("https://dreampuf.github.io/GraphvizOnline/#" + info.dotText);
+			}
+		}
+	};
+
+	private Action actionSave = new AbstractAction("Save") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			NodeInfo info = getSelectedNodeInfo();
+			if (info != null) {
+				saveDotFile(info.fsm.getDescription() + ".dot", info.dotText);
 			}
 		}
 	};
@@ -59,7 +76,8 @@ public class FsmView extends JPanel implements Lifecycle {
 	private JScrollPane dotPreviewScrollPane;
 	private JTextArea dotPreview;
 	private JToolBar toolBar;
-	private JButton btnExternalPreview;
+	private JButton btnPreview;
+	private JButton btnSave;
 
 	public FsmView() {
 		setLayout(new BorderLayout(0, 0));
@@ -90,9 +108,13 @@ public class FsmView extends JPanel implements Lifecycle {
 		toolBar = new JToolBar();
 		add(toolBar, BorderLayout.NORTH);
 
-		btnExternalPreview = new JButton("Preview");
-		toolBar.add(btnExternalPreview);
-		btnExternalPreview.setAction(actionExternalPreview);
+		btnSave = new JButton("New button");
+		btnSave.setAction(actionSave);
+		toolBar.add(btnSave);
+
+		btnPreview = new JButton("Preview");
+		toolBar.add(btnPreview);
+		btnPreview.setAction(actionExternalPreview);
 	}
 
 	@Override
@@ -102,17 +124,19 @@ public class FsmView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		if (machines == null) {
+			actionExternalPreview.setEnabled(false);
+			actionSave.setEnabled(false);
 			fsmTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 			fsmTree.addTreeSelectionListener(e -> {
 				NodeInfo info = getSelectedNodeInfo();
 				if (info != null) {
-					StringWriter s = new StringWriter();
-					new DotPrinter(s).print(info.fsm);
-					dotPreview.setText(s.toString());
+					dotPreview.setText(info.dotText);
 					actionExternalPreview.setEnabled(true);
+					actionSave.setEnabled(true);
 				} else {
 					dotPreview.setText(HINT_TEXT);
 					actionExternalPreview.setEnabled(false);
+					actionSave.setEnabled(false);
 				}
 			});
 			buildTree();
@@ -137,6 +161,21 @@ public class FsmView extends JPanel implements Lifecycle {
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) fsmTree.getModel().getRoot();
 		for (StateMachine<?, ?> fsm : machines) {
 			root.add(new DefaultMutableTreeNode(new NodeInfo(fsm)));
+		}
+	}
+
+	private void saveDotFile(String fileName, String dotText) {
+		JFileChooser saveDialog = new JFileChooser();
+		saveDialog.setDialogTitle("Save state machine as DOT file");
+		saveDialog.setSelectedFile(new File(fileName));
+		int option = saveDialog.showSaveDialog(app().shell().get().f2Dialog);
+		if (option == JFileChooser.APPROVE_OPTION) {
+			File file = saveDialog.getSelectedFile();
+			try (FileWriter w = new FileWriter(saveDialog.getSelectedFile())) {
+				w.write(dotText);
+			} catch (Exception x) {
+				loginfo("DOT file could not be written", file);
+			}
 		}
 	}
 
