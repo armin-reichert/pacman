@@ -2,6 +2,7 @@ package de.amr.games.pacman.controller.creatures.ghost;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostSanity.ELROY1;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostSanity.ELROY2;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostSanity.IMMUNE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostSanity.INFECTABLE;
 
 import de.amr.games.pacman.PacManApp;
@@ -24,6 +25,10 @@ public class GhostSanityControl extends StateMachine<GhostSanity, Void> {
 			.initialState(initialSanity)
 			.description(() -> String.format("%s sanity", ghostName))
 			.states()
+				.state(IMMUNE)
+				.state(INFECTABLE)
+				.state(ELROY1)
+				.state(ELROY2)
 			.transitions()
 			
 				.when(INFECTABLE).then(ELROY2)
