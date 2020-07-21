@@ -51,6 +51,11 @@ public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implem
 						ghost.setWishDir(Direction.DOWN);					
 					})
 					
+				// listen all states such that they appear in Graphviz file
+				.state(MOVING_LEFT)
+				.state(MOVING_RIGHT)
+				.state(BED_REACHED)
+					
 			.transitions()
 	
 				.when(FALLING).then(MOVING_LEFT)

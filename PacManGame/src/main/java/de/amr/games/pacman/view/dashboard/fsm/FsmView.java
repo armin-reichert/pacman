@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -36,6 +35,7 @@ import de.amr.statemachine.dot.DotPrinter;
 
 public class FsmView extends JPanel implements Lifecycle {
 
+	static final String GRAPHVIZ_ONLINE = "https://dreampuf.github.io/GraphvizOnline";
 	static final String HINT_TEXT = "This area shows the Graphviz representation of the selected finite-state machine";
 
 	static class NodeInfo {
@@ -54,18 +54,13 @@ public class FsmView extends JPanel implements Lifecycle {
 		}
 	}
 
-	private Action actionExternalPreview = new AbstractAction("Preview Online") {
+	private Action actionPreviewOnline = new AbstractAction("Preview Online") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			NodeInfo info = getSelectedNodeInfo();
 			if (info != null) {
-				try {
-					String hashValue = URLEncoder.encode(info.dotText, StandardCharsets.UTF_8.toString());
-					hashValue = hashValue.replace('+', ' ');
-					openURL("https://dreampuf.github.io/GraphvizOnline/#" + hashValue);
-				} catch (UnsupportedEncodingException x) {
-					x.printStackTrace();
-				}
+				String hash = URLEncoder.encode(info.dotText, StandardCharsets.UTF_8).replace('+', ' ');
+				openURL(GRAPHVIZ_ONLINE + "#" + hash);
 			}
 		}
 	};
@@ -123,20 +118,20 @@ public class FsmView extends JPanel implements Lifecycle {
 
 		btnPreview = new JButton("Preview");
 		toolBar.add(btnPreview);
-		btnPreview.setAction(actionExternalPreview);
+		btnPreview.setAction(actionPreviewOnline);
 
-		actionExternalPreview.setEnabled(false);
+		actionPreviewOnline.setEnabled(false);
 		actionSave.setEnabled(false);
 		fsmTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		fsmTree.addTreeSelectionListener(e -> {
 			NodeInfo info = getSelectedNodeInfo();
 			if (info != null) {
 				dotPreview.setText(info.dotText);
-				actionExternalPreview.setEnabled(true);
+				actionPreviewOnline.setEnabled(true);
 				actionSave.setEnabled(true);
 			} else {
 				dotPreview.setText(HINT_TEXT);
-				actionExternalPreview.setEnabled(false);
+				actionPreviewOnline.setEnabled(false);
 				actionSave.setEnabled(false);
 			}
 		});
