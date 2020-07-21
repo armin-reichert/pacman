@@ -261,16 +261,20 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
 					.condition(() -> sound.isMusicLoadingComplete()	&& settings.skipIntro)
-	
+					.annotation("music loaded, skipping intro")
+					
 				.when(LOADING_MUSIC).then(INTRO)
 					.condition(() -> sound.isMusicLoadingComplete())
+					.annotation("music loaded")
 			
 				.when(INTRO).then(GETTING_READY)
 					.condition(() -> currentView.isComplete())
+					.annotation("intro complete")
 					
 				.when(GETTING_READY).then(PLAYING)
 					.onTimeout()
 					.act(playingState()::preparePlaying)
+					.annotation("ready to play")
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
@@ -300,24 +304,30 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
 					.act(playingState()::preparePlaying)
+					.annotation("level change complete")
 					
 				.when(GHOST_DYING).then(PLAYING)
 					.onTimeout()
+					.annotation("resume playing")
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
 					.onTimeout()
 					.condition(() -> game.lives == 0)
+					.annotation("no lives left")
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
 					.condition(() -> game.lives > 0)
 					.act(playingState()::preparePlaying)
+					.annotation("resume playing")
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce("space"))
+					.annotation("new game requested")
 					
 				.when(GAME_OVER).then(INTRO)
 					.condition(() -> !sound.isGameOverMusicRunning())
+					.annotation("game over time complete")
 							
 		.endStateMachine();
 		//@formatter:on

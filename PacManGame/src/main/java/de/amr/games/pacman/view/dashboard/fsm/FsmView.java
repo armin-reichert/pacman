@@ -171,6 +171,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		for (StateMachine<?, ?> fsm : machines) {
 			root.add(new DefaultMutableTreeNode(new NodeInfo(fsm)));
 		}
+		fsmTree.revalidate();
 	}
 
 	private void saveDotFile(String fileName, String dotText) {
