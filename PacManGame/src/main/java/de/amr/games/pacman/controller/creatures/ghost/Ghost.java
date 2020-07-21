@@ -22,7 +22,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
-import de.amr.games.pacman.controller.game.GameSpeed;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Bed;
@@ -232,7 +232,7 @@ public class Ghost extends Creature<GhostState> {
 			sanity = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
 		}
 		fnFlashTimeTicks = () -> game.level.numFlashes * sec(0.5f);
-		setSpeed(() -> GameSpeed.ghostSpeed(this, game));
+		setSpeed(() -> GameController.ghostSpeed(this, game));
 		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
 		state(DEAD).setTimer(sec(1));
 		state(DEAD).entryAction = () -> bounty = game.killedGhostPoints();

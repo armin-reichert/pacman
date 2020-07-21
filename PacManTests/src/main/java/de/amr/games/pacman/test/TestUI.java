@@ -1,8 +1,5 @@
 package de.amr.games.pacman.test;
 
-import static de.amr.games.pacman.controller.game.GameSpeed.ghostSpeed;
-import static de.amr.games.pacman.controller.game.GameSpeed.pacManSpeed;
-
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -14,6 +11,7 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
@@ -68,8 +66,8 @@ public class TestUI implements Lifecycle, VisualController {
 		game = new Game(1, world.totalFoodCount());
 
 		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
-		folks.ghosts().forEach(ghost -> ghost.setSpeed(() -> ghostSpeed(ghost, game)));
-		pacMan.setSpeed(() -> pacManSpeed(pacMan, game));
+		folks.ghosts().forEach(ghost -> ghost.setSpeed(() -> GameController.ghostSpeed(ghost, game)));
+		pacMan.setSpeed(() -> GameController.pacManSpeed(pacMan, game));
 
 		view = new PlayView(world, theme(), folks, game, null, null);
 		view.turnScoresOff();

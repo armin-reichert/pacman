@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.game.GameSpeed;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Portal;
@@ -27,7 +27,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 	private final MobileLifeform mover;
 	private final String moverName;
 
-	public Supplier<Float> fnSpeed = () -> GameSpeed.BASE_SPEED;
+	public Supplier<Float> fnSpeed = () -> GameController.BASE_SPEED;
 	public Direction moveDir;
 	public Direction wishDir;
 	public boolean enteredNewTile;
