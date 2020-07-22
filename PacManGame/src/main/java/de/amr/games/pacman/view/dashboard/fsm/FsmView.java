@@ -4,6 +4,7 @@ import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -17,14 +18,18 @@ import java.util.Optional;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
@@ -33,18 +38,22 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.PacManApp;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
 
 public class FsmView extends JPanel implements Lifecycle {
 
 	static final String GRAPHVIZ_ONLINE = "https://dreampuf.github.io/GraphvizOnline";
 	static final String HINT_TEXT = "This area shows the Graphviz representation of the selected finite-state machine";
+	static final double MIN_SCALE = 0.2;
+	static final double MAX_SCALE = 3.0;
 
-	static class NodeInfo {
+	static class StateMachineInfo {
 
 		final StateMachine<?, ?> fsm;
 		final String dotText;
 
-		public NodeInfo(StateMachine<?, ?> fsm) {
+		public StateMachineInfo(StateMachine<?, ?> fsm) {
 			this.fsm = fsm;
 			dotText = DotPrinter.dotText(fsm);
 		}
@@ -58,7 +67,7 @@ public class FsmView extends JPanel implements Lifecycle {
 	private Action actionPreviewOnline = new AbstractAction("Preview Online") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			getSelectedNodeInfo().ifPresent(info -> {
+			getSelectedInfo().ifPresent(info -> {
 				try {
 					URI uri = new URI(null, GRAPHVIZ_ONLINE, info.dotText);
 					Desktop.getDesktop().browse(uri);
@@ -72,19 +81,46 @@ public class FsmView extends JPanel implements Lifecycle {
 	private Action actionSave = new AbstractAction("Save") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			getSelectedNodeInfo().ifPresent(info -> {
+			getSelectedInfo().ifPresent(info -> {
 				saveDotFile(info.fsm.getDescription() + ".dot", info.dotText);
 			});
 		}
 	};
 
+	private Action actionZoomIn = new AbstractAction("Zoom In") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			scalePreview += 0.2;
+			scalePreview = Math.min(MAX_SCALE, scalePreview);
+			updatePreview();
+		};
+	};
+
+	private Action actionZoomOut = new AbstractAction("Zoom Out") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			scalePreview -= 0.2;
+			scalePreview = Math.max(MIN_SCALE, scalePreview);
+			updatePreview();
+		};
+	};
+
+	private double scalePreview = 1.0;
+
 	private List<StateMachine<?, ?>> machines;
 	private JTree fsmTree;
-	private JScrollPane dotPreviewScrollPane;
 	private JTextArea dotPreview;
 	private JToolBar toolBar;
 	private JButton btnPreview;
 	private JButton btnSave;
+	private JTabbedPane tabbedPane;
+	private JPanel panelSource;
+	private JPanel panelPreview;
+	private JScrollPane scrollPaneSource;
+	private JScrollPane scrollPanePreview;
+	private JLabel labelPreview;
+	private JButton btnZoomIn;
+	private JButton btnZoomOut;
 
 	public FsmView() {
 		setLayout(new BorderLayout(0, 0));
@@ -103,15 +139,43 @@ public class FsmView extends JPanel implements Lifecycle {
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("State Machines");
 		fsmTree.setModel(new DefaultTreeModel(root));
 
-		dotPreviewScrollPane = new JScrollPane();
-		splitPane.setRightComponent(dotPreviewScrollPane);
+		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
+		splitPane.setRightComponent(tabbedPane);
+
+		panelSource = new JPanel();
+		tabbedPane.addTab("Source", null, panelSource, null);
+		panelSource.setLayout(new BorderLayout(0, 0));
+
+		scrollPaneSource = new JScrollPane();
+		panelSource.add(scrollPaneSource);
 
 		dotPreview = new JTextArea();
+		scrollPaneSource.setViewportView(dotPreview);
 		dotPreview.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		dotPreview.setEditable(false);
 		dotPreview.setTabSize(4);
 		dotPreview.setText(HINT_TEXT);
-		dotPreviewScrollPane.setViewportView(dotPreview);
+
+		panelPreview = new JPanel();
+		panelPreview.setBackground(Color.WHITE);
+		tabbedPane.addTab("Preview", null, panelPreview, null);
+		panelPreview.setLayout(new BorderLayout(0, 0));
+
+		scrollPanePreview = new JScrollPane();
+		scrollPanePreview.setBackground(Color.WHITE);
+		panelPreview.add(scrollPanePreview, BorderLayout.CENTER);
+
+		labelPreview = new JLabel("");
+		labelPreview.setOpaque(true);
+		labelPreview.setBackground(Color.WHITE);
+		labelPreview.setHorizontalAlignment(SwingConstants.CENTER);
+		scrollPanePreview.setViewportView(labelPreview);
+
+		tabbedPane.addChangeListener(change -> {
+			if (tabbedPane.getSelectedComponent() == panelPreview) {
+				updatePreview();
+			}
+		});
 
 		toolBar = new JToolBar();
 		add(toolBar, BorderLayout.NORTH);
@@ -124,12 +188,23 @@ public class FsmView extends JPanel implements Lifecycle {
 		toolBar.add(btnPreview);
 		btnPreview.setAction(actionPreviewOnline);
 
+		btnZoomIn = new JButton("New button");
+		btnZoomIn.setAction(actionZoomIn);
+		toolBar.add(btnZoomIn);
+
+		btnZoomOut = new JButton("");
+		btnZoomOut.setAction(actionZoomOut);
+		toolBar.add(btnZoomOut);
+
 		actionPreviewOnline.setEnabled(false);
 		actionSave.setEnabled(false);
 		fsmTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		fsmTree.addTreeSelectionListener(e -> {
-			getSelectedNodeInfo().ifPresentOrElse(info -> {
+			getSelectedInfo().ifPresentOrElse(info -> {
 				dotPreview.setText(info.dotText);
+				if (tabbedPane.getSelectedComponent() == panelPreview) {
+					updatePreview();
+				}
 				actionPreviewOnline.setEnabled(true);
 				actionSave.setEnabled(true);
 			}, () -> {
@@ -137,6 +212,14 @@ public class FsmView extends JPanel implements Lifecycle {
 				actionPreviewOnline.setEnabled(false);
 				actionSave.setEnabled(false);
 			});
+		});
+	}
+
+	private void updatePreview() {
+		labelPreview.setIcon(null);
+		getSelectedInfo().ifPresent(info -> {
+			labelPreview
+					.setIcon(new ImageIcon(Graphviz.fromString(info.dotText).scale(scalePreview).render(Format.PNG).toImage()));
 		});
 	}
 
@@ -157,17 +240,17 @@ public class FsmView extends JPanel implements Lifecycle {
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) fsmTree.getModel().getRoot();
 		root.removeAllChildren();
 		for (StateMachine<?, ?> fsm : machines) {
-			root.add(new DefaultMutableTreeNode(new NodeInfo(fsm)));
+			root.add(new DefaultMutableTreeNode(new StateMachineInfo(fsm)));
 		}
 		DefaultTreeModel treeModel = (DefaultTreeModel) fsmTree.getModel();
 		treeModel.nodeStructureChanged(root);
 		fsmTree.revalidate();
 	}
 
-	private Optional<NodeInfo> getSelectedNodeInfo() {
+	private Optional<StateMachineInfo> getSelectedInfo() {
 		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) fsmTree.getLastSelectedPathComponent();
-		if (selectedNode != null && selectedNode.getUserObject() instanceof NodeInfo) {
-			return Optional.of((NodeInfo) selectedNode.getUserObject());
+		if (selectedNode != null && selectedNode.getUserObject() instanceof StateMachineInfo) {
+			return Optional.of((StateMachineInfo) selectedNode.getUserObject());
 		}
 		return Optional.empty();
 	}

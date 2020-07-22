@@ -63,6 +63,11 @@
 			<artifactId>EasyGame</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<groupId>guru.nidi</groupId>
+			<artifactId>graphviz-java</artifactId>
+			<version>0.17.0</version>
+		</dependency>
 	</dependencies>
 	<url>https://github.com/armin-reichert/pacman</url>
 </project>
