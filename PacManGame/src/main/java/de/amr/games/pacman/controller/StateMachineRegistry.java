@@ -58,11 +58,9 @@ public final class StateMachineRegistry {
 
 	public <FSM extends StateMachine<?, ?>> void unregister(Stream<FSM> machines) {
 		machines.filter(Objects::nonNull).forEach(fsm -> {
-			if (fsm != null) {
-				fsm.getTracer().setLogger(Logger.getGlobal());
-				this.machines.remove(fsm);
-				Application.loginfo("State machine unregistered: %s", fsm);
-			}
+			fsm.getTracer().setLogger(Logger.getGlobal());
+			this.machines.remove(fsm);
+			Application.loginfo("State machine unregistered: %s", fsm);
 		});
 	}
 }

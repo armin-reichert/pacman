@@ -26,6 +26,7 @@ import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.statemachine.core.StateMachine;
 
 /**
  * Enhanced game controller with all the bells and whistles.
@@ -48,13 +49,17 @@ public class EnhancedGameController extends GameController {
 		return (EnhancedPlayView) playView;
 	}
 
+	protected Stream<StateMachine<?, ?>> machines() {
+		return Stream.of(this, bonusControl, ghostCommand);
+	}
+
 	@Override
 	protected void newGame() {
 		folks.all().forEach(creature -> StateMachineRegistry.IT.unregister(creature.machines()));
-		StateMachineRegistry.IT.unregister(Stream.of(this, bonusControl, ghostCommand));
+		StateMachineRegistry.IT.unregister(machines());
 		super.newGame();
 		folks.all().forEach(creature -> StateMachineRegistry.IT.register(creature.machines()));
-		StateMachineRegistry.IT.register(Stream.of(this, bonusControl, ghostCommand));
+		StateMachineRegistry.IT.register(machines());
 	}
 
 	@Override
@@ -221,7 +226,7 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void toggleStateMachineLogging() {
-		StateMachineRegistry.IT.setLogging(!StateMachineRegistry.IT.isLoggingEnabled());
+		StateMachineRegistry.IT.toggleLogging();
 		loginfo("State machine logging %s", StateMachineRegistry.IT.isLoggingEnabled() ? "enabled" : "disabled");
 	}
 
