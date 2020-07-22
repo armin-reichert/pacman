@@ -106,6 +106,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 		Tile tileAfterMove = mover.tileLocation();
 		enteredNewTile = !tileBeforeMove.equals(tileAfterMove);
 		// portal entered?
+		activePortal = null;
 		mover.world().portals().filter(p -> p.includes(tileAfterMove)).findFirst().ifPresent(p -> {
 			if (p.vertical) {
 				// TODO fine tuning

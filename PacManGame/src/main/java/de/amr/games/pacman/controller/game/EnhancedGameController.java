@@ -20,7 +20,6 @@ import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
@@ -55,10 +54,6 @@ public class EnhancedGameController extends GameController {
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
 
-		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, "d")) {
-			PacManApp.fsm_print_dot(System.out);
-		}
-
 		if (currentView == playView) {
 			handlePlayViewInput();
 		}
@@ -66,11 +61,11 @@ public class EnhancedGameController extends GameController {
 
 	private void handlePlayViewInput() {
 		if (Keyboard.keyPressedOnce("b")) {
-			toggleGhostOnStage(folks.blinky);
+			toggleGhostInWorld(folks.blinky);
 		}
 
 		else if (Keyboard.keyPressedOnce("c")) {
-			toggleGhostOnStage(folks.clyde);
+			toggleGhostInWorld(folks.clyde);
 		}
 
 		else if (Keyboard.keyPressedOnce("d")) {
@@ -90,7 +85,7 @@ public class EnhancedGameController extends GameController {
 		}
 
 		else if (Keyboard.keyPressedOnce("i")) {
-			toggleGhostOnStage(folks.inky);
+			toggleGhostInWorld(folks.inky);
 		}
 
 		else if (Keyboard.keyPressedOnce("k")) {
@@ -110,7 +105,7 @@ public class EnhancedGameController extends GameController {
 		}
 
 		else if (Keyboard.keyPressedOnce("p")) {
-			toggleGhostOnStage(folks.pinky);
+			toggleGhostInWorld(folks.pinky);
 		}
 
 		else if (Keyboard.keyPressedOnce("s")) {
@@ -191,7 +186,7 @@ public class EnhancedGameController extends GameController {
 		return showingScores;
 	}
 
-	private void toggleGhostOnStage(Ghost ghost) {
+	private void toggleGhostInWorld(Ghost ghost) {
 		if (world.contains(ghost)) {
 			world.exclude(ghost);
 		} else {
@@ -262,9 +257,9 @@ public class EnhancedGameController extends GameController {
 		world.habitat().filter(world::containsSimplePellet).forEach(tile -> {
 			world.clearFood(tile);
 			game.scoreSimplePelletFound();
-			doorMan().ifPresent(houseAccess -> {
-				houseAccess.onPacManFoundFood();
-				houseAccess.update();
+			doorMan().ifPresent(doorMan -> {
+				doorMan.onPacManFoundFood();
+				doorMan.update();
 			});
 		});
 		loginfo("All simple pellets have been eaten");

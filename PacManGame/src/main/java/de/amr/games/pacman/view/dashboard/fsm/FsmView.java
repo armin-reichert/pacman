@@ -5,6 +5,7 @@ import static de.amr.easy.game.Application.loginfo;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
@@ -32,7 +33,6 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.PacManApp;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;
-import java.awt.Font;
 
 public class FsmView extends JPanel implements Lifecycle {
 

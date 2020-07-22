@@ -1,7 +1,6 @@
 package de.amr.games.pacman;
 
 import java.awt.DisplayMode;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -21,7 +20,6 @@ import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
 import de.amr.games.pacman.view.dashboard.theme.ThemeSelectionView;
 import de.amr.statemachine.core.StateMachine;
-import de.amr.statemachine.dot.DotPrinter;
 
 /**
  * The Pac-Man game application.
@@ -56,11 +54,6 @@ public class PacManApp extends Application {
 	public static void fsm_register(StateMachine<?, ?> fsm) {
 		REGISTERED_FSMs.put(fsm.getDescription(), fsm);
 		fsm.getTracer().setLogger(FSM_LOGGER);
-	}
-
-	public static void fsm_print_dot(PrintStream out) {
-		DotPrinter dp = new DotPrinter(out);
-		REGISTERED_FSMs.values().forEach(dp::print);
 	}
 
 	// Application configuration
