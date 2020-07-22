@@ -24,6 +24,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
+import de.amr.games.pacman.view.play.EnhancedPlayView;
 
 /**
  * Enhanced game controller with all the bells and whistles.
@@ -36,6 +37,10 @@ public class EnhancedGameController extends GameController {
 	private boolean showingRoutes;
 	private boolean showingStates;
 	private boolean showingScores = true;
+	
+	protected EnhancedPlayView playView() {
+		return (EnhancedPlayView) playView;
+	}
 
 	@Override
 	public void update() {
@@ -113,10 +118,10 @@ public class EnhancedGameController extends GameController {
 		}
 
 		else if (Keyboard.keyPressedOnce("t")) {
-			if (playView.isShowingFrameRate()) {
-				playView.turnFrameRateOff();
+			if (playView().isShowingFrameRate()) {
+				playView().turnFrameRateOff();
 			} else {
-				playView.turnFrameRateOn();
+				playView().turnFrameRateOn();
 			}
 		}
 
@@ -137,9 +142,9 @@ public class EnhancedGameController extends GameController {
 	public void setShowingRoutes(boolean selected) {
 		showingRoutes = selected;
 		if (selected) {
-			playView.turnRoutesOn();
+			playView().turnRoutesOn();
 		} else {
-			playView.turnRoutesOff();
+			playView().turnRoutesOff();
 		}
 	}
 
@@ -150,9 +155,9 @@ public class EnhancedGameController extends GameController {
 	public void setShowingGrid(boolean selected) {
 		showingGrid = selected;
 		if (selected) {
-			playView.turnGridOn();
+			playView().turnGridOn();
 		} else {
-			playView.turnGridOff();
+			playView().turnGridOff();
 		}
 	}
 
@@ -163,9 +168,9 @@ public class EnhancedGameController extends GameController {
 	public void setShowingStates(boolean selected) {
 		showingStates = selected;
 		if (selected) {
-			playView.turnStatesOn();
+			playView().turnStatesOn();
 		} else {
-			playView.turnStatesOff();
+			playView().turnStatesOff();
 		}
 	}
 

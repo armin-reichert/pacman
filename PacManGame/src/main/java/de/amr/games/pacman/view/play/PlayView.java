@@ -7,12 +7,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
-import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -20,11 +18,7 @@ import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
-import de.amr.games.pacman.view.theme.arcade.GridRenderer;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
-import de.amr.games.pacman.view.theme.common.Rendering;
-import de.amr.games.pacman.view.theme.common.RoutesRenderer;
-import de.amr.games.pacman.view.theme.common.StatesRenderer;
 
 /**
  * View where the action is.
@@ -46,40 +40,31 @@ public class PlayView implements PacManGameView {
 		}
 	}
 
-	private final World world;
-	private final Folks folks;
-	private Game game;
+	protected final World world;
+	protected final Folks folks;
+	protected Game game;
 
-	private final Message[] messages;
+	protected final Message[] messages;
 
-	private Theme theme;
-	private IWorldRenderer worldRenderer;
-	private IRenderer scoreRenderer;
-	private IRenderer liveCounterRenderer;
-	private IRenderer levelCounterRenderer;
-	private MessagesRenderer messagesRenderer;
+	protected Theme theme;
+	protected IWorldRenderer worldRenderer;
+	protected IRenderer scoreRenderer;
+	protected IRenderer liveCounterRenderer;
+	protected IRenderer levelCounterRenderer;
+	protected MessagesRenderer messagesRenderer;
 
-	private final GridRenderer gridRenderer;
-	private final IRenderer routesRenderer;
-	private final IRenderer statesRenderer;
-	private final FrameRateWidget frameRateDisplay;
-
-	private boolean showingScores = true;
-	private boolean showingFrameRate;
-	private boolean showingGrid;
-	private boolean showingRoutes;
-	private boolean showingStates;
+	protected boolean showingScores = true;
 
 	public PlayView(World world, Theme theme, Folks folks, Game game, GhostCommand ghostCommand, DoorMan doorMan) {
 		this.world = world;
 		this.folks = folks;
 		this.game = game;
 		messages = new Message[] { new Message(15), new Message(21) };
-		gridRenderer = new GridRenderer(world);
-		routesRenderer = new RoutesRenderer(world, folks);
-		statesRenderer = new StatesRenderer(world, folks, ghostCommand);
-		frameRateDisplay = new FrameRateWidget();
 		setTheme(theme);
+	}
+
+	@Override
+	public void update() {
 	}
 
 	public Stream<Ghost> ghostsInsideWorld() {
@@ -112,23 +97,10 @@ public class PlayView implements PacManGameView {
 	}
 
 	@Override
-	public void update() {
-		folks.ghosts().filter(ghost -> ghost.steering() instanceof PathProvidingSteering).forEach(ghost -> {
-			PathProvidingSteering pathProvider = (PathProvidingSteering) ghost.steering();
-			pathProvider.setPathComputed(showingRoutes);
-		});
-	}
-
-	@Override
 	public void draw(Graphics2D g) {
-		drawGrid(g);
 		drawWorld(g);
-		drawOneWayTiles(g);
-		drawFrameRate(g);
 		drawMessages(g);
 		drawActors(g);
-		drawRoutes(g);
-		drawStates(g);
 		drawScores(g);
 		drawLiveCounter(g);
 		drawLevelCounter(g);
@@ -183,72 +155,11 @@ public class PlayView implements PacManGameView {
 		return showingScores;
 	}
 
-	public boolean isShowingFrameRate() {
-		return showingFrameRate;
-	}
-
-	public void turnFrameRateOn() {
-		showingFrameRate = true;
-	}
-
-	public void turnFrameRateOff() {
-		showingFrameRate = false;
-	}
-
-	public boolean isShowingGrid() {
-		return showingGrid;
-	}
-
-	public void turnGridOn() {
-		showingGrid = true;
-	}
-
-	public void turnGridOff() {
-		showingGrid = false;
-	}
-
-	public boolean isShowingRoutes() {
-		return showingRoutes;
-	}
-
-	public void turnRoutesOn() {
-		showingRoutes = true;
-	}
-
-	public void turnRoutesOff() {
-		showingRoutes = false;
-	}
-
-	public boolean isShowingStates() {
-		return showingStates;
-	}
-
-	public void turnStatesOn() {
-		showingStates = true;
-	}
-
-	public void turnStatesOff() {
-		showingStates = false;
-	}
-
-	private void drawWorld(Graphics2D g) {
-		worldRenderer.setEatenFoodColor(showingGrid ? Rendering::patternColor : tile -> Color.BLACK);
+	protected void drawWorld(Graphics2D g) {
 		worldRenderer.render(g);
 	}
 
-	private void drawGrid(Graphics2D g) {
-		if (showingGrid) {
-			gridRenderer.render(g);
-		}
-	}
-
-	private void drawOneWayTiles(Graphics2D g) {
-		if (showingGrid) {
-			gridRenderer.drawOneWayTiles(g);
-		}
-	}
-
-	private void drawMessages(Graphics2D g) {
+	protected void drawMessages(Graphics2D g) {
 		for (Message message : messages) {
 			if (message.text != null) {
 				messagesRenderer.setRow(message.row);
@@ -258,46 +169,27 @@ public class PlayView implements PacManGameView {
 		}
 	}
 
-	private void drawActors(Graphics2D g) {
+	protected void drawActors(Graphics2D g) {
 		folks.pacMan.draw(g);
 		ghostsInsideWorld().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.draw(g));
 		ghostsInsideWorld().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.draw(g));
 	}
 
-	private void drawScores(Graphics2D g) {
+	protected void drawScores(Graphics2D g) {
 		if (showingScores) {
 			scoreRenderer.render(g);
 		}
 	}
 
-	private void drawLiveCounter(Graphics2D g) {
+	protected void drawLiveCounter(Graphics2D g) {
 		g.translate(Tile.SIZE, (world.height() - 2) * Tile.SIZE);
 		liveCounterRenderer.render(g);
 		g.translate(-Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
 	}
 
-	private void drawLevelCounter(Graphics2D g) {
+	protected void drawLevelCounter(Graphics2D g) {
 		g.translate(world.width() * Tile.SIZE, (world.height() - 2) * Tile.SIZE);
 		levelCounterRenderer.render(g);
 		g.translate(-world.width() * Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
-	}
-
-	private void drawFrameRate(Graphics2D g) {
-		if (showingFrameRate) {
-			frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
-			frameRateDisplay.draw(g);
-		}
-	}
-
-	private void drawStates(Graphics2D g) {
-		if (showingStates) {
-			statesRenderer.render(g);
-		}
-	}
-
-	private void drawRoutes(Graphics2D g) {
-		if (showingRoutes) {
-			routesRenderer.render(g);
-		}
 	}
 }

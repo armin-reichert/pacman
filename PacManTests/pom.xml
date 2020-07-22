@@ -49,7 +49,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.amr.games.pacman</groupId>
-			<artifactId>PacManGame</artifactId>
+			<artifactId>PacManGameEnhanced</artifactId>
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
