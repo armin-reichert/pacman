@@ -9,7 +9,6 @@ import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
@@ -60,7 +59,6 @@ public class Movement extends StateMachine<MovementType, Void> {
 					.act(() -> teleport())
 		.endStateMachine();
 		//@formatter:on
-		PacManApp.fsm_register(this);
 	}
 
 	@Override

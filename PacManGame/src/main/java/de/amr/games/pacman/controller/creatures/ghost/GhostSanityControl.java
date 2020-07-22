@@ -5,7 +5,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostSanity.ELROY2;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostSanity.IMMUNE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostSanity.INFECTABLE;
 
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.statemachine.core.StateMachine;
 
@@ -46,6 +45,5 @@ public class GhostSanityControl extends StateMachine<GhostSanity, Void> {
 					
 		.endStateMachine();
 		//@formatter:on
-		PacManApp.fsm_register(this);
 	}
 }

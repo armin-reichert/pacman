@@ -1,6 +1,5 @@
 package de.amr.games.pacman.controller.game;
 
-import static de.amr.games.pacman.PacManApp.fsm_loginfo;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.game.Game.sec;
@@ -8,7 +7,7 @@ import static de.amr.games.pacman.model.game.Game.sec;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
@@ -59,7 +58,6 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 			.when(CHASING).then(SCATTERING).onTimeout().act(this::nextRound)
 		.endStateMachine();
 		/*@formatter:on*/
-		PacManApp.fsm_register(this);
 	}
 
 	private int tableEntry(int col) {
@@ -97,16 +95,16 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 
 	public void suspend() {
 		if (!suspended) {
-			fsm_loginfo("%s: suspended %s, remaining time: %d frames (%.2f seconds)", getDescription(), getState(),
-					state().getTicksRemaining(), state().getTicksRemaining() / 60f);
+			StateMachineRegistry.IT.loginfo("%s: suspended %s, remaining time: %d frames (%.2f seconds)", getDescription(),
+					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f);
 			suspended = true;
 		}
 	}
 
 	public void resume() {
 		if (suspended) {
-			fsm_loginfo("%s: resumed %s, remaining time: %d frames (%.2f seconds)", getDescription(), getState(),
-					state().getTicksRemaining(), state().getTicksRemaining() / 60f);
+			StateMachineRegistry.IT.loginfo("%s: resumed %s, remaining time: %d frames (%.2f seconds)", getDescription(),
+					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f);
 			suspended = false;
 		}
 	}

@@ -13,8 +13,8 @@ import java.awt.Graphics2D;
 import java.util.Optional;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
@@ -32,6 +32,7 @@ import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
+import de.amr.statemachine.core.StateMachine;
 
 /**
  * A ghost.
@@ -128,19 +129,19 @@ public class Ghost extends Creature<GhostState> {
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
 					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == SCATTERING)
-					.annotation("ghost left house")
+					.annotation("left house")
 		
 				.when(LEAVING_HOUSE).then(CHASING)
 					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == CHASING)
-					.annotation("ghost left house")
+					.annotation("left house")
 				
 				.when(LEAVING_HOUSE).then(FRIGHTENED)
 					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == FRIGHTENED)
-					.annotation("ghost left house")
+					.annotation("left house")
 					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> steering().isComplete())
-					.annotation("ghost reached bed")
+					.annotation("reached bed")
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -152,7 +153,7 @@ public class Ghost extends Creature<GhostState> {
 				.when(CHASING).then(SCATTERING)
 					.condition(() -> getNextStateToEnter() == SCATTERING)
 					.act(() -> reverseDirection())
-					.annotation("ghost got scattering command")
+					.annotation("got scattering command")
 					
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -164,7 +165,7 @@ public class Ghost extends Creature<GhostState> {
 				.when(SCATTERING).then(CHASING)
 					.condition(() -> getNextStateToEnter() == CHASING)
 					.act(() -> reverseDirection())
-					.annotation("ghost got chasing command")
+					.annotation("got chasing command")
 					
 				.stay(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -183,11 +184,15 @@ public class Ghost extends Creature<GhostState> {
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> world.isHouseEntry(tileLocation()))
-					.annotation("ghost reached house")
+					.annotation("reached house")
 					
 		.endStateMachine();
 		/*@formatter:on*/
-		PacManApp.fsm_register(this);
+	}
+
+	@Override
+	public Stream<StateMachine<?, ?>> machines() {
+		return Stream.concat(super.machines(), Stream.of(sanity));
 	}
 
 	@Override

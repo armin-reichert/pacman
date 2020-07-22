@@ -8,7 +8,6 @@ import static de.amr.games.pacman.model.world.components.BonusState.INACTIVE;
 
 import java.util.Random;
 
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.game.Game;
@@ -58,7 +57,6 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 				.when(CONSUMED).then(INACTIVE).onTimeout()
 		.endStateMachine();
 		/*@formatter:on*/
-		PacManApp.fsm_register(this);
 		init();
 	}
 }

@@ -24,9 +24,9 @@ public class ChasePacManAnimation extends GameObject {
 		SIMPLE, TEN, ENERGIZER, FIFTY
 	}
 
-	private ArcadeWorld world = new ArcadeWorld();
-	private Folks folks = new Folks(world, world.house(0));
-	private PacManSounds sounds;
+	private final ArcadeWorld world = new ArcadeWorld();
+	private final Folks folks = new Folks(world, world.house(0));
+	private final PacManSounds sounds;
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
 

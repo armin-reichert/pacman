@@ -3,6 +3,7 @@ package de.amr.games.pacman;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.ui.AppShell;
 import de.amr.easy.game.ui.f2dialog.F2Dialog;
+import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.games.pacman.controller.game.EnhancedGameController;
 import de.amr.games.pacman.view.dashboard.fsm.FsmView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
@@ -12,6 +13,7 @@ import de.amr.games.pacman.view.dashboard.theme.ThemeSelectionView;
 public class PacManAppEnhanced extends PacManApp {
 
 	public static void main(String[] args) {
+		StateMachineRegistry.IT.setLogging(false);
 		launch(PacManAppEnhanced.class, settings, args);
 	}
 
@@ -42,7 +44,8 @@ public class PacManAppEnhanced extends PacManApp {
 
 	@Override
 	public void init() {
-		super.init();
+		loginfo("Finite-state machine logging is " + StateMachineRegistry.IT.isLoggingEnabled());
+		setIcon("/images/pacman-icon.png");
 		setController(new EnhancedGameController());
 	}
 }

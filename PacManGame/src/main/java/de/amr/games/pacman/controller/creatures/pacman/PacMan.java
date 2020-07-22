@@ -96,7 +96,6 @@ public class PacMan extends Creature<PacManState> {
 
 		.endStateMachine();
 		/* @formatter:on */
-		PacManApp.fsm_register(this);
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);

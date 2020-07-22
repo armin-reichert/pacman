@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -139,6 +138,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	protected PacManGameView currentView;
 	protected IntroView introView;
+	protected MusicLoadingView musicLoadingView;
 	protected PlayView playView;
 
 	public GameController() {
@@ -157,16 +157,27 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
 						sound.loadMusic();
-						showView(new MusicLoadingView(theme(), settings.width, settings.height));
+						if (musicLoadingView != null) {
+							musicLoadingView.exit();
+						}
+						musicLoadingView = new MusicLoadingView(theme(), settings.width, settings.height);
+						showView(musicLoadingView);
+					})
+					.onExit(() -> {
+						currentView.exit();
 					})
 					
 				.state(INTRO)
 					.onEntry(() -> {
+						if (introView != null) {
+							introView.exit();
+						}
 						introView = new IntroView(world, theme(), sound, settings.width, settings.height);
 						showView(introView);
 					})
 					.onExit(() -> {
 						sound.stopAll();
+						currentView.exit();
 					})
 				
 				.state(GETTING_READY)
@@ -379,7 +390,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							
 		.endStateMachine();
 		//@formatter:on
-		PacManApp.fsm_register(this);
 	}
 
 	/**
@@ -521,11 +531,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	private void newGame() {
+	protected void newGame() {
 		game = new Game(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, folks);
-		doorMan = new DoorMan(world, world.house(0), game, folks);
 		bonusControl = new BonusControl(game, world);
+		doorMan = new DoorMan(world, world.house(0), game, folks);
 		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
 		folks.pacMan.setSpeed(() -> GameController.pacManSpeed(folks.pacMan, game));
 		folks.all().forEach(world::include);
@@ -537,7 +547,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return new PlayView(world, theme(), folks, game, ghostCommand, doorMan);
 	}
 
-	private PlayingState playingState() {
+	protected PlayingState playingState() {
 		return state(PLAYING);
 	}
 

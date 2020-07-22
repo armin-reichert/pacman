@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.entity.Transform;
@@ -52,6 +53,10 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 		movement = new Movement(this, name);
 		entity = new Entity();
 		entity.tf.width = entity.tf.height = Tile.SIZE;
+	}
+
+	public Stream<StateMachine<?, ?>> machines() {
+		return Stream.of(this, movement);
 	}
 
 	@Override
@@ -130,12 +135,6 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	@Override
 	public boolean requiresAlignment() {
 		return steering().requiresGridAlignment();
-	}
-
-	@Override
-	public String toString() {
-		Tile tile = tileLocation();
-		return String.format("(%s, col:%d, row:%d, %s)", name, tile.col, tile.row, getState());
 	}
 
 	@Override

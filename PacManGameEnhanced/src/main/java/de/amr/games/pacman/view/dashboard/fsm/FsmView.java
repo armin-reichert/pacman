@@ -13,8 +13,10 @@ import java.io.FileWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -35,7 +37,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;
 import guru.nidi.graphviz.engine.Format;
@@ -233,14 +235,19 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (machines == null || machines.size() != PacManApp.REGISTERED_FSMs.size()) {
+		if (machines == null) {
 			buildTree();
+		} else {
+			Set<StateMachine<?, ?>> set = new HashSet<>(machines);
+			if (!set.equals(StateMachineRegistry.IT.machines())) {
+				buildTree();
+			}
 		}
 		updatePreview();
 	}
 
 	private void buildTree() {
-		machines = new ArrayList<>(PacManApp.REGISTERED_FSMs);
+		machines = new ArrayList<>(StateMachineRegistry.IT.machines());
 		machines.sort(Comparator.comparing(StateMachine::getDescription));
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) fsmTree.getModel().getRoot();
 		root.removeAllChildren();

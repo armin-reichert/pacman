@@ -6,7 +6,6 @@ import static de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoin
 import static de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State.MOVING_RIGHT;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed.State;
@@ -82,7 +81,6 @@ public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implem
 					
 		.endStateMachine();
 		/*@formatter:on*/
-		PacManApp.fsm_register(this);
 	}
 
 	@Override

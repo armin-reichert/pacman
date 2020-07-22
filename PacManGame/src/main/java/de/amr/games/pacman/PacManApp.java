@@ -1,18 +1,14 @@
 package de.amr.games.pacman;
 
 import java.awt.DisplayMode;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.beust.jcommander.Parameter;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
+import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.view.Localized;
-import de.amr.statemachine.core.StateMachine;
 
 /**
  * The Pac-Man game application.
@@ -25,28 +21,6 @@ public class PacManApp extends Application {
 
 	public static void main(String[] args) {
 		launch(PacManApp.class, settings, args);
-	}
-
-	// Finite-state machine tracing
-
-	private static final Logger FSM_LOGGER = Logger.getLogger(PacManApp.class.getName() + "-fsm");
-	public static final Set<StateMachine<?, ?>> REGISTERED_FSMs = new HashSet<>();
-
-	public static void fsm_loginfo(String message, Object... args) {
-		FSM_LOGGER.info(String.format(message, args));
-	}
-
-	public static void fsm_logging(boolean enabled) {
-		FSM_LOGGER.setLevel(enabled ? Level.INFO : Level.OFF);
-	}
-
-	public static boolean fsm_logging_enabled() {
-		return FSM_LOGGER.getLevel() == Level.INFO;
-	}
-
-	public static void fsm_register(StateMachine<?, ?> fsm) {
-		REGISTERED_FSMs.add(fsm);
-		fsm.getTracer().setLogger(FSM_LOGGER);
 	}
 
 	// Application configuration
@@ -109,8 +83,8 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		fsm_logging(false);
-		loginfo("Finite-state machine logging is " + fsm_logging_enabled());
+		StateMachineRegistry.IT.setLogging(false);
+		loginfo("Finite-state machine logging is " + StateMachineRegistry.IT.isLoggingEnabled());
 		setIcon("/images/pacman-icon.png");
 		setController(new GameController());
 	}

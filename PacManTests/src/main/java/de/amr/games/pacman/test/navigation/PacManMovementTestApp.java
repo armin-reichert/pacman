@@ -8,7 +8,7 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.test.TestUI;
@@ -16,7 +16,7 @@ import de.amr.games.pacman.test.TestUI;
 public class PacManMovementTestApp extends Application {
 
 	public static void main(String[] args) {
-		PacManApp.fsm_logging(true);
+		StateMachineRegistry.IT.setLogging(true);
 		launch(PacManMovementTestApp.class, args);
 	}
 
@@ -75,8 +75,8 @@ class PacManMovementTestUI extends TestUI {
 			you(pacMan).followTheKeys().keys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT).ok();
 			view.showMessage(2, "Cursor keys", Color.WHITE);
 		} else if (steeringIndex == 1) {
-			you(pacMan).followTheKeys().keys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4)
-					.ok();
+			you(pacMan).followTheKeys()
+					.keys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4).ok();
 			view.showMessage(2, "Numpad keys", Color.WHITE);
 		} else if (steeringIndex == 2) {
 			you(pacMan).moveRandomly().ok();
