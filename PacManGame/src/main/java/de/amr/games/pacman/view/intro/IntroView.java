@@ -250,12 +250,12 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		gitHubLink.tf.y = (height - 16);
 		gitHubLink.tf.centerHorizontally(0, width);
 		super.init();
-		StateMachineRegistry.IT.register(this, Stream.of(this));
+		StateMachineRegistry.IT.register(Stream.of(this));
 	}
 
 	@Override
 	public void exit() {
-		StateMachineRegistry.IT.unregister(this, Stream.of(this));
+		StateMachineRegistry.IT.unregister(Stream.of(this));
 	}
 
 	@Override

@@ -19,50 +19,49 @@ import de.amr.statemachine.core.StateMachine;
  */
 public final class StateMachineRegistry {
 
-	private StateMachineRegistry() {
-		FSM_LOGGER.setLevel(Level.OFF);
-	}
-
-	private static final Logger FSM_LOGGER = Logger.getLogger(StateMachineRegistry.class.getName());
-
 	public static final StateMachineRegistry IT = new StateMachineRegistry();
 
+	private final Logger logger = Logger.getLogger(getClass().getName());
 	private final Set<StateMachine<?, ?>> machines = new HashSet<>();
+
+	private StateMachineRegistry() {
+		logger.setLevel(Level.OFF);
+	}
 
 	public Collection<StateMachine<?, ?>> machines() {
 		return Collections.unmodifiableSet(machines);
 	}
 
 	public void loginfo(String message, Object... args) {
-		FSM_LOGGER.info(String.format(message, args));
+		logger.info(String.format(message, args));
 	}
 
 	public void toggleLogging() {
-		FSM_LOGGER.setLevel(isLoggingEnabled() ? Level.OFF : Level.INFO);
+		logger.setLevel(isLoggingEnabled() ? Level.OFF : Level.INFO);
 	}
 
 	public void setLogging(boolean enabled) {
-		FSM_LOGGER.setLevel(enabled ? Level.INFO : Level.OFF);
+		logger.setLevel(enabled ? Level.INFO : Level.OFF);
 	}
 
 	public boolean isLoggingEnabled() {
-		return FSM_LOGGER.getLevel() == Level.INFO;
+		return logger.getLevel() == Level.INFO;
 	}
 
-	public <FSM extends StateMachine<?, ?>> void register(Object registrar, Stream<FSM> machines) {
+	public <FSM extends StateMachine<?, ?>> void register(Stream<FSM> machines) {
 		machines.filter(Objects::nonNull).forEach(fsm -> {
-			fsm.getTracer().setLogger(FSM_LOGGER);
+			fsm.getTracer().setLogger(logger);
 			this.machines.add(fsm);
-			Application.loginfo("State machine registered by %s: %s", registrar, fsm);
+			Application.loginfo("State machine registered: %s", fsm);
 		});
 	}
 
-	public <FSM extends StateMachine<?, ?>> void unregister(Object registrar, Stream<FSM> machines) {
+	public <FSM extends StateMachine<?, ?>> void unregister(Stream<FSM> machines) {
 		machines.filter(Objects::nonNull).forEach(fsm -> {
 			if (fsm != null) {
 				fsm.getTracer().setLogger(Logger.getGlobal());
 				this.machines.remove(fsm);
-				Application.loginfo("State machine unregistered by %s: %s", registrar, fsm);
+				Application.loginfo("State machine unregistered: %s", fsm);
 			}
 		});
 	}

@@ -50,15 +50,11 @@ public class EnhancedGameController extends GameController {
 
 	@Override
 	protected void newGame() {
-		folks.all().forEach(creature -> {
-			StateMachineRegistry.IT.unregister(this, creature.machines());
-		});
-		StateMachineRegistry.IT.unregister(this, Stream.of(this, bonusControl, ghostCommand));
+		folks.all().forEach(creature -> StateMachineRegistry.IT.unregister(creature.machines()));
+		StateMachineRegistry.IT.unregister(Stream.of(this, bonusControl, ghostCommand));
 		super.newGame();
-		folks.all().forEach(creature -> {
-			StateMachineRegistry.IT.register(this, creature.machines());
-		});
-		StateMachineRegistry.IT.register(this, Stream.of(this, bonusControl, ghostCommand));
+		folks.all().forEach(creature -> StateMachineRegistry.IT.register(creature.machines()));
+		StateMachineRegistry.IT.register(Stream.of(this, bonusControl, ghostCommand));
 	}
 
 	@Override
