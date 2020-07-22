@@ -13,12 +13,14 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -91,15 +93,18 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			
 				.when(SCROLLING_LOGO_ANIMATION).then(CHASING_ANIMATIONS)
 					.condition(() -> pacManLogo.isComplete())
+					.annotation("Pac-Man Logo at top")
 				
 				.when(CHASING_ANIMATIONS).then(WAITING_FOR_INPUT)
 					.condition(() -> chasePacMan.isComplete() && chaseGhosts.isComplete())
+					.annotation("Chasing animations complete")
 				
 				.when(WAITING_FOR_INPUT).then(CHASING_ANIMATIONS)
 					.onTimeout()
 				
 				.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
 					.condition(() -> Keyboard.keyPressedOnce("space"))
+					.annotation("SPACE key pressed")
 	
 		.endStateMachine();
 	  /*@formatter:on*/
@@ -245,13 +250,12 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		gitHubLink.tf.y = (height - 16);
 		gitHubLink.tf.centerHorizontally(0, width);
 		super.init();
+		StateMachineRegistry.IT.register(this, Stream.of(this));
 	}
-	
+
 	@Override
 	public void exit() {
-		chaseGhosts.exit();
-		chasePacMan.exit();
-		ghostPointsAnimation.exit();
+		StateMachineRegistry.IT.unregister(this, Stream.of(this));
 	}
 
 	@Override

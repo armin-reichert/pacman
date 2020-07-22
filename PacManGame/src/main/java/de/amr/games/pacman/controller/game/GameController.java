@@ -164,7 +164,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						showView(musicLoadingView);
 					})
 					.onExit(() -> {
-						currentView.exit();
+						musicLoadingView.exit();
 					})
 					
 				.state(INTRO)
@@ -177,7 +177,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onExit(() -> {
 						sound.stopAll();
-						currentView.exit();
+						introView.exit();
 					})
 				
 				.state(GETTING_READY)
