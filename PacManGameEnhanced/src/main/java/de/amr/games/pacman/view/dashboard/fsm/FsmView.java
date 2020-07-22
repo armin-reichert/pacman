@@ -50,8 +50,8 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	static class StateMachineInfo {
 
-		final StateMachine<?, ?> fsm;
-		final String dotText;
+		StateMachine<?, ?> fsm;
+		String dotText;
 
 		public StateMachineInfo(StateMachine<?, ?> fsm) {
 			this.fsm = fsm;
@@ -109,7 +109,7 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	private List<StateMachine<?, ?>> machines;
 	private JTree fsmTree;
-	private JTextArea dotPreview;
+	private JTextArea textAreaDotPreview;
 	private JToolBar toolBar;
 	private JButton btnPreview;
 	private JButton btnSave;
@@ -149,12 +149,12 @@ public class FsmView extends JPanel implements Lifecycle {
 		scrollPaneSource = new JScrollPane();
 		panelSource.add(scrollPaneSource);
 
-		dotPreview = new JTextArea();
-		scrollPaneSource.setViewportView(dotPreview);
-		dotPreview.setFont(new Font("Monospaced", Font.PLAIN, 12));
-		dotPreview.setEditable(false);
-		dotPreview.setTabSize(4);
-		dotPreview.setText(HINT_TEXT);
+		textAreaDotPreview = new JTextArea();
+		scrollPaneSource.setViewportView(textAreaDotPreview);
+		textAreaDotPreview.setFont(new Font("Monospaced", Font.PLAIN, 12));
+		textAreaDotPreview.setEditable(false);
+		textAreaDotPreview.setTabSize(4);
+		textAreaDotPreview.setText(HINT_TEXT);
 
 		panelPreview = new JPanel();
 		panelPreview.setBackground(Color.WHITE);
@@ -201,14 +201,14 @@ public class FsmView extends JPanel implements Lifecycle {
 		fsmTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		fsmTree.addTreeSelectionListener(e -> {
 			getSelectedInfo().ifPresentOrElse(info -> {
-				dotPreview.setText(info.dotText);
+				textAreaDotPreview.setText(info.dotText);
 				if (tabbedPane.getSelectedComponent() == panelPreview) {
 					updatePreview();
 				}
 				actionPreviewOnline.setEnabled(true);
 				actionSave.setEnabled(true);
 			}, () -> {
-				dotPreview.setText(HINT_TEXT);
+				textAreaDotPreview.setText(HINT_TEXT);
 				actionPreviewOnline.setEnabled(false);
 				actionSave.setEnabled(false);
 			});
@@ -216,11 +216,15 @@ public class FsmView extends JPanel implements Lifecycle {
 	}
 
 	private void updatePreview() {
+		textAreaDotPreview.setText("");
 		labelPreview.setIcon(null);
 		getSelectedInfo().ifPresent(info -> {
+			info.dotText = DotPrinter.dotText(info.fsm);
+			textAreaDotPreview.setText(info.dotText);
 			labelPreview
 					.setIcon(new ImageIcon(Graphviz.fromString(info.dotText).scale(scalePreview).render(Format.PNG).toImage()));
 		});
+		textAreaDotPreview.setCaretPosition(0);
 	}
 
 	@Override
@@ -232,10 +236,11 @@ public class FsmView extends JPanel implements Lifecycle {
 		if (machines == null || machines.size() != PacManApp.REGISTERED_FSMs.size()) {
 			buildTree();
 		}
+		updatePreview();
 	}
 
 	private void buildTree() {
-		machines = new ArrayList<>(PacManApp.REGISTERED_FSMs.values());
+		machines = new ArrayList<>(PacManApp.REGISTERED_FSMs);
 		machines.sort(Comparator.comparing(StateMachine::getDescription));
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) fsmTree.getModel().getRoot();
 		root.removeAllChildren();

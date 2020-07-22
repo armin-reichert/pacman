@@ -530,7 +530,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		folks.pacMan.setSpeed(() -> GameController.pacManSpeed(folks.pacMan, game));
 		folks.all().forEach(world::include);
 		folks.all().forEach(Creature::init);
-		playView = new PlayView(world, theme(), folks, game, ghostCommand, doorMan);
+		playView = createPlayView();
+	}
+
+	protected PlayView createPlayView() {
+		return new PlayView(world, theme(), folks, game, ghostCommand, doorMan);
 	}
 
 	private PlayingState playingState() {

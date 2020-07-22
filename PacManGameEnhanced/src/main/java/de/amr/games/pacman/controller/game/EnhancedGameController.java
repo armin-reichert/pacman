@@ -25,6 +25,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
+import de.amr.games.pacman.view.play.PlayView;
 
 /**
  * Enhanced game controller with all the bells and whistles.
@@ -37,7 +38,12 @@ public class EnhancedGameController extends GameController {
 	private boolean showingRoutes;
 	private boolean showingStates;
 	private boolean showingScores = true;
-	
+
+	@Override
+	protected PlayView createPlayView() {
+		return new EnhancedPlayView(world, theme(), folks, game, ghostCommand, doorMan);
+	}
+
 	protected EnhancedPlayView playView() {
 		return (EnhancedPlayView) playView;
 	}

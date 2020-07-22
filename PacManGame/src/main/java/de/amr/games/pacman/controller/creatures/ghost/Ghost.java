@@ -67,7 +67,7 @@ public class Ghost extends Creature<GhostState> {
 		/*@formatter:off*/
 		beginStateMachine()
 			 
-			.description(name)
+			.description(name + " AI")
 			.initialState(LOCKED)
 		
 			.states()

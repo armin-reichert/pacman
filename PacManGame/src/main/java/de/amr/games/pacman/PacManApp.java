@@ -1,8 +1,8 @@
 package de.amr.games.pacman;
 
 import java.awt.DisplayMode;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +30,7 @@ public class PacManApp extends Application {
 	// Finite-state machine tracing
 
 	private static final Logger FSM_LOGGER = Logger.getLogger(PacManApp.class.getName() + "-fsm");
-	public static final Map<String, StateMachine<?, ?>> REGISTERED_FSMs = new HashMap<>();
+	public static final Set<StateMachine<?, ?>> REGISTERED_FSMs = new HashSet<>();
 
 	public static void fsm_loginfo(String message, Object... args) {
 		FSM_LOGGER.info(String.format(message, args));
@@ -45,7 +45,7 @@ public class PacManApp extends Application {
 	}
 
 	public static void fsm_register(StateMachine<?, ?> fsm) {
-		REGISTERED_FSMs.put(fsm.getDescription(), fsm);
+		REGISTERED_FSMs.add(fsm);
 		fsm.getTracer().setLogger(FSM_LOGGER);
 	}
 
