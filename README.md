@@ -12,13 +12,14 @@ WTF! Why hasn't this **racist, homophobic game** long been forbidden? GLM, LGBTQ
  
 ## How to run the game
 
-Download the executable "PacManGame-1.0.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. 
+Download the executable "PacManGame-1.0.jar" or the extended version "PacManGameEnhanced-1.0.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. For just playing Pac-Man, the first jar file is sufficient, if you want to see the fancy stuff in the custom tabs, use the enhanced version.
 
 If you want to use the command-line arguments (see below), open a command window and enter
 
 ```
 cd directory/where/jarfile/was/downloaded
 java -jar PacManGame-1.0.jar command-line-args...
+java -jar PacManGameEnhanced-1.0.jar command-line-args...
 ```
 
 ## How to build the executable jar file
