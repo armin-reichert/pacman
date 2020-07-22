@@ -32,6 +32,7 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.PacManApp;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;
+import java.awt.Font;
 
 public class FsmView extends JPanel implements Lifecycle {
 
@@ -106,6 +107,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		splitPane.setRightComponent(dotPreviewScrollPane);
 
 		dotPreview = new JTextArea();
+		dotPreview.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		dotPreview.setEditable(false);
 		dotPreview.setTabSize(4);
 		dotPreview.setText(HINT_TEXT);
