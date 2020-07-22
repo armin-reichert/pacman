@@ -39,4 +39,10 @@ public class PacManAppEnhanced extends PacManApp {
 		f2.setSize(700, shell.getHeight());
 		f2.setRelativeLocation(shell.getWidth() + 10, 0);
 	}
+
+	@Override
+	public void init() {
+		super.init();
+		setController(new EnhancedGameController());
+	}
 }

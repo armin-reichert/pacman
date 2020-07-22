@@ -10,7 +10,6 @@ import com.beust.jcommander.Parameter;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.controller.game.EnhancedGameController;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.view.Localized;
 import de.amr.statemachine.core.StateMachine;
@@ -72,9 +71,6 @@ public class PacManApp extends Application {
 		@Parameter(names = { "-pathFinder" }, description = "Used path finding algorithm (astar, bfs, bestfs)")
 		public String pathFinder = "astar";
 
-		@Parameter(names = { "-simpleMode" }, description = "Strips all extra functionality not needed for just playing")
-		public boolean simpleMode = false;
-
 		@Parameter(names = { "-skipIntro" }, description = "Game starts without intro screen")
 		public boolean skipIntro = false;
 
@@ -105,7 +101,6 @@ public class PacManApp extends Application {
 		settings.printValue("Fix Overflow Bug", "%s", settings.fixOverflowBug);
 		settings.printValue("Pac-Man immortable", "%s", settings.pacManImmortable);
 		settings.printValue("Pathfinder", "%s", settings.pathFinder);
-		settings.printValue("Simple Mode", "%s", settings.simpleMode);
 		settings.printValue("Skip Intro", "%s", settings.skipIntro);
 		settings.printValue("Startlevel", "%d", settings.startLevel);
 		settings.printValue("Theme", "%s", settings.theme.toUpperCase());
@@ -117,6 +112,6 @@ public class PacManApp extends Application {
 		fsm_logging(false);
 		loginfo("Finite-state machine logging is " + fsm_logging_enabled());
 		setIcon("/images/pacman-icon.png");
-		setController(settings.simpleMode ? new GameController() : new EnhancedGameController());
+		setController(new GameController());
 	}
 }
