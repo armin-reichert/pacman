@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URI;
@@ -16,7 +17,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -54,10 +54,12 @@ public class FsmView extends JPanel implements Lifecycle {
 
 		StateMachine<?, ?> fsm;
 		String dotText;
+		double scaling;
 
 		public StateMachineInfo(StateMachine<?, ?> fsm) {
 			this.fsm = fsm;
 			dotText = DotPrinter.dotText(fsm);
+			scaling = 1.0;
 		}
 
 		@Override
@@ -92,22 +94,24 @@ public class FsmView extends JPanel implements Lifecycle {
 	private Action actionZoomIn = new AbstractAction("Zoom In") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			scalePreview += 0.2;
-			scalePreview = Math.min(MAX_SCALE, scalePreview);
-			updatePreview();
+			getSelectedInfo().ifPresent(info -> {
+				info.scaling += 0.2;
+				info.scaling = Math.max(MIN_SCALE, info.scaling);
+				updatePreview();
+			});
 		};
 	};
 
 	private Action actionZoomOut = new AbstractAction("Zoom Out") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			scalePreview -= 0.2;
-			scalePreview = Math.max(MIN_SCALE, scalePreview);
-			updatePreview();
+			getSelectedInfo().ifPresent(info -> {
+				info.scaling -= 0.2;
+				info.scaling = Math.max(MIN_SCALE, info.scaling);
+				updatePreview();
+			});
 		};
 	};
-
-	private double scalePreview = 1.0;
 
 	private List<StateMachine<?, ?>> machines;
 	private JTree fsmTree;
@@ -218,19 +222,20 @@ public class FsmView extends JPanel implements Lifecycle {
 	}
 
 	private void updatePreview() {
-		textAreaDotPreview.setText("");
+		textAreaDotPreview.setText(HINT_TEXT);
 		labelPreview.setIcon(null);
 		getSelectedInfo().ifPresent(info -> {
 			info.dotText = DotPrinter.dotText(info.fsm);
 			textAreaDotPreview.setText(info.dotText);
-			labelPreview
-					.setIcon(new ImageIcon(Graphviz.fromString(info.dotText).scale(scalePreview).render(Format.PNG).toImage()));
+			textAreaDotPreview.setCaretPosition(0);
+			BufferedImage rendered = Graphviz.fromString(info.dotText).scale(info.scaling).render(Format.PNG).toImage();
+			labelPreview.setIcon(new ImageIcon(rendered));
 		});
-		textAreaDotPreview.setCaretPosition(0);
 	}
 
 	@Override
 	public void init() {
+		// not used
 	}
 
 	@Override
@@ -238,8 +243,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		if (machines == null) {
 			buildTree();
 		} else {
-			Set<StateMachine<?, ?>> set = new HashSet<>(machines);
-			if (!set.equals(StateMachineRegistry.IT.machines())) {
+			if (!new HashSet<>(machines).equals(StateMachineRegistry.IT.machines())) {
 				buildTree();
 			}
 		}
