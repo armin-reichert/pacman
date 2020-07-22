@@ -96,7 +96,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		public void actionPerformed(ActionEvent e) {
 			getSelectedInfo().ifPresent(info -> {
 				info.scaling += 0.2;
-				info.scaling = Math.max(MIN_SCALE, info.scaling);
+				info.scaling = Math.min(MAX_SCALE, info.scaling);
 				updatePreview();
 			});
 		};
@@ -240,12 +240,8 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (machines == null) {
+		if (machines == null || !new HashSet<>(machines).equals(StateMachineRegistry.IT.machines())) {
 			buildTree();
-		} else {
-			if (!new HashSet<>(machines).equals(StateMachineRegistry.IT.machines())) {
-				buildTree();
-			}
 		}
 		updatePreview();
 	}
