@@ -42,6 +42,7 @@ import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
+import java.awt.Dimension;
 
 public class FsmView extends JPanel implements Lifecycle {
 
@@ -133,11 +134,10 @@ public class FsmView extends JPanel implements Lifecycle {
 
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setOneTouchExpandable(true);
-		splitPane.setResizeWeight(0.33);
-		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		add(splitPane, BorderLayout.CENTER);
 
 		JScrollPane fsmTreeScrollPane = new JScrollPane();
+		fsmTreeScrollPane.setMinimumSize(new Dimension(200, 25));
 		splitPane.setLeftComponent(fsmTreeScrollPane);
 
 		fsmTree = new JTree();
@@ -156,6 +156,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		panelSource.add(scrollPaneSource);
 
 		textAreaDotPreview = new JTextArea();
+		textAreaDotPreview.setLineWrap(true);
 		scrollPaneSource.setViewportView(textAreaDotPreview);
 		textAreaDotPreview.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		textAreaDotPreview.setEditable(false);
