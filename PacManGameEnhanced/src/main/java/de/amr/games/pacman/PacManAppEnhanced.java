@@ -39,7 +39,7 @@ public class PacManAppEnhanced extends PacManApp {
 		f2.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
 		AppShell shell = shell().get();
 		f2.setSize(700, shell.getHeight());
-		f2.setRelativeLocation(shell.getWidth() + 5, 0);
+		f2.setRelativeLocation(shell.getWidth(), 0);
 	}
 
 	@Override
