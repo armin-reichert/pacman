@@ -79,6 +79,10 @@ public class EnhancedGameController extends GameController {
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
 
+		else if (Keyboard.keyPressedOnce("l")) {
+			StateMachineRegistry.IT.shutUp(!StateMachineRegistry.IT.isKeepingItsMouth());
+		}
+
 		if (currentView == playView) {
 			handlePlayViewInput();
 		}
@@ -115,10 +119,6 @@ public class EnhancedGameController extends GameController {
 
 		else if (Keyboard.keyPressedOnce("k")) {
 			killAllGhosts();
-		}
-
-		else if (Keyboard.keyPressedOnce("l")) {
-			toggleStateMachineLogging();
 		}
 
 		else if (Keyboard.keyPressedOnce("m")) {
@@ -223,11 +223,6 @@ public class EnhancedGameController extends GameController {
 	private void togglePacManOverflowBug() {
 		settings.fixOverflowBug = !settings.fixOverflowBug;
 		loginfo("Overflow bug is %s", settings.fixOverflowBug ? "fixed" : "active");
-	}
-
-	private void toggleStateMachineLogging() {
-		StateMachineRegistry.IT.toggleLogging();
-		loginfo("State machine logging %s", StateMachineRegistry.IT.isLoggingEnabled() ? "enabled" : "disabled");
 	}
 
 	private void toggleGhostFrightenedBehavior() {

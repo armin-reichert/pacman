@@ -6,7 +6,6 @@ import com.beust.jcommander.Parameter;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.view.Localized;
 
@@ -83,8 +82,6 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		StateMachineRegistry.IT.setLogging(false);
-		loginfo("Finite-state machine logging is " + StateMachineRegistry.IT.isLoggingEnabled());
 		setIcon("/images/pacman-icon.png");
 		setController(new GameController());
 	}

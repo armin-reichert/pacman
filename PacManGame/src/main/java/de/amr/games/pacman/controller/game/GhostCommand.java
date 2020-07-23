@@ -8,7 +8,6 @@ import static de.amr.games.pacman.model.game.Game.sec;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
@@ -131,17 +130,12 @@ public class GhostCommand extends StateMachine<GhostCommandState, String> {
 		if (getState() != STOPPED) {
 			suspendedStateId = getState();
 			process("stopAttacking");
-			StateMachineRegistry.IT.loginfo("%s: suspended %s, remaining: %d ticks (%.2f seconds)", getDescription(),
-					suspendedStateId, state(suspendedStateId).getTicksRemaining(),
-					state(suspendedStateId).getTicksRemaining() / 60f);
 		}
 	}
 
 	public void resumeAttacking() {
 		if (getState() == STOPPED) {
 			resumeState(suspendedStateId);
-			StateMachineRegistry.IT.loginfo("%s: resumed %s, time: %d frames (%.2f seconds)", getDescription(), getState(),
-					state().getTicksRemaining(), state().getTicksRemaining() / 60f);
 		} else {
 			throw new IllegalStateException();
 		}

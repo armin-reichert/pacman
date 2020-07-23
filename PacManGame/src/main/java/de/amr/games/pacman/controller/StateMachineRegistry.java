@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
@@ -21,46 +19,41 @@ public final class StateMachineRegistry {
 
 	public static final StateMachineRegistry IT = new StateMachineRegistry();
 
-	private final Logger logger = Logger.getLogger(getClass().getName());
-	private final Set<StateMachine<?, ?>> machines = new HashSet<>();
+	private final Set<StateMachine<?, ?>> machines;
+	private boolean shutUp;
 
 	private StateMachineRegistry() {
-		logger.setLevel(Level.OFF);
+		machines = new HashSet<>();
+		shutUp = true;
 	}
 
 	public Collection<StateMachine<?, ?>> machines() {
 		return Collections.unmodifiableSet(machines);
 	}
 
-	public void loginfo(String message, Object... args) {
-		logger.info(String.format(message, args));
-	}
-
-	public void toggleLogging() {
-		logger.setLevel(isLoggingEnabled() ? Level.OFF : Level.INFO);
-	}
-
-	public void setLogging(boolean enabled) {
-		logger.setLevel(enabled ? Level.INFO : Level.OFF);
-	}
-
-	public boolean isLoggingEnabled() {
-		return logger.getLevel() == Level.INFO;
-	}
-
 	public <FSM extends StateMachine<?, ?>> void register(Stream<FSM> machines) {
 		machines.filter(Objects::nonNull).forEach(fsm -> {
-			fsm.getTracer().setLogger(logger);
 			this.machines.add(fsm);
+			fsm.getTracer().shutUp(shutUp);
 			Application.loginfo("State machine registered: %s", fsm);
 		});
 	}
 
 	public <FSM extends StateMachine<?, ?>> void unregister(Stream<FSM> machines) {
 		machines.filter(Objects::nonNull).forEach(fsm -> {
-			fsm.getTracer().setLogger(Logger.getGlobal());
 			this.machines.remove(fsm);
+			fsm.getTracer().shutUp(false);
 			Application.loginfo("State machine unregistered: %s", fsm);
 		});
+	}
+
+	public void shutUp(boolean shutUp) {
+		this.shutUp = shutUp;
+		machines.stream().map(StateMachine::getTracer).forEach(tracer -> tracer.shutUp(shutUp));
+		Application.loginfo("State machines are silent: %s", shutUp);
+	}
+
+	public boolean isKeepingItsMouth() {
+		return shutUp;
 	}
 }

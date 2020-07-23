@@ -6,6 +6,7 @@ import static de.amr.easy.game.Application.loginfo;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
@@ -42,7 +43,6 @@ import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
-import java.awt.Dimension;
 
 public class FsmView extends JPanel implements Lifecycle {
 

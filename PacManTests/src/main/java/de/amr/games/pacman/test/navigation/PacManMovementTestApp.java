@@ -8,7 +8,6 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.test.TestUI;
@@ -16,7 +15,6 @@ import de.amr.games.pacman.test.TestUI;
 public class PacManMovementTestApp extends Application {
 
 	public static void main(String[] args) {
-		StateMachineRegistry.IT.setLogging(true);
 		launch(PacManMovementTestApp.class, args);
 	}
 
