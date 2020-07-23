@@ -25,26 +25,30 @@ public class PacManAppEnhanced extends PacManApp {
 
 	@Override
 	public void configureF2Dialog(F2Dialog f2) {
-		ThemeSelectionView themeSelectionView = new ThemeSelectionView();
-		GameStateView gameStateView = new GameStateView();
-		GameLevelView gameLevelView = new GameLevelView();
-		FsmView fsmView = new FsmView();
-		EnhancedGameController gameController = (EnhancedGameController) getController();
-		gameStateView.attachTo(gameController, gameController.folks());
-		gameLevelView.attachTo(gameController);
-		themeSelectionView.attachTo(gameController);
-		f2.addCustomTab("Theme", themeSelectionView, () -> true);
-		f2.addCustomTab("State Machines", fsmView, () -> true);
-		f2.addCustomTab("Game State", gameStateView, () -> gameController.game().isPresent());
-		f2.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
 		AppShell shell = shell().get();
 		f2.setSize(700, shell.getHeight());
 		f2.setRelativeLocation(shell.getWidth(), 0);
+		EnhancedGameController gameController = (EnhancedGameController) getController();
+
+		ThemeSelectionView themeSelectionView = new ThemeSelectionView();
+		themeSelectionView.attachTo(gameController);
+		f2.addCustomTab("Theme", themeSelectionView, () -> true);
+
+		FsmView fsmView = new FsmView();
+		f2.addCustomTab("State Machines", fsmView, () -> true);
+
+		GameStateView gameStateView = new GameStateView();
+		gameStateView.attachTo(gameController, gameController.folks());
+		f2.addCustomTab("Game State", gameStateView, () -> gameController.game().isPresent());
+
+		GameLevelView gameLevelView = new GameLevelView();
+		gameLevelView.attachTo(gameController);
+		f2.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
 	}
 
 	@Override
 	public void init() {
-		loginfo("Finite-state machine logging is " + StateMachineRegistry.IT.isLoggingEnabled());
+		loginfo("Finite-state machine logging enabled: " + StateMachineRegistry.IT.isLoggingEnabled());
 		setIcon("/images/pacman-icon.png");
 		setController(new EnhancedGameController());
 	}

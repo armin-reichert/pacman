@@ -31,18 +31,18 @@ public class GhostSanityControl extends StateMachine<GhostSanity, Void> {
 			
 			.transitions()
 			
+				.when(ELROY1).then(ELROY2)
+					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
+					.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
+			
 				.when(INFECTABLE).then(ELROY2)
 					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
-					.annotation("Pellet count under second threshold")
+					.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
 					
 				.when(INFECTABLE).then(ELROY1)
 					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy1DotsLeft)
-					.annotation("Pellet count under first threshold")
+					.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy1DotsLeft))
 				
-				.when(ELROY1).then(ELROY2)
-					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
-					.annotation("Pellet count under second threshold")
-					
 		.endStateMachine();
 		//@formatter:on
 	}

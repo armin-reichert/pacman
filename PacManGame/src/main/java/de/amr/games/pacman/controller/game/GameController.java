@@ -372,13 +372,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.when(PACMAN_DYING).then(GAME_OVER)
 					.onTimeout()
 					.condition(() -> game.lives == 0)
-					.annotation("no lives left")
+					.annotation("no lives left, game over")
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
 					.condition(() -> game.lives > 0)
 					.act(playingState()::preparePlaying)
-					.annotation("resume playing")
+					.annotation(() -> String.format("%d lives remaining, if > 0, resume game", game.lives))
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce("space"))
