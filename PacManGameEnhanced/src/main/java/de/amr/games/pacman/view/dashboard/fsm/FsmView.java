@@ -38,7 +38,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.games.pacman.controller.StateMachineRegistry;
+import de.amr.easy.game.controller.StateMachineRegistry;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;
 import guru.nidi.graphviz.engine.Format;

@@ -15,12 +15,12 @@ import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.controller.StateMachineRegistry;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;

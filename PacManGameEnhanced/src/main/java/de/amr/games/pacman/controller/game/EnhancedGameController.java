@@ -17,9 +17,9 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.controller.StateMachineRegistry;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
-import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
