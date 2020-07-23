@@ -250,7 +250,7 @@ public class Ghost extends Creature<GhostState> {
 		}
 	}
 
-	public void nextStateToEnter(Supplier<GhostState> fnSubsequentState) {
+	public void setNextStateToEnter(Supplier<GhostState> fnSubsequentState) {
 		this.fnSubsequentState = fnSubsequentState;
 	}
 
