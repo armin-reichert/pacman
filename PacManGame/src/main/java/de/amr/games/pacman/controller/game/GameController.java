@@ -424,7 +424,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void onPacManLostPower(PacManGameEvent event) {
 			sound.pacManLostPower();
-			ghostCommand.resumeAttacks();
+			ghostCommand.resumeAttacking();
 		}
 
 		private void onPacManGhostCollision(PacManGameEvent event) {
@@ -491,7 +491,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 			if (energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();
-				ghostCommand.stopAttacks();
+				ghostCommand.stopAttacking();
 				folks.pacMan.setPower(sec(game.level.pacManPowerSeconds));
 				ghostsInsideWorld().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 			}

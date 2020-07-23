@@ -1,9 +1,8 @@
 package de.amr.games.pacman.controller.game;
 
-import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandEvent.SUSPEND;
 import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState.CHASE;
 import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState.SCATTER;
-import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState.SUSPENDED;
+import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState.STOPPED;
 import static de.amr.games.pacman.model.game.Game.sec;
 
 import java.util.List;
@@ -13,7 +12,6 @@ import de.amr.games.pacman.controller.StateMachineRegistry;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.controller.game.GhostCommand.GhostCommandEvent;
 import de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.statemachine.api.TransitionMatchStrategy;
@@ -21,101 +19,105 @@ import de.amr.statemachine.core.StateMachine;
 
 /**
  * Controller for the timing of the ghost attack waves. Ghosts change between chasing and scattering
- * mode during each level in several rounds of different durations. When a ghost becomes frightened,
- * the timer is stopped and the ghost resumes later at this point in time of the round.
+ * mode during each level in 4 rounds of different durations. When a ghost becomes frightened, the
+ * timer is stopped and later resumed at this point in time when ghosts are not frightened anymore.
  * 
  * @author Armin Reichert
  * 
  * @see <a href=
  *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
-public class GhostCommand extends StateMachine<GhostCommandState, GhostCommandEvent> {
+public class GhostCommand extends StateMachine<GhostCommandState, String> {
 
 	public static enum GhostCommandState {
-		SCATTER, CHASE, SUSPENDED
+		SCATTER, CHASE, STOPPED
 	}
 
-	public static enum GhostCommandEvent {
-		SUSPEND
+	static class Round {
+		int scatterTicks, chaseTicks;
+
+		static Round[] newRounds() {
+			Round[] rounds = new Round[5];
+			for (int i = 1; i < 5; ++i) {
+				rounds[i] = new Round();
+			}
+			return rounds;
+		}
 	}
+
+	private static final Round[] L1 = Round.newRounds();
+	private static final Round[] L4 = Round.newRounds();
+	private static final Round[] L5 = Round.newRounds();
 
 	/*@formatter:off*/
-	private static final int[][] DURATION_TABLE = {
-//     round 1            round 2            round 3              round 4
-		{  sec(7), sec(20),   sec(7), sec(20),   sec(5), sec(  20),   sec(5), Integer.MAX_VALUE },	// Level 1
-		{  sec(7), sec(20),   sec(7), sec(20),   sec(5), sec(1033),        1, Integer.MAX_VALUE },	// Level 2-4
-		{  sec(5), sec(20),   sec(5), sec(20),   sec(5), sec(1037),        1, Integer.MAX_VALUE },	// Level >=5
-	};
+	static {
+		// first level
+		L1[1].scatterTicks = sec(7);
+		L1[1].chaseTicks   = sec(20);
+		L1[2].scatterTicks = sec(7);
+		L1[2].chaseTicks   = sec(20);
+		L1[3].scatterTicks = sec(5);
+		L1[3].chaseTicks   = sec(20);
+		L1[4].scatterTicks = sec(5);
+		L1[4].chaseTicks   = Integer.MAX_VALUE;
+
+		// levels upto 4
+		L4[1].scatterTicks = sec(7);
+		L4[1].chaseTicks   = sec(20);
+		L4[2].scatterTicks = sec(7);
+		L4[2].chaseTicks   = sec(20);
+		L4[3].scatterTicks = sec(5);
+		L4[3].chaseTicks   = sec(1033);
+		L4[4].scatterTicks = 1;
+		L4[4].chaseTicks   = Integer.MAX_VALUE;
+
+		// levels from 5 on
+		L5[1].scatterTicks = sec(5);
+		L5[1].chaseTicks   = sec(20);
+		L5[2].scatterTicks = sec(5);
+		L5[2].chaseTicks   = sec(20);
+		L5[3].scatterTicks = sec(5);
+		L5[3].chaseTicks   = sec(1037);
+		L5[4].scatterTicks = 1;
+		L5[4].chaseTicks   = Integer.MAX_VALUE;
+	}
 	/*@formatter:on*/
 
-	private final Game game;
-	private final List<Ghost> ghosts;
-	private int round; // starts with 1
+	private static int scatterTicks(int level, int round) {
+		return level == 1 ? L1[round].scatterTicks : level <= 4 ? L4[round].scatterTicks : L5[round].scatterTicks;
+	}
+
+	private static int chaseTicks(int level, int round) {
+		return level == 1 ? L1[round].chaseTicks : level <= 4 ? L4[round].chaseTicks : L5[round].chaseTicks;
+	}
+
+	private int round; // numbering starts with 1!
 	private GhostCommandState suspendedStateId;
 
 	public GhostCommand(Game game, Folks folks) {
 		super(GhostCommandState.class, TransitionMatchStrategy.BY_VALUE);
-		this.game = game;
-		this.ghosts = folks.ghosts().collect(Collectors.toList());
+		List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("GhostCommand")
 			.initialState(SCATTER)
 		.states()
 			.state(SCATTER)
-				.timeoutAfter(this::currentRoundScatterDuration)
+				.timeoutAfter(() -> scatterTicks(game.level.number, round))
 				.annotation(() -> String.format("%d of %d ticks", state().getTicksConsumed(), state().getDuration()))
 				.onTick(() -> ghosts.forEach(ghost -> ghost.setNextStateToEnter(() -> GhostState.SCATTERING)))
 			.state(CHASE)
-				.timeoutAfter(this::currentRoundChaseDuration)
+			.timeoutAfter(() -> chaseTicks(game.level.number, round))
 				.annotation(() -> String.format("%d of %d ticks", state().getTicksConsumed(), state().getDuration()))
 				.onTick(() -> ghosts.forEach(ghost -> ghost.setNextStateToEnter(() -> GhostState.CHASING)))
-			.state(SUSPENDED)
+			.state(STOPPED)
 		.transitions()
 			.when(SCATTER).then(CHASE).onTimeout()
-			.when(SCATTER).then(SUSPENDED).on(SUSPEND)
-			.when(CHASE).then(SCATTER).onTimeout().act(this::nextRound)
-			.when(CHASE).then(SUSPENDED).on(SUSPEND)
+			.when(SCATTER).then(STOPPED).on("stopAttacking")
+			.when(CHASE).then(SCATTER).onTimeout().act(() -> ++round)
+			.when(CHASE).then(STOPPED).on("stopAttacking")
 		.endStateMachine();
 		/*@formatter:on*/
-	}
-
-	public void stopAttacks() {
-		if (getState() == SUSPENDED) {
-			return;
-		}
-		suspendedStateId = getState();
-		process(SUSPEND);
-		StateMachineRegistry.IT.loginfo("%s: suspended %s, remaining: %d ticks (%.2f seconds)", getDescription(),
-				suspendedStateId, state(suspendedStateId).getTicksRemaining(),
-				state(suspendedStateId).getTicksRemaining() / 60f);
-	}
-
-	public void resumeAttacks() {
-		if (getState() != SUSPENDED) {
-			throw new IllegalStateException();
-		}
-		resumeState(suspendedStateId);
-		StateMachineRegistry.IT.loginfo("%s: resumed %s, time: %d frames (%.2f seconds)", getDescription(), getState(),
-				state().getTicksRemaining(), state().getTicksRemaining() / 60f);
-	}
-
-	private int tableEntry(int col) {
-		int level = game.level.number;
-		int row = level == 1 ? 0 : level <= 4 ? 1 : 2;
-		return DURATION_TABLE[row][col];
-	}
-
-	private int currentRoundScatterDuration() {
-		return tableEntry(2 * round - 2);
-	}
-
-	private int currentRoundChaseDuration() {
-		return tableEntry(2 * round - 1);
-	}
-
-	private void nextRound() {
-		++round;
 	}
 
 	@Override
@@ -123,5 +125,25 @@ public class GhostCommand extends StateMachine<GhostCommandState, GhostCommandEv
 		round = 1;
 		suspendedStateId = null;
 		super.init();
+	}
+
+	public void stopAttacking() {
+		if (getState() != STOPPED) {
+			suspendedStateId = getState();
+			process("stopAttacking");
+			StateMachineRegistry.IT.loginfo("%s: suspended %s, remaining: %d ticks (%.2f seconds)", getDescription(),
+					suspendedStateId, state(suspendedStateId).getTicksRemaining(),
+					state(suspendedStateId).getTicksRemaining() / 60f);
+		}
+	}
+
+	public void resumeAttacking() {
+		if (getState() == STOPPED) {
+			resumeState(suspendedStateId);
+			StateMachineRegistry.IT.loginfo("%s: resumed %s, time: %d frames (%.2f seconds)", getDescription(), getState(),
+					state().getTicksRemaining(), state().getTicksRemaining() / 60f);
+		} else {
+			throw new IllegalStateException();
+		}
 	}
 }
