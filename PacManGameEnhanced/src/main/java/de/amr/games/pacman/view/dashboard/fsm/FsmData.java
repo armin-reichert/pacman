@@ -3,14 +3,14 @@ package de.amr.games.pacman.view.dashboard.fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;
 
-class FsmViewTreeNode {
+class FsmData {
 
 	StateMachine<?, ?> fsm;
 	String dotText;
 	double scalingEmbedded;
 	double scalingWindow;
 
-	public FsmViewTreeNode(StateMachine<?, ?> fsm) {
+	public FsmData(StateMachine<?, ?> fsm) {
 		this.fsm = fsm;
 		dotText = DotPrinter.dotText(fsm);
 		scalingEmbedded = 1.0;

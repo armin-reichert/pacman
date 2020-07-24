@@ -16,12 +16,13 @@ import guru.nidi.graphviz.engine.Graphviz;
 
 public class FsmGraphView extends JPanel implements Lifecycle {
 
-	static final double MIN_SCALE = 0.4;
-	static final double MAX_SCALE = 3.0;
+	static final double SCALE_MIN = 0.4;
+	static final double SCALE_MAX = 3.0;
+	static final double SCALE_STEP = 0.2;
 
-	private FsmViewTreeNode info;
+	private boolean embedded;
+	private FsmData data;
 	private JLabel graphDisplay;
-	private double scaling = 1.0;
 
 	public FsmGraphView() {
 		setBackground(Color.WHITE);
@@ -37,38 +38,56 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 		scrollPane.setViewportView(graphDisplay);
 	}
 
+	public void setEmbedded(boolean embedded) {
+		this.embedded = embedded;
+	}
+
 	@Override
 	public void init() {
 	}
 
 	@Override
 	public void update() {
-		if (info != null) {
-			BufferedImage renderedGraph = Graphviz.fromString(info.dotText).scale(scaling).render(Format.PNG).toImage();
-			graphDisplay.setIcon(new ImageIcon(renderedGraph));
+		if (data != null) {
+			BufferedImage png = Graphviz.fromString(data.dotText).scale(scaling()).render(Format.PNG).toImage();
+			graphDisplay.setIcon(new ImageIcon(png));
 		} else {
 			graphDisplay.setIcon(null);
 		}
 	}
 
-	public void setScaling(double scaling) {
-		this.scaling = scaling;
-	}
-
-	public void setFsmInfo(FsmViewTreeNode fsmInfo) {
-		this.info = fsmInfo;
+	public void setData(FsmData data) {
+		this.data = data;
 		update();
 	}
 
 	public void zoomIn() {
-		scaling += 0.2;
-		scaling = Math.min(MAX_SCALE, scaling);
+		if (embedded) {
+			data.scalingEmbedded = larger();
+		} else {
+			data.scalingWindow = larger();
+		}
 		update();
 	}
 
 	public void zoomOut() {
-		scaling -= 0.2;
-		scaling = Math.max(MIN_SCALE, scaling);
+		if (embedded) {
+			data.scalingEmbedded = smaller();
+		} else {
+			data.scalingWindow = smaller();
+		}
 		update();
+	}
+
+	private double scaling() {
+		return embedded ? data.scalingEmbedded : data.scalingWindow;
+	}
+
+	private double larger() {
+		return Math.min(SCALE_MAX, scaling() + SCALE_STEP);
+	}
+
+	private double smaller() {
+		return Math.max(SCALE_MIN, scaling() - SCALE_STEP);
 	}
 }

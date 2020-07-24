@@ -63,9 +63,9 @@ public class FsmView extends JPanel implements Lifecycle {
 	private Action actionViewOnline = new AbstractAction("View Online") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			treeModel.getSelectedNodeInfo().ifPresent(info -> {
+			tree.getSelectedData().ifPresent(data -> {
 				try {
-					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, info.dotText);
+					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, data.dotText);
 					Desktop.getDesktop().browse(uri);
 				} catch (Exception x) {
 					x.printStackTrace();
@@ -77,8 +77,8 @@ public class FsmView extends JPanel implements Lifecycle {
 	private Action actionSave = new AbstractAction("Save") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			treeModel.getSelectedNodeInfo().ifPresent(info -> {
-				saveDotFile(info.fsm.getDescription() + ".dot", info.dotText);
+			tree.getSelectedData().ifPresent(data -> {
+				saveDotFile(data.fsm.getDescription() + ".dot", data.dotText);
 			});
 		}
 	};
@@ -114,8 +114,8 @@ public class FsmView extends JPanel implements Lifecycle {
 	private List<StateMachine<?, ?>> machines;
 	private JFrame fsmWindow;
 	private FsmGraphView fsmWindowGraphView;
-	private FsmViewTree treeModel;
-	private JTree tree;
+	private FsmTree tree;
+	private JTree treeView;
 	private JToolBar toolBar;
 	private JButton btnViewOnline;
 	private JButton btnSave;
@@ -137,12 +137,12 @@ public class FsmView extends JPanel implements Lifecycle {
 		fsmTreeScrollPane.setMinimumSize(new Dimension(200, 25));
 		splitPane.setLeftComponent(fsmTreeScrollPane);
 
-		tree = new JTree();
-		fsmTreeScrollPane.setViewportView(tree);
-		treeModel = new FsmViewTree();
-		tree.setModel(treeModel);
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		tree.addTreeSelectionListener(this::onTreeSelectionChange);
+		treeView = new JTree();
+		fsmTreeScrollPane.setViewportView(treeView);
+		tree = new FsmTree();
+		treeView.setModel(tree);
+		treeView.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		treeView.addTreeSelectionListener(this::onTreeViewSelectionChange);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 		splitPane.setRightComponent(tabbedPane);
@@ -151,6 +151,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		tabbedPane.addTab("Source", null, fsmEmbeddedTextView, null);
 
 		fsmEmbeddedGraphView = new FsmGraphView();
+		fsmEmbeddedGraphView.setEmbedded(true);
 		tabbedPane.addTab("Preview", null, fsmEmbeddedGraphView, null);
 
 		tabbedPane.addChangeListener(change -> {
@@ -181,18 +182,13 @@ public class FsmView extends JPanel implements Lifecycle {
 		btnZoomOut = new JButton("");
 		btnZoomOut.setAction(actionEmbeddedZoomOut);
 		toolBar.add(btnZoomOut);
-
 	}
 
-	private void onTreeSelectionChange(TreeSelectionEvent e) {
-		treeModel.setSelectedPath(e.getNewLeadSelectionPath());
-		FsmViewTreeNode info = treeModel.getSelectedNodeInfo().orElse(null);
-		if (info != null) {
-			info.dotText = DotPrinter.dotText(info.fsm);
-			fsmEmbeddedGraphView.setScaling(info.scalingEmbedded);
-			if (fsmWindowGraphView != null) {
-				fsmWindowGraphView.setScaling(info.scalingWindow);
-			}
+	private void onTreeViewSelectionChange(TreeSelectionEvent e) {
+		tree.setSelectedPath(e.getNewLeadSelectionPath());
+		FsmData node = tree.getSelectedData().orElse(null);
+		if (node != null) {
+			node.dotText = DotPrinter.dotText(node.fsm);
 		}
 	}
 
@@ -203,35 +199,25 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-
-		// model changed?
 		if (machines == null || !new HashSet<>(machines).equals(StateMachineRegistry.IT.machines())) {
 			machines = new ArrayList<>(StateMachineRegistry.IT.machines());
 			machines.sort(Comparator.comparing(StateMachine::getDescription));
-			treeModel.rebuild(machines);
-			tree.setSelectionPath(treeModel.getSelectedPath());
+			tree.rebuild(machines);
+			treeView.setSelectionPath(tree.getSelectedPath());
 		}
-
-		// update for current selection
-		FsmViewTreeNode selectedInfo = treeModel.getSelectedNodeInfo().orElse(null);
-		if (selectedInfo != null) {
-			selectedInfo.dotText = DotPrinter.dotText(selectedInfo.fsm);
+		FsmData data = tree.getSelectedData().orElse(null);
+		fsmEmbeddedGraphView.setData(data);
+		fsmEmbeddedTextView.setData(data);
+		if (fsmWindow != null) {
+			fsmWindow.setTitle("State Machine: " + (data != null ? data.fsm.getDescription() : "No machine selected"));
+			fsmWindowGraphView.setData(data);
 		}
+		actions().forEach(action -> action.setEnabled(data != null));
+	}
 
-		Stream.of(actionViewOnline, actionSave, actionEmbeddedZoomIn, actionEmbeddedZoomOut, actionWindowZoomIn,
-				actionWindowZoomOut).forEach(action -> action.setEnabled(selectedInfo != null));
-
-		fsmEmbeddedGraphView.setFsmInfo(selectedInfo);
-		fsmEmbeddedTextView.setFsmInfo(selectedInfo);
-
-		if (fsmWindow != null && fsmWindow.isVisible()) {
-			fsmWindowGraphView.setFsmInfo(selectedInfo);
-			if (selectedInfo != null) {
-				fsmWindow.setTitle("State Machine View: " + selectedInfo.fsm.getDescription());
-			} else {
-				fsmWindow.setTitle("State Machine View: No machine selected");
-			}
-		}
+	private Stream<Action> actions() {
+		return Stream.of(actionViewOnline, actionSave, actionEmbeddedZoomIn, actionEmbeddedZoomOut, actionWindowZoomIn,
+				actionWindowZoomOut);
 	}
 
 	private void saveDotFile(String fileName, String dotText) {
