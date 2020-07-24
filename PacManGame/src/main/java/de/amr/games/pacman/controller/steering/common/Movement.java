@@ -79,9 +79,20 @@ public class Movement extends StateMachine<MovementType, Void> {
 	}
 
 	private void teleport() {
-		activePortal.teleport(mover.tf(), mover.tileLocation(), moveDir);
+		teleportEntity(mover, activePortal);
 		activePortal = null;
 		loginfo("%s left portal at %s", moverName, mover.tileLocation());
+	}
+
+	private void teleportEntity(MobileLifeform mover, Portal portal) {
+		Tile exit = portal.exit();
+		if (portal.vertical) {
+			int offsetY = portal.passThroughDirection == Direction.DOWN ? 0 : 0;
+			mover.tf().setPosition(exit.x(), exit.y() + offsetY);
+		} else {
+			int offsetX = portal.passThroughDirection == Direction.RIGHT ? 4 : -4;
+			mover.tf().setPosition(exit.x() + offsetX, exit.y());
+		}
 	}
 
 	private void move() {
@@ -107,14 +118,18 @@ public class Movement extends StateMachine<MovementType, Void> {
 		activePortal = null;
 		mover.world().portals().filter(p -> p.includes(tileAfterMove)).findFirst().ifPresent(p -> {
 			if (p.vertical) {
-				// TODO fine tuning
+				// TODO fine tuning as below
 				activePortal = p;
-				loginfo("%s entered vertical portal at %s", moverName, tileAfterMove);
+				activePortal.passThroughDirection = mover.moveDir();
+				loginfo("%s entered vertical portal at %s in direction %s", moverName, tileAfterMove,
+						activePortal.passThroughDirection);
 			} else {
 				if (mover.moveDir() == Direction.RIGHT && mover.tileOffsetX() > 2
 						|| mover.moveDir() == Direction.LEFT && mover.tileOffsetX() < 2) {
 					activePortal = p;
-					loginfo("%s entered horizontal portal at %s", moverName, tileAfterMove);
+					activePortal.passThroughDirection = mover.moveDir();
+					loginfo("%s entered horizontal portal at %s in direction %s", moverName, tileAfterMove,
+							activePortal.passThroughDirection);
 				}
 			}
 		});

@@ -9,6 +9,7 @@ import static de.amr.games.pacman.view.theme.common.Rendering.ghostColor;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,7 @@ public class RoutesRenderer implements IRenderer {
 
 	@Override
 	public void render(Graphics2D g) {
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		if (folks.pacMan.isVisible()) {
 			drawPacManRoute(g, folks.pacMan);
 		}
@@ -50,6 +52,7 @@ public class RoutesRenderer implements IRenderer {
 		if (folks.clyde.isInsideWorld() && folks.clyde.isVisible()) {
 			drawClydeChasingArea(g, folks.clyde);
 		}
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
 	public void drawPacManRoute(Graphics2D g, PacMan pacMan) {
@@ -166,7 +169,8 @@ public class RoutesRenderer implements IRenderer {
 		Color ghostColor = ghostColor(clyde);
 		int cx = clyde.tileLocation().centerX(), cy = clyde.tileLocation().centerY();
 		int r = 8 * Tile.SIZE;
-		g.setColor(alpha(ghostColor, 100));
+		g.setColor(alpha(ghostColor, 200));
+		g.setStroke(new BasicStroke(0.2f));
 		g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
 	}
 }

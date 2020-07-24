@@ -1,6 +1,5 @@
 package de.amr.games.pacman.model.world.components;
 
-import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 
@@ -13,6 +12,8 @@ public class Portal {
 	public final Tile other;
 
 	public final boolean vertical;
+
+	public Direction passThroughDirection;
 
 	public Portal(Tile either, Tile other, boolean vertical) {
 		this.either = either;
@@ -34,35 +35,13 @@ public class Portal {
 		return tile.equals(either) || tile.equals(other);
 	}
 
-	public void teleport(Transform tf, Tile entered, Direction moveDir) {
-		if (vertical) {
-			Tile leave = verticalExit(moveDir);
-			int offsetY = moveDir == Direction.DOWN ? 0 : 0;
-			tf.setPosition(leave.x(), leave.y() + offsetY);
-		} else {
-			Tile leave = horizontalExit(moveDir);
-			int offsetX = moveDir == Direction.RIGHT ? 4 : -4;
-			tf.setPosition(leave.x() + offsetX, leave.y());
-		}
-	}
-
-	private Tile horizontalExit(Direction moveDir) {
-		if (moveDir == Direction.RIGHT) {
+	public Tile exit() {
+		if (passThroughDirection == Direction.RIGHT || passThroughDirection == Direction.DOWN) {
 			return either;
 		}
-		if (moveDir == Direction.LEFT) {
+		if (passThroughDirection == Direction.LEFT || passThroughDirection == Direction.UP) {
 			return other;
 		}
-		throw new IllegalArgumentException();
-	}
-
-	private Tile verticalExit(Direction moveDir) {
-		if (moveDir == Direction.DOWN) {
-			return either;
-		}
-		if (moveDir == Direction.UP) {
-			return other;
-		}
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Illegal direction for passing through portal: " + passThroughDirection);
 	}
 }

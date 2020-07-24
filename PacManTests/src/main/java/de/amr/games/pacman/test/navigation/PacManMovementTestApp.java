@@ -28,7 +28,7 @@ public class PacManMovementTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new PacManMovementTestUI());
+		setController(new PortalTestUI());
 	}
 }
 
