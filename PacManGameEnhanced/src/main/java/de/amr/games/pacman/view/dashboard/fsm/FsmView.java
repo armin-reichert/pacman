@@ -65,7 +65,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		public void actionPerformed(ActionEvent e) {
 			tree.getSelectedData().ifPresent(data -> {
 				try {
-					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, data.dotText);
+					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, data.graphData);
 					Desktop.getDesktop().browse(uri);
 				} catch (Exception x) {
 					x.printStackTrace();
@@ -78,7 +78,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			tree.getSelectedData().ifPresent(data -> {
-				saveDotFile(data.fsm.getDescription() + ".dot", data.dotText);
+				saveDotFile(data.fsm.getDescription() + ".dot", data.graphData);
 			});
 		}
 	};
@@ -188,7 +188,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		tree.setSelectedPath(e.getNewLeadSelectionPath());
 		FsmData node = tree.getSelectedData().orElse(null);
 		if (node != null) {
-			node.dotText = DotPrinter.dotText(node.fsm);
+			node.graphData = DotPrinter.printToString(node.fsm);
 		}
 	}
 
@@ -206,6 +206,9 @@ public class FsmView extends JPanel implements Lifecycle {
 			treeView.setSelectionPath(tree.getSelectedPath());
 		}
 		FsmData data = tree.getSelectedData().orElse(null);
+		if (data != null) {
+			data.updateGraph();
+		}
 		fsmEmbeddedGraphView.setData(data);
 		fsmEmbeddedTextView.setData(data);
 		if (fsmWindow != null) {

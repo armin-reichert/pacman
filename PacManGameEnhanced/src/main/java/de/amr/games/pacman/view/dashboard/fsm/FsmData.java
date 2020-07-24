@@ -6,13 +6,13 @@ import de.amr.statemachine.dot.DotPrinter;
 class FsmData {
 
 	StateMachine<?, ?> fsm;
-	String dotText;
+	String graphData;
 	double scalingEmbedded;
 	double scalingWindow;
 
 	public FsmData(StateMachine<?, ?> fsm) {
 		this.fsm = fsm;
-		dotText = DotPrinter.dotText(fsm);
+		graphData = DotPrinter.printToString(fsm);
 		scalingEmbedded = 1.0;
 		scalingWindow = 2.0;
 	}
@@ -20,5 +20,9 @@ class FsmData {
 	@Override
 	public String toString() {
 		return fsm.getDescription();
+	}
+
+	public void updateGraph() {
+		graphData = DotPrinter.printToString(fsm);
 	}
 }
