@@ -18,6 +18,7 @@ import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
+import de.amr.games.pacman.view.theme.common.Rendering;
 
 public class WorldRenderer implements IWorldRenderer {
 
@@ -68,8 +69,9 @@ public class WorldRenderer implements IWorldRenderer {
 			});
 			// draw portals not in original maze
 			world.portals().forEach(portal -> {
-				g.setColor(Color.BLACK);
+				g.setColor(Rendering.patternColor(portal.either));
 				g.fillRect(portal.either.x(), portal.either.y(), Tile.SIZE, Tile.SIZE);
+				g.setColor(Rendering.patternColor(portal.other));
 				g.fillRect(portal.other.x(), portal.other.y(), Tile.SIZE, Tile.SIZE);
 			});
 		}
