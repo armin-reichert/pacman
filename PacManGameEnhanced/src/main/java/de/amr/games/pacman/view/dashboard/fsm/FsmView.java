@@ -7,6 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URI;
@@ -29,6 +31,8 @@ import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.event.TreeSelectionEvent;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import de.amr.easy.game.controller.Lifecycle;
@@ -48,6 +52,7 @@ public class FsmView extends JPanel implements Lifecycle {
 				fsmWindow = new JFrame();
 				fsmWindow.setSize(800, 600);
 				fsmWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				fsmWindow.setLocationRelativeTo(null);
 				fsmWindowGraphView = new FsmGraphView();
 				fsmWindow.getContentPane().add(fsmWindowGraphView);
 				fsmWindowGraphView.getInputMap().put(KeyStroke.getKeyStroke('+'), actionWindowZoomIn);
@@ -143,6 +148,12 @@ public class FsmView extends JPanel implements Lifecycle {
 		treeView.setModel(tree);
 		treeView.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		treeView.addTreeSelectionListener(this::onTreeViewSelectionChange);
+		treeView.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				onTreeViewMousePressed(e);
+			}
+		});
 
 		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 		splitPane.setRightComponent(tabbedPane);
@@ -189,6 +200,16 @@ public class FsmView extends JPanel implements Lifecycle {
 		FsmData node = tree.getSelectedData().orElse(null);
 		if (node != null) {
 			node.graphData = DotPrinter.printToString(node.fsm);
+		}
+	}
+
+	private void onTreeViewMousePressed(MouseEvent e) {
+		TreePath path = treeView.getPathForLocation(e.getX(), e.getY());
+		if (path != null && e.getClickCount() == 2) {
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+			if (node != null && node.getUserObject() instanceof FsmData) {
+				actionViewInWindow.actionPerformed(null);
+			}
 		}
 	}
 
