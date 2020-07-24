@@ -62,11 +62,49 @@ public class WorldTests {
 	@Test
 	public void testPortal() {
 		Portal portal = world.portals().findAny().get();
-		assertEquals(portal.either, Tile.at(0, 17));
-		assertEquals(portal.other, Tile.at(27, 17));
-		assertEquals(world.tileToDir(portal.other, Direction.RIGHT, 1), portal.either);
-		assertEquals(world.tileToDir(portal.either, Direction.LEFT, 1), portal.other);
-		assertEquals(world.tileToDir(Tile.at(26, 17), Direction.RIGHT, 2), portal.either);
-		assertEquals(world.tileToDir(Tile.at(1, 17), Direction.LEFT, 2), portal.other);
+		Tile either = portal.either, other = portal.other;
+
+		// either
+		assertEquals(Tile.at(0, 17), either);
+
+		// direct neighbors
+		Tile left = Tile.at(other.col, either.row);
+		Tile right = Tile.at(1, either.row);
+		Tile up = Tile.at(either.col, either.row - 1);
+		Tile down = Tile.at(either.col, either.row + 1);
+
+		assertEquals(left, world.tileToDir(either, Direction.LEFT, 1));
+		assertEquals(right, world.tileToDir(either, Direction.RIGHT, 1));
+		assertEquals(up, world.tileToDir(either, Direction.UP, 1));
+		assertEquals(down, world.tileToDir(either, Direction.DOWN, 1));
+
+		assertTrue(world.isAccessible(world.tileToDir(either, Direction.LEFT, 1)));
+		assertTrue(world.isAccessible(world.tileToDir(either, Direction.RIGHT, 1)));
+		assertTrue(!world.isAccessible(world.tileToDir(either, Direction.UP, 1)));
+		assertTrue(!world.isAccessible(world.tileToDir(either, Direction.DOWN, 1)));
+
+		// two tiles away
+		assertEquals(world.tileToDir(Tile.at(26, 17), Direction.RIGHT, 2), either);
+
+		// other
+		assertEquals(Tile.at(27, 17), other);
+
+		// direct neighbors
+		left = Tile.at(other.col - 1, other.row);
+		right = Tile.at(either.col, other.row);
+		up = Tile.at(other.col, other.row - 1);
+		down = Tile.at(other.col, other.row + 1);
+
+		assertEquals(left, world.tileToDir(other, Direction.LEFT, 1));
+		assertEquals(right, world.tileToDir(other, Direction.RIGHT, 1));
+		assertEquals(up, world.tileToDir(other, Direction.UP, 1));
+		assertEquals(down, world.tileToDir(other, Direction.DOWN, 1));
+
+		// two tiles away
+		assertEquals(world.tileToDir(Tile.at(1, 17), Direction.LEFT, 2), other);
+
+		// either vs. other
+		assertEquals(world.tileToDir(other, Direction.RIGHT, 1), either);
+		assertEquals(world.tileToDir(either, Direction.LEFT, 1), other);
 	}
 }

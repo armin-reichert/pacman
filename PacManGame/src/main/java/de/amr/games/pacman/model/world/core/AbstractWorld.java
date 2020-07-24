@@ -69,12 +69,18 @@ public abstract class AbstractWorld extends Block implements World {
 						col = portal.other.col;
 					} else if (t.equals(portal.other) && dir == Direction.DOWN) {
 						col = portal.either.col;
+					} else {
+						col += dx;
+						row += dy;
 					}
 				} else {
 					if (t.equals(portal.either) && dir == Direction.LEFT) {
 						col = portal.other.col;
 					} else if (t.equals(portal.other) && dir == Direction.RIGHT) {
 						col = portal.either.col;
+					} else {
+						col += dx;
+						row += dy;
 					}
 				}
 			} else {

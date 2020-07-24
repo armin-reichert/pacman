@@ -31,7 +31,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 	public Direction wishDir;
 	public boolean enteredNewTile;
 
-	private Portal activePortal;
+	private Portal portalEntered;
 
 	public Movement(MobileLifeform mover, String moverName) {
 		super(MovementType.class);
@@ -52,7 +52,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 					.onExit(() -> mover.setVisible(true))
 			.transitions()
 				.when(WALKING).then(TELEPORTING)
-					.condition(() -> insidePortal())
+					.condition(() -> enteredPortal())
 					.annotation("Portal entered")
 				.when(TELEPORTING).then(WALKING)
 					.onTimeout()
@@ -74,25 +74,19 @@ public class Movement extends StateMachine<MovementType, Void> {
 		enteredNewTile = !mover.tileLocation().equals(oldLocation);
 	}
 
-	private boolean insidePortal() {
-		return activePortal != null;
+	private boolean enteredPortal() {
+		return portalEntered != null;
 	}
 
 	private void teleport() {
-		teleportEntity(mover, activePortal);
-		activePortal = null;
+		teleportEntity(mover, portalEntered);
+		portalEntered = null;
 		loginfo("%s left portal at %s", moverName, mover.tileLocation());
 	}
 
 	private void teleportEntity(MobileLifeform mover, Portal portal) {
 		Tile exit = portal.exit();
-		if (portal.vertical) {
-			int offsetY = portal.passThroughDirection == Direction.DOWN ? 0 : 0;
-			mover.tf().setPosition(exit.x(), exit.y() + offsetY);
-		} else {
-			int offsetX = portal.passThroughDirection == Direction.RIGHT ? 4 : -4;
-			mover.tf().setPosition(exit.x() + offsetX, exit.y());
-		}
+		mover.tf().setPosition(exit.x(), exit.y());
 	}
 
 	private void move() {
@@ -111,44 +105,47 @@ public class Movement extends StateMachine<MovementType, Void> {
 		}
 		mover.tf().setVelocity(Vector2f.smul(speed, moveDir.vector()));
 		mover.tf().move();
-		// new tile entered?
+
 		Tile tileAfterMove = mover.tileLocation();
 		enteredNewTile = !tileBeforeMove.equals(tileAfterMove);
-		// portal entered?
-		activePortal = null;
-		mover.world().portals().filter(p -> p.includes(tileAfterMove)).findFirst().ifPresent(p -> {
-			if (p.vertical) {
-				// TODO fine tuning as below
-				activePortal = p;
-				activePortal.passThroughDirection = mover.moveDir();
-				loginfo("%s entered vertical portal at %s in direction %s", moverName, tileAfterMove,
-						activePortal.passThroughDirection);
-			} else {
-				if (mover.moveDir() == Direction.RIGHT && mover.tileOffsetX() > 2
-						|| mover.moveDir() == Direction.LEFT && mover.tileOffsetX() < 2) {
-					activePortal = p;
-					activePortal.passThroughDirection = mover.moveDir();
-					loginfo("%s entered horizontal portal at %s in direction %s", moverName, tileAfterMove,
-							activePortal.passThroughDirection);
+
+		checkIfEnteredPortal(tileAfterMove);
+	}
+
+	private void checkIfEnteredPortal(Tile tile) {
+		if (portalEntered != null) {
+			return; // already inside portal
+		}
+		mover.world().portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
+			if (portal.either.equals(tile)) {
+				if (mover.isMoving(Direction.LEFT) && mover.tileOffsetX() <= -2) {
+					portalEntered = portal;
+				}
+				if (mover.isMoving(Direction.UP) && mover.tileOffsetY() <= -2) {
+					portalEntered = portal;
+				}
+			} else if (portal.other.equals(tile)) {
+				if (mover.isMoving(Direction.RIGHT) && mover.tileOffsetX() >= 2) {
+					portalEntered = portal;
+				}
+				if (mover.isMoving(Direction.DOWN) && mover.tileOffsetY() >= 2) {
+					portalEntered = portal;
 				}
 			}
 		});
+		if (portalEntered != null) {
+			portalEntered.passThroughDirection = mover.moveDir();
+			loginfo("%s entered portal at %s moving %s", moverName, tile, portalEntered.passThroughDirection);
+		}
 	}
 
 	/**
 	 * Computes how many pixels this creature can move towards the given direction.
 	 * 
-	 * @param mover the moving creature
-	 * @param dir   a direction
-	 * @param speed the creature's current speed
+	 * @param dir a direction
+	 * @return speed the creature's max. possible speed towards this direction
 	 */
 	private float possibleSpeed(Direction dir, float speed) {
-		// in tunnel no turn is allowed
-		if (mover.world().isTunnel(mover.tileLocation())) {
-			if (dir == mover.moveDir().left() || dir == mover.moveDir().right()) {
-				return 0;
-			}
-		}
 		if (mover.canCrossBorderTo(dir)) {
 			return speed;
 		}

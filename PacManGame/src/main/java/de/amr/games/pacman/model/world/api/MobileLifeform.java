@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model.world.api;
 
+import java.util.stream.Stream;
+
 import de.amr.easy.game.entity.Transform;
 
 /**
@@ -25,6 +27,14 @@ public interface MobileLifeform extends Life {
 	 * @param dir the wanted move direction
 	 */
 	void setMoveDir(Direction dir);
+
+	/**
+	 * @param dirs directions
+	 * @return if the lifeform is moving to any of the given directions
+	 */
+	default boolean isMoving(Direction... dirs) {
+		return Stream.of(dirs).anyMatch(dir -> dir == moveDir());
+	}
 
 	/**
 	 * @return the wanted move direction
