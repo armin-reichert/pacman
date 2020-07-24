@@ -29,7 +29,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
-import javax.swing.KeyStroke;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -55,10 +54,6 @@ public class FsmView extends JPanel implements Lifecycle {
 				fsmWindow.setLocationRelativeTo(null);
 				fsmWindowGraphView = new FsmGraphView();
 				fsmWindow.getContentPane().add(fsmWindowGraphView);
-				fsmWindowGraphView.getInputMap().put(KeyStroke.getKeyStroke('+'), actionWindowZoomIn);
-				fsmWindowGraphView.getActionMap().put(actionWindowZoomIn, actionWindowZoomIn);
-				fsmWindowGraphView.getInputMap().put(KeyStroke.getKeyStroke('-'), actionWindowZoomOut);
-				fsmWindowGraphView.getActionMap().put(actionWindowZoomOut, actionWindowZoomOut);
 			}
 			fsmWindowGraphView.requestFocus();
 			fsmWindow.setVisible(true);
@@ -86,34 +81,6 @@ public class FsmView extends JPanel implements Lifecycle {
 				saveDotFile(data.fsm.getDescription() + ".dot", data.graphData);
 			});
 		}
-	};
-
-	private Action actionEmbeddedZoomIn = new AbstractAction("Zoom In") {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			fsmEmbeddedGraphView.zoomIn();
-		};
-	};
-
-	private Action actionEmbeddedZoomOut = new AbstractAction("Zoom Out") {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			fsmEmbeddedGraphView.zoomOut();
-		};
-	};
-
-	private Action actionWindowZoomIn = new AbstractAction("Zoom In") {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			fsmWindowGraphView.zoomIn();
-		};
-	};
-
-	private Action actionWindowZoomOut = new AbstractAction("Zoom Out") {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			fsmWindowGraphView.zoomOut();
-		};
 	};
 
 	private List<StateMachine<?, ?>> machines;
@@ -187,11 +154,11 @@ public class FsmView extends JPanel implements Lifecycle {
 		btnViewOnline.setAction(actionViewOnline);
 
 		btnZoomIn = new JButton("New button");
-		btnZoomIn.setAction(actionEmbeddedZoomIn);
+		btnZoomIn.setAction(fsmEmbeddedGraphView.actionZoomIn);
 		toolBar.add(btnZoomIn);
 
 		btnZoomOut = new JButton("");
-		btnZoomOut.setAction(actionEmbeddedZoomOut);
+		btnZoomOut.setAction(fsmEmbeddedGraphView.actionZoomOut);
 		toolBar.add(btnZoomOut);
 	}
 
@@ -240,8 +207,11 @@ public class FsmView extends JPanel implements Lifecycle {
 	}
 
 	private Stream<Action> actions() {
-		return Stream.of(actionViewOnline, actionSave, actionEmbeddedZoomIn, actionEmbeddedZoomOut, actionWindowZoomIn,
-				actionWindowZoomOut);
+		Stream<Action> actions = Stream.of(actionViewOnline, actionSave, fsmEmbeddedGraphView.actionZoomIn,
+				fsmEmbeddedGraphView.actionZoomOut);
+		return fsmWindow != null
+				? Stream.concat(Stream.of(fsmWindowGraphView.actionZoomIn, fsmWindowGraphView.actionZoomOut), actions)
+				: actions;
 	}
 
 	private void saveDotFile(String fileName, String dotText) {
