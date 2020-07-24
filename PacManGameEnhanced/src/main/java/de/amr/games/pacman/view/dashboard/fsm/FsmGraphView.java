@@ -16,7 +16,10 @@ import guru.nidi.graphviz.engine.Graphviz;
 
 public class FsmGraphView extends JPanel implements Lifecycle {
 
-	private StateMachineInfo fsmInfo;
+	static final double MIN_SCALE = 0.2;
+	static final double MAX_SCALE = 3.0;
+
+	private FsmViewNodeInfo info;
 	private JLabel graphDisplay;
 
 	public FsmGraphView() {
@@ -39,17 +42,28 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (fsmInfo != null) {
-			BufferedImage renderedGraph = Graphviz.fromString(fsmInfo.dotText).scale(fsmInfo.scaling).render(Format.PNG)
-					.toImage();
+		if (info != null) {
+			BufferedImage renderedGraph = Graphviz.fromString(info.dotText).scale(info.scaling).render(Format.PNG).toImage();
 			graphDisplay.setIcon(new ImageIcon(renderedGraph));
 		} else {
 			graphDisplay.setIcon(null);
 		}
 	}
 
-	public void setFsmInfo(StateMachineInfo fsmInfo) {
-		this.fsmInfo = fsmInfo;
+	public void setFsmInfo(FsmViewNodeInfo fsmInfo) {
+		this.info = fsmInfo;
+		update();
+	}
+
+	public void zoomIn() {
+		info.scaling += 0.2;
+		info.scaling = Math.min(MAX_SCALE, info.scaling);
+		update();
+	}
+
+	public void zoomOut() {
+		info.scaling -= 0.2;
+		info.scaling = Math.max(MIN_SCALE, info.scaling);
 		update();
 	}
 }
