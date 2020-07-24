@@ -12,7 +12,7 @@ class FsmViewNodeInfo {
 	public FsmViewNodeInfo(StateMachine<?, ?> fsm) {
 		this.fsm = fsm;
 		dotText = DotPrinter.dotText(fsm);
-		scaling = 1.0;
+		scaling = 1.6;
 	}
 
 	@Override

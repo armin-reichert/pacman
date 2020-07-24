@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.swing.AbstractAction;
@@ -28,9 +27,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import de.amr.easy.game.controller.Lifecycle;
@@ -45,7 +41,7 @@ public class FsmView extends JPanel implements Lifecycle {
 	private Action actionViewOnline = new AbstractAction("View Online") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			getSelectedInfo().ifPresent(info -> {
+			treeModel.getSelectedNodeInfo().ifPresent(info -> {
 				try {
 					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, info.dotText);
 					Desktop.getDesktop().browse(uri);
@@ -59,7 +55,7 @@ public class FsmView extends JPanel implements Lifecycle {
 	private Action actionSave = new AbstractAction("Save") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			getSelectedInfo().ifPresent(info -> {
+			treeModel.getSelectedNodeInfo().ifPresent(info -> {
 				saveDotFile(info.fsm.getDescription() + ".dot", info.dotText);
 			});
 		}
@@ -80,8 +76,7 @@ public class FsmView extends JPanel implements Lifecycle {
 	};
 
 	private List<StateMachine<?, ?>> machines;
-
-	private TreePath selectedPath;
+	private FsmViewTreeModel treeModel;
 	private JTree tree;
 	private JToolBar toolBar;
 	private JButton btnPreview;
@@ -105,8 +100,8 @@ public class FsmView extends JPanel implements Lifecycle {
 
 		tree = new JTree();
 		fsmTreeScrollPane.setViewportView(tree);
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode("State Machines");
-		tree.setModel(new DefaultTreeModel(root));
+		treeModel = new FsmViewTreeModel();
+		tree.setModel(treeModel);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 		splitPane.setRightComponent(tabbedPane);
@@ -149,8 +144,8 @@ public class FsmView extends JPanel implements Lifecycle {
 	}
 
 	private void onTreeSelectionChange(TreeSelectionEvent e) {
-		selectedPath = e.getNewLeadSelectionPath();
-		FsmViewNodeInfo info = getSelectedInfo().orElse(null);
+		treeModel.setSelectedPath(e.getNewLeadSelectionPath());
+		FsmViewNodeInfo info = treeModel.getSelectedNodeInfo().orElse(null);
 		if (info != null) {
 			info.dotText = DotPrinter.dotText(info.fsm);
 		}
@@ -171,40 +166,17 @@ public class FsmView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		if (machines == null || !new HashSet<>(machines).equals(StateMachineRegistry.IT.machines())) {
-			buildTree();
+			machines = new ArrayList<>(StateMachineRegistry.IT.machines());
+			machines.sort(Comparator.comparing(StateMachine::getDescription));
+			treeModel.rebuild(machines);
+			tree.setSelectionPath(treeModel.getSelectedPath());
 		}
-		FsmViewNodeInfo info = getSelectedInfo().orElse(null);
+		FsmViewNodeInfo info = treeModel.getSelectedNodeInfo().orElse(null);
 		if (info != null) {
 			info.dotText = DotPrinter.dotText(info.fsm);
 		}
 		fsmGraphView.setFsmInfo(info);
 		fsmTextView.setFsmInfo(info);
-	}
-
-	private void buildTree() {
-		machines = new ArrayList<>(StateMachineRegistry.IT.machines());
-		machines.sort(Comparator.comparing(StateMachine::getDescription));
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
-		root.removeAllChildren();
-		for (StateMachine<?, ?> fsm : machines) {
-			root.add(new DefaultMutableTreeNode(new FsmViewNodeInfo(fsm)));
-		}
-		DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
-		treeModel.nodeStructureChanged(root);
-		if (root.getChildCount() > 0) {
-			selectedPath = new TreePath(new Object[] { root, root.getChildAt(0) });
-		} else {
-			selectedPath = new TreePath(root);
-		}
-		tree.setSelectionPath(selectedPath);
-	}
-
-	private Optional<FsmViewNodeInfo> getSelectedInfo() {
-		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-		if (selectedNode != null && selectedNode.getUserObject() instanceof FsmViewNodeInfo) {
-			return Optional.of((FsmViewNodeInfo) selectedNode.getUserObject());
-		}
-		return Optional.empty();
 	}
 
 	private void saveDotFile(String fileName, String dotText) {

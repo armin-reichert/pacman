@@ -16,7 +16,7 @@ import guru.nidi.graphviz.engine.Graphviz;
 
 public class FsmGraphView extends JPanel implements Lifecycle {
 
-	static final double MIN_SCALE = 0.2;
+	static final double MIN_SCALE = 0.4;
 	static final double MAX_SCALE = 3.0;
 
 	private FsmViewNodeInfo info;
