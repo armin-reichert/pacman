@@ -25,8 +25,18 @@ public interface Life extends Lifecycle {
 		return Tile.at(col, row);
 	}
 
+	/**
+	 * The offset between the left side of an entity and the left side of the tile it belongs to.
+	 * 
+	 * @return the horizontal tile offset
+	 */
 	float tileOffsetX();
 
+	/**
+	 * The offset between the top side of an entity and the top side of the tile it belongs to.
+	 * 
+	 * @return the vertical tile offset
+	 */
 	float tileOffsetY();
 
 	/**

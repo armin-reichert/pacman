@@ -165,12 +165,12 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 
 	@Override
 	public float tileOffsetX() {
-		return entity.tf.x - tileLocation().x();
+		return entity.tf.x - tileLocation().x() + Tile.SIZE / 2;
 	}
 
 	@Override
 	public float tileOffsetY() {
-		return entity.tf.y - tileLocation().y();
+		return entity.tf.y - tileLocation().y() + Tile.SIZE / 2;
 	}
 
 	public boolean isTeleporting() {

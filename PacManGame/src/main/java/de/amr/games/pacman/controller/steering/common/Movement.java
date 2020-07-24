@@ -118,17 +118,17 @@ public class Movement extends StateMachine<MovementType, Void> {
 		}
 		mover.world().portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
 			if (portal.either.equals(tile)) {
-				if (mover.isMoving(Direction.LEFT) && mover.tileOffsetX() <= -2) {
+				if (mover.isMoving(Direction.LEFT) && mover.tileOffsetX() <= 1) {
 					portalEntered = portal;
 				}
-				if (mover.isMoving(Direction.UP) && mover.tileOffsetY() <= -2) {
+				if (mover.isMoving(Direction.UP) && mover.tileOffsetY() <= 1) {
 					portalEntered = portal;
 				}
 			} else if (portal.other.equals(tile)) {
-				if (mover.isMoving(Direction.RIGHT) && mover.tileOffsetX() >= 2) {
+				if (mover.isMoving(Direction.RIGHT) && mover.tileOffsetX() >= 7) {
 					portalEntered = portal;
 				}
-				if (mover.isMoving(Direction.DOWN) && mover.tileOffsetY() >= 2) {
+				if (mover.isMoving(Direction.DOWN) && mover.tileOffsetY() >= 7) {
 					portalEntered = portal;
 				}
 			}
@@ -151,13 +151,13 @@ public class Movement extends StateMachine<MovementType, Void> {
 		}
 		switch (dir) {
 		case UP:
-			return Math.min(mover.tileOffsetY(), speed);
+			return Math.min(mover.tileOffsetY() - Tile.SIZE / 2, speed);
 		case DOWN:
-			return Math.min(-mover.tileOffsetY(), speed);
+			return Math.min(-mover.tileOffsetY() + Tile.SIZE / 2, speed);
 		case LEFT:
-			return Math.min(mover.tileOffsetX(), speed);
+			return Math.min(mover.tileOffsetX() - Tile.SIZE / 2, speed);
 		case RIGHT:
-			return Math.min(-mover.tileOffsetX(), speed);
+			return Math.min(-mover.tileOffsetX() + Tile.SIZE / 2, speed);
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
