@@ -4,7 +4,7 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.ui.AppShell;
 import de.amr.easy.game.ui.f2dialog.F2Dialog;
 import de.amr.games.pacman.controller.game.EnhancedGameController;
-import de.amr.games.pacman.view.dashboard.fsm.FsmView;
+import de.amr.games.pacman.view.dashboard.fsm.FsmViewer;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
 import de.amr.games.pacman.view.dashboard.theme.ThemeSelectionView;
@@ -32,7 +32,7 @@ public class PacManAppEnhanced extends PacManApp {
 		themeSelectionView.attachTo(gameController);
 		f2.addCustomTab("Theme", themeSelectionView, () -> true);
 
-		FsmView fsmView = new FsmView();
+		FsmViewer fsmView = new FsmViewer();
 		f2.addCustomTab("State Machines", fsmView, () -> true);
 
 		GameStateView gameStateView = new GameStateView();
