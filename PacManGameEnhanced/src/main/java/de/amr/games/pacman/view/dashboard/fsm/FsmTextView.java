@@ -14,7 +14,7 @@ public class FsmTextView extends JPanel implements Lifecycle {
 
 	static final String HINT_TEXT = "This area shows the Graphviz representation of the selected finite-state machine";
 
-	private FsmViewNodeInfo fsmInfo;
+	private FsmViewTreeNode fsmInfo;
 	private JTextArea textArea;
 
 	public FsmTextView() {
@@ -34,7 +34,7 @@ public class FsmTextView extends JPanel implements Lifecycle {
 		scrollPane.setViewportView(textArea);
 	}
 
-	public void setFsmInfo(FsmViewNodeInfo fsmInfo) {
+	public void setFsmInfo(FsmViewTreeNode fsmInfo) {
 		this.fsmInfo = fsmInfo;
 		update();
 	}

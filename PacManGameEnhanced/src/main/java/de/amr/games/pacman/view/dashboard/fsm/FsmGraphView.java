@@ -19,8 +19,9 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 	static final double MIN_SCALE = 0.4;
 	static final double MAX_SCALE = 3.0;
 
-	private FsmViewNodeInfo info;
+	private FsmViewTreeNode info;
 	private JLabel graphDisplay;
+	private double scaling = 1.0;
 
 	public FsmGraphView() {
 		setBackground(Color.WHITE);
@@ -43,27 +44,31 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		if (info != null) {
-			BufferedImage renderedGraph = Graphviz.fromString(info.dotText).scale(info.scaling).render(Format.PNG).toImage();
+			BufferedImage renderedGraph = Graphviz.fromString(info.dotText).scale(scaling).render(Format.PNG).toImage();
 			graphDisplay.setIcon(new ImageIcon(renderedGraph));
 		} else {
 			graphDisplay.setIcon(null);
 		}
 	}
 
-	public void setFsmInfo(FsmViewNodeInfo fsmInfo) {
+	public void setScaling(double scaling) {
+		this.scaling = scaling;
+	}
+
+	public void setFsmInfo(FsmViewTreeNode fsmInfo) {
 		this.info = fsmInfo;
 		update();
 	}
 
 	public void zoomIn() {
-		info.scaling += 0.2;
-		info.scaling = Math.min(MAX_SCALE, info.scaling);
+		scaling += 0.2;
+		scaling = Math.min(MAX_SCALE, scaling);
 		update();
 	}
 
 	public void zoomOut() {
-		info.scaling -= 0.2;
-		info.scaling = Math.max(MIN_SCALE, info.scaling);
+		scaling -= 0.2;
+		scaling = Math.max(MIN_SCALE, scaling);
 		update();
 	}
 }

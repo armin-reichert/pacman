@@ -9,11 +9,11 @@ import javax.swing.tree.TreePath;
 
 import de.amr.statemachine.core.StateMachine;
 
-public class FsmViewTreeModel extends DefaultTreeModel {
+public class FsmViewTree extends DefaultTreeModel {
 
 	private TreePath selectedPath;
 
-	public FsmViewTreeModel() {
+	public FsmViewTree() {
 		super(new DefaultMutableTreeNode("State Machines"));
 		selectedPath = new TreePath(getRoot());
 	}
@@ -26,29 +26,28 @@ public class FsmViewTreeModel extends DefaultTreeModel {
 		return selectedPath;
 	}
 
-	public Optional<FsmViewNodeInfo> getSelectedNodeInfo() {
+	public Optional<FsmViewTreeNode> getSelectedNodeInfo() {
 		if (selectedPath == null) {
 			return Optional.empty();
 		}
 		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
-		if (selectedNode != null && selectedNode.getUserObject() instanceof FsmViewNodeInfo) {
-			return Optional.of((FsmViewNodeInfo) selectedNode.getUserObject());
+		if (selectedNode != null && selectedNode.getUserObject() instanceof FsmViewTreeNode) {
+			return Optional.of((FsmViewTreeNode) selectedNode.getUserObject());
 		}
 		return Optional.empty();
-
 	}
 
 	public void rebuild(List<StateMachine<?, ?>> machines) {
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
 		root.removeAllChildren();
 		for (StateMachine<?, ?> fsm : machines) {
-			root.add(new DefaultMutableTreeNode(new FsmViewNodeInfo(fsm)));
+			root.add(new DefaultMutableTreeNode(new FsmViewTreeNode(fsm)));
 		}
+		nodeStructureChanged(root);
 		if (root.getChildCount() > 0) {
 			selectedPath = new TreePath(new Object[] { root, root.getChildAt(0) });
 		} else {
 			selectedPath = new TreePath(root);
 		}
-		nodeStructureChanged(root);
 	}
 }

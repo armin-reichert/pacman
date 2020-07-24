@@ -20,12 +20,14 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -37,6 +39,26 @@ import de.amr.statemachine.dot.DotPrinter;
 public class FsmView extends JPanel implements Lifecycle {
 
 	static final String GRAPHVIZ_ONLINE_URL = "https://dreampuf.github.io/GraphvizOnline";
+
+	private Action actionViewInWindow = new AbstractAction("View in Window") {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (fsmWindow == null) {
+				fsmWindow = new JFrame();
+				fsmWindow.setSize(800, 600);
+				fsmWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				fsmWindowGraphView = new FsmGraphView();
+				fsmWindow.getContentPane().add(fsmWindowGraphView);
+				fsmWindowGraphView.getInputMap().put(KeyStroke.getKeyStroke('+'), actionWindowZoomIn);
+				fsmWindowGraphView.getActionMap().put(actionWindowZoomIn, actionWindowZoomIn);
+				fsmWindowGraphView.getInputMap().put(KeyStroke.getKeyStroke('-'), actionWindowZoomOut);
+				fsmWindowGraphView.getActionMap().put(actionWindowZoomOut, actionWindowZoomOut);
+			}
+			fsmWindowGraphView.requestFocus();
+			fsmWindow.setVisible(true);
+		}
+	};
 
 	private Action actionViewOnline = new AbstractAction("View Online") {
 		@Override
@@ -61,31 +83,48 @@ public class FsmView extends JPanel implements Lifecycle {
 		}
 	};
 
-	private Action actionZoomIn = new AbstractAction("Zoom In") {
+	private Action actionEmbeddedZoomIn = new AbstractAction("Zoom In") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			fsmGraphView.zoomIn();
+			fsmEmbeddedGraphView.zoomIn();
 		};
 	};
 
-	private Action actionZoomOut = new AbstractAction("Zoom Out") {
+	private Action actionEmbeddedZoomOut = new AbstractAction("Zoom Out") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			fsmGraphView.zoomOut();
+			fsmEmbeddedGraphView.zoomOut();
+		};
+	};
+
+	private Action actionWindowZoomIn = new AbstractAction("Zoom In") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			fsmWindowGraphView.zoomIn();
+		};
+	};
+
+	private Action actionWindowZoomOut = new AbstractAction("Zoom Out") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			fsmWindowGraphView.zoomOut();
 		};
 	};
 
 	private List<StateMachine<?, ?>> machines;
-	private FsmViewTreeModel treeModel;
+	private JFrame fsmWindow;
+	private FsmGraphView fsmWindowGraphView;
+	private FsmViewTree treeModel;
 	private JTree tree;
 	private JToolBar toolBar;
-	private JButton btnPreview;
+	private JButton btnViewOnline;
 	private JButton btnSave;
 	private JTabbedPane tabbedPane;
-	private FsmTextView fsmTextView;
-	private FsmGraphView fsmGraphView;
+	private FsmTextView fsmEmbeddedTextView;
+	private FsmGraphView fsmEmbeddedGraphView;
 	private JButton btnZoomIn;
 	private JButton btnZoomOut;
+	private JButton btnViewInWindow;
 
 	public FsmView() {
 		setLayout(new BorderLayout(0, 0));
@@ -100,20 +139,22 @@ public class FsmView extends JPanel implements Lifecycle {
 
 		tree = new JTree();
 		fsmTreeScrollPane.setViewportView(tree);
-		treeModel = new FsmViewTreeModel();
+		treeModel = new FsmViewTree();
 		tree.setModel(treeModel);
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.addTreeSelectionListener(this::onTreeSelectionChange);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 		splitPane.setRightComponent(tabbedPane);
 
-		fsmTextView = new FsmTextView();
-		tabbedPane.addTab("Source", null, fsmTextView, null);
+		fsmEmbeddedTextView = new FsmTextView();
+		tabbedPane.addTab("Source", null, fsmEmbeddedTextView, null);
 
-		fsmGraphView = new FsmGraphView();
-		tabbedPane.addTab("Preview", null, fsmGraphView, null);
+		fsmEmbeddedGraphView = new FsmGraphView();
+		tabbedPane.addTab("Preview", null, fsmEmbeddedGraphView, null);
 
 		tabbedPane.addChangeListener(change -> {
-			if (tabbedPane.getSelectedComponent() == fsmGraphView) {
+			if (tabbedPane.getSelectedComponent() == fsmEmbeddedGraphView) {
 				update();
 			}
 		});
@@ -125,37 +166,34 @@ public class FsmView extends JPanel implements Lifecycle {
 		btnSave.setAction(actionSave);
 		toolBar.add(btnSave);
 
-		btnPreview = new JButton("Preview");
-		toolBar.add(btnPreview);
-		btnPreview.setAction(actionViewOnline);
+		btnViewInWindow = new JButton("New button");
+		btnViewInWindow.setAction(actionViewInWindow);
+		toolBar.add(btnViewInWindow);
+
+		btnViewOnline = new JButton("Preview");
+		toolBar.add(btnViewOnline);
+		btnViewOnline.setAction(actionViewOnline);
 
 		btnZoomIn = new JButton("New button");
-		btnZoomIn.setAction(actionZoomIn);
+		btnZoomIn.setAction(actionEmbeddedZoomIn);
 		toolBar.add(btnZoomIn);
 
 		btnZoomOut = new JButton("");
-		btnZoomOut.setAction(actionZoomOut);
+		btnZoomOut.setAction(actionEmbeddedZoomOut);
 		toolBar.add(btnZoomOut);
 
-		actionViewOnline.setEnabled(false);
-		actionSave.setEnabled(false);
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		tree.addTreeSelectionListener(this::onTreeSelectionChange);
 	}
 
 	private void onTreeSelectionChange(TreeSelectionEvent e) {
 		treeModel.setSelectedPath(e.getNewLeadSelectionPath());
-		FsmViewNodeInfo info = treeModel.getSelectedNodeInfo().orElse(null);
+		FsmViewTreeNode info = treeModel.getSelectedNodeInfo().orElse(null);
 		if (info != null) {
 			info.dotText = DotPrinter.dotText(info.fsm);
+			fsmEmbeddedGraphView.setScaling(info.scalingEmbedded);
+			if (fsmWindowGraphView != null) {
+				fsmWindowGraphView.setScaling(info.scalingWindow);
+			}
 		}
-		if (tabbedPane.getSelectedComponent() == fsmGraphView) {
-			fsmGraphView.setFsmInfo(info);
-		} else {
-			fsmTextView.setFsmInfo(info);
-		}
-		Stream.of(actionViewOnline, actionSave, actionZoomIn, actionZoomOut)
-				.forEach(action -> action.setEnabled(info != null));
 	}
 
 	@Override
@@ -165,18 +203,35 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
+
+		// model changed?
 		if (machines == null || !new HashSet<>(machines).equals(StateMachineRegistry.IT.machines())) {
 			machines = new ArrayList<>(StateMachineRegistry.IT.machines());
 			machines.sort(Comparator.comparing(StateMachine::getDescription));
 			treeModel.rebuild(machines);
 			tree.setSelectionPath(treeModel.getSelectedPath());
 		}
-		FsmViewNodeInfo info = treeModel.getSelectedNodeInfo().orElse(null);
-		if (info != null) {
-			info.dotText = DotPrinter.dotText(info.fsm);
+
+		// update for current selection
+		FsmViewTreeNode selectedInfo = treeModel.getSelectedNodeInfo().orElse(null);
+		if (selectedInfo != null) {
+			selectedInfo.dotText = DotPrinter.dotText(selectedInfo.fsm);
 		}
-		fsmGraphView.setFsmInfo(info);
-		fsmTextView.setFsmInfo(info);
+
+		Stream.of(actionViewOnline, actionSave, actionEmbeddedZoomIn, actionEmbeddedZoomOut, actionWindowZoomIn,
+				actionWindowZoomOut).forEach(action -> action.setEnabled(selectedInfo != null));
+
+		fsmEmbeddedGraphView.setFsmInfo(selectedInfo);
+		fsmEmbeddedTextView.setFsmInfo(selectedInfo);
+
+		if (fsmWindow != null && fsmWindow.isVisible()) {
+			fsmWindowGraphView.setFsmInfo(selectedInfo);
+			if (selectedInfo != null) {
+				fsmWindow.setTitle("State Machine View: " + selectedInfo.fsm.getDescription());
+			} else {
+				fsmWindow.setTitle("State Machine View: No machine selected");
+			}
+		}
 	}
 
 	private void saveDotFile(String fileName, String dotText) {
