@@ -4,7 +4,10 @@ import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.steering.common.MovementType.TELEPORTING;
 import static de.amr.games.pacman.controller.steering.common.MovementType.WALKING;
 import static de.amr.games.pacman.model.game.Game.sec;
+import static de.amr.games.pacman.model.world.api.Direction.DOWN;
+import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
+import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import java.util.function.Supplier;
 
@@ -108,29 +111,19 @@ public class Movement extends StateMachine<MovementType, Void> {
 
 		Tile tileAfterMove = mover.tileLocation();
 		enteredNewTile = !tileBeforeMove.equals(tileAfterMove);
-
-		checkIfEnteredPortal(tileAfterMove);
+		if (portalEntered == null) {
+			checkPortalEntered(tileAfterMove);
+		}
 	}
 
-	private void checkIfEnteredPortal(Tile tile) {
-		if (portalEntered != null) {
-			return; // already inside portal
-		}
+	private void checkPortalEntered(Tile tile) {
 		mover.world().portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
-			if (portal.either.equals(tile)) {
-				if (mover.isMoving(Direction.LEFT) && mover.tileOffsetX() <= 1) {
-					portalEntered = portal;
-				}
-				if (mover.isMoving(Direction.UP) && mover.tileOffsetY() <= 1) {
-					portalEntered = portal;
-				}
-			} else if (portal.other.equals(tile)) {
-				if (mover.isMoving(Direction.RIGHT) && mover.tileOffsetX() >= 7) {
-					portalEntered = portal;
-				}
-				if (mover.isMoving(Direction.DOWN) && mover.tileOffsetY() >= 7) {
-					portalEntered = portal;
-				}
+			if (portal.either.equals(tile) && (mover.isMoving(LEFT) && mover.tileOffsetX() <= 1)
+					|| (mover.isMoving(UP) && mover.tileOffsetY() <= 1)) {
+				portalEntered = portal;
+			} else if (portal.other.equals(tile) && (mover.isMoving(RIGHT) && mover.tileOffsetX() >= 7)
+					|| (mover.isMoving(DOWN) && mover.tileOffsetY() >= 7)) {
+				portalEntered = portal;
 			}
 		});
 		if (portalEntered != null) {
