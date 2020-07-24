@@ -3,17 +3,26 @@ package de.amr.games.pacman.model.world.components;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 
+/**
+ * A portal.
+ * <p>
+ * A horizontal portal connects a tile on the right edge of the world with a corresponding tile on
+ * the left edge, a vertical portal connects a tile on the upper edge with a tile on the lower edge.
+ * 
+ * @author Armin Reichert
+ */
 public class Portal {
 
-	/** left resp. top tile */
+	/** left or top tile */
 	public final Tile either;
 
-	/** right resp. bottom tile */
+	/** right or bottom tile */
 	public final Tile other;
 
+	/** If this is a horizontal or vertical portal */
 	public final boolean vertical;
 
-	public Direction passThroughDirection;
+	private Direction passageDir;
 
 	public Portal(Tile either, Tile other, boolean vertical) {
 		this.either = either;
@@ -21,14 +30,12 @@ public class Portal {
 		this.vertical = vertical;
 	}
 
-	/** left resp. top entry tile */
-	public Tile eitherEntry() {
-		return vertical ? Tile.at(either.col, either.row + 1) : Tile.at(either.col + 1, either.row);
+	public Direction getPassageDir() {
+		return passageDir;
 	}
 
-	/** right resp. bottom entry tile */
-	public Tile otherEntry() {
-		return vertical ? Tile.at(other.col, other.row - 1) : Tile.at(other.col - 1, other.row);
+	public void setPassageDir(Direction dir) {
+		this.passageDir = dir;
 	}
 
 	public boolean includes(Tile tile) {
@@ -36,12 +43,12 @@ public class Portal {
 	}
 
 	public Tile exit() {
-		if (passThroughDirection == Direction.RIGHT || passThroughDirection == Direction.DOWN) {
+		if (passageDir == Direction.RIGHT || passageDir == Direction.DOWN) {
 			return either;
 		}
-		if (passThroughDirection == Direction.LEFT || passThroughDirection == Direction.UP) {
+		if (passageDir == Direction.LEFT || passageDir == Direction.UP) {
 			return other;
 		}
-		throw new IllegalArgumentException("Illegal direction for passing through portal: " + passThroughDirection);
+		throw new IllegalArgumentException("Illegal passage direction: " + passageDir);
 	}
 }

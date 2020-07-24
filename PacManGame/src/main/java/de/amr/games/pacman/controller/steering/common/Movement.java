@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Controls the movement of a lifeform through the world.
+ * Controls the movement of a lifeform through the world and the portals.
  * 
  * @author Armin Reichert
  */
@@ -33,8 +33,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 	public Direction moveDir;
 	public Direction wishDir;
 	public boolean enteredNewTile;
-
-	private Portal portalEntered;
+	private Portal activePortal;
 
 	public Movement(MobileLifeform mover, String moverName) {
 		super(MovementType.class);
@@ -46,20 +45,19 @@ public class Movement extends StateMachine<MovementType, Void> {
 			.initialState(WALKING)
 			.states()
 				.state(WALKING)
-					.onTick(() -> {
-						move();
-					})
+					.onTick(this::move)
 				.state(TELEPORTING)
 					.timeoutAfter(sec(0.5f))
 					.onEntry(() -> mover.setVisible(false))
 					.onExit(() -> mover.setVisible(true))
 			.transitions()
 				.when(WALKING).then(TELEPORTING)
-					.condition(() -> enteredPortal())
-					.annotation("Portal entered")
+					.condition(this::hasEnteredPortal)
+					.annotation("Enters portal")
 				.when(TELEPORTING).then(WALKING)
 					.onTimeout()
-					.act(() -> teleport())
+					.act(this::teleport)
+					.annotation("Teleporting")
 		.endStateMachine();
 		//@formatter:on
 	}
@@ -69,6 +67,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 		super.init();
 		enteredNewTile = true;
 		moveDir = wishDir = RIGHT;
+		activePortal = null;
 	}
 
 	public void moveToTile(Tile tile, float xOffset, float yOffset) {
@@ -77,19 +76,32 @@ public class Movement extends StateMachine<MovementType, Void> {
 		enteredNewTile = !mover.tileLocation().equals(oldLocation);
 	}
 
-	private boolean enteredPortal() {
-		return portalEntered != null;
+	private boolean hasEnteredPortal() {
+		return activePortal != null;
+	}
+
+	private void checkPortalEntered() {
+		Tile tile = mover.tileLocation();
+		mover.world().portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
+			if (portal.either.equals(tile) && (mover.isMoving(LEFT) && mover.tileOffsetX() <= 1)
+					|| (mover.isMoving(UP) && mover.tileOffsetY() <= 1)) {
+				activePortal = portal;
+			} else if (portal.other.equals(tile) && (mover.isMoving(RIGHT) && mover.tileOffsetX() >= 7)
+					|| (mover.isMoving(DOWN) && mover.tileOffsetY() >= 7)) {
+				activePortal = portal;
+			}
+		});
+		if (activePortal != null) {
+			activePortal.setPassageDir(mover.moveDir());
+			loginfo("%s enters portal at %s moving %s", moverName, tile, activePortal.getPassageDir());
+		}
 	}
 
 	private void teleport() {
-		teleportEntity(mover, portalEntered);
-		portalEntered = null;
-		loginfo("%s left portal at %s", moverName, mover.tileLocation());
-	}
-
-	private void teleportEntity(MobileLifeform mover, Portal portal) {
-		Tile exit = portal.exit();
+		Tile exit = activePortal.exit();
 		mover.tf().setPosition(exit.x(), exit.y());
+		activePortal = null;
+		loginfo("%s exits portal at %s", moverName, mover.tileLocation());
 	}
 
 	private void move() {
@@ -111,24 +123,8 @@ public class Movement extends StateMachine<MovementType, Void> {
 
 		Tile tileAfterMove = mover.tileLocation();
 		enteredNewTile = !tileBeforeMove.equals(tileAfterMove);
-		if (portalEntered == null) {
-			checkPortalEntered(tileAfterMove);
-		}
-	}
-
-	private void checkPortalEntered(Tile tile) {
-		mover.world().portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
-			if (portal.either.equals(tile) && (mover.isMoving(LEFT) && mover.tileOffsetX() <= 1)
-					|| (mover.isMoving(UP) && mover.tileOffsetY() <= 1)) {
-				portalEntered = portal;
-			} else if (portal.other.equals(tile) && (mover.isMoving(RIGHT) && mover.tileOffsetX() >= 7)
-					|| (mover.isMoving(DOWN) && mover.tileOffsetY() >= 7)) {
-				portalEntered = portal;
-			}
-		});
-		if (portalEntered != null) {
-			portalEntered.passThroughDirection = mover.moveDir();
-			loginfo("%s entered portal at %s moving %s", moverName, tile, portalEntered.passThroughDirection);
+		if (activePortal == null) {
+			checkPortalEntered();
 		}
 	}
 
