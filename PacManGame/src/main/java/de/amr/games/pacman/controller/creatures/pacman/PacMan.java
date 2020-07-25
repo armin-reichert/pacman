@@ -2,10 +2,12 @@ package de.amr.games.pacman.controller.creatures.pacman;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.AWAKE;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.COLLAPSING;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.TIRED;
+import static de.amr.games.pacman.model.game.Game.sec;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
@@ -38,7 +40,6 @@ import de.amr.games.pacman.view.theme.api.Theme;
  */
 public class PacMan extends Creature<PacMan, PacManState> {
 
-	private boolean collapsing;
 	private int foodWeight;
 	private IPacManRenderer renderer;
 
@@ -66,8 +67,11 @@ public class PacMan extends Creature<PacMan, PacManState> {
 					
 				.state(POWERFUL)
 					.onTick(this::wander)
-
+					
 				.state(DEAD)
+					.timeoutAfter(sec(2f))
+
+				.state(COLLAPSING)
 
 			.transitions()
 
@@ -102,6 +106,9 @@ public class PacMan extends Creature<PacMan, PacManState> {
 					.onTimeout()
 					.annotation("Lost power")
 					.act(() -> publish(new PacManLostPowerEvent()))
+					
+				.when(DEAD).then(COLLAPSING)
+					.onTimeout()	
 
 		.endStateMachine();
 		/* @formatter:on */
@@ -162,14 +169,6 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 		renderer = theme.createPacManRenderer(this);
-	}
-
-	public boolean isCollapsing() {
-		return collapsing;
-	}
-
-	public void setCollapsing(boolean collapsing) {
-		this.collapsing = collapsing;
 	}
 
 	@Override

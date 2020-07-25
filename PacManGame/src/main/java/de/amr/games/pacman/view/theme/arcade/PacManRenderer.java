@@ -40,16 +40,6 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 			return;
 		}
 		switch (state) {
-		case DEAD:
-			if (pacMan.isCollapsing()) {
-				if (!"collapsing".equals(sprites.selectedKey())) {
-					selectSprite("collapsing");
-					sprites.get("collapsing").resetAnimation();
-				}
-			} else {
-				selectSprite("full");
-			}
-			break;
 		case AWAKE:
 		case POWERFUL:
 			selectSprite("walking-" + pacMan.moveDir());
@@ -59,6 +49,15 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 		case TIRED:
 		case SLEEPING:
 			selectSprite("full");
+		case DEAD:
+			selectSprite("full");
+			break;
+		case COLLAPSING:
+			if (!"collapsing".equals(sprites.selectedKey())) {
+				sprites.get("collapsing").resetAnimation();
+				selectSprite("collapsing");
+			}
+			break;
 		default:
 			break;
 		}

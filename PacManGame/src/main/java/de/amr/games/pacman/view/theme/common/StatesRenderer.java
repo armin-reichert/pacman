@@ -61,6 +61,11 @@ public class StatesRenderer implements IRenderer {
 		if (pacMan.is(POWERFUL)) {
 			text += String.format("(%d)", pacMan.getPower());
 		}
+		if (pacMan.state().hasTimer()) {
+			int consumed = pacMan.state().getTicksConsumed();
+			int duration = pacMan.state().getDuration();
+			text += String.format("(%d of %d)", consumed, duration);
+		}
 		if (settings.pacManImmortable) {
 			text += " lives " + Rendering.INFTY;
 		}

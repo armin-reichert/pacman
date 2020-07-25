@@ -27,7 +27,10 @@ class PacManRenderer implements IPacManRenderer {
 		PacManState state = pacMan.getState();
 		switch (state) {
 		case DEAD:
-			drawCollapsing(g);
+			drawFull(g);
+			break;
+		case COLLAPSING:
+			drawCollapsed(g);
 			break;
 		case AWAKE:
 			drawRunning(g);
@@ -62,7 +65,7 @@ class PacManRenderer implements IPacManRenderer {
 		g.fillOval(x, y, size, size);
 	}
 
-	private void drawCollapsing(Graphics2D g) {
+	private void drawCollapsed(Graphics2D g) {
 		Stroke stroke = g.getStroke();
 		float thickness = 1f;
 		g.setColor(Color.YELLOW);

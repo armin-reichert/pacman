@@ -291,19 +291,18 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						world.setFrozen(true);
 					})
 					.onTick((state, t, remaining) -> {
-						int waitTime = sec(1f), 
+						folks.pacMan.update();
+						int waitTime = sec(0.5f), 
 								dyingStartTime = waitTime + sec(1.5f),
-								dyingEndTime = dyingStartTime + sec(3f);
+								dyingEndTime = dyingStartTime + sec(2f);
 						if (t == waitTime) {
 							bonusControl.setState(BonusState.INACTIVE);
 							ghostsInsideWorld().forEach(ghost -> ghost.setVisible(false));
 						}
 						else if (t == dyingStartTime) {
-							folks.pacMan.setCollapsing(true);
 							sound.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
-							folks.pacMan.setCollapsing(false);
 							folksInsideWorld().forEach(Creature::init);
 							playView.init();
 						}
