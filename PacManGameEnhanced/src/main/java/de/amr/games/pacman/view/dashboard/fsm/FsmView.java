@@ -1,6 +1,5 @@
 package de.amr.games.pacman.view.dashboard.fsm;
 
-import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
 
 import java.awt.BorderLayout;
@@ -219,7 +218,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		JFileChooser saveDialog = new JFileChooser();
 		saveDialog.setDialogTitle("Save state machine as DOT file");
 		saveDialog.setSelectedFile(new File(fileName));
-		int option = saveDialog.showSaveDialog(app().shell().get().f2Dialog);
+		int option = saveDialog.showSaveDialog(this);
 		if (option == JFileChooser.APPROVE_OPTION) {
 			File file = saveDialog.getSelectedFile();
 			try (FileWriter w = new FileWriter(saveDialog.getSelectedFile())) {
