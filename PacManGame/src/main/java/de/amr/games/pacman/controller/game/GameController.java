@@ -292,9 +292,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick((state, t, remaining) -> {
 						folks.pacMan.update();
-						int waitTime = sec(0.5f), 
+						int waitTime = sec(1f),
 								dyingStartTime = waitTime + sec(1.5f),
-								dyingEndTime = dyingStartTime + sec(2f);
+								dyingEndTime = dyingStartTime + sec(2.5f);
 						if (t == waitTime) {
 							bonusControl.setState(BonusState.INACTIVE);
 							ghostsInsideWorld().forEach(ghost -> ghost.setVisible(false));

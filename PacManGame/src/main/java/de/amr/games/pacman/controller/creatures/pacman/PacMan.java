@@ -69,7 +69,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 					.onTick(this::wander)
 					
 				.state(DEAD)
-					.timeoutAfter(sec(2f))
+					.timeoutAfter(sec(2.5f))
 
 				.state(COLLAPSING)
 
@@ -82,39 +82,49 @@ public class PacMan extends Creature<PacMan, PacManState> {
 				
 				.when(SLEEPING).then(AWAKE).on(PacManWakeUpEvent.class)
 				
-				.when(AWAKE).then(POWERFUL).on(PacManGainsPowerEvent.class)
-					.act(e -> {
-						PacManGainsPowerEvent powerEvent = (PacManGainsPowerEvent) e;
-						state(POWERFUL).setTimer(powerEvent.duration);
-					})
+				.when(AWAKE).then(POWERFUL).on(PacManGainsPowerEvent.class).act(this::setPowerTimer)
 
 				.when(AWAKE).then(SLEEPING).on(PacManFallAsleepEvent.class)
 				
 				.when(AWAKE).then(DEAD).on(PacManKilledEvent.class)
 				
-				.stay(POWERFUL).on(PacManGainsPowerEvent.class)
-					.act(e -> {
-						PacManGainsPowerEvent powerEvent = (PacManGainsPowerEvent) e;
-						state(POWERFUL).setTimer(powerEvent.duration);
-					})
+				.stay(POWERFUL).on(PacManGainsPowerEvent.class).act(this::setPowerTimer)
 				
 				.when(POWERFUL).then(DEAD).on(PacManKilledEvent.class)
 				
 				.when(POWERFUL).then(SLEEPING).on(PacManFallAsleepEvent.class)
 				
-				.when(POWERFUL).then(AWAKE)
-					.onTimeout()
+				.when(POWERFUL).then(AWAKE).onTimeout().act(() -> publish(new PacManLostPowerEvent()))
 					.annotation("Lost power")
-					.act(() -> publish(new PacManLostPowerEvent()))
 					
-				.when(DEAD).then(COLLAPSING)
-					.onTimeout()	
+				.when(DEAD).then(COLLAPSING).onTimeout()	
 
 		.endStateMachine();
 		/* @formatter:on */
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
+	}
+
+	/**
+	 * Defines the steering used in the {@link PacManState#AWAKE} and {@link PacManState#POWERFUL}
+	 * states.
+	 * 
+	 * @param steering steering to use
+	 */
+	public void behavior(Steering<PacMan> steering) {
+		behavior(AWAKE, steering);
+		behavior(POWERFUL, steering);
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		renderer.render(g);
+	}
+
+	private void setPowerTimer(PacManGameEvent e) {
+		PacManGainsPowerEvent powerEvent = (PacManGainsPowerEvent) e;
+		state(POWERFUL).setTimer(powerEvent.duration);
 	}
 
 	private void wander() {
@@ -153,6 +163,10 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		setWishDir(bed.exitDir);
 	}
 
+	public boolean mustDigest() {
+		return foodWeight > 0;
+	}
+
 	public void wakeUp() {
 		process(new PacManWakeUpEvent());
 	}
@@ -161,7 +175,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		process(new PacManFallAsleepEvent());
 	}
 
-	public int getPower() {
+	public int getPowerTicks() {
 		return state(POWERFUL).getTicksRemaining();
 	}
 
@@ -171,28 +185,8 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		renderer = theme.createPacManRenderer(this);
 	}
 
-	@Override
-	public void draw(Graphics2D g) {
-		renderer.render(g);
-	}
-
 	public IPacManRenderer renderer() {
 		return renderer;
-	}
-
-	public boolean mustDigest() {
-		return foodWeight > 0;
-	}
-
-	/**
-	 * Defines the steering used in the {@link PacManState#AWAKE} and {@link PacManState#POWERFUL}
-	 * states.
-	 * 
-	 * @param steering steering to use
-	 */
-	public void behavior(Steering<PacMan> steering) {
-		behavior(AWAKE, steering);
-		behavior(POWERFUL, steering);
 	}
 
 	@Override

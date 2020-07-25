@@ -59,7 +59,7 @@ public class StatesRenderer implements IRenderer {
 		}
 		String text = pacMan.getState().name();
 		if (pacMan.is(POWERFUL)) {
-			text += String.format("(%d)", pacMan.getPower());
+			text += String.format("(%d)", pacMan.getPowerTicks());
 		}
 		if (pacMan.state().hasTimer()) {
 			int consumed = pacMan.state().getTicksConsumed();

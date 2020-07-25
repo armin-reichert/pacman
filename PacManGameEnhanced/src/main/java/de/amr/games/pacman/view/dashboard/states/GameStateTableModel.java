@@ -145,9 +145,9 @@ class GameStateTableModel extends AbstractTableModel {
 		r.wishDir = pacMan.wishDir();
 		if (pacMan.getState() != null) {
 			r.speed = pacMan.speed() * app().clock().getTargetFramerate();
-			r.state = pacMan.getPower() == 0 ? pacMan.getState().name() : "POWER";
-			r.ticksRemaining = pacMan.getPower() == 0 ? pacMan.state().getTicksRemaining() : pacMan.getPower();
-			r.duration = pacMan.getPower() == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
+			r.state = pacMan.getPowerTicks() == 0 ? pacMan.getState().name() : "POWER";
+			r.ticksRemaining = pacMan.getPowerTicks() == 0 ? pacMan.state().getTicksRemaining() : pacMan.getPowerTicks();
+			r.duration = pacMan.getPowerTicks() == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
 		}
 	}
 
