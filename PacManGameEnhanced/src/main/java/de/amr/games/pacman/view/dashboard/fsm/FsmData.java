@@ -13,8 +13,8 @@ class FsmData {
 	public FsmData(StateMachine<?, ?> fsm) {
 		this.fsm = fsm;
 		graph = DotPrinter.printToString(fsm);
-		scalingEmbedded = 1.2;
-		scalingWindow = 1.6;
+		scalingEmbedded = 1.0;
+		scalingWindow = 1.2;
 	}
 
 	@Override
