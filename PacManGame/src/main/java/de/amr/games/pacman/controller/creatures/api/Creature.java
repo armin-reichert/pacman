@@ -30,30 +30,37 @@ import de.amr.statemachine.core.StateMachine;
  * <p>
  * The physical size is one tile, however the visual appearance may be larger.
  * 
- * @param <STATE> state (identifier) type
+ * @param <M> subtype of mobile lifeform
+ * @param <S> state (identifier) type
  * 
  * @author Armin Reichert
  */
-public abstract class Creature<M extends MobileLifeform, STATE> extends StateMachine<STATE, PacManGameEvent>
+public abstract class Creature<M extends MobileLifeform, S> extends StateMachine<S, PacManGameEvent>
 		implements MobileLifeform, Themeable, View {
 
 	public final String name;
 	public final Entity entity;
+	protected final World world;
+	protected final Map<S, Steering<M>> steeringsByState;
+	protected final Movement movement;
 	protected Direction moveDir;
 	protected Direction wishDir;
-	protected final Map<STATE, Steering<M>> steeringsByState;
-	protected final Movement movement;
-
 	protected Theme theme;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Creature(Class<STATE> stateClass, World world, String name) {
+	public Creature(Class<S> stateClass, World world, String name) {
 		super(stateClass);
+		this.world = world;
 		this.name = name;
-		steeringsByState = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
-		movement = new Movement(this, name);
 		entity = new Entity();
 		entity.tf.width = entity.tf.height = Tile.SIZE;
+		steeringsByState = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
+		movement = new Movement(this, name);
+	}
+
+	@Override
+	public World world() {
+		return world;
 	}
 
 	public Stream<StateMachine<?, ?>> machines() {
@@ -120,7 +127,7 @@ public abstract class Creature<M extends MobileLifeform, STATE> extends StateMac
 	 * @param state state
 	 * @return steering defined for this state
 	 */
-	public Steering<M> steering(STATE state) {
+	public Steering<M> steering(S state) {
 		if (steeringsByState.containsKey(state)) {
 			return steeringsByState.get(state);
 		}
@@ -133,7 +140,7 @@ public abstract class Creature<M extends MobileLifeform, STATE> extends StateMac
 	 * @param state    state
 	 * @param steering steering defined for this state
 	 */
-	public void behavior(STATE state, Steering<M> steering) {
+	public void behavior(S state, Steering<M> steering) {
 		steeringsByState.put(state, steering);
 	}
 

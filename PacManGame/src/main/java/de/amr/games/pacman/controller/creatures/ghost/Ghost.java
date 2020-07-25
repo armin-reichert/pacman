@@ -47,7 +47,6 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
-	private final World world;
 	private final Bed bed;
 	private final int color;
 
@@ -61,7 +60,6 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	public Ghost(World world, PacMan pacMan, String name, int color, Bed bed) {
 		super(GhostState.class, world, name);
-		this.world = world;
 		this.bed = bed;
 		this.color = color;
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);

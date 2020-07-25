@@ -38,14 +38,12 @@ import de.amr.games.pacman.view.theme.api.Theme;
  */
 public class PacMan extends Creature<PacMan, PacManState> {
 
-	private final World world;
 	private boolean collapsing;
 	private int foodWeight;
 	private IPacManRenderer renderer;
 
 	public PacMan(World world) {
 		super(PacManState.class, world, "Pac-Man");
-		this.world = world;
 		/*@formatter:off*/
 		beginStateMachine()
 
@@ -172,11 +170,6 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 	public void setCollapsing(boolean collapsing) {
 		this.collapsing = collapsing;
-	}
-
-	@Override
-	public World world() {
-		return world;
 	}
 
 	@Override
