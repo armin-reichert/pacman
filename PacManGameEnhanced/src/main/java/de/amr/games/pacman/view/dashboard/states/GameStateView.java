@@ -13,10 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import de.amr.easy.game.controller.Lifecycle;
+import de.amr.games.pacman.PacManAppEnhanced;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.EnhancedGameController;
 import de.amr.statemachine.core.State;
 import net.miginfocom.swing.MigLayout;
+import javax.swing.SwingConstants;
 
 /**
  * Displays information (state, timer values, directions, speed) about the actors and the global
@@ -28,26 +30,29 @@ public class GameStateView extends JPanel implements Lifecycle {
 
 	private EnhancedGameController gameController;
 	private GameStateTable table;
-	private JLabel lblGameState;
 	private JCheckBox cbShowRoutes;
 	private JCheckBox cbShowStates;
 	private JCheckBox cbShowGrid;
 	private JPanel checkBoxesPanel;
 	private GhostHouseStateView ghostHouseStateView;
+	private JLabel lblGameState;
+	private JCheckBox cbDemoMode;
 
 	public GameStateView() {
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel content = new JPanel();
 		add(content, BorderLayout.CENTER);
-		content.setLayout(new MigLayout("", "[grow]", "[][][grow][][][grow,top]"));
+		content.setLayout(new MigLayout("", "[grow]", "[][][][grow,top]"));
 
-		lblGameState = new JLabel("Game Controller State");
+		lblGameState = new JLabel("Game State");
 		lblGameState.setForeground(Color.BLUE);
-		lblGameState.setFont(new Font("SansSerif", Font.BOLD, 16));
-		content.add(lblGameState, "cell 0 0,alignx center");
+		lblGameState.setHorizontalAlignment(SwingConstants.CENTER);
+		lblGameState.setFont(new Font("SansSerif", Font.BOLD, 18));
+		content.add(lblGameState, "cell 0 0,growx");
 
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setMaximumSize(new Dimension(32767, 200));
 		content.add(scrollPane, "cell 0 1,growx,aligny top");
 
 		table = new GameStateTable();
@@ -59,7 +64,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 		content.add(ghostHouseStateView, "cell 0 2,grow");
 
 		checkBoxesPanel = new JPanel();
-		content.add(checkBoxesPanel, "cell 0 4,growx");
+		content.add(checkBoxesPanel, "flowx,cell 0 3,alignx left");
 
 		cbShowRoutes = new JCheckBox("Show Routes");
 		checkBoxesPanel.add(cbShowRoutes);
@@ -71,6 +76,10 @@ public class GameStateView extends JPanel implements Lifecycle {
 
 		cbShowStates = new JCheckBox("Show States and Timers");
 		checkBoxesPanel.add(cbShowStates);
+
+		cbDemoMode = new JCheckBox("Demo Mode");
+		checkBoxesPanel.add(cbDemoMode);
+		cbDemoMode.addActionListener(e -> gameController.toggleDemoMode());
 		cbShowStates.addActionListener(e -> gameController.setShowingStates(cbShowStates.isSelected()));
 	}
 
@@ -111,6 +120,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 				cbShowRoutes.setSelected(gameController.isShowingRoutes());
 				cbShowGrid.setSelected(gameController.isShowingGrid());
 				cbShowStates.setSelected(gameController.isShowingStates());
+				cbDemoMode.setSelected(PacManAppEnhanced.settings.demoMode);
 			});
 		}
 	}

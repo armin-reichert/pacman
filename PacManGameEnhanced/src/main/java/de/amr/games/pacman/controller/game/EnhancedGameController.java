@@ -236,7 +236,7 @@ public class EnhancedGameController extends GameController {
 		loginfo("Ghosts are %s", settings.ghostsHarmless ? "harmless" : "dangerous");
 	}
 
-	private void toggleDemoMode() {
+	public void toggleDemoMode() {
 		settings.demoMode = !settings.demoMode;
 		setDemoMode(settings.demoMode);
 		loginfo("Demo mode is %s", settings.demoMode ? "on" : "off");
