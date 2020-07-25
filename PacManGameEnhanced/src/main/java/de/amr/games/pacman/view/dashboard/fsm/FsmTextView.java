@@ -46,7 +46,7 @@ public class FsmTextView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		if (fsmInfo != null) {
-			textArea.setText(fsmInfo.graphData);
+			textArea.setText(fsmInfo.graph);
 			textArea.setCaretPosition(0);
 		} else {
 			textArea.setText(HINT_TEXT);

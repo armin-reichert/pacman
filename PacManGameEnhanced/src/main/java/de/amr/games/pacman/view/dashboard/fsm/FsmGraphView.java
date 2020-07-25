@@ -72,7 +72,7 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		if (data != null) {
-			BufferedImage png = Graphviz.fromString(data.graphData).totalMemory(20_000_000).scale(scaling())
+			BufferedImage png = Graphviz.fromString(data.graph).totalMemory(20_000_000).scale(scaling())
 					.render(Format.PNG).toImage();
 			graphDisplay.setIcon(new ImageIcon(png));
 		} else {

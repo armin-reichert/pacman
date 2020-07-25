@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.dashboard.fsm;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -37,7 +37,7 @@ public class FsmTree extends DefaultTreeModel {
 		return Optional.empty();
 	}
 
-	public void rebuild(List<StateMachine<?, ?>> machines) {
+	public void rebuild(Collection<StateMachine<?, ?>> machines) {
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
 		root.removeAllChildren();
 		for (StateMachine<?, ?> fsm : machines) {

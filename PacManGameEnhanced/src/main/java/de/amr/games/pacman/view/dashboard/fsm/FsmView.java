@@ -14,7 +14,7 @@ import java.io.FileWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -65,7 +65,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		public void actionPerformed(ActionEvent e) {
 			tree.getSelectedData().ifPresent(data -> {
 				try {
-					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, data.graphData);
+					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, data.graph);
 					Desktop.getDesktop().browse(uri);
 				} catch (Exception x) {
 					x.printStackTrace();
@@ -78,12 +78,12 @@ public class FsmView extends JPanel implements Lifecycle {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			tree.getSelectedData().ifPresent(data -> {
-				saveDotFile(data.fsm.getDescription() + ".dot", data.graphData);
+				saveDotFile(data.fsm.getDescription() + ".dot", data.graph);
 			});
 		}
 	};
 
-	private List<StateMachine<?, ?>> machines;
+	private LinkedHashSet<StateMachine<?, ?>> machines;
 	private JFrame fsmWindow;
 	private FsmGraphView fsmWindowGraphView;
 	private FsmTree tree;
@@ -166,7 +166,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		tree.setSelectedPath(e.getNewLeadSelectionPath());
 		FsmData node = tree.getSelectedData().orElse(null);
 		if (node != null) {
-			node.graphData = DotPrinter.printToString(node.fsm);
+			node.graph = DotPrinter.printToString(node.fsm);
 		}
 	}
 
@@ -187,10 +187,11 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (machines == null || !new HashSet<>(machines).equals(StateMachineRegistry.IT.machines())) {
-			machines = new ArrayList<>(StateMachineRegistry.IT.machines());
-			machines.sort(Comparator.comparing(StateMachine::getDescription));
-			tree.rebuild(machines);
+		if (machines == null || !machines.equals(StateMachineRegistry.IT.machines())) {
+			List<StateMachine<?, ?>> machinesList = new ArrayList<>(StateMachineRegistry.IT.machines());
+			machinesList.sort(Comparator.comparing(StateMachine::getDescription));
+			machines = new LinkedHashSet<>(machinesList);
+			tree.rebuild(machinesList);
 			treeView.setSelectionPath(tree.getSelectedPath());
 		}
 		FsmData data = tree.getSelectedData().orElse(null);
