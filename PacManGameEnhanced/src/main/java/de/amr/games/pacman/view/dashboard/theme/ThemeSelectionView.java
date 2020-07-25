@@ -29,6 +29,7 @@ import net.miginfocom.swing.MigLayout;
 public class ThemeSelectionView extends JPanel implements Lifecycle {
 
 	private boolean initialized = false;
+	private Folks folks;
 
 	private GameController gameController;
 	private JComboBox<String> comboSelectTheme;
@@ -40,6 +41,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
+		folks = new Folks(gameController.world(), gameController.world().house(0));
 	}
 
 	public ThemeSelectionView() {
@@ -109,7 +111,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				String themeName = comboSelectTheme.getModel().getElementAt(comboSelectTheme.getSelectedIndex());
 				gameController.selectTheme(themeName);
-				updatePreview();
+				updatePreviewLabels();
 			}
 		});
 	}
@@ -123,27 +125,30 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 			PacManGameView gameView = (PacManGameView) view;
 			if (!comboSelectTheme.getSelectedItem().equals(gameController.theme().name())) {
 				comboSelectTheme.setSelectedItem(gameView.getTheme().name().toUpperCase());
-				updatePreview();
+				updatePreviewLabels();
 			}
 		});
 	}
 
-	private void updatePreview() {
-		Folks folks = new Folks(gameController.world(), gameController.world().house(0));
+	private void updatePreviewLabels() {
 		Theme theme = gameController.theme();
-
 		int size = 32;
-		BufferedImage small1, large1;
-		small1 = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-		large1 = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+		setPacManLabel(folks, theme, size);
+		setGhostLabels(folks, theme, size);
+	}
 
+	private void setPacManLabel(Folks folks, Theme theme, int size) {
+		BufferedImage small = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage large = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 		folks.pacMan.setState(PacManState.AWAKE);
 		folks.pacMan.setMoveDir(Direction.RIGHT);
 		folks.pacMan.entity.tf.setPosition(Tile.SIZE / 2, Tile.SIZE / 2);
-		theme.createPacManRenderer(folks.pacMan).render(small1.createGraphics());
-		large1.getGraphics().drawImage(small1, 0, 0, size, size, null);
-		lblPacMan.setIcon(new ImageIcon(large1));
+		theme.createPacManRenderer(folks.pacMan).render(small.createGraphics());
+		large.getGraphics().drawImage(small, 0, 0, size, size, null);
+		lblPacMan.setIcon(new ImageIcon(large));
+	}
 
+	private void setGhostLabels(Folks folks, Theme theme, int size) {
 		folks.ghosts().forEach(ghost -> {
 			ghost.setState(GhostState.CHASING);
 			ghost.setMoveDir(Direction.RIGHT);
@@ -174,13 +179,13 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
-		// not called?
+		// not called!
 	}
 
 	@Override
 	public void update() {
 		if (!initialized) {
-			updatePreview();
+			updatePreviewLabels();
 			initialized = true;
 		}
 		updateSelectionFromTheme();
