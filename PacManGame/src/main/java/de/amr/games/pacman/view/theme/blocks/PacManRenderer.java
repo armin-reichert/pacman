@@ -32,7 +32,7 @@ class PacManRenderer implements IPacManRenderer {
 		case AWAKE:
 			drawRunning(g);
 			break;
-		case INBED:
+		case TIRED:
 		case SLEEPING:
 			drawFull(g);
 			break;

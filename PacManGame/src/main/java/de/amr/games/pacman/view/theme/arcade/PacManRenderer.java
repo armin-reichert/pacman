@@ -56,7 +56,7 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 			boolean running = pacMan.entity.tf.vx != 0 || pacMan.entity.tf.vy != 0;
 			enableAnimation(running || !running && !isAnimationStoppedWhenStanding());
 			break;
-		case INBED:
+		case TIRED:
 		case SLEEPING:
 			selectSprite("full");
 		default:

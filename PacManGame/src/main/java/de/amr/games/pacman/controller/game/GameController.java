@@ -34,7 +34,6 @@ import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -81,10 +80,18 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public static final float BASE_SPEED = 1.25f;
 
 	public static float pacManSpeed(PacMan pacMan, Game game) {
-		if (pacMan.is(PacManState.SLEEPING, PacManState.DEAD)) {
+		switch (pacMan.getState()) {
+		case TIRED:
+		case SLEEPING:
+		case DEAD:
 			return 0;
+		case POWERFUL:
+			return pacMan.mustDigest() ? speed(game.level.pacManPowerDotsSpeed) : speed(game.level.pacManPowerSpeed);
+		case AWAKE:
+			return pacMan.mustDigest() ? speed(game.level.pacManDotsSpeed) : speed(game.level.pacManSpeed);
+		default:
+			throw new IllegalStateException("Illegal Pac-Man state: " + pacMan.getState());
 		}
-		return pacMan.getPower() > 0 ? speed(game.level.pacManPowerSpeed) : speed(game.level.pacManSpeed);
 	}
 
 	public static float ghostSpeed(Ghost ghost, Game game) {

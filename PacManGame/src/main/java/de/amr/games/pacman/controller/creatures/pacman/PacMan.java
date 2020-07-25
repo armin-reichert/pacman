@@ -1,11 +1,11 @@
 package de.amr.games.pacman.controller.creatures.pacman;
 
 import static de.amr.games.pacman.PacManApp.settings;
-import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
-import static de.amr.games.pacman.controller.creatures.pacman.PacManState.INBED;
-import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.AWAKE;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.TIRED;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
@@ -39,8 +39,8 @@ import de.amr.games.pacman.view.theme.api.Theme;
 public class PacMan extends Creature<PacMan, PacManState> {
 
 	private final World world;
-	private int digestion;
 	private boolean collapsing;
+	private int foodWeight;
 	private IPacManRenderer renderer;
 
 	public PacMan(World world) {
@@ -50,67 +50,33 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		beginStateMachine()
 
 			.description(name)
-			.initialState(INBED)
+			.initialState(TIRED)
 
 			.states()
 			
-				.state(INBED)
+				.state(TIRED)
 					.onEntry(() -> {
 						gotoBed();
 						setVisible(true);
-						digestion = 0;
+						foodWeight = 0;
 					})
 
 				.state(SLEEPING)
-					.onEntry(() -> {
-						digestion = 0;
-					})
 
 				.state(AWAKE)
-					.onEntry(() -> {
-						digestion = 0;
-					})
-
-					.onTick(() -> {
-						if (digestion > 0) {
-							--digestion;
-							return;
-						}
-						steering().steer(this);
-						movement.update();
-						if (!isTeleporting()) {
-							findSomethingInteresting().ifPresent(this::publish);
-						}
-					})
+					.onTick(this::wander)
 					
 				.state(POWERFUL)
-					.onEntry(() -> {
-						digestion = 0;
-					})
-
-					.onTick(() -> {
-						if (digestion > 0) {
-							--digestion;
-							return;
-						}
-						steering().steer(this);
-						movement.update();
-						if (!isTeleporting()) {
-							findSomethingInteresting().ifPresent(this::publish);
-						}
-					})
+					.onTick(this::wander)
 
 				.state(DEAD)
-					.onEntry(() -> {
-						digestion = 0;
-					})
 
 			.transitions()
 
-				.when(INBED).then(SLEEPING)
+				.when(TIRED).then(SLEEPING)
 					.annotation("What else without Ms. Pac-Man?")
 
-				.when(INBED).then(AWAKE).on(PacManWakeUpEvent.class)
+				.when(TIRED).then(AWAKE).on(PacManWakeUpEvent.class)
 				
 				.when(SLEEPING).then(AWAKE).on(PacManWakeUpEvent.class)
 				
@@ -146,12 +112,33 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
 	}
 
-	public void setCollapsing(boolean collapsing) {
-		this.collapsing = collapsing;
+	private void wander() {
+		steering().steer(this);
+		movement.update();
+		if (isTeleporting()) {
+			return;
+		}
+		findSomethingInteresting().ifPresent(this::publish);
 	}
 
-	public boolean isCollapsing() {
-		return collapsing;
+	private Optional<PacManGameEvent> findSomethingInteresting() {
+		if (enteredNewTile()) {
+			foodWeight = Math.max(0, foodWeight - 1);
+		}
+		Tile pacManLocation = tileLocation();
+		Optional<Bonus> maybeBonus = world.getBonus().filter(bonus -> bonus.state == BonusState.ACTIVE);
+		if (maybeBonus.isPresent()) {
+			Bonus bonus = maybeBonus.get();
+			if (pacManLocation.equals(bonus.location)) {
+				foodWeight += Game.DIGEST_BIG_MEAL_TICKS;
+				return Optional.of(new BonusFoundEvent(bonus));
+			}
+		}
+		if (world.containsFood(pacManLocation)) {
+			foodWeight += world.containsEnergizer(pacManLocation) ? Game.DIGEST_BIG_MEAL_TICKS : Game.DIGEST_SNACK_TICKS;
+			return Optional.of(new FoodFoundEvent(pacManLocation));
+		}
+		return Optional.empty();
 	}
 
 	private void gotoBed() {
@@ -179,6 +166,14 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		renderer = theme.createPacManRenderer(this);
 	}
 
+	public boolean isCollapsing() {
+		return collapsing;
+	}
+
+	public void setCollapsing(boolean collapsing) {
+		this.collapsing = collapsing;
+	}
+
 	@Override
 	public World world() {
 		return world;
@@ -191,6 +186,10 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 	public IPacManRenderer renderer() {
 		return renderer;
+	}
+
+	public boolean mustDigest() {
+		return foodWeight > 0;
 	}
 
 	/**
@@ -228,21 +227,5 @@ public class PacMan extends Creature<PacMan, PacManState> {
 			return world.tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;
-	}
-
-	private Optional<PacManGameEvent> findSomethingInteresting() {
-		Tile pacManLocation = tileLocation();
-		Optional<Bonus> maybeBonus = world.getBonus().filter(bonus -> bonus.state == BonusState.ACTIVE);
-		if (maybeBonus.isPresent()) {
-			Bonus bonus = maybeBonus.get();
-			if (pacManLocation.equals(bonus.location)) {
-				return Optional.of(new BonusFoundEvent(bonus));
-			}
-		}
-		if (world.containsFood(pacManLocation)) {
-			digestion = world.containsEnergizer(pacManLocation) ? Game.DIGEST_ENERGIZER_TICKS : Game.DIGEST_PELLET_TICKS;
-			return Optional.of(new FoodFoundEvent(pacManLocation));
-		}
-		return Optional.empty();
 	}
 }
