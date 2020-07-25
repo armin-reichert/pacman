@@ -2,19 +2,12 @@ package de.amr.games.pacman.model.world.api;
 
 import java.util.stream.Stream;
 
-import de.amr.easy.game.entity.Transform;
-
 /**
  * A life form that can move through the world.
  * 
  * @author Armin Reichert
  */
 public interface MobileLifeform extends Life {
-
-	/**
-	 * @return the transform for this lifeform
-	 */
-	Transform tf();
 
 	/**
 	 * @return the current move direction

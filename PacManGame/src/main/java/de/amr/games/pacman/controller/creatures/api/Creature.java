@@ -154,28 +154,8 @@ public abstract class Creature<M extends MobileLifeform, STATE> extends StateMac
 	}
 
 	@Override
-	public float centerX() {
-		return entity.tf.getCenter().x;
-	}
-
-	@Override
-	public float centerY() {
-		return entity.tf.getCenter().y;
-	}
-
-	@Override
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		movement.moveToTile(tile, xOffset, yOffset);
-	}
-
-	@Override
-	public float tileOffsetX() {
-		return entity.tf.x - tileLocation().x() + Tile.SIZE / 2;
-	}
-
-	@Override
-	public float tileOffsetY() {
-		return entity.tf.y - tileLocation().y() + Tile.SIZE / 2;
 	}
 
 	public boolean isTeleporting() {

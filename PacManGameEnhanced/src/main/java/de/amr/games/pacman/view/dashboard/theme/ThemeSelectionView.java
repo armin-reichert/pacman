@@ -56,7 +56,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 
 		JPanel panelPreview = new JPanel();
 		panelPreview.setBackground(Color.BLACK);
-		add(panelPreview, "cell 1 1,growx,aligny top");
+		add(panelPreview, "cell 1 1,alignx left,aligny top");
 		panelPreview.setLayout(new MigLayout("", "[grow][grow][grow][grow][grow]", "[]"));
 
 		lblPacMan = new JLabel("Pac-Man");

@@ -1,6 +1,7 @@
 package de.amr.games.pacman.model.world.api;
 
 import de.amr.easy.game.controller.Lifecycle;
+import de.amr.easy.game.entity.Transform;
 
 /**
  * A lifeform inside its world.
@@ -9,9 +10,24 @@ import de.amr.easy.game.controller.Lifecycle;
  */
 public interface Life extends Lifecycle {
 
-	float centerX();
+	/**
+	 * @return the transform for this lifeform
+	 */
+	Transform tf();
 
-	float centerY();
+	/**
+	 * @return x-coordinate of collision box center
+	 */
+	default float centerX() {
+		return tf().getCenter().x;
+	}
+
+	/**
+	 * @return y-coordinate of collision box center
+	 */
+	default float centerY() {
+		return tf().getCenter().y;
+	}
 
 	/**
 	 * The tile location is defined as the tile containing the center of the lifeforms body.
@@ -30,14 +46,18 @@ public interface Life extends Lifecycle {
 	 * 
 	 * @return the horizontal tile offset
 	 */
-	float tileOffsetX();
+	default float tileOffsetX() {
+		return tf().x - tileLocation().x() + Tile.SIZE / 2;
+	}
 
 	/**
 	 * The offset between the top side of an entity and the top side of the tile it belongs to.
 	 * 
 	 * @return the vertical tile offset
 	 */
-	float tileOffsetY();
+	default float tileOffsetY() {
+		return tf().y - tileLocation().y() + Tile.SIZE / 2;
+	}
 
 	/**
 	 * Euclidean distance (in tiles) between this and the other lifeform.
@@ -49,7 +69,16 @@ public interface Life extends Lifecycle {
 		return tileLocation().distance(other.tileLocation());
 	}
 
-	void placeAt(Tile tile, float offsetX, float offsetY);
+	/**
+	 * Places this lifeform at the given tile location.
+	 * 
+	 * @param tile    tile location
+	 * @param offsetX offset in x-direction
+	 * @param offsetY offset in y-direction
+	 */
+	default void placeAt(Tile tile, float offsetX, float offsetY) {
+		tf().setPosition(tile.x() + offsetX, tile.y() + offsetY);
+	}
 
 	World world();
 
