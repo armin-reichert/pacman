@@ -2,13 +2,14 @@ package de.amr.games.pacman.model.world.api;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.entity.Transform;
+import de.amr.easy.game.math.Vector2f;
 
 /**
  * A lifeform inside its world.
  * 
  * @author Armin Reichert
  */
-public interface Life extends Lifecycle {
+public interface Lifeform extends Lifecycle {
 
 	/**
 	 * @return the transform for this lifeform
@@ -16,28 +17,14 @@ public interface Life extends Lifecycle {
 	Transform tf();
 
 	/**
-	 * @return x-coordinate of collision box center
-	 */
-	default float centerX() {
-		return tf().getCenter().x;
-	}
-
-	/**
-	 * @return y-coordinate of collision box center
-	 */
-	default float centerY() {
-		return tf().getCenter().y;
-	}
-
-	/**
 	 * The tile location is defined as the tile containing the center of the lifeforms body.
 	 * 
 	 * @return tile location of this lifeform
 	 */
 	default Tile tileLocation() {
-		float cx = centerX(), cy = centerY();
-		int col = (int) (cx >= 0 ? cx / Tile.SIZE : Math.floor(cx / Tile.SIZE));
-		int row = (int) (cy >= 0 ? cy / Tile.SIZE : Math.floor(cy / Tile.SIZE));
+		Vector2f center = tf().getCenter();
+		int col = (int) (center.x >= 0 ? center.x / Tile.SIZE : Math.floor(center.x / Tile.SIZE));
+		int row = (int) (center.y >= 0 ? center.y / Tile.SIZE : Math.floor(center.y / Tile.SIZE));
 		return Tile.at(col, row);
 	}
 
@@ -65,7 +52,7 @@ public interface Life extends Lifecycle {
 	 * @param other other animal
 	 * @return Euclidean distance measured in tiles
 	 */
-	default double distance(Life other) {
+	default double distance(Lifeform other) {
 		return tileLocation().distance(other.tileLocation());
 	}
 
@@ -80,13 +67,27 @@ public interface Life extends Lifecycle {
 		tf().setPosition(tile.x() + offsetX, tile.y() + offsetY);
 	}
 
+	/**
+	 * @return the world where this lifeform is living
+	 */
 	World world();
 
+	/**
+	 * @return if this lifeform is currently inside its world
+	 */
 	default boolean isInsideWorld() {
 		return world().contains(this);
 	}
 
+	/**
+	 * @return if this lifeform is visible
+	 */
 	boolean isVisible();
 
+	/**
+	 * Makes this lifeform visible or invisible.
+	 * 
+	 * @param visible if visible or not
+	 */
 	void setVisible(boolean visible);
 }

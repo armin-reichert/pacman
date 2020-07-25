@@ -6,7 +6,7 @@ import java.util.List;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Life;
+import de.amr.games.pacman.model.world.api.Lifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Block;
@@ -38,7 +38,7 @@ public abstract class AbstractWorld extends Block implements World {
 		return List.of(capeNW, capeNE, capeSE, capeSW);
 	}
 
-	private final Collection<Life> excluded = new HashSet<>();
+	private final Collection<Lifeform> excluded = new HashSet<>();
 
 	public AbstractWorld(int width, int height) {
 		super(0, 0, width, height);
@@ -114,19 +114,19 @@ public abstract class AbstractWorld extends Block implements World {
 	}
 
 	@Override
-	public void include(Life life) {
+	public void include(Lifeform life) {
 		excluded.remove(life);
 		life.setVisible(true);
 	}
 
 	@Override
-	public void exclude(Life life) {
+	public void exclude(Lifeform life) {
 		excluded.add(life);
 		life.setVisible(false);
 	}
 
 	@Override
-	public boolean contains(Life life) {
+	public boolean contains(Lifeform life) {
 		return !excluded.contains(life);
 	}
 }

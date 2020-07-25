@@ -7,7 +7,7 @@ import java.util.stream.Stream;
  * 
  * @author Armin Reichert
  */
-public interface MobileLifeform extends Life {
+public interface MobileLifeform extends Lifeform {
 
 	/**
 	 * @return the current move direction

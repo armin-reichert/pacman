@@ -62,21 +62,21 @@ public interface Territory {
 	 * @param life a life
 	 * @return {@code true} if the life is currently included
 	 */
-	boolean contains(Life life);
+	boolean contains(Lifeform life);
 
 	/**
 	 * Includes the life into the territory.
 	 * 
 	 * @param life a life
 	 */
-	void include(Life life);
+	void include(Lifeform life);
 
 	/**
 	 * Temporarily excludes the life from the territory.
 	 * 
 	 * @param life a life
 	 */
-	void exclude(Life life);
+	void exclude(Lifeform life);
 
 	/**
 	 * @return list of "capes" in order NW, NE, SE, SW
