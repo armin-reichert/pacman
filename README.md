@@ -4,17 +4,19 @@
 
 Pac-Man, a *racist, homophobic game*? 
 
-First of all, without any doubt, this Pac-Man guy is, as his name clearly proves, a **man**, born around 1980 even an **old man**, thank god not an **old white man** or even worse an **old orange man**, but he is and has always been (hmm, wasn't the Nintendo guy in fact an orange man?) an **old yellow man**.
+Why that? First of all, without any doubt, this Pac-Man guy is, as his name clearly proves, a **man**, born around 1980, also an **old man** (thank god not an **old white man** or even worse an **orange man**), but he certainly is (hmm, wasn't the Nintendo guy in fact an orange man?) an **old yellow man**.
 
-And what has this **old yellow man** been doing all his life? Chasing ghosts **of color**! And these ghosts, as their dresses (burkas?) prove, are **females** or even **transgenders** or any of the other 300 gender possibilities! 
+And what has this **old yellow man** been doing all his life? He has been chasing **ghost people of color**! And these ghosts, as their dresses (are that burkas?) indicate, are most probably **females** or **transgenders** or any of the other 300 cis-trans-bullshit genders! 
 
-WTF! Why hasn't this **racist, homophobic game** long been forbidden? GLM, LGBTQ, please take over!
- 
+WTF! Why hasn't this **racist, homophobic game** long been forbidden? GLM, LGBTQ activists, please take over!
+
+And Now for Something Completely Different...
+
 ## How to run the game
 
 Download the executable "PacManGame-1.0.jar" or the extended version "PacManGameEnhanced-1.0.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. For just playing Pac-Man, the first jar file is sufficient, if you want to see the fancy stuff in the custom tabs, use the enhanced version.
 
-If you want to use the command-line arguments (see below), open a command window and enter
+If you want to use the many command-line arguments (see below), open a command window and enter:
 
 ```
 cd directory/where/jarfile/was/downloaded
@@ -40,10 +42,10 @@ mvn clean install assembly:single
 - F2 opens a settings dialog where the game clock frequency and (full-)screen resolution can be changed
 - F11 toggles between window and full-screen exclusive mode
 - The settings dialog contains four custom tabs:
-  - theme selection
-  - used state machine overview with Graphviz export and preview 
-  - game and actor states inspection
-  - current level inspection
+  1. Theme selection
+  2. Running state machine inspection 
+  3. Game and actor state inspection
+  4. Level data inspection
 
 General command-line arguments:
   - Scaling: e.g. `-scale 2.5`
@@ -67,13 +69,13 @@ Game-specific command-line arguments:
   - `-startLevel` (default: 1): starts the game in the specified level
   - `-theme`: (default: arcade): used theme (arcade, blocks, ascii) 
 
-In enhanced mode, the following additional functions are available:
+In enhanced mode, the following additional features are available:
   - The overall speed can be changed during the game; 
     - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
     - Fixed: '1' = normal speed, '2' = fast, '3' = very fast
   - 'b' toggles the presence of Blinky
   - 'c' toggles the presence of Clyde
-  - 'd' toggles between normal play mode and demo mode where Pac-Man moves automatically
+  - 'd' toggles between normal play mode and demo mode where Pac-Man moves automatically and stays alive
   - 'e' eats all pellets except the energizers
   - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
   - 'g' toggles the display of the grid and the alignment of the actors on the grid
@@ -86,21 +88,21 @@ In enhanced mode, the following additional functions are available:
   - 'r' toggles the display of actor routes and target tiles
   - 's' toggles the display of actor states and timers
   - 't' toggles display of timing information (target vs. actual framerate)
-  - 'x' toggles if ghost collisions may kill Pac-Man
+  - 'x' toggles if ghost collisions kill Pac-Man or not
   - 'z' switches to the next available theme
   - '+' switches to the next level
 
 ## These were the times
   
-The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but its hypnotizing sound is still in my head.
+The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, with a crappy tiny integrated speaker, attached to a low-res monochrome monitor, but this hypnotizing smacking sound is still in my head today!
 
-When I saw some of the Pac-Man clone implementations on YouTube some years ago, I asked myself: how would I do that, as a software developer with a certain experience but one who never has implemented a real game before? 
+When I discovered Pac-Man clone implementations on YouTube some years ago, I asked myself: how would I do that, as a software developer with a certain experience, but one who never has implemented a game before? 
 
-I shortly looked into existing code, for example [here](https://github.com/leonardo-ono/Java2DPacmanGame) or [here](https://github.com/yichen0831/Pacman_libGdx) or [here](https://github.com/urossss/Pac-Man) which I didn't find bad at all. I also found many articles and blog posts talking about how the Pac-Man actors can be modelled by finite-state machines and how their individual behaviour ("AI") make this game so entertaining. But what I could not find was an implementation where these aspects were still cleary visible inside the code!
+I shortly looked into existing code, for example [here](https://github.com/leonardo-ono/Java2DPacmanGame) or [here](https://github.com/urossss/Pac-Man) which I didn't find too bad. I also found articles and blog posts talking about how the Pac-Man actors can be modelled by finite-state machines and how their individual behaviour ("AI") make this game so entertaining. But what I could not find anywhere was an implementation where these aspects were still cleary visible inside the code.
 
 And so my challenge was born: 
 
-Can I implement a Pac-Man clone in a way, that the finite-state machines remain explicitly visible inside the code?
+*Can I implement a Pac-Man clone in such a way that the finite-state machines are explicitly visible inside the code?*
 
 ## Issues to solve
 
@@ -120,7 +122,7 @@ There are many possibilities of implementing *finite-state machines* in software
 
 The low-level implementations using switch-statements or function pointers (if your programming language supports this) are the most performant ones but as long as you achieve the performance goals for your game (60 frames/updates per second) you can use whatever you like. Of course, using  a higher-level implementation should make your code more readable and easier to maintain.
 
-I decided to write my own [state machine implementation](https://github.com/armin-reichert/statemachine), which was a good exercise and really fun because of the availability of lambda expressions and method references.
+I decided to write my own [state machine implementation](https://github.com/armin-reichert/statemachine), which was a good exercise and really fun because of the availability of lambda expressions and method references. These state machines can be exported into the [Graphviz](https://graphviz.org) format which is also used to display the running state machines inside the inspection view.
 
 After you have decided which implementation you want to use for your state machines you can finally focus on the game itself.
 
@@ -194,16 +196,23 @@ See [GhostCommand](PacManGame/src/main/java/de/amr/games/pacman/controller/game/
 
 ```java
 beginStateMachine()
-	.description("[GhostCommand]")
-	.initialState(SCATTERING)
+	.description("GhostCommand")
+	.initialState(SCATTER)
 .states()
-	.state(SCATTERING)
-		.timeoutAfter(this::scatterDuration)
-	.state(CHASING)
-		.timeoutAfter(this::chaseDuration)
+	.state(SCATTER)
+		.timeoutAfter(() -> scatterTicks(game.level.number, round))
+		.annotation(() -> String.format("%d of %d ticks", state().getTicksConsumed(), state().getDuration()))
+		.onTick(() -> ghosts.forEach(ghost -> ghost.setNextStateToEnter(() -> GhostState.SCATTERING)))
+	.state(CHASE)
+	.timeoutAfter(() -> chaseTicks(game.level.number, round))
+		.annotation(() -> String.format("%d of %d ticks", state().getTicksConsumed(), state().getDuration()))
+		.onTick(() -> ghosts.forEach(ghost -> ghost.setNextStateToEnter(() -> GhostState.CHASING)))
+	.state(STOPPED)
 .transitions()
-	.when(SCATTERING).then(CHASING).onTimeout()
-	.when(CHASING).then(SCATTERING).onTimeout().act(() -> ++round)
+	.when(SCATTER).then(CHASE).onTimeout()
+	.when(SCATTER).then(STOPPED).on("stopAttacking")
+	.when(CHASE).then(SCATTER).onTimeout().act(() -> ++round)
+	.when(CHASE).then(STOPPED).on("stopAttacking")
 .endStateMachine();
 ```
 
@@ -216,7 +225,7 @@ Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGa
 
 ```java
 beginStateMachine()
-	.description("[BonusControl]")
+	.description("BonusControl")
 	.initialState(INACTIVE)
 	.states()
 		.state(INACTIVE)
@@ -249,23 +258,23 @@ When an actor leaves the board inside a tunnel it leaves its normal movement mod
 
 ```java
 beginStateMachine()
-	.description(String.format("[%s movement]", moverName))
+	.description(String.format("%s movement", moverName))
 	.initialState(WALKING)
 	.states()
 		.state(WALKING)
-			.onTick(() -> {
-				move();
-			})
+			.onTick(this::move)
 		.state(TELEPORTING)
 			.timeoutAfter(sec(0.5f))
 			.onEntry(() -> mover.setVisible(false))
 			.onExit(() -> mover.setVisible(true))
 	.transitions()
 		.when(WALKING).then(TELEPORTING)
-			.condition(() -> insidePortal())
+			.condition(this::hasEnteredPortal)
+			.annotation("Enters portal")
 		.when(TELEPORTING).then(WALKING)
 			.onTimeout()
-			.act(() -> teleport())
+			.act(this::teleport)
+			.annotation("Teleporting")
 .endStateMachine();
 ```
 
@@ -317,7 +326,7 @@ The only difference in ghost behavior are the target tiles in the "CHASING" and 
 
 ### Scattering
 
-In *scattering* state, each ghost tries to reach his individual "scattering target". Because ghosts cannot reverse their move direction this results in a cyclic movement around the walls in the corresponding corner of the maze. These target tiles are unreachable tiles outside of the playing area:
+In *scattering* state, each ghost tries to reach his individual "scattering target". These are unreachable tiles outside of the playing area. Because ghosts cannot reverse their move direction, this results in a cyclic movement in the corresponding maze corner.
 
 ```java
 you(blinky).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
@@ -332,35 +341,35 @@ you(clyde).when(SCATTERING).headFor().tile(0, world.height() - 1).ok();
 
 #### Blinky (the red ghost)
 
-Blinky is special because he becomes "insane" when the number of remaining pellets reaches certain values depending on the current game level. He then becomes "cruise elroy" whatever that means. All other ghosts are "immune".
+Blinky is special because he becomes "insane" when the number of remaining pellets reaches certain values, depending on the current game level. He then becomes "cruise elroy", whatever that means. All other ghosts are "immune".
 
 This behavior is implemented by the following state machine:
 
 ```java
-public class GhostSanityControl extends StateMachine<GhostSanity, Void> {
+beginStateMachine()
+	.initialState(initialSanity)
+	.description(() -> String.format("%s sanity", ghostName))
+	.states()
+		.state(IMMUNE)
+		.state(INFECTABLE)
+		.state(ELROY1)
+		.state(ELROY2)
 
-	public GhostSanityControl(Game game, String ghostName, GhostSanity initialSanity) {
-		super(GhostSanity.class);
-		//@formatter:off
-		beginStateMachine()
-			.initialState(initialSanity)
-			.description(() -> String.format("[%s sanity]", ghostName))
-			.states()
-			.transitions()
-			
-				.when(INFECTABLE).then(ELROY2)
-					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
-					
-				.when(INFECTABLE).then(ELROY1)
-					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy1DotsLeft)
-				
-				.when(ELROY1).then(ELROY2)
-					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
-					
-		.endStateMachine();
-		//@formatter:on
-	}
-}
+	.transitions()
+
+		.when(ELROY1).then(ELROY2)
+			.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
+			.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
+
+		.when(INFECTABLE).then(ELROY2)
+			.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
+			.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
+
+		.when(INFECTABLE).then(ELROY1)
+			.condition(() -> game.level.remainingFoodCount() <= game.level.elroy1DotsLeft)
+			.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy1DotsLeft))
+
+.endStateMachine();
 ```
 
 where the states are from this enumeration type:
@@ -376,6 +385,7 @@ Blinky's chasing behavior is to directly attack Pac-Man:
 ```java
 you(blinky).when(CHASING).headFor().tile(pacMan::location).ok();
 ```
+
 <img src="PacManDoc/blinky.png"/>
 
 #### Pinky
@@ -409,7 +419,8 @@ you(inky).when(CHASING).headFor().tile(() -> {
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-you(clyde).when(CHASING).headFor().tile(() -> clyde.distance(pacMan) > 8 ? pacMan.location() : Tile.at(0, worldHeight - 1)).ok();
+you(clyde).when(CHASING).headFor()
+	.tile(() -> clyde.distance(pacMan) > 8 ? pacMan.location() : Tile.at(0, worldHeight - 1)).ok();
 ```
 
 <img src="PacManDoc/clyde.png"/>
@@ -424,14 +435,22 @@ The visualization of the ghost attack behavior i.e. the routes to their current 
 
 There are two ways of getting information about the current game and actor state: either inside the playing view where state names and timer values are displayed at the actors themselves, or in the application settings dialog that can be opened using the F2-key. An application can add its own  tabs to this dialog using the Application API. In the Pac-Man game, there are two custom tabs:
 
-#### Game state tab
+#### "State Machines" tab
+
+The currently running state machines are displayed in Graphviz dot-format and rendered as an image which is live updated as the game is running. The tree on the left side shows all currently active state machines. Double-clicking an entry, opens the graphical display in a new window. You can zoom in/out using the '+'/'-' keys. The graphs can also be saved in "dot"-format and opened in the GraphvizOnline website, where they can be converted to other formats.
+
+<img src="PacManDoc/game-statemachines-text-view.png">
+
+<img src="PacManDoc/game-statemachines-graph-view.png">
+
+#### "Game State" tab
 
 <img src="PacManDoc/game-state-view.png">
 
 The table shows the current state of all actors in the game and also their velocities and positions. The traffic lights show when ghosts locked inside the ghost house
 are allowed to leave (following the rules described in the references cited below).
 
-#### Game level tab
+#### "Game Level" tab
 
 <img src="PacManDoc/game-level-view.png">
 
@@ -443,7 +462,7 @@ The original Pac-Man game did not use any graph-based pathfinding. To still give
 you(ghost).when(FRIGHTENED).fleeToSafeTile().from(folks.pacMan()).ok();
 ```
 
-The wrapper class [WorldGraph](PacManGame/src/main/java/de/amr/games/pacman/model/world/core/WorldGraph.java) adds a (grid) graph structure to the maze. This allows running the generic graph algorithms from my [graph library](https://github.com/armin-reichert/graph) on the maze. For example, shortest paths in the maze can then be computed by just calling the *findPath(Tile source, Tile target)* method on the maze graph. This method runs either an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html), a breadth-first search or a best-first search on the underlying graph, see configuration options below. The graph library provides a whole number of search algorithms like BFS or Dijkstra. The code to compute a shortest path between two tiles using the A* algorithm with Manhattan distance heuristics looks like this:
+The wrapper class [WorldGraph](PacManGame/src/main/java/de/amr/games/pacman/model/world/core/WorldGraph.java) adds a (grid) graph structure to the maze. This allows running the generic graph algorithms from my [graph library](https://github.com/armin-reichert/graph) on the maze. For example, shortest paths in the maze can then be computed by just calling the *findPath(Tile source, Tile target)* method on the maze graph. This method runs either an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html), a Breadth-First Search or a Best-First Search on the underlying graph, see configuration options below. The graph library provides a whole number of search algorithms like BFS or Dijkstra. The code to compute a shortest path between two tiles using the A* algorithm with Manhattan distance heuristics looks like this:
 
 ```java
 GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
@@ -482,7 +501,7 @@ Just recently I found this excellent video on YouTube:
 
 ## Summary
 
-The goal of this project is to provide a [Pac-Man](https://en.wikipedia.org/wiki/List_of_Pac-Man_video_games) implementation in which the game's inner workings can be understood from the code more easily. The implementation follows the MVC pattern and uses finite-state machines for the control logic of the actors and the game. The state machines are implemented in a declarative way using the *builder* pattern. 
+The goal of this project was to provide a [Pac-Man](https://en.wikipedia.org/wiki/List_of_Pac-Man_video_games) implementation in which the game's inner workings can be understood from the code more easily. The implementation follows the MVC pattern and uses finite-state machines for the control logic of the actors and the game. The state machines are implemented in a declarative way using the *builder* pattern. 
 
 A home-brew library is used for the basic game infrastructure (active rendering, game loop, full-screen mode, 
 keyboard and mouse handling etc.), but it should be no problem to implement these parts from scratch or 
