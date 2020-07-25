@@ -2,6 +2,7 @@ package de.amr.games.pacman.controller.creatures.pacman;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.RUNNING;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
@@ -68,11 +69,26 @@ public class PacMan extends Creature<PacMan, PacManState> {
 					})
 
 					.onTick(() -> {
-						if (power > 0) {
-							if (--power == 0) {
-								publish(new PacManLostPowerEvent());
-								return;
-							}
+						if (digestion > 0) {
+							--digestion;
+							return;
+						}
+						steering().steer(this);
+						movement.update();
+						if (!isTeleporting()) {
+							findSomethingInteresting().ifPresent(this::publish);
+						}
+					})
+					
+				.state(POWERFUL)
+					.onEntry(() -> {
+						digestion = 0;
+					})
+
+					.onTick(() -> {
+						if (--power == 0) {
+							publish(new PacManLostPowerEvent());
+							return;
 						}
 						if (digestion > 0) {
 							--digestion;
@@ -93,6 +109,12 @@ public class PacMan extends Creature<PacMan, PacManState> {
 			.transitions()
 
 				.when(RUNNING).then(DEAD).on(PacManKilledEvent.class)
+				
+				.when(POWERFUL).then(DEAD).on(PacManKilledEvent.class)
+				
+				.when(POWERFUL).then(RUNNING)
+					.condition(() -> power == 0)
+					.annotation("Lost power")
 
 		.endStateMachine();
 		/* @formatter:on */
@@ -115,6 +137,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 	public void setPower(int power) {
 		this.power = power;
+		setState(POWERFUL);
 	}
 
 	@Override
@@ -148,12 +171,14 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	}
 
 	/**
-	 * Defines the steering used in the {@link PacManState#RUNNING} state.
+	 * Defines the steering used in the {@link PacManState#RUNNING} and {@link PacManState#POWERFUL}
+	 * states.
 	 * 
-	 * @param steering steering to use in every state
+	 * @param steering steering to use
 	 */
 	public void behavior(Steering<PacMan> steering) {
 		behavior(RUNNING, steering);
+		behavior(POWERFUL, steering);
 	}
 
 	@Override

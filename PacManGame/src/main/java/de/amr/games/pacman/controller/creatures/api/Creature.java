@@ -39,7 +39,8 @@ public abstract class Creature<M extends MobileLifeform, STATE> extends StateMac
 
 	public final String name;
 	public final Entity entity;
-
+	protected Direction moveDir;
+	protected Direction wishDir;
 	protected final Map<STATE, Steering<M>> steeringsByState;
 	protected final Movement movement;
 
@@ -188,22 +189,22 @@ public abstract class Creature<M extends MobileLifeform, STATE> extends StateMac
 
 	@Override
 	public Direction moveDir() {
-		return movement.moveDir;
+		return moveDir;
 	}
 
 	@Override
 	public void setMoveDir(Direction dir) {
-		movement.moveDir = Objects.requireNonNull(dir);
+		moveDir = Objects.requireNonNull(dir);
 	}
 
 	@Override
 	public Direction wishDir() {
-		return movement.wishDir;
+		return wishDir;
 	}
 
 	@Override
 	public void setWishDir(Direction dir) {
-		movement.wishDir = dir;
+		wishDir = dir;
 	}
 
 	@Override

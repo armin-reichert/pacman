@@ -30,8 +30,6 @@ public class Movement extends StateMachine<MovementType, Void> {
 	private final String moverName;
 
 	public Supplier<Float> fnSpeed = () -> GameController.BASE_SPEED;
-	public Direction moveDir;
-	public Direction wishDir;
 	public boolean enteredNewTile;
 	private Portal activePortal;
 
@@ -66,7 +64,8 @@ public class Movement extends StateMachine<MovementType, Void> {
 	public void init() {
 		super.init();
 		enteredNewTile = true;
-		moveDir = wishDir = RIGHT;
+		mover.setMoveDir(RIGHT);
+		mover.setWishDir(RIGHT);
 		activePortal = null;
 	}
 
@@ -107,18 +106,19 @@ public class Movement extends StateMachine<MovementType, Void> {
 	private void move() {
 		final Tile tileBeforeMove = mover.tileLocation();
 		final float maxSpeed = fnSpeed.get();
-		float speed = possibleSpeed(moveDir, maxSpeed);
-		if (wishDir != null && wishDir != moveDir) {
-			float wishDirSpeed = possibleSpeed(wishDir, maxSpeed);
+		float speed = possibleSpeed(mover.moveDir(), maxSpeed);
+		if (mover.wishDir() != null && mover.wishDir() != mover.moveDir()) {
+			float wishDirSpeed = possibleSpeed(mover.wishDir(), maxSpeed);
 			if (wishDirSpeed > 0) {
 				speed = wishDirSpeed;
-				if (mover.requiresAlignment() && (wishDir == moveDir.left() || wishDir == moveDir.right())) {
+				if (mover.requiresAlignment()
+						&& (mover.wishDir() == mover.moveDir().left() || mover.wishDir() == mover.moveDir().right())) {
 					moveToTile(tileBeforeMove, 0, 0);
 				}
-				moveDir = wishDir;
+				mover.setMoveDir(mover.wishDir());
 			}
 		}
-		mover.tf().setVelocity(Vector2f.smul(speed, moveDir.vector()));
+		mover.tf().setVelocity(Vector2f.smul(speed, mover.moveDir().vector()));
 		mover.tf().move();
 
 		Tile tileAfterMove = mover.tileLocation();

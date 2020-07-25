@@ -51,6 +51,7 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 			}
 			break;
 		case RUNNING:
+		case POWERFUL:
 			selectSprite("walking-" + pacMan.moveDir());
 			boolean running = pacMan.entity.tf.vx != 0 || pacMan.entity.tf.vy != 0;
 			enableAnimation(running || !running && !isAnimationStoppedWhenStanding());

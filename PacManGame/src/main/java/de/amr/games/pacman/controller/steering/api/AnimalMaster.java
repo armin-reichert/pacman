@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.steering.common.FollowingKeys;
 import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.controller.steering.common.RandomMovement;
@@ -155,7 +154,7 @@ public class AnimalMaster {
 				ghost.behavior(ghostState, new HeadingForTargetTile<>(ghost, fnTargetTile));
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.behavior(PacManState.RUNNING, new HeadingForTargetTile<>(pacMan, fnTargetTile));
+				pacMan.behavior(new HeadingForTargetTile<>(pacMan, fnTargetTile));
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
@@ -187,7 +186,7 @@ public class AnimalMaster {
 				ghost.behavior(ghostState, new RandomMovement<>());
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.behavior(PacManState.RUNNING, new RandomMovement<>());
+				pacMan.behavior(new RandomMovement<>());
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
@@ -229,7 +228,7 @@ public class AnimalMaster {
 				ghost.behavior(ghostState, new FollowingKeys<>(up, right, down, left));
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.behavior(PacManState.RUNNING, new FollowingKeys<>(up, right, down, left));
+				pacMan.behavior(new FollowingKeys<>(up, right, down, left));
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
