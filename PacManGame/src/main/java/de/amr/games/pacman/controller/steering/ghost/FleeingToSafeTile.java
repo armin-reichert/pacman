@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import de.amr.datastruct.StreamUtils;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -20,7 +21,7 @@ import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
  * 
  * @author Armin Reichert
  */
-public class FleeingToSafeTile extends FollowingPath {
+public class FleeingToSafeTile extends FollowingPath<Ghost> {
 
 	private final MobileLifeform attacker;
 	private final WorldGraph graph;
@@ -30,7 +31,7 @@ public class FleeingToSafeTile extends FollowingPath {
 	private Tile safeTile;
 	private boolean passingPortal;
 
-	public FleeingToSafeTile(MobileLifeform refugee, MobileLifeform attacker) {
+	public FleeingToSafeTile(Ghost refugee, MobileLifeform attacker) {
 		super(refugee);
 		this.attacker = attacker;
 		World world = refugee.world();
@@ -47,12 +48,12 @@ public class FleeingToSafeTile extends FollowingPath {
 	}
 
 	@Override
-	public void steer() {
+	public void steer(Ghost ghost) {
 		if (path.size() == 0 || isComplete()) {
 			safeTile = computeSafestCorner();
-			setPath(graph.shortestPath(mover.tileLocation(), safeTile));
+			setPath(graph.shortestPath(ghost.tileLocation(), safeTile));
 		}
-		super.steer();
+		super.steer(ghost);
 	}
 
 	@Override

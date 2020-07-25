@@ -40,7 +40,7 @@ public class TestUI implements Lifecycle, VisualController {
 		return folks.ghosts().filter(world::contains);
 	}
 
-	protected void include(Creature<?>... creatures) {
+	protected void include(Creature<?, ?>... creatures) {
 		Stream.of(creatures).forEach(world::include);
 	}
 

@@ -48,7 +48,7 @@ public class EnhancedPlayView extends PlayView {
 	@Override
 	public void update() {
 		folks.ghosts().filter(ghost -> ghost.steering() instanceof PathProvidingSteering).forEach(ghost -> {
-			PathProvidingSteering pathProvider = (PathProvidingSteering) ghost.steering();
+			PathProvidingSteering<?> pathProvider = (PathProvidingSteering<?>) ghost.steering();
 			pathProvider.setPathComputed(showingRoutes);
 		});
 	}

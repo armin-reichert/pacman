@@ -33,7 +33,7 @@ import de.amr.games.pacman.view.theme.api.Theme;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Creature<PacManState> {
+public class PacMan extends Creature<PacMan, PacManState> {
 
 	private final World world;
 	private int power;
@@ -78,7 +78,7 @@ public class PacMan extends Creature<PacManState> {
 							--digestion;
 							return;
 						}
-						steering().steer();
+						steering().steer(this);
 						movement.update();
 						if (!isTeleporting()) {
 							findSomethingInteresting().ifPresent(this::publish);
@@ -152,7 +152,7 @@ public class PacMan extends Creature<PacManState> {
 	 * 
 	 * @param steering steering to use in every state
 	 */
-	public void behavior(Steering steering) {
+	public void behavior(Steering<PacMan> steering) {
 		behavior(RUNNING, steering);
 	}
 

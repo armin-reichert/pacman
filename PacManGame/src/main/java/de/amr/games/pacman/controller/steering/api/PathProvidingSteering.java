@@ -2,6 +2,7 @@ package de.amr.games.pacman.controller.steering.api;
 
 import java.util.List;
 
+import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 
 /**
@@ -9,7 +10,7 @@ import de.amr.games.pacman.model.world.api.Tile;
  * 
  * @author Armin Reichert
  */
-public interface PathProvidingSteering extends Steering {
+public interface PathProvidingSteering<M extends MobileLifeform> extends Steering<M> {
 
 	/**
 	 * @return the path from the current position of the actor to its current target tile

@@ -19,7 +19,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implements Steering {
+public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implements Steering<Ghost> {
 
 	public enum State {
 		FALLING, MOVING_LEFT, MOVING_RIGHT, BED_REACHED
@@ -84,7 +84,7 @@ public class EnteringHouseAndGoingToBed extends StateMachine<State, Void> implem
 	}
 
 	@Override
-	public void steer() {
+	public void steer(Ghost ghost) {
 		update();
 	}
 

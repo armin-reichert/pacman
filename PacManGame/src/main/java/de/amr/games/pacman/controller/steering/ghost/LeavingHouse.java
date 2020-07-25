@@ -9,18 +9,16 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.House;
 
-public class LeavingHouse implements Steering {
+public class LeavingHouse implements Steering<Ghost> {
 
-	private final Ghost ghost;
 	private final House house;
 
-	public LeavingHouse(Ghost ghost, House house) {
-		this.ghost = ghost;
+	public LeavingHouse(House house) {
 		this.house = house;
 	}
 
 	@Override
-	public void steer() {
+	public void steer(Ghost ghost) {
 		Tile exit = Tile.at(house.bed(0).col(), house.bed(0).row());
 		int targetX = exit.centerX(), targetY = exit.y();
 		if (ghost.entity.tf.y <= targetY) {

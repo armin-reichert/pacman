@@ -43,7 +43,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature<GhostState> {
+public class Ghost extends Creature<Ghost, GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
@@ -53,7 +53,7 @@ public class Ghost extends Creature<GhostState> {
 
 	private Supplier<GhostState> fnSubsequentState;
 	private GhostSanityControl sanity;
-	private Steering previousSteering;
+	private Steering<Ghost> previousSteering;
 	private int bounty;
 	private boolean flashing;
 	private IntSupplier fnFlashTimeTicks = () -> 0;
@@ -300,13 +300,13 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public void move() {
-		Steering currentSteering = steering();
+		Steering<Ghost> currentSteering = steering();
 		if (previousSteering != currentSteering) {
 			currentSteering.init();
 			currentSteering.force();
 			previousSteering = currentSteering;
 		}
-		currentSteering.steer();
+		currentSteering.steer(this);
 		movement.update();
 		if (sanity != null) {
 			sanity.update();

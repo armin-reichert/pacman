@@ -559,7 +559,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return folks.ghosts().filter(world::contains);
 	}
 
-	public Stream<Creature<?>> folksInsideWorld() {
+	public Stream<Creature<?, ?>> folksInsideWorld() {
 		return folks.all().filter(world::contains);
 	}
 

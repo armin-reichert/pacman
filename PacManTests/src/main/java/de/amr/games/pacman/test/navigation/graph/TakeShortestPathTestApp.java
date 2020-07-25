@@ -13,6 +13,7 @@ import java.util.List;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.controller.steering.common.TakingShortestPath;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -67,7 +68,7 @@ class TakeShortestPathTestUI extends TestUI {
 		//@formatter:on
 		targetIndex = 0;
 
-		FollowingPath visitNextTarget = new TakingShortestPath(blinky, () -> targets.get(targetIndex));
+		FollowingPath<Ghost> visitNextTarget = new TakingShortestPath<>(blinky, () -> targets.get(targetIndex));
 		blinky.behavior(CHASING, visitNextTarget);
 		blinky.behavior(FRIGHTENED, visitNextTarget);
 		blinky.setState(CHASING);

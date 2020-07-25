@@ -1,17 +1,21 @@
 package de.amr.games.pacman.controller.steering.api;
 
+import de.amr.games.pacman.model.world.api.MobileLifeform;
+
 /**
  * Interface for steering of actors.
  * 
  * @author Armin Reichert
  */
 @FunctionalInterface
-public interface Steering {
+public interface Steering<M extends MobileLifeform> {
 
 	/**
 	 * Steers the actor towards its target tile or wherever it should move in its current state.
+	 * 
+	 * @param mover the steered lifeform
 	 */
-	void steer();
+	void steer(M mover);
 
 	/**
 	 * Some steerings needs to be initialized.

@@ -21,7 +21,7 @@ import de.amr.games.pacman.model.world.components.House;
 
 public class AnimalMaster {
 
-	private Creature<?> animal;
+	private Creature<?, ?> animal;
 	private GhostState ghostState;
 
 	public static AnimalMaster you(Ghost ghost) {
@@ -78,9 +78,9 @@ public class AnimalMaster {
 			return this;
 		}
 
-		public Steering ok() {
+		public Steering<Ghost> ok() {
 			Ghost ghost = (Ghost) animal;
-			Steering steering = new BouncingOnBed(ghost, bed != null ? bed : ghost.bed());
+			Steering<Ghost> steering = new BouncingOnBed(bed != null ? bed : ghost.bed());
 			ghost.behavior(ghostState, steering);
 			return steering;
 		}
@@ -95,9 +95,9 @@ public class AnimalMaster {
 			return this;
 		}
 
-		public Steering ok() {
+		public Steering<Ghost> ok() {
 			Ghost ghost = (Ghost) animal;
-			Steering steering = new EnteringHouseAndGoingToBed(ghost, bed != null ? bed : ghost.bed());
+			Steering<Ghost> steering = new EnteringHouseAndGoingToBed(ghost, bed != null ? bed : ghost.bed());
 			ghost.behavior(ghostState, steering);
 			return steering;
 		}
@@ -120,15 +120,15 @@ public class AnimalMaster {
 			return tile(Tile.at(col, row));
 		}
 
-		public Steering ok() {
+		public Steering<?> ok() {
 			if (animal instanceof Ghost) {
 				Ghost ghost = (Ghost) animal;
-				Steering steering = new HeadingForTargetTile(ghost, fnTargetTile);
+				Steering<Ghost> steering = new HeadingForTargetTile<>(ghost, fnTargetTile);
 				ghost.behavior(ghostState, steering);
 				return steering;
 			} else if (animal instanceof PacMan) {
 				PacMan pacMan = (PacMan) animal;
-				Steering steering = new HeadingForTargetTile(pacMan, fnTargetTile);
+				Steering<PacMan> steering = new HeadingForTargetTile<>(pacMan, fnTargetTile);
 				pacMan.behavior(PacManState.RUNNING, steering);
 				return steering;
 			}
@@ -145,9 +145,9 @@ public class AnimalMaster {
 			return this;
 		}
 
-		public Steering ok() {
+		public Steering<Ghost> ok() {
 			Ghost ghost = (Ghost) animal;
-			Steering steering = new LeavingHouse(ghost, house);
+			Steering<Ghost> steering = new LeavingHouse(house);
 			ghost.behavior(ghostState, steering);
 			return steering;
 		}
@@ -155,18 +155,18 @@ public class AnimalMaster {
 
 	public class MovesRandomlyBuilder {
 
-		public Steering ok() {
-			Steering steering = new RandomMovement(animal);
+		public Steering<?> ok() {
 			if (animal instanceof Ghost) {
 				Ghost ghost = (Ghost) animal;
-				ghost.behavior(ghostState, steering);
+				ghost.behavior(ghostState, new RandomMovement<>());
+				return ghost.steering();
 			} else if (animal instanceof PacMan) {
 				PacMan pacMan = (PacMan) animal;
-				pacMan.behavior(PacManState.RUNNING, steering);
+				pacMan.behavior(PacManState.RUNNING, new RandomMovement<>());
+				return pacMan.steering();
 			} else {
 				throw new IllegalStateException();
 			}
-			return steering;
 		}
 	}
 
@@ -179,9 +179,9 @@ public class AnimalMaster {
 			return this;
 		}
 
-		public Steering ok() {
-			Steering steering = new FleeingToSafeTile(animal, attacker);
+		public Steering<Ghost> ok() {
 			Ghost ghost = (Ghost) animal;
+			Steering<Ghost> steering = new FleeingToSafeTile(ghost, attacker);
 			ghost.behavior(ghostState, steering);
 			return steering;
 		}
@@ -200,18 +200,18 @@ public class AnimalMaster {
 			return this;
 		}
 
-		public Steering ok() {
-			Steering steering = new FollowingKeys(animal, up, right, down, left);
+		public Steering<?> ok() {
 			if (animal instanceof Ghost) {
 				Ghost ghost = (Ghost) animal;
-				ghost.behavior(ghostState, steering);
+				ghost.behavior(ghostState, new FollowingKeys<>(up, right, down, left));
+				return ghost.steering();
 			} else if (animal instanceof PacMan) {
 				PacMan pacMan = (PacMan) animal;
-				pacMan.behavior(PacManState.RUNNING, steering);
+				pacMan.behavior(PacManState.RUNNING, new FollowingKeys<>(up, right, down, left));
+				return pacMan.steering();
 			} else {
 				throw new IllegalStateException();
 			}
-			return steering;
 		}
 	}
 }

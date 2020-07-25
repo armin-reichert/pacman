@@ -78,7 +78,7 @@ public class Folks {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
-	public Stream<Creature<?>> all() {
+	public Stream<Creature<?, ?>> all() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 }

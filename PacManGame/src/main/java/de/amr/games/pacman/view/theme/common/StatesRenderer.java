@@ -104,7 +104,7 @@ public class StatesRenderer implements IRenderer {
 		folks.ghosts().forEach(ghost -> drawActorOffTrack(g, ghost));
 	}
 
-	private void drawActorOffTrack(Graphics2D g, Creature<?> creature) {
+	private void drawActorOffTrack(Graphics2D g, Creature<?, ?> creature) {
 		if (!creature.isVisible()) {
 			return;
 		}

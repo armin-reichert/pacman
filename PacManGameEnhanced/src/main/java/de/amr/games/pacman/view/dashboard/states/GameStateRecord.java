@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.world.api.Tile;
  * @author Armin Reichert
  */
 class GameStateRecord {
-	public Creature<?> creature;
+	public Creature<?, ?> creature;
 	public boolean included;
 	public String name;
 	public Tile tile;

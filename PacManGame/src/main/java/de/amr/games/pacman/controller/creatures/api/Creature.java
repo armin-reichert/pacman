@@ -34,13 +34,13 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEvent>
+public abstract class Creature<M extends MobileLifeform, STATE> extends StateMachine<STATE, PacManGameEvent>
 		implements MobileLifeform, Themeable, View {
 
 	public final String name;
 	public final Entity entity;
 
-	protected final Map<STATE, Steering> steeringsByState;
+	protected final Map<STATE, Steering<M>> steeringsByState;
 	protected final Movement movement;
 
 	protected Theme theme;
@@ -93,17 +93,21 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 		movement.fnSpeed = fnSpeed;
 	}
 
+	public Steering<M> steering() {
+		return steering(this);
+	}
+
 	/**
 	 * @return the current steering for this actor.
 	 */
-	public Steering steering() {
-		return steeringsByState.getOrDefault(getState(), () -> {
+	public Steering<M> steering(MobileLifeform mover) {
+		return steeringsByState.getOrDefault(getState(), m -> {
 		});
 	}
 
 	public Optional<Tile> targetTile() {
 		if (steering() instanceof TargetTileSteering) {
-			TargetTileSteering steering = (TargetTileSteering) steering();
+			TargetTileSteering<M> steering = (TargetTileSteering<M>) steering();
 			return Optional.ofNullable(steering.targetTile());
 		}
 		return Optional.empty();
@@ -115,7 +119,7 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	 * @param state state
 	 * @return steering defined for this state
 	 */
-	public Steering steering(STATE state) {
+	public Steering<M> steering(STATE state) {
 		if (steeringsByState.containsKey(state)) {
 			return steeringsByState.get(state);
 		}
@@ -128,7 +132,7 @@ public abstract class Creature<STATE> extends StateMachine<STATE, PacManGameEven
 	 * @param state    state
 	 * @param steering steering defined for this state
 	 */
-	public void behavior(STATE state, Steering steering) {
+	public void behavior(STATE state, Steering<M> steering) {
 		steeringsByState.put(state, steering);
 	}
 

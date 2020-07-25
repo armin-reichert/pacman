@@ -8,19 +8,17 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 
-public class BouncingOnBed implements Steering {
+public class BouncingOnBed implements Steering<Ghost> {
 
-	private final Ghost ghost;
 	private final Bed bed;
 
-	public BouncingOnBed(Ghost ghost, Bed bed) {
-		this.ghost = ghost;
+	public BouncingOnBed(Bed bed) {
 		this.bed = bed;
 	}
 
 	@Override
-	public void steer() {
-		float dy = ghost.entity.tf.y + Tile.SIZE / 2 - bed.center().y;
+	public void steer(Ghost ghost) {
+		float dy = ghost.tf().y + Tile.SIZE / 2 - bed.center().y;
 		if (dy < -4) {
 			ghost.setWishDir(DOWN);
 		} else if (dy > 5) {

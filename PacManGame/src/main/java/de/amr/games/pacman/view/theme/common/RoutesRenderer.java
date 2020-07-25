@@ -57,7 +57,7 @@ public class RoutesRenderer implements IRenderer {
 
 	public void drawPacManRoute(Graphics2D g, PacMan pacMan) {
 		if (pacMan.steering() instanceof PathProvidingSteering) {
-			PathProvidingSteering steering = (PathProvidingSteering) pacMan.steering();
+			PathProvidingSteering<?> steering = (PathProvidingSteering<?>) pacMan.steering();
 			drawTargetTilePath(g, steering.pathToTarget(), Color.YELLOW);
 		}
 	}
@@ -65,7 +65,7 @@ public class RoutesRenderer implements IRenderer {
 	public void drawGhostRoute(Graphics2D g, Ghost ghost) {
 		if (ghost.steering() instanceof PathProvidingSteering && ghost.targetTile() != null) {
 			drawTargetTileRubberband(g, ghost, ghost.targetTile());
-			PathProvidingSteering steering = (PathProvidingSteering) ghost.steering();
+			PathProvidingSteering<?> steering = (PathProvidingSteering<?>) ghost.steering();
 			drawTargetTilePath(g, steering.pathToTarget(), Rendering.ghostColor(ghost));
 		} else if (ghost.wishDir() != null) {
 			Vector2f v = ghost.wishDir().vector();

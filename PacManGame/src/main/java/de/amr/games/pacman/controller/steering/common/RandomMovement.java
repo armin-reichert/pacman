@@ -1,7 +1,5 @@
 package de.amr.games.pacman.controller.steering.common;
 
-import java.util.Objects;
-
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
@@ -11,14 +9,9 @@ import de.amr.games.pacman.model.world.api.MobileLifeform;
  * 
  * @author Armin Reichert
  */
-public class RandomMovement implements Steering {
+public class RandomMovement<M extends MobileLifeform> implements Steering<M> {
 
-	private MobileLifeform mover;
 	private boolean forced;
-
-	public RandomMovement(MobileLifeform mover) {
-		this.mover = Objects.requireNonNull(mover);
-	}
 
 	@Override
 	public boolean requiresGridAlignment() {
@@ -31,7 +24,7 @@ public class RandomMovement implements Steering {
 	}
 
 	@Override
-	public void steer() {
+	public void steer(M mover) {
 		if (forced || mover.enteredNewTile() || !mover.canCrossBorderTo(mover.moveDir())) {
 			/*@formatter:off*/
 			Direction.dirsShuffled()

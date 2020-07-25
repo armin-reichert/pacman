@@ -11,9 +11,9 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.model.world.core.WorldGraph;
@@ -24,20 +24,20 @@ import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
  * 
  * @author Armin Reichert
  */
-public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering {
+public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<PacMan> {
 
-	private final MobileLifeform me;
 	private final Folks folks;
+	private final PacMan me;
 	private WorldGraph graph;
 	private Ghost enemy;
 	private double distance;
 	private Direction newDir;
 	private Tile target;
 
-	public SearchingForFoodAndAvoidingGhosts(MobileLifeform me, Folks folks) {
-		this.me = me;
+	public SearchingForFoodAndAvoidingGhosts(PacMan pacMan, Folks folks) {
+		me = pacMan;
 		this.folks = folks;
-		graph = new WorldGraph(me.world());
+		graph = new WorldGraph(pacMan.world());
 		graph.setPathFinder(PathFinder.ASTAR);
 	}
 
@@ -56,22 +56,23 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	@Override
-	public void steer() {
-		if (!me.enteredNewTile() && me.canCrossBorderTo(me.moveDir()) || me.world().isPortalAt(me.tileLocation())) {
+	public void steer(PacMan pacMan) {
+		if (!pacMan.enteredNewTile() && pacMan.canCrossBorderTo(pacMan.moveDir())
+				|| pacMan.world().isPortalAt(pacMan.tileLocation())) {
 			return;
 		}
 
-		// is dangerous ghost just in front of me moving in the same direction?
-		enemy = dangerousGhostInRange(1).filter(ghost -> me.moveDir() == ghost.moveDir()).orElse(null);
+		// is dangerous ghost just in front of pacMan moving in the same direction?
+		enemy = dangerousGhostInRange(1).filter(ghost -> pacMan.moveDir() == ghost.moveDir()).orElse(null);
 		if (enemy != null) {
-			me.reverseDirection();
+			pacMan.reverseDirection();
 			return;
 		}
 
-		// is dangerous ghost coming directly towards me?
-		enemy = dangerousGhostInRange(3).filter(ghost -> me.moveDir() == ghost.moveDir().opposite()).orElse(null);
+		// is dangerous ghost coming directly towards pacMan?
+		enemy = dangerousGhostInRange(3).filter(ghost -> pacMan.moveDir() == ghost.moveDir().opposite()).orElse(null);
 		if (enemy != null) {
-			me.reverseDirection();
+			pacMan.reverseDirection();
 			return;
 		}
 
@@ -80,9 +81,9 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 		distance = Integer.MAX_VALUE;
 		//@formatter:off
 		aheadThenRightThenLeft()
-			.filter(me::canCrossBorderTo)
+			.filter(pacMan::canCrossBorderTo)
 			.forEach(dir -> {
-				Tile neighbor = me.world().neighbor(me.tileLocation(), dir);
+				Tile neighbor = pacMan.world().neighbor(pacMan.tileLocation(), dir);
 				preferredFoodLocationFrom(neighbor).ifPresent(foodLocation -> {
 					double d = neighbor.distance(foodLocation);
 					if (d < distance) {
@@ -93,8 +94,8 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 				});
 			});
 		//@formatter:on
-		if (newDir != me.moveDir().opposite()) {
-			me.setWishDir(newDir);
+		if (newDir != pacMan.moveDir().opposite()) {
+			pacMan.setWishDir(newDir);
 			return;
 		}
 	}
@@ -126,7 +127,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 //	private int distance(Stream<Ghost> ghosts) {
-//		return ghosts.mapToInt(ghost -> distance(me.tile(), ghost.tile())).min().orElse(Integer.MAX_VALUE);
+//		return ghosts.mapToInt(ghost -> distance(pacMan.tile(), ghost.tile())).min().orElse(Integer.MAX_VALUE);
 //	}
 
 	private int shortestPathLength(Tile from, Tile to) {

@@ -28,17 +28,17 @@ import de.amr.games.pacman.model.world.api.Tile;
  * 
  * @author Armin Reichert
  */
-public class HeadingForTargetTile implements TargetTileSteering, PathProvidingSteering {
+public class HeadingForTargetTile<M extends MobileLifeform> implements TargetTileSteering<M>, PathProvidingSteering<M> {
 
 	private static final List<Direction> directionPriority = asList(UP, LEFT, DOWN, RIGHT);
 
-	private final MobileLifeform mover;
+	private final M mover;
 	private final ConcurrentLinkedDeque<Tile> path = new ConcurrentLinkedDeque<>();
 	private Supplier<Tile> fnTargetTile;
 	private boolean forced;
 	private boolean pathComputed;
 
-	public HeadingForTargetTile(MobileLifeform mover, Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(M mover, Supplier<Tile> fnTargetTile) {
 		this.mover = Objects.requireNonNull(mover);
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}
@@ -54,7 +54,7 @@ public class HeadingForTargetTile implements TargetTileSteering, PathProvidingSt
 	}
 
 	@Override
-	public void steer() {
+	public void steer(MobileLifeform mover) {
 		if (mover.enteredNewTile() || forced) {
 			forced = false;
 			Tile targetTile = targetTile();
