@@ -56,7 +56,7 @@ class PacManMovementTestUI extends TestUI {
 		view.turnGridOn();
 		view.showMessage(1, "SPACE changes steering", Color.WHITE);
 		view.showMessage(2, "Cursor keys", Color.WHITE);
-		pacMan.startRunning();
+		pacMan.wakeUp();
 	}
 
 	@Override

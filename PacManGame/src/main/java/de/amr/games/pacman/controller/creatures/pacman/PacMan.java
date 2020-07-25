@@ -16,9 +16,11 @@ import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
+import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -108,6 +110,10 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 			.transitions()
 
+				.when(SLEEPING).then(RUNNING).on(PacManWakeUpEvent.class)
+				
+				.when(RUNNING).then(POWERFUL).on(PacManGainsPowerEvent.class)
+				
 				.when(RUNNING).then(DEAD).on(PacManKilledEvent.class)
 				
 				.when(POWERFUL).then(DEAD).on(PacManKilledEvent.class)
@@ -137,7 +143,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 	public void setPower(int power) {
 		this.power = power;
-		setState(POWERFUL);
+		process(new PacManGainsPowerEvent());
 	}
 
 	@Override
@@ -160,8 +166,8 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		return renderer;
 	}
 
-	public void startRunning() {
-		setState(RUNNING);
+	public void wakeUp() {
+		process(new PacManWakeUpEvent());
 	}
 
 	public void fallAsleep() {

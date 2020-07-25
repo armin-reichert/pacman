@@ -44,7 +44,7 @@ class EscapeIntoCornerTestUI extends TestUI {
 		inky.setState(GhostState.LEAVING_HOUSE);
 
 		you(pacMan).moveRandomly().ok();
-		pacMan.startRunning();
+		pacMan.wakeUp();
 
 		view.turnRoutesOn();
 		view.turnStatesOn();

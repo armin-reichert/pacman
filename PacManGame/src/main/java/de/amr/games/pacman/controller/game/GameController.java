@@ -402,7 +402,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			bonusControl.init();
 			ghostCommand.init();
 			folksInsideWorld().forEach(Creature::init);
-			folks.pacMan.startRunning();
+			folks.pacMan.wakeUp();
 			playView.init();
 			playView.enableGhostAnimations(true);
 			sound.resumePlayingMusic();

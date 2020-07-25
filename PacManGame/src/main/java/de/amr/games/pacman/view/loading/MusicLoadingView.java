@@ -64,7 +64,7 @@ public class MusicLoadingView implements PacManGameView {
 		ghostInc = 1;
 		ghosts.forEach(ghost -> ghost.setMoveDir(Direction.random()));
 		pacMan.init();
-		pacMan.startRunning();
+		pacMan.wakeUp();
 	}
 
 	@Override

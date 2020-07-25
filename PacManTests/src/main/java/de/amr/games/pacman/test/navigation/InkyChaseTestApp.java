@@ -52,7 +52,7 @@ class InkyChaseTestUI extends TestUI {
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			pacMan.startRunning();
+			pacMan.wakeUp();
 			view.clearMessage(1);
 		}
 		super.update();
