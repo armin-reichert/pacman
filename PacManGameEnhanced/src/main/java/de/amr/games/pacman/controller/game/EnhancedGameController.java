@@ -8,12 +8,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTEN
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
-import static java.awt.event.KeyEvent.VK_UP;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.stream.Stream;
 
@@ -23,7 +18,6 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.statemachine.core.StateMachine;
@@ -246,18 +240,6 @@ public class EnhancedGameController extends GameController {
 		settings.demoMode = !settings.demoMode;
 		setDemoMode(settings.demoMode);
 		loginfo("Demo mode is %s", settings.demoMode ? "on" : "off");
-	}
-
-	private void setDemoMode(boolean demoMode) {
-		if (demoMode) {
-			settings.pacManImmortable = true;
-			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
-			folks.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(folks.pacMan, folks));
-		} else {
-			settings.pacManImmortable = false;
-			playView.clearMessage(1);
-			you(folks.pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
-		}
 	}
 
 	private void toggleMakePacManImmortable() {

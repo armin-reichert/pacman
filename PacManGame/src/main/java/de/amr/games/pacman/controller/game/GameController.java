@@ -12,9 +12,15 @@ import static de.amr.games.pacman.controller.game.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.game.PacManGameState.LOADING_MUSIC;
 import static de.amr.games.pacman.controller.game.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
+import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 import static de.amr.games.pacman.model.game.Game.sec;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_LEFT;
+import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.VK_UP;
 import static java.util.stream.IntStream.range;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.Random;
@@ -40,6 +46,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.sound.PacManSounds;
+import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -161,6 +168,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							musicLoadingView.exit();
 						}
 						musicLoadingView = new MusicLoadingView(theme(), settings.width, settings.height);
+						musicLoadingView.init();
 						showView(musicLoadingView);
 					})
 					.onExit(() -> {
@@ -173,6 +181,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							introView.exit();
 						}
 						introView = new IntroView(world, theme(), sound, settings.width, settings.height);
+						introView.init();
 						showView(introView);
 					})
 					.onExit(() -> {
@@ -186,6 +195,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						sound.gameReady();
 						newGame();
 						world.setFrozen(true);
+						playView = createPlayView();
+						playView.init();
 						showView(playView);
 					})
 					.onTick((state, t, remaining) -> {
@@ -199,6 +210,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onExit(() -> {
 						playView.clearMessage(2);
 						folks.pacMan.wakeUp();
+						if (settings.demoMode) {
+							setDemoMode(true);
+						}
 					})
 				
 				.state(PLAYING).customState(new PlayingState())
@@ -316,7 +330,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						ghostsInsideWorld().forEach(ghost -> {
 							ghost.init();
 						});
-						playView.clearMessages();
+						playView.clearMessage(2);
 						sound.stopAll();
 					})
 	
@@ -406,7 +420,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			ghostCommand.init();
 			folksInsideWorld().forEach(Creature::init);
 			folks.pacMan.wakeUp();
-			playView.init();
 			playView.enableGhostAnimations(true);
 			sound.resumePlayingMusic();
 		}
@@ -545,7 +558,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		folks.all().forEach(Creature::init);
 		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
 		folks.pacMan.setSpeed(() -> pacManSpeed(folks.pacMan, game));
-		playView = createPlayView();
 	}
 
 	protected PlayView createPlayView() {
@@ -603,7 +615,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected void showView(PacManGameView view) {
 		if (currentView != view) {
 			currentView = view;
-			currentView.init();
 		}
 	}
 
@@ -618,4 +629,17 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			loginfo("Clock frequency changed to %d ticks/sec", ticksPerSecond);
 		}
 	}
+
+	protected void setDemoMode(boolean demoMode) {
+		if (demoMode) {
+			settings.pacManImmortable = true;
+			folks.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(folks.pacMan, folks));
+			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
+		} else {
+			settings.pacManImmortable = false;
+			you(folks.pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
+			playView.clearMessage(1);
+		}
+	}
+
 }
