@@ -129,19 +129,19 @@ public class Ghost extends Creature<Ghost, GhostState> {
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
 					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == SCATTERING)
-					.annotation("left house")
+					.annotation("Outside house")
 		
 				.when(LEAVING_HOUSE).then(CHASING)
 					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == CHASING)
-					.annotation("left house")
+					.annotation("Outside house")
 				
 				.when(LEAVING_HOUSE).then(FRIGHTENED)
 					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == FRIGHTENED)
-					.annotation("left house")
+					.annotation("Outside house")
 					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> steering().isComplete())
-					.annotation("reached bed")
+					.annotation("Reached bed")
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -153,7 +153,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 				.when(CHASING).then(SCATTERING)
 					.condition(() -> getNextStateToEnter() == SCATTERING)
 					.act(() -> reverseDirection())
-					.annotation("got scattering command")
+					.annotation("Got scattering command")
 					
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -165,7 +165,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 				.when(SCATTERING).then(CHASING)
 					.condition(() -> getNextStateToEnter() == CHASING)
 					.act(() -> reverseDirection())
-					.annotation("got chasing command")
+					.annotation("Got chasing command")
 					
 				.stay(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -184,7 +184,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> world.isHouseEntry(tileLocation()))
-					.annotation("reached house")
+					.annotation("Reached house entry")
 					
 		.endStateMachine();
 		/*@formatter:on*/

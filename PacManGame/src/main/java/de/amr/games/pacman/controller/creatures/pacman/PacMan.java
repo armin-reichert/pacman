@@ -39,7 +39,6 @@ import de.amr.games.pacman.view.theme.api.Theme;
 public class PacMan extends Creature<PacMan, PacManState> {
 
 	private final World world;
-	private int power;
 	private int digestion;
 	private boolean collapsing;
 	private IPacManRenderer renderer;
@@ -59,12 +58,12 @@ public class PacMan extends Creature<PacMan, PacManState> {
 					.onEntry(() -> {
 						gotoBed();
 						setVisible(true);
-						power = digestion = 0;
+						digestion = 0;
 					})
 
 				.state(SLEEPING)
 					.onEntry(() -> {
-						power = digestion = 0;
+						digestion = 0;
 					})
 
 				.state(AWAKE)
@@ -90,10 +89,6 @@ public class PacMan extends Creature<PacMan, PacManState> {
 					})
 
 					.onTick(() -> {
-						if (--power == 0) {
-							publish(new PacManLostPowerEvent());
-							return;
-						}
 						if (digestion > 0) {
 							--digestion;
 							return;
@@ -107,12 +102,13 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 				.state(DEAD)
 					.onEntry(() -> {
-						power = digestion = 0;
+						digestion = 0;
 					})
 
 			.transitions()
 
 				.when(INBED).then(SLEEPING)
+					.annotation("What else without Ms. Pac-Man?")
 
 				.when(INBED).then(AWAKE).on(PacManWakeUpEvent.class)
 				
@@ -121,20 +117,27 @@ public class PacMan extends Creature<PacMan, PacManState> {
 				.when(AWAKE).then(POWERFUL).on(PacManGainsPowerEvent.class)
 					.act(e -> {
 						PacManGainsPowerEvent powerEvent = (PacManGainsPowerEvent) e;
-						power = powerEvent.duration;
+						state(POWERFUL).setTimer(powerEvent.duration);
 					})
 
 				.when(AWAKE).then(SLEEPING).on(PacManFallAsleepEvent.class)
 				
 				.when(AWAKE).then(DEAD).on(PacManKilledEvent.class)
 				
+				.stay(POWERFUL).on(PacManGainsPowerEvent.class)
+					.act(e -> {
+						PacManGainsPowerEvent powerEvent = (PacManGainsPowerEvent) e;
+						state(POWERFUL).setTimer(powerEvent.duration);
+					})
+				
 				.when(POWERFUL).then(DEAD).on(PacManKilledEvent.class)
 				
 				.when(POWERFUL).then(SLEEPING).on(PacManFallAsleepEvent.class)
 				
 				.when(POWERFUL).then(AWAKE)
-					.condition(() -> power == 0)
+					.onTimeout()
 					.annotation("Lost power")
+					.act(() -> publish(new PacManLostPowerEvent()))
 
 		.endStateMachine();
 		/* @formatter:on */
@@ -167,7 +170,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	}
 
 	public int getPower() {
-		return power;
+		return state(POWERFUL).getTicksRemaining();
 	}
 
 	@Override

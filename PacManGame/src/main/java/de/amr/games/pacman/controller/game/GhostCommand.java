@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller.game;
 
 import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState.CHASE;
 import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState.SCATTER;
-import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState.STOPPED;
+import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState.PAUSED;
 import static de.amr.games.pacman.model.game.Game.sec;
 
 import java.util.List;
@@ -29,7 +29,7 @@ import de.amr.statemachine.core.StateMachine;
 public class GhostCommand extends StateMachine<GhostCommandState, String> {
 
 	public static enum GhostCommandState {
-		SCATTER, CHASE, STOPPED
+		SCATTER, CHASE, PAUSED
 	}
 
 	static class Round {
@@ -103,18 +103,16 @@ public class GhostCommand extends StateMachine<GhostCommandState, String> {
 		.states()
 			.state(SCATTER)
 				.timeoutAfter(() -> scatterTicks(game.level.number, round))
-				.annotation(() -> String.format("%d of %d ticks", state().getTicksConsumed(), state().getDuration()))
 				.onTick(() -> ghosts.forEach(ghost -> ghost.setNextStateToEnter(() -> GhostState.SCATTERING)))
 			.state(CHASE)
 			.timeoutAfter(() -> chaseTicks(game.level.number, round))
-				.annotation(() -> String.format("%d of %d ticks", state().getTicksConsumed(), state().getDuration()))
 				.onTick(() -> ghosts.forEach(ghost -> ghost.setNextStateToEnter(() -> GhostState.CHASING)))
-			.state(STOPPED)
+			.state(PAUSED)
 		.transitions()
 			.when(SCATTER).then(CHASE).onTimeout()
-			.when(SCATTER).then(STOPPED).on("stopAttacking")
+			.when(SCATTER).then(PAUSED).on("Pause")
 			.when(CHASE).then(SCATTER).onTimeout().act(() -> ++round)
-			.when(CHASE).then(STOPPED).on("stopAttacking")
+			.when(CHASE).then(PAUSED).on("Pause")
 		.endStateMachine();
 		/*@formatter:on*/
 	}
@@ -127,14 +125,14 @@ public class GhostCommand extends StateMachine<GhostCommandState, String> {
 	}
 
 	public void stopAttacking() {
-		if (getState() != STOPPED) {
+		if (getState() != PAUSED) {
 			suspendedStateId = getState();
-			process("stopAttacking");
+			process("Pause");
 		}
 	}
 
 	public void resumeAttacking() {
-		if (getState() == STOPPED) {
+		if (getState() == PAUSED) {
 			resumeState(suspendedStateId);
 		} else {
 			throw new IllegalStateException();

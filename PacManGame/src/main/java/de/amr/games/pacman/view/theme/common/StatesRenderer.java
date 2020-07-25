@@ -6,6 +6,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.view.theme.common.Rendering.ghostColor;
 import static java.lang.Math.round;
 
@@ -57,7 +58,7 @@ public class StatesRenderer implements IRenderer {
 			return;
 		}
 		String text = pacMan.getState().name();
-		if (pacMan.getPower() > 0) {
+		if (pacMan.is(POWERFUL)) {
 			text += String.format("(%d)", pacMan.getPower());
 		}
 		if (settings.pacManImmortable) {

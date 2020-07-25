@@ -93,7 +93,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			
 				.when(SCROLLING_LOGO_ANIMATION).then(CHASING_ANIMATIONS)
 					.condition(() -> pacManLogo.isComplete())
-					.annotation("Pac-Man Logo at top")
+					.annotation("Pac-Man logo at top")
 				
 				.when(CHASING_ANIMATIONS).then(WAITING_FOR_INPUT)
 					.condition(() -> chasePacMan.isComplete() && chaseGhosts.isComplete())
@@ -104,7 +104,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 				
 				.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
 					.condition(() -> Keyboard.keyPressedOnce("space"))
-					.annotation("SPACE key pressed")
+					.annotation("SPACE pressed")
 	
 		.endStateMachine();
 	  /*@formatter:on*/
