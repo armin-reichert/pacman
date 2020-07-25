@@ -4,7 +4,7 @@
 
 Pac-Man, a *racist, homophobic game*? 
 
-Why that? First of all, without any doubt, this Pac-Man guy is, as his name clearly proves, a **man**, born around 1980, also an **old man** (thank god not an **old white man** or even worse an **orange man**), but he certainly is (hmm, wasn't the Nintendo guy in fact an orange man?) an **old yellow man**.
+Why that? First of all, without any doubt, this Pac-Man guy is, as his name clearly proves, a **man**, born around 1980 certainly an **old man** (thank god not an **old white man** or even worse an **orange man**), but he certainly is (hmm, wasn't the Nintendo guy in fact an orange man?) an **old yellow man**.
 
 And what has this **old yellow man** been doing all his life? He has been chasing **ghost people of color**! And these ghosts, as their dresses (are that burkas?) indicate, are most probably **females** or **transgenders** or any of the other 300 cis-trans-bullshit genders! 
 
