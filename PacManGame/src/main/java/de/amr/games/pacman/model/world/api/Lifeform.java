@@ -5,7 +5,7 @@ import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
 
 /**
- * A lifeform inside its world.
+ * A lifeform inside its tile-based world.
  * 
  * @author Armin Reichert
  */
