@@ -56,9 +56,12 @@ public class StatesRenderer implements IRenderer {
 		if (!pacMan.isVisible() || pacMan.getState() == null) {
 			return;
 		}
-		String text = pacMan.getPower() > 0 ? String.format("POWER(%d)", pacMan.getPower()) : pacMan.getState().name();
+		String text = pacMan.getState().name();
+		if (pacMan.getPower() > 0) {
+			text += String.format("(%d)", pacMan.getPower());
+		}
 		if (settings.pacManImmortable) {
-			text += " immortable";
+			text += " lives " + Rendering.INFTY;
 		}
 		drawEntityState(g, pacMan.entity, text, Color.YELLOW);
 	}

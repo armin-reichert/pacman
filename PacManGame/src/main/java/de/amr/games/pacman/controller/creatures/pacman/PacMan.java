@@ -2,8 +2,9 @@ package de.amr.games.pacman.controller.creatures.pacman;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.INBED;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
-import static de.amr.games.pacman.controller.creatures.pacman.PacManState.RUNNING;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.AWAKE;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
@@ -11,7 +12,6 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 import java.awt.Graphics2D;
 import java.util.Optional;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -51,21 +51,23 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		beginStateMachine()
 
 			.description(name)
-			.initialState(SLEEPING)
+			.initialState(INBED)
 
 			.states()
+			
+				.state(INBED)
+					.onEntry(() -> {
+						gotoBed();
+						setVisible(true);
+						power = digestion = 0;
+					})
 
 				.state(SLEEPING)
 					.onEntry(() -> {
 						power = digestion = 0;
-						setVisible( true);
-						Bed bed = world.pacManBed();
-						placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-						setMoveDir(bed.exitDir);
-						setWishDir(bed.exitDir);
 					})
 
-				.state(RUNNING)
+				.state(AWAKE)
 					.onEntry(() -> {
 						digestion = 0;
 					})
@@ -110,15 +112,27 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 			.transitions()
 
-				.when(SLEEPING).then(RUNNING).on(PacManWakeUpEvent.class)
+				.when(INBED).then(SLEEPING)
+
+				.when(INBED).then(AWAKE).on(PacManWakeUpEvent.class)
 				
-				.when(RUNNING).then(POWERFUL).on(PacManGainsPowerEvent.class)
+				.when(SLEEPING).then(AWAKE).on(PacManWakeUpEvent.class)
 				
-				.when(RUNNING).then(DEAD).on(PacManKilledEvent.class)
+				.when(AWAKE).then(POWERFUL).on(PacManGainsPowerEvent.class)
+					.act(e -> {
+						PacManGainsPowerEvent powerEvent = (PacManGainsPowerEvent) e;
+						power = powerEvent.duration;
+					})
+
+				.when(AWAKE).then(SLEEPING).on(PacManFallAsleepEvent.class)
+				
+				.when(AWAKE).then(DEAD).on(PacManKilledEvent.class)
 				
 				.when(POWERFUL).then(DEAD).on(PacManKilledEvent.class)
 				
-				.when(POWERFUL).then(RUNNING)
+				.when(POWERFUL).then(SLEEPING).on(PacManFallAsleepEvent.class)
+				
+				.when(POWERFUL).then(AWAKE)
 					.condition(() -> power == 0)
 					.annotation("Lost power")
 
@@ -137,13 +151,23 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		return collapsing;
 	}
 
-	public int getPower() {
-		return power;
+	private void gotoBed() {
+		Bed bed = world.pacManBed();
+		placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+		setMoveDir(bed.exitDir);
+		setWishDir(bed.exitDir);
 	}
 
-	public void setPower(int power) {
-		this.power = power;
-		process(new PacManGainsPowerEvent());
+	public void wakeUp() {
+		process(new PacManWakeUpEvent());
+	}
+
+	public void fallAsleep() {
+		process(new PacManFallAsleepEvent());
+	}
+
+	public int getPower() {
+		return power;
 	}
 
 	@Override
@@ -166,24 +190,14 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		return renderer;
 	}
 
-	public void wakeUp() {
-		process(new PacManWakeUpEvent());
-	}
-
-	public void fallAsleep() {
-		Vector2f position = entity.tf.getPosition();
-		setState(PacManState.SLEEPING);
-		entity.tf.setPosition(position); // reset position
-	}
-
 	/**
-	 * Defines the steering used in the {@link PacManState#RUNNING} and {@link PacManState#POWERFUL}
+	 * Defines the steering used in the {@link PacManState#AWAKE} and {@link PacManState#POWERFUL}
 	 * states.
 	 * 
 	 * @param steering steering to use
 	 */
 	public void behavior(Steering<PacMan> steering) {
-		behavior(RUNNING, steering);
+		behavior(AWAKE, steering);
 		behavior(POWERFUL, steering);
 	}
 

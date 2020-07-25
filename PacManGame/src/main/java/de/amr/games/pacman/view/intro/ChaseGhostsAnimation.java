@@ -47,7 +47,7 @@ public class ChaseGhostsAnimation extends GameObject {
 
 		folks.pacMan.setMoveDir(Direction.RIGHT);
 		folks.pacMan.entity.tf.vx = 0.8f;
-		folks.pacMan.setState(PacManState.RUNNING);
+		folks.pacMan.setState(PacManState.AWAKE);
 
 		folks.ghosts().forEach(ghost -> {
 			ghost.setMoveDir(Direction.RIGHT);

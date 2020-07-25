@@ -84,7 +84,7 @@ public class GhostPointsAnimation extends GameObject {
 		folks.all().forEach(Creature::init);
 
 		folks.pacMan.setMoveDir(Direction.RIGHT);
-		folks.pacMan.setState(PacManState.RUNNING);
+		folks.pacMan.setState(PacManState.AWAKE);
 		folks.pacMan.setSpeed(() -> 0f);
 		folks.pacMan.renderer().stopAnimationWhenStanding(false);
 

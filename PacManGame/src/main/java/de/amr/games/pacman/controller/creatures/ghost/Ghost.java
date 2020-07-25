@@ -235,6 +235,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	public void getReadyToRumble(Game game) {
 		if ("Blinky".equals(name)) {
 			sanity = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
+			sanity.init();
 		}
 		fnFlashTimeTicks = () -> game.level.numFlashes * sec(0.5f);
 		setSpeed(() -> GameController.ghostSpeed(this, game));

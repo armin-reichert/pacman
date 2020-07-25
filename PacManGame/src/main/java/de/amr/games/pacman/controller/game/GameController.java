@@ -196,6 +196,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						folksInsideWorld().forEach(Creature::update);
 					})
+					.onExit(() -> {
+						playView.clearMessage(2);
+						folks.pacMan.wakeUp();
+					})
 				
 				.state(PLAYING).customState(new PlayingState())
 				
@@ -320,20 +324,19 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
 					.condition(() -> sound.isMusicLoadingComplete()	&& settings.skipIntro)
-					.annotation("music loaded, skipping intro")
+					.annotation("Music loaded, skipping intro")
 					
 				.when(LOADING_MUSIC).then(INTRO)
 					.condition(() -> sound.isMusicLoadingComplete())
-					.annotation("music loaded")
+					.annotation("Music loaded")
 			
 				.when(INTRO).then(GETTING_READY)
 					.condition(() -> currentView.isComplete())
-					.annotation("intro complete")
+					.annotation("Intro complete")
 					
 				.when(GETTING_READY).then(PLAYING)
 					.onTimeout()
-					.act(playingState()::preparePlaying)
-					.annotation("ready to play")
+					.annotation("Ready to play")
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
@@ -362,31 +365,31 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
-					.act(playingState()::preparePlaying)
-					.annotation("level change complete")
+					.act(playingState()::resumePlaying)
+					.annotation("Level change complete")
 					
 				.when(GHOST_DYING).then(PLAYING)
 					.onTimeout()
-					.annotation("resume playing")
+					.annotation("Resume playing")
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
 					.onTimeout()
 					.condition(() -> game.lives == 0)
-					.annotation("no lives left, game over")
+					.annotation("No lives left, game over")
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
 					.condition(() -> game.lives > 0)
-					.act(playingState()::preparePlaying)
+					.act(playingState()::resumePlaying)
 					.annotation(() -> String.format("%d lives remaining, if > 0, resume game", game.lives))
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce("space"))
-					.annotation("new game requested")
+					.annotation("New game requested")
 					
 				.when(GAME_OVER).then(INTRO)
 					.condition(() -> !sound.isGameOverMusicRunning())
-					.annotation("game over time complete")
+					.annotation("Game over time complete")
 							
 		.endStateMachine();
 		//@formatter:on
@@ -397,7 +400,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 */
 	public class PlayingState extends State<PacManGameState> {
 
-		private void preparePlaying() {
+		private void resumePlaying() {
 			world.setFrozen(false);
 			bonusControl.init();
 			ghostCommand.init();
@@ -492,8 +495,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();
 				ghostCommand.stopAttacking();
-				folks.pacMan.setPower(sec(game.level.pacManPowerSeconds));
-				ghostsInsideWorld().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
+				int powerTicks = sec(game.level.pacManPowerSeconds);
+				folksInsideWorld().forEach(creature -> creature.process(new PacManGainsPowerEvent(powerTicks)));
 			}
 		}
 	}
@@ -534,12 +537,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected void newGame() {
 		game = new Game(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, folks);
+		ghostCommand.init();
 		bonusControl = new BonusControl(game, world);
+		bonusControl.init();
 		doorMan = new DoorMan(world, world.house(0), game, folks);
-		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
-		folks.pacMan.setSpeed(() -> pacManSpeed(folks.pacMan, game));
 		folks.all().forEach(world::include);
 		folks.all().forEach(Creature::init);
+		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
+		folks.pacMan.setSpeed(() -> pacManSpeed(folks.pacMan, game));
 		playView = createPlayView();
 	}
 

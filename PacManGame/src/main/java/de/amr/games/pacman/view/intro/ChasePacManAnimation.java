@@ -52,7 +52,7 @@ public class ChasePacManAnimation extends GameObject {
 
 		folks.pacMan.entity.tf.vx = -0.55f;
 		folks.pacMan.setMoveDir(Direction.LEFT);
-		folks.pacMan.setState(PacManState.RUNNING);
+		folks.pacMan.setState(PacManState.AWAKE);
 		folks.pacMan.renderer().stopAnimationWhenStanding(false);
 
 		folks.ghosts().forEach(ghost -> {

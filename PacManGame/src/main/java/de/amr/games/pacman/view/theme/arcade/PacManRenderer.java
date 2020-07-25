@@ -50,12 +50,13 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 				selectSprite("full");
 			}
 			break;
-		case RUNNING:
+		case AWAKE:
 		case POWERFUL:
 			selectSprite("walking-" + pacMan.moveDir());
 			boolean running = pacMan.entity.tf.vx != 0 || pacMan.entity.tf.vy != 0;
 			enableAnimation(running || !running && !isAnimationStoppedWhenStanding());
 			break;
+		case INBED:
 		case SLEEPING:
 			selectSprite("full");
 		default:

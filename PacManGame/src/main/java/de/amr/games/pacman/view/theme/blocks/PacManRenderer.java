@@ -29,9 +29,10 @@ class PacManRenderer implements IPacManRenderer {
 		case DEAD:
 			drawCollapsing(g);
 			break;
-		case RUNNING:
+		case AWAKE:
 			drawRunning(g);
 			break;
+		case INBED:
 		case SLEEPING:
 			drawFull(g);
 			break;
