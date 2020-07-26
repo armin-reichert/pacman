@@ -83,6 +83,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		case TIRED:
 		case SLEEPING:
 		case DEAD:
+		case COLLAPSING:
 			return 0;
 		case POWERFUL:
 			return pacMan.mustDigest() ? speed(game.level.pacManPowerDotsSpeed) : speed(game.level.pacManPowerSpeed);
