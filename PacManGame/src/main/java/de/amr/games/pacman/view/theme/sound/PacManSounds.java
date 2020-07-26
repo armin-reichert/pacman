@@ -33,7 +33,7 @@ public class PacManSounds implements IPacManSounds {
 	private final SoundClip clipPacmanDies = mp3("die");
 	private final SoundClip clipWaza = mp3("waza");
 
-	private Optional<SoundClip> musicReady = Optional.empty();
+	private Optional<SoundClip> musicGameReady = Optional.empty();
 	private Optional<SoundClip> musicGameRunning = Optional.empty();
 	private Optional<SoundClip> musicGameOver = Optional.empty();
 
@@ -50,7 +50,7 @@ public class PacManSounds implements IPacManSounds {
 		asyncLoader = CompletableFuture.runAsync(() -> {
 			musicGameRunning = Optional.of(mp3("bgmusic"));
 			musicGameOver = Optional.of(mp3("ending"));
-			musicReady = Optional.of(mp3("ready"));
+			musicGameReady = Optional.of(mp3("ready"));
 		});
 	}
 
@@ -169,7 +169,7 @@ public class PacManSounds implements IPacManSounds {
 
 	@Override
 	public void playMusicGameReady() {
-		musicReady.ifPresent(SoundClip::play);
+		musicGameReady.ifPresent(SoundClip::play);
 	}
 
 	@Override
