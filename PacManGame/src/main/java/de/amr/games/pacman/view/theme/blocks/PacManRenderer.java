@@ -26,21 +26,20 @@ class PacManRenderer implements IPacManRenderer {
 		smoothDrawingOn(g);
 		PacManState state = pacMan.getState();
 		switch (state) {
+		case AWAKE:
+		case POWERFUL:
+			drawRunning(g);
+			break;
+		case TIRED:
+		case SLEEPING:
 		case DEAD:
 			drawFull(g);
 			break;
 		case COLLAPSING:
 			drawCollapsed(g);
 			break;
-		case AWAKE:
-			drawRunning(g);
-			break;
-		case TIRED:
-		case SLEEPING:
-			drawFull(g);
-			break;
 		default:
-			break;
+			throw new IllegalArgumentException("Unknown Pac-Man state" + state);
 		}
 		smoothDrawingOff(g);
 	}
