@@ -71,7 +71,7 @@ class WorldRenderer implements IWorldRenderer {
 		drawBonusShape(g, center, bonus);
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
-			pen.font(BlocksTheme.IT.$font("font"));
+			pen.font(BlocksTheme.THEME.$font("font"));
 			String text = bonus.symbol.substring(0, 1) + bonus.symbol.substring(1).toLowerCase();
 			pen.drawCentered(text, center.x, center.y + Tile.SIZE / 2);
 		}
@@ -79,14 +79,14 @@ class WorldRenderer implements IWorldRenderer {
 
 	private void drawBonusShape(Graphics2D g, Vector2f center, Bonus bonus) {
 		int radius = 4;
-		g.setColor(BlocksTheme.IT.symbolColor(bonus.symbol));
+		g.setColor(BlocksTheme.THEME.symbolColor(bonus.symbol));
 		g.fillOval(center.roundedX() - radius, center.roundedY() - radius, 2 * radius, 2 * radius);
 	}
 
 	private void drawConsumedBonus(Graphics2D g, Vector2f center, Bonus bonus) {
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
-			pen.font(BlocksTheme.IT.$font("font"));
+			pen.font(BlocksTheme.THEME.$font("font"));
 			String text = String.valueOf(bonus.value);
 			pen.drawCentered(text, center.x, center.y + 4);
 		}

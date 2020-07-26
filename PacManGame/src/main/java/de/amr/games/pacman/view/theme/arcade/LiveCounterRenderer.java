@@ -16,7 +16,7 @@ public class LiveCounterRenderer implements IRenderer {
 
 	public LiveCounterRenderer(Game game) {
 		this.game = game;
-		ArcadeThemeSprites arcadeSprites = ArcadeTheme.IT.$value("sprites");
+		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		pacManLookingLeft = arcadeSprites.makeSprite_pacManWalking(LEFT).frame(1);
 	}
 

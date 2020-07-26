@@ -66,8 +66,8 @@ public class TestUI implements Lifecycle, VisualController {
 		game = new Game(1, world.totalFoodCount());
 
 		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
-		folks.ghosts().forEach(ghost -> ghost.setSpeed(() -> GameController.ghostSpeed(ghost, game)));
-		pacMan.setSpeed(() -> GameController.pacManSpeed(pacMan, game));
+		folks.ghosts().forEach(ghost -> ghost.setSpeed(() -> GameController.ghostSpeed(ghost, game.level)));
+		pacMan.setSpeed(() -> GameController.pacManSpeed(pacMan, game.level));
 
 		view = new EnhancedPlayView(world, theme(), folks, game, null, null);
 		view.turnScoresOff();

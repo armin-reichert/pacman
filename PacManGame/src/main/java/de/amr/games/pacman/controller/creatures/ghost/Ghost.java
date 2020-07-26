@@ -236,7 +236,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 			sanity.init();
 		}
 		fnFlashTimeTicks = () -> game.level.numFlashes * sec(0.5f);
-		setSpeed(() -> GameController.ghostSpeed(this, game));
+		setSpeed(() -> GameController.ghostSpeed(this, game.level));
 		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
 		state(DEAD).setTimer(sec(1));
 		state(DEAD).entryAction = () -> bounty = game.killedGhostPoints();

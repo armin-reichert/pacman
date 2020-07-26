@@ -22,8 +22,10 @@ import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
@@ -46,6 +48,7 @@ import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.GameLevel;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -57,7 +60,6 @@ import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.MusicLoadingView;
 import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.Themes;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -78,7 +80,19 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 */
 	public static final float BASE_SPEED = 1.25f;
 
-	public static float pacManSpeed(PacMan pacMan, Game game) {
+	/**
+	 * Pac-Man move speed at given game level.
+	 * 
+	 * @param pacMan Pac-Man
+	 * @param level  game level
+	 * @return speed in pixels per tick
+	 */
+	public static float pacManSpeed(PacMan pacMan, GameLevel level) {
+		Objects.requireNonNull(pacMan);
+		Objects.requireNonNull(level);
+		if (pacMan.getState() == null) {
+			throw new IllegalStateException("Pac-Man is not initialized.");
+		}
 		switch (pacMan.getState()) {
 		case TIRED:
 		case SLEEPING:
@@ -86,43 +100,54 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		case COLLAPSING:
 			return 0;
 		case POWERFUL:
-			return pacMan.mustDigest() ? speed(game.level.pacManPowerDotsSpeed) : speed(game.level.pacManPowerSpeed);
+			return speed(pacMan.mustDigest() ? level.pacManPowerDotsSpeed : level.pacManPowerSpeed);
 		case AWAKE:
-			return pacMan.mustDigest() ? speed(game.level.pacManDotsSpeed) : speed(game.level.pacManSpeed);
+			return speed(pacMan.mustDigest() ? level.pacManDotsSpeed : level.pacManSpeed);
 		default:
 			throw new IllegalStateException("Illegal Pac-Man state: " + pacMan.getState());
 		}
 	}
 
-	public static float ghostSpeed(Ghost ghost, Game game) {
+	/**
+	 * Ghost move speed at given game level.
+	 * 
+	 * @param ghost ghost
+	 * @param level game level
+	 * @return speed in pixels per tick
+	 */
+	public static float ghostSpeed(Ghost ghost, GameLevel level) {
+		Objects.requireNonNull(ghost);
+		Objects.requireNonNull(level);
+		if (ghost.getState() == null) {
+			throw new IllegalStateException(String.format("Ghost %s is not initialized.", ghost.name));
+		}
 		switch (ghost.getState()) {
 		case LOCKED:
-			return speed(ghost.isInsideHouse() ? game.level.ghostSpeed / 2 : 0);
+			return speed(ghost.isInsideHouse() ? level.ghostSpeed / 2 : 0);
 		case LEAVING_HOUSE:
-			return speed(game.level.ghostSpeed / 2);
+			return speed(level.ghostSpeed / 2);
 		case ENTERING_HOUSE:
-			return speed(game.level.ghostSpeed);
+			return speed(level.ghostSpeed);
 		case CHASING:
 		case SCATTERING:
 			if (ghost.world().isTunnel(ghost.tileLocation())) {
-				return speed(game.level.ghostTunnelSpeed);
+				return speed(level.ghostTunnelSpeed);
 			}
 			switch (ghost.getSanity()) {
 			case ELROY1:
-				return speed(game.level.elroy1Speed);
+				return speed(level.elroy1Speed);
 			case ELROY2:
-				return speed(game.level.elroy2Speed);
+				return speed(level.elroy2Speed);
 			case INFECTABLE:
 			case IMMUNE:
-				return speed(game.level.ghostSpeed);
+				return speed(level.ghostSpeed);
 			default:
 				throw new IllegalArgumentException("Illegal ghost sanity state: " + ghost.getSanity());
 			}
 		case FRIGHTENED:
-			return speed(
-					ghost.world().isTunnel(ghost.tileLocation()) ? game.level.ghostTunnelSpeed : game.level.ghostFrightenedSpeed);
+			return speed(ghost.world().isTunnel(ghost.tileLocation()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
 		case DEAD:
-			return speed(2 * game.level.ghostSpeed);
+			return speed(2 * level.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s", ghost.getState()));
 		}
@@ -136,7 +161,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return fraction * BASE_SPEED;
 	}
 
-	protected final Theme[] themes = Themes.all().toArray(Theme[]::new);
+	protected final Theme[] themes;
 
 	protected ArcadeWorld world;
 	protected Folks folks;
@@ -155,8 +180,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected MusicLoadingView musicLoadingView;
 	protected PlayView playView;
 
-	public GameController() {
+	/**
+	 * Creates a new game controller.
+	 * 
+	 * @param themes supported themes
+	 */
+	public GameController(Stream<Theme> themes) {
 		super(PacManGameState.class);
+
+		this.themes = themes.toArray(Theme[]::new);
+
 		app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
@@ -549,7 +582,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		folks.all().forEach(world::include);
 		folks.all().forEach(Creature::init);
 		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
-		folks.pacMan.setSpeed(() -> pacManSpeed(folks.pacMan, game));
+		folks.pacMan.setSpeed(() -> pacManSpeed(folks.pacMan, game.level));
 	}
 
 	protected PlayView createPlayView() {

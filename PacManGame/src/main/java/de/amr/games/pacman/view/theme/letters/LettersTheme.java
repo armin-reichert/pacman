@@ -28,7 +28,7 @@ import de.amr.games.pacman.view.theme.common.Rendering;
  */
 public class LettersTheme extends AbstractTheme {
 
-	public static final LettersTheme IT = new LettersTheme();
+	public static final LettersTheme THEME = new LettersTheme();
 
 	private LettersTheme() {
 		super("LETTERS");
@@ -45,7 +45,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	private Color ghostColor(Ghost ghost) {
-		Map<Integer, Color> colors = IT.$value("ghost-colors");
+		Map<Integer, Color> colors = THEME.$value("ghost-colors");
 		return colors.getOrDefault(ghost.getColor(), Color.WHITE);
 	}
 

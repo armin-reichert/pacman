@@ -8,7 +8,15 @@ import de.amr.games.pacman.view.dashboard.fsm.FsmView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
 import de.amr.games.pacman.view.dashboard.theme.ThemeSelectionView;
+import de.amr.games.pacman.view.theme.Themes;
 
+/**
+ * The Pac-Man game application with inspection views and lots of bells and whistles.
+ * 
+ * @see <a href="https://github.com/armin-reichert/pacman">GitHub</a>
+ * 
+ * @author Armin Reichert
+ */
 public class PacManAppEnhanced extends PacManApp {
 
 	public static void main(String[] args) {
@@ -22,10 +30,17 @@ public class PacManAppEnhanced extends PacManApp {
 	}
 
 	@Override
+	public void init() {
+		setIcon("/images/pacman-icon.png");
+		setController(new EnhancedGameController(Themes.all()));
+	}
+
+	@Override
 	public void configureF2Dialog(F2Dialog f2) {
 		AppShell shell = shell().get();
 		f2.setSize(700, shell.getHeight());
 		f2.setRelativeLocation(shell.getWidth(), 0);
+
 		EnhancedGameController gameController = (EnhancedGameController) getController();
 
 		ThemeSelectionView themeSelectionView = new ThemeSelectionView();
@@ -42,11 +57,5 @@ public class PacManAppEnhanced extends PacManApp {
 		GameLevelView gameLevelView = new GameLevelView();
 		gameLevelView.attachTo(gameController);
 		f2.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
-	}
-
-	@Override
-	public void init() {
-		setIcon("/images/pacman-icon.png");
-		setController(new EnhancedGameController());
 	}
 }

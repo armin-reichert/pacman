@@ -230,7 +230,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 	@Override
 	public void init() {
-		ArcadeThemeSprites arcadeSprites = ArcadeTheme.IT.$value("sprites");
+		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		pacManLogo = new ImageWidget(arcadeSprites.image_logo());
 		pacManLogo.tf.centerHorizontally(0, width);
 		pacManLogo.tf.y = 20;

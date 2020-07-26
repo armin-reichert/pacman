@@ -14,7 +14,7 @@ public class GhostRenderer extends SpriteRenderer implements IRenderer {
 
 	public GhostRenderer(Ghost ghost) {
 		this.ghost = ghost;
-		ArcadeThemeSprites arcadeSprites = ArcadeTheme.IT.$value("sprites");
+		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		Direction.dirs().forEach(dir -> {
 			sprites.set("color-" + dir, arcadeSprites.makeSprite_ghostColored(ghost.getColor(), dir));
 			sprites.set("eyes-" + dir, arcadeSprites.makeSprite_ghostEyes(dir));

@@ -31,7 +31,7 @@ public class WorldRenderer implements IWorldRenderer {
 	public WorldRenderer(World world) {
 		this.world = world;
 		fnEatenFoodColor = tile -> Color.BLACK;
-		ArcadeThemeSprites arcadeSprites = ArcadeTheme.IT.$value("sprites");
+		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		for (Symbol symbol : Symbol.values()) {
 			symbolImages.put(symbol.name(), arcadeSprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
 		}

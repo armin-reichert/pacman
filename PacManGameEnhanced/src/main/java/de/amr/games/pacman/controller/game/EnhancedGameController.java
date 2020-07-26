@@ -20,6 +20,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -33,6 +34,15 @@ public class EnhancedGameController extends GameController {
 	private boolean showingRoutes;
 	private boolean showingStates;
 	private boolean showingScores = true;
+
+	/**
+	 * Creates a new game controller.
+	 * 
+	 * @param themes supported themes
+	 */
+	public EnhancedGameController(Stream<Theme> themes) {
+		super(themes);
+	}
 
 	@Override
 	protected PlayView createPlayView() {

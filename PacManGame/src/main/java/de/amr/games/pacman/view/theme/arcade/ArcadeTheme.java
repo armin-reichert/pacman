@@ -16,7 +16,7 @@ import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class ArcadeTheme extends AbstractTheme {
 
-	public static final ArcadeTheme IT = new ArcadeTheme();
+	public static final ArcadeTheme THEME = new ArcadeTheme();
 
 	private ArcadeTheme() {
 		super("ARCADE");

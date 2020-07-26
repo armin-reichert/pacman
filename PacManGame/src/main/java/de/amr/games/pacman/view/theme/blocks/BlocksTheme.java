@@ -24,7 +24,7 @@ import de.amr.games.pacman.view.theme.common.ScoreRenderer;
  */
 public class BlocksTheme extends AbstractTheme {
 
-	public static final BlocksTheme IT = new BlocksTheme();
+	public static final BlocksTheme THEME = new BlocksTheme();
 
 	private BlocksTheme() {
 		super("BLOCKS");
