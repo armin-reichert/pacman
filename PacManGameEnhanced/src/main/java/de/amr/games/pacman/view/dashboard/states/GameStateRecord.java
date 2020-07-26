@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.dashboard.states;
 
-import de.amr.games.pacman.controller.creatures.api.Creature;
+import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.GhostSanity;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;

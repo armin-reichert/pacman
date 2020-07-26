@@ -15,7 +15,6 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.creatures.api.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Tile;

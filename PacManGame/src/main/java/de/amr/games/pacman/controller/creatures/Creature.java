@@ -1,4 +1,4 @@
-package de.amr.games.pacman.controller.creatures.api;
+package de.amr.games.pacman.controller.creatures;
 
 import java.util.EnumMap;
 import java.util.HashMap;

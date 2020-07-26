@@ -15,7 +15,7 @@ import java.awt.Graphics2D;
 import java.util.Optional;
 
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.api.Creature;
+import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;

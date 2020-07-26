@@ -15,7 +15,7 @@ import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.creatures.api.Creature;
+import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
