@@ -153,7 +153,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		return Optional.ofNullable(event);
 	}
 
-	private void goToBed() {
+	public void goToBed() {
 		Bed bed = world.pacManBed();
 		placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		setMoveDir(bed.exitDir);
