@@ -9,10 +9,7 @@ import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
-import java.util.function.Supplier;
-
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -29,7 +26,6 @@ public class Movement extends StateMachine<MovementType, Void> {
 	private final MobileLifeform mover;
 	private final String moverName;
 
-	public Supplier<Float> fnSpeed = () -> GameController.BASE_SPEED;
 	public boolean enteredNewTile;
 	private Portal activePortal;
 
@@ -45,7 +41,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 				.state(WALKING)
 					.onTick(this::move)
 				.state(TELEPORTING)
-					.timeoutAfter(sec(0.5f))
+					.timeoutAfter(sec(1.0f))
 					.onEntry(() -> mover.setVisible(false))
 					.onExit(() -> mover.setVisible(true))
 			.transitions()
@@ -79,21 +75,27 @@ public class Movement extends StateMachine<MovementType, Void> {
 		return activePortal != null;
 	}
 
-	private void checkPortalEntered() {
+	private void checkIfJustEnteredPortal() {
+		if (activePortal != null) {
+			return; // already entered portal before
+		}
 		Tile tile = mover.tileLocation();
 		mover.world().portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
 			if (portal.either.equals(tile) && (mover.isMoving(LEFT) && mover.tileOffsetX() <= 1)
 					|| (mover.isMoving(UP) && mover.tileOffsetY() <= 1)) {
-				activePortal = portal;
+				setActivePortal(portal, tile);
 			} else if (portal.other.equals(tile) && (mover.isMoving(RIGHT) && mover.tileOffsetX() >= 7)
 					|| (mover.isMoving(DOWN) && mover.tileOffsetY() >= 7)) {
-				activePortal = portal;
+				setActivePortal(portal, tile);
 			}
 		});
-		if (activePortal != null) {
-			activePortal.setPassageDir(mover.moveDir());
-			loginfo("%s enters portal at %s moving %s", moverName, tile, activePortal.getPassageDir());
-		}
+	}
+
+	private void setActivePortal(Portal portal, Tile entry) {
+		activePortal = portal;
+		activePortal.setPassageDir(mover.moveDir());
+		loginfo("%s enters portal at %s moving %s with offsetX %.2f", 
+				moverName, entry, activePortal.getPassageDir(), mover.tileOffsetX());
 	}
 
 	private void teleport() {
@@ -105,27 +107,31 @@ public class Movement extends StateMachine<MovementType, Void> {
 
 	private void move() {
 		final Tile tileBeforeMove = mover.tileLocation();
-		final float maxSpeed = fnSpeed.get();
-		float speed = possibleSpeed(mover.moveDir(), maxSpeed);
-		if (mover.wishDir() != null && mover.wishDir() != mover.moveDir()) {
-			float wishDirSpeed = possibleSpeed(mover.wishDir(), maxSpeed);
-			if (wishDirSpeed > 0) {
-				speed = wishDirSpeed;
-				if (mover.requiresAlignment()
-						&& (mover.wishDir() == mover.moveDir().left() || mover.wishDir() == mover.moveDir().right())) {
-					moveToTile(tileBeforeMove, 0, 0);
+		final Direction wishDir = mover.wishDir();
+		final float speed = mover.getSpeed();
+
+		// how far can we move?
+		float pixels = possibleMoveDistance(mover.moveDir(), speed);
+		if (wishDir != null && wishDir != mover.moveDir()) {
+			float pixelsWishDir = possibleMoveDistance(wishDir, speed);
+			if (pixelsWishDir > 0) {
+				if (wishDir == mover.moveDir().left() || wishDir == mover.moveDir().right()) {
+					if (mover.requiresAlignment()) {
+						moveToTile(tileBeforeMove, 0, 0);
+					}
 				}
-				mover.setMoveDir(mover.wishDir());
+				mover.setMoveDir(wishDir);
+				pixels = pixelsWishDir;
 			}
 		}
-		mover.tf().setVelocity(Vector2f.smul(speed, mover.moveDir().vector()));
+
+		Vector2f velocity = mover.moveDir().vector().times(pixels);
+		mover.tf().setVelocity(velocity);
 		mover.tf().move();
 
 		Tile tileAfterMove = mover.tileLocation();
 		enteredNewTile = !tileBeforeMove.equals(tileAfterMove);
-		if (activePortal == null) {
-			checkPortalEntered();
-		}
+		checkIfJustEnteredPortal();
 	}
 
 	/**
@@ -134,7 +140,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 	 * @param dir a direction
 	 * @return speed the creature's max. possible speed towards this direction
 	 */
-	private float possibleSpeed(Direction dir, float speed) {
+	private float possibleMoveDistance(Direction dir, float speed) {
 		if (mover.canCrossBorderTo(dir)) {
 			return speed;
 		}

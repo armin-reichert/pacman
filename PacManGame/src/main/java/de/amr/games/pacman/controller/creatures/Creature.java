@@ -12,6 +12,7 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.api.TargetTileSteering;
 import de.amr.games.pacman.controller.steering.common.Movement;
@@ -42,6 +43,7 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	public final Entity entity;
 	protected final World world;
 	protected final Map<S, Steering<M>> steeringsByState;
+	protected Supplier<Float> fnSpeed = () -> GameController.BASE_SPEED;
 	protected final Movement movement;
 	protected Direction moveDir;
 	protected Direction wishDir;
@@ -88,17 +90,18 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	}
 
 	/**
-	 * @return this creatures' current speed (pixels/sec)
+	 * @return this creatures' current speed (pixels per tick)
 	 */
-	public float speed() {
-		return movement.fnSpeed.get();
+	@Override
+	public float getSpeed() {
+		return fnSpeed.get();
 	}
 
 	/**
-	 * @param fnSpeed function providing the current speed
+	 * @param fnSpeed function providing the speed in pixels per tick
 	 */
 	public void setSpeed(Supplier<Float> fnSpeed) {
-		movement.fnSpeed = fnSpeed;
+		this.fnSpeed = fnSpeed;
 	}
 
 	public Steering<M> steering() {

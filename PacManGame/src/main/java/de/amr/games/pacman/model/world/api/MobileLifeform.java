@@ -30,6 +30,13 @@ public interface MobileLifeform extends Lifeform {
 	}
 
 	/**
+	 * Speed of the mover in the current state.
+	 * 
+	 * @return pixels per tick
+	 */
+	float getSpeed();
+
+	/**
 	 * @return the wanted move direction
 	 */
 	Direction wishDir();
