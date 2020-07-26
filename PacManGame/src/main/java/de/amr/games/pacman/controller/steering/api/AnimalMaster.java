@@ -18,6 +18,15 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 
+/**
+ * A builder for assigning steerings to Pac-Man and the ghosts. Allows nice formulations like
+ * 
+ * <pre>
+ * you(ghost).when(FRIGHTENED).fleeToSafeTile().ok();
+ * </pre>
+ * 
+ * @author Armin Reichert
+ */
 public class AnimalMaster {
 
 	private Ghost ghost;
