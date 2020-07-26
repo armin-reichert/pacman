@@ -1,4 +1,4 @@
-package de.amr.games.pacman.controller.sound;
+package de.amr.games.pacman.view.theme.sound;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
@@ -7,7 +7,6 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.model.world.api.World;
 
 /**
  * Controls music and sound.
@@ -16,13 +15,11 @@ import de.amr.games.pacman.model.world.api.World;
  */
 public class PacManSounds {
 
-	private final World world;
 	private final Folks folks;
 	private CompletableFuture<Void> musicLoading;
 	private long lastPelletEatenTimeMillis;
 
-	public PacManSounds(World world, Folks folks) {
-		this.world = world;
+	public PacManSounds(Folks folks) {
 		this.folks = folks;
 	}
 
@@ -34,14 +31,14 @@ public class PacManSounds {
 		if (snd_eatPill().isRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
 			snd_eatPill().stop();
 		}
-		if (folks.ghosts().filter(world::contains).anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
+		if (folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
 			if (!snd_ghost_chase().isRunning()) {
 				snd_ghost_chase().loop();
 			}
 		} else {
 			snd_ghost_chase().stop();
 		}
-		if (folks.ghosts().filter(world::contains).anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
+		if (folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
 			if (!snd_ghost_dead().isRunning()) {
 				snd_ghost_dead().loop();
 			}

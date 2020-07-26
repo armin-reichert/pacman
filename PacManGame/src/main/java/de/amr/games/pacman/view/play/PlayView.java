@@ -105,16 +105,7 @@ public class PlayView implements PacManGameView {
 		drawLevelCounter(g);
 	}
 
-	public void showGameReady() {
-		showMessage(2, "Ready!", Color.YELLOW);
-	}
-
-	public void showGameOver() {
-		showMessage(2, "Game Over!", Color.RED);
-	}
-
 	/**
-	 * 
 	 * @param number message number (1 or 2)
 	 * @param text   message text
 	 * @param color  message color

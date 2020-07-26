@@ -37,7 +37,7 @@ class InkyChaseTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		soundManager.snd_ghost_chase().volume(0);
+		sounds.snd_ghost_chase().volume(0);
 		include(pacMan, inky, blinky);
 		pacMan.init();
 		ghostsOnStage().forEach(ghost -> {

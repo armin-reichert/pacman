@@ -37,7 +37,7 @@ class OutsideTileTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		soundManager.snd_ghost_chase().volume(0);
+		sounds.snd_ghost_chase().volume(0);
 		include(blinky);
 		blinky.init();
 		int row = world.portals().findFirst().map(portal -> portal.other.row).orElse((short) 100);
