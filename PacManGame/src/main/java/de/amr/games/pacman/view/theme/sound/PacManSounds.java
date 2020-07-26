@@ -93,6 +93,7 @@ public class PacManSounds implements IPacManSounds {
 	@Override
 	public void stopAll() {
 		stopAllClips();
+		musicGameReady.ifPresent(SoundClip::stop);
 		musicGameRunning.ifPresent(SoundClip::stop);
 		musicGameOver.ifPresent(SoundClip::stop);
 	}
