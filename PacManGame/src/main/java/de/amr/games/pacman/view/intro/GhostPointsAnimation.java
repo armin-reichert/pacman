@@ -17,9 +17,8 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.view.theme.api.IPacManSounds;
 import de.amr.games.pacman.view.theme.api.Theme;
-import de.amr.games.pacman.view.theme.sound.PacManSounds;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
@@ -29,10 +28,9 @@ import de.amr.games.pacman.view.theme.sound.PacManSounds;
  */
 public class GhostPointsAnimation extends GameObject {
 
-	private final ArcadeWorld world = new ArcadeWorld();
-	private final Folks folks = new Folks(world, world.house(0));
-	private final Ghost[] ghosts = folks.ghosts().toArray(Ghost[]::new);
-	private final PacManSounds sounds;
+	private final Folks folks;
+	private final Ghost[] ghosts;
+	private final IPacManSounds sounds;
 	private final BitSet killed = new BitSet(5);
 	private int ghostToKill;
 	private int ghostTimer;
@@ -40,15 +38,17 @@ public class GhostPointsAnimation extends GameObject {
 	private boolean energizer;
 	private int dx = 2 * Tile.SIZE + 3;
 
-	public GhostPointsAnimation(Theme theme, PacManSounds sounds) {
+	public GhostPointsAnimation(Theme theme, IPacManSounds sounds, Folks folks) {
 		this.sounds = sounds;
-		setTheme(theme);
+		this.folks = folks;
 		tf.width = 6 * dx;
 		tf.height = 2 * Tile.SIZE;
+		ghosts = folks.ghosts().toArray(Ghost[]::new);
+		setTheme(theme);
 	}
 
 	public void setTheme(Theme theme) {
-		folks.all().forEach(c -> c.setTheme(theme));
+		folks.all().forEach(creature -> creature.setTheme(theme));
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class GhostPointsAnimation extends GameObject {
 				if (ghostToKill == 4) {
 					stop();
 				} else {
-					sounds.snd_eatGhost().play();
+					sounds.playClipEatGhost();
 					ghosts[ghostToKill].setState(GhostState.DEAD);
 					ghosts[ghostToKill].setBounty(GHOST_BOUNTIES[ghostToKill]);
 					killed.set(ghostToKill);

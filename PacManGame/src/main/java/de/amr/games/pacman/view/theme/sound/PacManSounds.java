@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.theme.sound;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -7,178 +8,184 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.view.theme.api.IPacManSounds;
 
 /**
- * Controls music and sound.
+ * Clips and music.
  * 
  * @author Armin Reichert
  */
-public class PacManSounds {
+public class PacManSounds implements IPacManSounds {
+
+	private static SoundClip mp3(String name) {
+		return Assets.sound("sfx/" + name + ".mp3");
+	}
 
 	private final Folks folks;
-	private CompletableFuture<Void> musicLoading;
+
+	private final SoundClip clipEating = mp3("eating");
+	private final SoundClip clipEatFruit = mp3("eat-fruit");
+	private final SoundClip clipEatGhost = mp3("eat-ghost");
+	private final SoundClip clipExtraLife = mp3("extra-life");
+	private final SoundClip clipGhostChase = mp3("ghost-chase");
+	private final SoundClip clipGhostDead = mp3("ghost-dead");
+	private final SoundClip clipInsertCoin = mp3("insert-coin");
+	private final SoundClip clipPacmanDies = mp3("die");
+	private final SoundClip clipReady = mp3("ready");
+	private final SoundClip clipWaza = mp3("waza");
+
+	private Optional<SoundClip> musicGameRunning = Optional.empty();
+	private Optional<SoundClip> musicGameOver = Optional.empty();
+	private CompletableFuture<Void> asyncLoader;
+
 	private long lastPelletEatenTimeMillis;
 
 	public PacManSounds(Folks folks) {
 		this.folks = folks;
 	}
 
-	private SoundClip mp3(String name) {
-		return Assets.sound("sfx/" + name + ".mp3");
+	public Stream<SoundClip> clips() {
+		return Stream.of(clipEating, clipEatFruit, clipEatGhost, clipExtraLife, clipGhostChase, clipGhostDead,
+				clipInsertCoin, clipPacmanDies, clipReady, clipWaza);
 	}
 
-	public void updatePlayingSounds() {
-		if (snd_eatPill().isRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
-			snd_eatPill().stop();
+	@Override
+	public void updateRunningClips() {
+		if (clipEating.isRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
+			clipEating.stop();
 		}
 		if (folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
-			if (!snd_ghost_chase().isRunning()) {
-				snd_ghost_chase().loop();
+			if (!clipGhostChase.isRunning()) {
+				clipGhostChase.loop();
 			}
 		} else {
-			snd_ghost_chase().stop();
+			clipGhostChase.stop();
 		}
 		if (folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
-			if (!snd_ghost_dead().isRunning()) {
-				snd_ghost_dead().loop();
+			if (!clipGhostDead.isRunning()) {
+				clipGhostDead.loop();
 			}
 		} else {
-			snd_ghost_dead().stop();
+			clipGhostDead.stop();
 		}
 	}
 
-	public void loadMusic() {
-		musicLoading = CompletableFuture.runAsync(() -> {
-			music_playing();
-			music_gameover();
+	@Override
+	public void loadMusicAsync() {
+		asyncLoader = CompletableFuture.runAsync(() -> {
+			mp3("bgmusic");
+			mp3("ending");
+		}).thenRun(() -> {
+			musicGameRunning = Optional.of(mp3("bgmusic"));
+			musicGameOver = Optional.of(mp3("ending"));
 		});
 	}
 
+	@Override
 	public boolean isMusicLoadingComplete() {
-		return musicLoading != null && musicLoading.isDone();
+		return asyncLoader != null && asyncLoader.isDone();
 	}
 
+	@Override
+	public void stopAllClips() {
+		clips().forEach(SoundClip::stop);
+	}
+
+	@Override
 	public void stopAll() {
 		stopAllClips();
-		music_playing().stop();
-		music_gameover().stop();
+		musicGameRunning.ifPresent(SoundClip::stop);
+		musicGameOver.ifPresent(SoundClip::stop);
 	}
 
-	public void stopAllClips() {
-		clips_all().forEach(SoundClip::stop);
-	}
-
-	public void stopGhostSounds() {
-		snd_ghost_chase().stop();
-		snd_ghost_dead().stop();
-	}
-
-	public void gameStarts() {
-		music_playing().volume(.90f);
-		music_playing().loop();
-	}
-
-	public void gameReady() {
-		snd_ready().play();
-	}
-
-	public void pelletEaten() {
-		if (!snd_eatPill().isRunning()) {
-			snd_eatPill().loop();
+	@Override
+	public void startEatingPelletsSound() {
+		if (!clipEating.isRunning()) {
+			clipEating.loop();
 		}
 		lastPelletEatenTimeMillis = System.currentTimeMillis();
 	}
 
-	public void ghostEaten() {
-		snd_eatGhost().play();
+	@Override
+	public void stopEatingPelletsSound() {
+		clipEating.stop();
 	}
 
-	public void bonusEaten() {
-		snd_eatFruit().play();
+	@Override
+	public void playClipEatBonus() {
+		clipEatFruit.play();
 	}
 
-	public void pacManLostPower() {
-		snd_waza().stop();
+	@Override
+	public void playClipEatGhost() {
+		clipEatGhost.play();
 	}
 
-	public void pacManGainsPower() {
-		if (!snd_waza().isRunning()) {
-			snd_waza().loop();
+	@Override
+	public void playClipExtraLife() {
+		clipExtraLife.play();
+	}
+
+	@Override
+	public void playClipGameReady() {
+		clipReady.play();
+	}
+
+	@Override
+	public void playClipGhostChasing() {
+		clipGhostChase.play();
+	}
+
+	@Override
+	public void playClipInsertCoin() {
+		clipInsertCoin.play();
+	}
+
+	@Override
+	public void playClipPacManLostPower() {
+		clipWaza.stop();
+	}
+
+	@Override
+	public void playClipPacManGainsPower() {
+		if (!clipWaza.isRunning()) {
+			clipWaza.loop();
 		}
 	}
 
-	public void pacManDied() {
-		snd_die().play();
-		music_playing().stop();
+	@Override
+	public void playClipPacManDied() {
+		clipPacmanDies.play();
 	}
 
-	public void resumePlayingMusic() {
-		music_playing().loop();
+	@Override
+	public void playMusicGameOver() {
+		musicGameRunning.ifPresent(SoundClip::stop);
+		musicGameOver.ifPresent(SoundClip::play);
 	}
 
-	public void extraLife() {
-		snd_extraLife().play();
+	@Override
+	public void playMusicGameRunning() {
+		musicGameRunning.ifPresent(SoundClip::loop);
 	}
 
-	public void gameOver() {
-		music_playing().stop();
-		music_gameover().play();
+	@Override
+	public void stopMusicGameRunning() {
+		musicGameRunning.ifPresent(SoundClip::stop);
 	}
 
+	@Override
 	public boolean isGameOverMusicRunning() {
-		return music_gameover().isRunning();
+		return musicGameOver.map(SoundClip::isRunning).orElse(false);
 	}
 
-	public Stream<SoundClip> clips_all() {
-		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(), snd_insertCoin(),
-				snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
+	@Override
+	public void loopClipGhostChasing() {
+		clipGhostChase.loop();
 	}
 
-	public SoundClip music_playing() {
-		return mp3("bgmusic");
-	}
-
-	public SoundClip music_gameover() {
-		return mp3("ending");
-	}
-
-	public SoundClip snd_die() {
-		return mp3("die");
-	}
-
-	public SoundClip snd_eatFruit() {
-		return mp3("eat-fruit");
-	}
-
-	public SoundClip snd_eatGhost() {
-		return mp3("eat-ghost");
-	}
-
-	public SoundClip snd_eatPill() {
-		return mp3("eating");
-	}
-
-	public SoundClip snd_extraLife() {
-		return mp3("extra-life");
-	}
-
-	public SoundClip snd_insertCoin() {
-		return mp3("insert-coin");
-	}
-
-	public SoundClip snd_ready() {
-		return mp3("ready");
-	}
-
-	public SoundClip snd_ghost_dead() {
-		return mp3("ghost-dead");
-	}
-
-	public SoundClip snd_ghost_chase() {
-		return mp3("ghost-chase");
-	}
-
-	public SoundClip snd_waza() {
-		return mp3("waza");
+	@Override
+	public void stopClipGhostChasing() {
+		clipGhostChase.stop();
 	}
 }

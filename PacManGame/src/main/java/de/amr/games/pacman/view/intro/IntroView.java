@@ -21,16 +21,18 @@ import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
+import de.amr.games.pacman.view.theme.api.IPacManSounds;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeThemeSprites;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
-import de.amr.games.pacman.view.theme.sound.PacManSounds;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -40,6 +42,8 @@ import de.amr.statemachine.core.StateMachine;
  * @author Armin Reichert
  */
 public class IntroView extends StateMachine<IntroState, Void> implements PacManGameView {
+	
+	static final String GITHUB_URL = "https://github.com/armin-reichert/pacman";
 
 	public enum IntroState {
 		SCROLLING_LOGO_ANIMATION, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
@@ -50,7 +54,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 //	PINK = (248, 120, 88);
 
 	private final World world;
-	private final PacManSounds sounds;
+	private final Folks folks;
+	private final IPacManSounds sounds;
 	private final int width;
 	private final int height;
 
@@ -63,12 +68,13 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 	private MessagesRenderer messagesRenderer;
 
-	public IntroView(World world, Theme theme, PacManSounds soundManager, int width, int height) {
+	public IntroView(World world, Folks folks, Theme theme, int width, int height) {
 		super(IntroState.class);
 		this.world = world;
+		this.folks = folks;
 		this.theme = theme;
 		this.messagesRenderer = theme.createMessagesRenderer();
-		this.sounds = soundManager;
+		this.sounds = theme.createSounds(folks);
 		this.width = width;
 		this.height = height;
 		/*@formatter:off*/
@@ -111,6 +117,37 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	}
 
 	@Override
+	public void init() {
+		ArcadeWorld world = new ArcadeWorld();
+		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
+		pacManLogo = new ImageWidget(arcadeSprites.image_logo());
+		pacManLogo.tf.centerHorizontally(0, width);
+		pacManLogo.tf.y = 20;
+		chasePacMan = new ChasePacManAnimation(theme, sounds, world, new Folks(world, world.house(0)));
+		chasePacMan.tf.centerHorizontally(0, width);
+		chasePacMan.tf.y = 100;
+		chaseGhosts = new ChaseGhostsAnimation(theme, sounds, world, new Folks(world, world.house(0)));
+		ghostPointsAnimation = new GhostPointsAnimation(theme, sounds, new Folks(world, world.house(0)));
+		gitHubLink = LinkWidget.create()
+		/*@formatter:off*/
+			.text(GITHUB_URL)
+			.url(GITHUB_URL)
+			.font(new Font(Font.MONOSPACED, Font.BOLD, 6))
+			.color(Color.LIGHT_GRAY)
+			.build();
+		/*@formatter:on*/
+		gitHubLink.tf.y = (height - 16);
+		gitHubLink.tf.centerHorizontally(0, width);
+		super.init();
+		StateMachineRegistry.IT.register(Stream.of(this));
+	}
+
+	@Override
+	public void exit() {
+		StateMachineRegistry.IT.unregister(Stream.of(this));
+	}
+
+	@Override
 	public Theme getTheme() {
 		return theme;
 	}
@@ -128,7 +165,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 		@Override
 		public void onEntry() {
-			sounds.snd_insertCoin().play();
+			sounds.playClipInsertCoin();
 			pacManLogo.tf.y = height;
 			pacManLogo.tf.vy = -2f;
 			pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
@@ -189,8 +226,9 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			ghostPointsAnimation.start();
 			chasePacMan.tf.centerHorizontally(0, width);
 			chasePacMan.initPositions(width / 2 + 5 * Tile.SIZE);
-			chasePacMan.folks().all().forEach(c -> c.entity.tf.vx = 0);
+			folks.all().forEach(creature -> creature.entity.tf.vx = 0);
 			gitHubLink.visible = true;
+			sounds.startEatingPelletsSound();
 		}
 
 		@Override
@@ -205,6 +243,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			ghostPointsAnimation.stop();
 			ghostPointsAnimation.visible = false;
 			gitHubLink.visible = false;
+			sounds.stopAllClips();
 		}
 
 		@Override
@@ -226,36 +265,6 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	@Override
 	public boolean isComplete() {
 		return is(READY_TO_PLAY);
-	}
-
-	@Override
-	public void init() {
-		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
-		pacManLogo = new ImageWidget(arcadeSprites.image_logo());
-		pacManLogo.tf.centerHorizontally(0, width);
-		pacManLogo.tf.y = 20;
-		chasePacMan = new ChasePacManAnimation(theme, sounds);
-		chasePacMan.tf.centerHorizontally(0, width);
-		chasePacMan.tf.y = 100;
-		chaseGhosts = new ChaseGhostsAnimation(theme, sounds);
-		ghostPointsAnimation = new GhostPointsAnimation(theme, sounds);
-		gitHubLink = LinkWidget.create()
-		/*@formatter:off*/
-			.text("https://github.com/armin-reichert/pacman")
-			.url("https://github.com/armin-reichert/pacman")
-			.font(new Font(Font.MONOSPACED, Font.BOLD, 6))
-			.color(Color.LIGHT_GRAY)
-			.build();
-		/*@formatter:on*/
-		gitHubLink.tf.y = (height - 16);
-		gitHubLink.tf.centerHorizontally(0, width);
-		super.init();
-		StateMachineRegistry.IT.register(Stream.of(this));
-	}
-
-	@Override
-	public void exit() {
-		StateMachineRegistry.IT.unregister(Stream.of(this));
 	}
 
 	@Override

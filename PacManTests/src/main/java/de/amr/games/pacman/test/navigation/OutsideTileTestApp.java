@@ -1,5 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
@@ -37,7 +38,7 @@ class OutsideTileTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		sounds.snd_ghost_chase().volume(0);
+		app().soundManager().muteAll();
 		include(blinky);
 		blinky.init();
 		int row = world.portals().findFirst().map(portal -> portal.other.row).orElse((short) 100);

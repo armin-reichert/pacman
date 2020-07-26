@@ -15,8 +15,8 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.view.theme.api.IPacManSounds;
 import de.amr.games.pacman.view.theme.api.Theme;
-import de.amr.games.pacman.view.theme.sound.PacManSounds;
 
 public class ChasePacManAnimation extends GameObject {
 
@@ -24,23 +24,21 @@ public class ChasePacManAnimation extends GameObject {
 		SIMPLE, TEN, ENERGIZER, FIFTY
 	}
 
-	private final ArcadeWorld world = new ArcadeWorld();
-	private final Folks folks = new Folks(world, world.house(0));
-	private final PacManSounds sounds;
+	private final ArcadeWorld world;
+	private final Folks folks;
+	private final IPacManSounds sounds;
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
 
-	public ChasePacManAnimation(Theme theme, PacManSounds sounds) {
+	public ChasePacManAnimation(Theme theme, IPacManSounds sounds, ArcadeWorld world, Folks folks) {
+		this.world = world;
+		this.folks = folks;
 		this.sounds = sounds;
 		setTheme(theme);
 	}
 
 	public void setTheme(Theme theme) {
-		folks.all().forEach(c -> c.setTheme(theme));
-	}
-
-	public Folks folks() {
-		return folks;
+		folks.all().forEach(creature -> creature.setTheme(theme));
 	}
 
 	@Override
@@ -95,18 +93,20 @@ public class ChasePacManAnimation extends GameObject {
 	@Override
 	public void start() {
 		init();
-		sounds.snd_ghost_chase().loop();
+		sounds.loopClipGhostChasing();
+		sounds.startEatingPelletsSound();
 	}
 
 	@Override
 	public void stop() {
-		sounds.snd_ghost_chase().stop();
-		folks.all().forEach(c -> c.entity.tf.vx = 0);
+		sounds.stopClipGhostChasing();
+		sounds.stopEatingPelletsSound();
+		folks.all().forEach(creature -> creature.entity.tf.vx = 0);
 	}
 
 	@Override
 	public boolean isComplete() {
-		return folks.all().map(c -> c.entity.tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
+		return folks.all().map(creature -> creature.entity.tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
 	}
 
 	@Override

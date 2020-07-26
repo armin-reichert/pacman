@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.theme.api;
 
+import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
@@ -23,4 +24,6 @@ public interface Theme extends ThemeParameters {
 	IWorldRenderer createWorldRenderer(World world);
 
 	MessagesRenderer createMessagesRenderer();
+
+	IPacManSounds createSounds(Folks folks);
 }

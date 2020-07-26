@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.util.Map;
 
 import de.amr.easy.game.Application;
+import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
@@ -15,11 +16,13 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
+import de.amr.games.pacman.view.theme.api.IPacManSounds;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
+import de.amr.games.pacman.view.theme.sound.PacManSounds;
 
 /**
  * Theme using letters only.
@@ -172,5 +175,10 @@ public class LettersTheme extends AbstractTheme {
 		Font font = $font("font");
 		renderer.setFont(font);
 		return renderer;
+	}
+
+	@Override
+	public IPacManSounds createSounds(Folks folks) {
+		return new PacManSounds(folks);
 	}
 }

@@ -5,16 +5,19 @@ import java.awt.Font;
 import java.util.Map;
 
 import de.amr.easy.game.assets.Assets;
+import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
+import de.amr.games.pacman.view.theme.api.IPacManSounds;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
+import de.amr.games.pacman.view.theme.sound.PacManSounds;
 
 /**
  * A theme using simple geometric figures.
@@ -102,5 +105,10 @@ public class BlocksTheme extends AbstractTheme {
 		renderer.setFont($font("font").deriveFont(14f));
 		renderer.setSmoothText(true);
 		return renderer;
+	}
+
+	@Override
+	public IPacManSounds createSounds(Folks folks) {
+		return new PacManSounds(folks);
 	}
 }

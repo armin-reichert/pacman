@@ -3,16 +3,19 @@ package de.amr.games.pacman.view.theme.arcade;
 import java.awt.Font;
 
 import de.amr.easy.game.assets.Assets;
+import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
+import de.amr.games.pacman.view.theme.api.IPacManSounds;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
+import de.amr.games.pacman.view.theme.sound.PacManSounds;
 
 public class ArcadeTheme extends AbstractTheme {
 
@@ -23,7 +26,6 @@ public class ArcadeTheme extends AbstractTheme {
 		put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		put("maze-flash-sec", 0.4f);
 		put("sprites", new ArcadeThemeSprites());
-
 	}
 
 	@Override
@@ -64,5 +66,10 @@ public class ArcadeTheme extends AbstractTheme {
 		MessagesRenderer renderer = new MessagesRenderer();
 		renderer.setFont($font("font"));
 		return renderer;
+	}
+
+	@Override
+	public IPacManSounds createSounds(Folks folks) {
+		return new PacManSounds(folks);
 	}
 }
