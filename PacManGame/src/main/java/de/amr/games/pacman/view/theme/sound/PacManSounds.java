@@ -31,11 +31,12 @@ public class PacManSounds implements IPacManSounds {
 	private final SoundClip clipGhostDead = mp3("ghost-dead");
 	private final SoundClip clipInsertCoin = mp3("insert-coin");
 	private final SoundClip clipPacmanDies = mp3("die");
-	private final SoundClip clipReady = mp3("ready");
 	private final SoundClip clipWaza = mp3("waza");
 
+	private Optional<SoundClip> musicReady = Optional.empty();
 	private Optional<SoundClip> musicGameRunning = Optional.empty();
 	private Optional<SoundClip> musicGameOver = Optional.empty();
+
 	private CompletableFuture<Void> asyncLoader;
 
 	private long lastPelletEatenTimeMillis;
@@ -44,9 +45,18 @@ public class PacManSounds implements IPacManSounds {
 		this.folks = folks;
 	}
 
+	@Override
+	public void loadMusicAsync() {
+		asyncLoader = CompletableFuture.runAsync(() -> {
+			musicGameRunning = Optional.of(mp3("bgmusic"));
+			musicGameOver = Optional.of(mp3("ending"));
+			musicReady = Optional.of(mp3("ready"));
+		});
+	}
+
 	public Stream<SoundClip> clips() {
 		return Stream.of(clipEating, clipEatFruit, clipEatGhost, clipExtraLife, clipGhostChase, clipGhostDead,
-				clipInsertCoin, clipPacmanDies, clipReady, clipWaza);
+				clipInsertCoin, clipPacmanDies, clipWaza);
 	}
 
 	@Override
@@ -71,17 +81,6 @@ public class PacManSounds implements IPacManSounds {
 	}
 
 	@Override
-	public void loadMusicAsync() {
-		asyncLoader = CompletableFuture.runAsync(() -> {
-			mp3("bgmusic");
-			mp3("ending");
-		}).thenRun(() -> {
-			musicGameRunning = Optional.of(mp3("bgmusic"));
-			musicGameOver = Optional.of(mp3("ending"));
-		});
-	}
-
-	@Override
 	public boolean isMusicLoadingComplete() {
 		return asyncLoader != null && asyncLoader.isDone();
 	}
@@ -99,7 +98,7 @@ public class PacManSounds implements IPacManSounds {
 	}
 
 	@Override
-	public void startEatingPelletsSound() {
+	public void playEatingPelletsSound() {
 		if (!clipEating.isRunning()) {
 			clipEating.loop();
 		}
@@ -127,13 +126,18 @@ public class PacManSounds implements IPacManSounds {
 	}
 
 	@Override
-	public void playClipGameReady() {
-		clipReady.play();
+	public void playClipGhostChasing() {
+		clipGhostChase.play();
 	}
 
 	@Override
-	public void playClipGhostChasing() {
-		clipGhostChase.play();
+	public void loopClipGhostChasing() {
+		clipGhostChase.loop();
+	}
+
+	@Override
+	public void stopClipGhostChasing() {
+		clipGhostChase.stop();
 	}
 
 	@Override
@@ -160,8 +164,12 @@ public class PacManSounds implements IPacManSounds {
 
 	@Override
 	public void playMusicGameOver() {
-		musicGameRunning.ifPresent(SoundClip::stop);
 		musicGameOver.ifPresent(SoundClip::play);
+	}
+
+	@Override
+	public void playMusicGameReady() {
+		musicReady.ifPresent(SoundClip::play);
 	}
 
 	@Override
@@ -177,15 +185,5 @@ public class PacManSounds implements IPacManSounds {
 	@Override
 	public boolean isGameOverMusicRunning() {
 		return musicGameOver.map(SoundClip::isRunning).orElse(false);
-	}
-
-	@Override
-	public void loopClipGhostChasing() {
-		clipGhostChase.loop();
-	}
-
-	@Override
-	public void stopClipGhostChasing() {
-		clipGhostChase.stop();
 	}
 }

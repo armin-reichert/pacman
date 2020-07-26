@@ -228,7 +228,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			chasePacMan.initPositions(width / 2 + 5 * Tile.SIZE);
 			folks.all().forEach(creature -> creature.entity.tf.vx = 0);
 			gitHubLink.visible = true;
-			sounds.startEatingPelletsSound();
+			sounds.playEatingPelletsSound();
 		}
 
 		@Override

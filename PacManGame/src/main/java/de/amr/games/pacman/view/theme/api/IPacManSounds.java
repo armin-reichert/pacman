@@ -13,7 +13,7 @@ public interface IPacManSounds {
 
 	void updateRunningClips();
 
-	void startEatingPelletsSound();
+	void playEatingPelletsSound();
 
 	void stopEatingPelletsSound();
 
@@ -23,7 +23,7 @@ public interface IPacManSounds {
 
 	void playClipExtraLife();
 
-	void playClipGameReady();
+	void playMusicGameReady();
 
 	void playClipGhostChasing();
 

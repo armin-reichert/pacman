@@ -94,7 +94,7 @@ public class ChasePacManAnimation extends GameObject {
 	public void start() {
 		init();
 		sounds.loopClipGhostChasing();
-		sounds.startEatingPelletsSound();
+		sounds.playEatingPelletsSound();
 	}
 
 	@Override

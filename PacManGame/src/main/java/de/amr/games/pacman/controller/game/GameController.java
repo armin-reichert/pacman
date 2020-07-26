@@ -239,7 +239,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						playView.init();
 						playView.showMessage(2, "Ready!", Color.YELLOW);
 						currentView = playView;
-						sounds.playClipGameReady();
+						sounds.playMusicGameReady();
 					})
 					.onTick((state, passed, remaining) -> {
 						if (passed == sec(5)) {
@@ -349,6 +349,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghost.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
 						playView.showMessage(2, "Game Over!", Color.RED);
+						sounds.stopMusicGameRunning();
 						sounds.playMusicGameOver();
 					})
 					.onTick(() -> {
@@ -520,7 +521,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				sounds.playClipExtraLife();
 			}
 			doorMan.onPacManFoundFood();
-			sounds.startEatingPelletsSound();
+			sounds.playEatingPelletsSound();
 
 			if (game.level.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
