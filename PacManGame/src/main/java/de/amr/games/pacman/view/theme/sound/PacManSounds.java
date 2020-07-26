@@ -159,7 +159,7 @@ public class PacManSounds implements IPacManSounds {
 	}
 
 	@Override
-	public void playClipPacManDied() {
+	public void playClipPacManDies() {
 		clipPacmanDies.play();
 	}
 

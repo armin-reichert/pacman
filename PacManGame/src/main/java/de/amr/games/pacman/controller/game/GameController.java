@@ -325,7 +325,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						else if (t == dyingStartTime) {
 							sounds.stopMusicGameRunning();
-							sounds.playClipPacManDied();
+							sounds.playClipPacManDies();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
 							folks.allInWorld().forEach(Creature::init);

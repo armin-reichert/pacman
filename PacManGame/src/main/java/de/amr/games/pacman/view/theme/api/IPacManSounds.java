@@ -37,7 +37,7 @@ public interface IPacManSounds {
 
 	void playClipPacManLostPower();
 
-	void playClipPacManDied();
+	void playClipPacManDies();
 
 	void stopAllClips();
 
