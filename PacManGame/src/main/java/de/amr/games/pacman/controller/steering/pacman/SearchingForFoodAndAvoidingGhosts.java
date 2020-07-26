@@ -14,6 +14,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.model.world.core.WorldGraph;
@@ -47,12 +48,12 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 	}
 
 	@Override
-	public boolean isPathComputed() {
+	public boolean isPathComputationEnabled() {
 		return target != null;
 	}
 
 	@Override
-	public void setPathComputed(boolean enabled) {
+	public void setPathComputationEnabled(boolean enabled) {
 	}
 
 	@Override
@@ -101,8 +102,8 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 	}
 
 	@Override
-	public List<Tile> pathToTarget() {
-		return (target != null) ? graph.shortestPath(me.tileLocation(), target) : Collections.emptyList();
+	public List<Tile> pathToTarget(MobileLifeform pacMan) {
+		return target != null ? graph.shortestPath(pacMan.tileLocation(), target) : Collections.emptyList();
 	}
 
 	private Stream<Ghost> dangerousGhosts() {

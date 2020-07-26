@@ -17,7 +17,8 @@ import de.amr.games.pacman.model.world.api.Tile;
  * 
  * @author Armin Reichert
  */
-public abstract class FollowingPath<M extends MobileLifeform> implements TargetTileSteering<M>, PathProvidingSteering<M> {
+public abstract class FollowingPath<M extends MobileLifeform>
+		implements TargetTileSteering<M>, PathProvidingSteering<M> {
 
 	protected final MobileLifeform mover;
 	protected List<Tile> path;
@@ -60,17 +61,17 @@ public abstract class FollowingPath<M extends MobileLifeform> implements TargetT
 	}
 
 	@Override
-	public List<Tile> pathToTarget() {
+	public List<Tile> pathToTarget(MobileLifeform mover) {
 		return Collections.unmodifiableList(path);
 	}
 
 	@Override
-	public boolean isPathComputed() {
+	public boolean isPathComputationEnabled() {
 		return true;
 	}
 
 	@Override
-	public void setPathComputed(boolean enabled) {
+	public void setPathComputationEnabled(boolean enabled) {
 	}
 
 	@Override

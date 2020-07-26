@@ -30,19 +30,23 @@ import de.amr.games.pacman.model.world.components.House;
  */
 public class Folks {
 
+	public final World world;
+	public final House ghostHouse;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
 	public Folks(World world, House ghostHouse) {
+		this.world = world;
+		this.ghostHouse = ghostHouse;
 		pacMan = new PacMan(world);
 		blinky = new Ghost(world, pacMan, "Blinky", Ghost.RED_GHOST, ghostHouse.bed(0));
 		inky = new Ghost(world, pacMan, "Inky", Ghost.CYAN_GHOST, ghostHouse.bed(1));
 		pinky = new Ghost(world, pacMan, "Pinky", Ghost.PINK_GHOST, ghostHouse.bed(2));
 		clyde = new Ghost(world, pacMan, "Clyde", Ghost.ORANGE_GHOST, ghostHouse.bed(3));
-		tellEmWhatToDo(world, ghostHouse);
+		tellEmWhatToDo();
 	}
 
-	private void tellEmWhatToDo(World world, House ghostHouse) {
+	private void tellEmWhatToDo() {
 		you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
 
 		Door door = ghostHouse.door(0);
@@ -50,13 +54,13 @@ public class Folks {
 
 		ghosts().forEach(ghost -> {
 			you(ghost).when(LOCKED).bounceOnBed().ok();
-			you(ghost).when(ENTERING_HOUSE).enterHouseAndGoToBed().ok();
+			you(ghost).when(ENTERING_HOUSE).enterDoorAndGoToBed().door(door).ok();
 			you(ghost).when(LEAVING_HOUSE).leaveHouse().house(ghostHouse).ok();
 			you(ghost).when(FRIGHTENED).moveRandomly().ok();
 			you(ghost).when(DEAD).headFor().tile(houseEntry).ok();
 		});
 
-		you(blinky).when(ENTERING_HOUSE).enterHouseAndGoToBed().bed(ghostHouse.bed(2)).ok();
+		you(blinky).when(ENTERING_HOUSE).enterDoorAndGoToBed().door(door).bed(pinky.bed()).ok();
 		you(blinky).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
 		you(blinky).when(CHASING).headFor().tile(pacMan::tileLocation).ok();
 

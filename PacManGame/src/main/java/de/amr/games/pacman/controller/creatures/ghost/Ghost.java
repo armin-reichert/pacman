@@ -181,7 +181,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 					.condition(() -> getNextStateToEnter() == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> world.isHouseEntry(tileLocation()))
+					.condition(this::isAtHouseEntry)
 					.annotation("Reached house entry")
 					
 		.endStateMachine();
@@ -310,6 +310,10 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		if (sanity != null) {
 			sanity.update();
 		}
+	}
+
+	public boolean isAtHouseEntry() {
+		return world.isHouseEntry(tileLocation()) && (tileOffsetX() - Tile.SIZE / 2) <= 1;
 	}
 
 	public boolean isInsideHouse() {

@@ -119,7 +119,7 @@ public class HeadingForTargetTile<M extends MobileLifeform> implements TargetTil
 	}
 
 	@Override
-	public void setPathComputed(boolean computed) {
+	public void setPathComputationEnabled(boolean computed) {
 		if (pathComputed != computed) {
 			path.clear();
 		}
@@ -127,7 +127,7 @@ public class HeadingForTargetTile<M extends MobileLifeform> implements TargetTil
 	}
 
 	@Override
-	public boolean isPathComputed() {
+	public boolean isPathComputationEnabled() {
 		return pathComputed;
 	}
 
@@ -137,7 +137,7 @@ public class HeadingForTargetTile<M extends MobileLifeform> implements TargetTil
 	}
 
 	@Override
-	public List<Tile> pathToTarget() {
+	public List<Tile> pathToTarget(MobileLifeform mover) {
 		return new ArrayList<>(path);
 	}
 }

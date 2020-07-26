@@ -10,12 +10,13 @@ import de.amr.games.pacman.controller.steering.common.FollowingKeys;
 import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.steering.ghost.BouncingOnBed;
-import de.amr.games.pacman.controller.steering.ghost.EnteringHouseAndGoingToBed;
+import de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoingToBed;
 import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.controller.steering.ghost.LeavingHouse;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.House;
 
 /**
@@ -79,9 +80,9 @@ public class AnimalMaster {
 		return new BouncesOnBedBuilder();
 	}
 
-	public EntersHouseAndGoesToBedBuilder enterHouseAndGoToBed() {
+	public EnteringDoorAndGoingToBedBuilder enterDoorAndGoToBed() {
 		ensureGhost();
-		return new EntersHouseAndGoesToBedBuilder();
+		return new EnteringDoorAndGoingToBedBuilder().bed(ghost.bed());
 	}
 
 	public LeavesHouseBuilder leaveHouse() {
@@ -122,11 +123,17 @@ public class AnimalMaster {
 		}
 	}
 
-	public class EntersHouseAndGoesToBedBuilder {
+	public class EnteringDoorAndGoingToBedBuilder {
 
+		private Door door;
 		private Bed bed;
 
-		public EntersHouseAndGoesToBedBuilder bed(Bed bed) {
+		public EnteringDoorAndGoingToBedBuilder door(Door door) {
+			this.door = Objects.requireNonNull(door);
+			return this;
+		}
+
+		public EnteringDoorAndGoingToBedBuilder bed(Bed bed) {
 			this.bed = Objects.requireNonNull(bed);
 			return this;
 		}
@@ -134,7 +141,13 @@ public class AnimalMaster {
 		public Steering<Ghost> ok() {
 			ensureGhost();
 			ensureGhostState();
-			Steering<Ghost> steering = new EnteringHouseAndGoingToBed(ghost, bed != null ? bed : ghost.bed());
+			if (door == null) {
+				throw new IllegalStateException(String.format("Which door should %s enter?", ghost.name));
+			}
+			if (bed == null) {
+				throw new IllegalStateException(String.format("Which bed should %s go into", ghost.name));
+			}
+			Steering<Ghost> steering = new EnteringDoorAndGoingToBed(ghost, door, bed);
 			ghost.behavior(ghostState, steering);
 			return steering;
 		}

@@ -13,17 +13,17 @@ import de.amr.games.pacman.model.world.api.Tile;
 public interface PathProvidingSteering<M extends MobileLifeform> extends Steering<M> {
 
 	/**
-	 * @return the path from the current position of the actor to its current target tile
+	 * @return the path from the current position of the mover to its current target tile
 	 */
-	List<Tile> pathToTarget();
+	List<Tile> pathToTarget(MobileLifeform mover);
 
 	/**
-	 * @param enabled if {@code true} the steering computes the complete path to the target
+	 * @param enabled if {@code true} the steering computes the path to the target
 	 */
-	void setPathComputed(boolean enabled);
+	void setPathComputationEnabled(boolean enabled);
 
 	/**
 	 * @return tells if the steering computes the complete path to the target
 	 */
-	boolean isPathComputed();
+	boolean isPathComputationEnabled();
 }
