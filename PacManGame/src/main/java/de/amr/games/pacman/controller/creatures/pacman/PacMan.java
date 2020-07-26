@@ -55,7 +55,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 			
 				.state(TIRED)
 					.onEntry(() -> {
-						gotoBed();
+						goToBed();
 						setVisible(true);
 						foodWeight = 0;
 					})
@@ -130,33 +130,30 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	private void wander() {
 		steering().steer(this);
 		movement.update();
-		if (isTeleporting()) {
-			return;
-		}
-		findSomethingInteresting().ifPresent(this::publish);
-	}
-
-	private Optional<PacManGameEvent> findSomethingInteresting() {
 		if (enteredNewTile()) {
 			foodWeight = Math.max(0, foodWeight - 1);
 		}
-		Tile pacManLocation = tileLocation();
-		Optional<Bonus> maybeBonus = world.getBonus().filter(bonus -> bonus.state == BonusState.ACTIVE);
-		if (maybeBonus.isPresent()) {
-			Bonus bonus = maybeBonus.get();
-			if (pacManLocation.equals(bonus.location)) {
-				foodWeight += Game.DIGEST_BIG_MEAL_TICKS;
-				return Optional.of(new BonusFoundEvent(bonus));
-			}
+		if (isTeleporting()) {
+			return;
 		}
-		if (world.containsFood(pacManLocation)) {
-			foodWeight += world.containsEnergizer(pacManLocation) ? Game.DIGEST_BIG_MEAL_TICKS : Game.DIGEST_SNACK_TICKS;
-			return Optional.of(new FoodFoundEvent(pacManLocation));
-		}
-		return Optional.empty();
+		findSomethingInteresting(tileLocation()).ifPresent(this::publish);
 	}
 
-	private void gotoBed() {
+	private Optional<PacManGameEvent> findSomethingInteresting(Tile tile) {
+		PacManGameEvent event = null;
+		Optional<Bonus> maybeBonus = world.getBonus().filter(bonus -> bonus.state == BonusState.ACTIVE)
+				.filter(bonus -> tile.equals(bonus.location));
+		if (maybeBonus.isPresent()) {
+			foodWeight += Game.DIGEST_BIG_MEAL_TICKS;
+			event = new BonusFoundEvent(maybeBonus.get());
+		} else if (world.containsFood(tile)) {
+			foodWeight += world.containsEnergizer(tile) ? Game.DIGEST_BIG_MEAL_TICKS : Game.DIGEST_SNACK_TICKS;
+			event = new FoodFoundEvent(tile);
+		}
+		return Optional.ofNullable(event);
+	}
+
+	private void goToBed() {
 		Bed bed = world.pacManBed();
 		placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		setMoveDir(bed.exitDir);
@@ -167,6 +164,10 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		return foodWeight > 0;
 	}
 
+	public int getPowerTicks() {
+		return state(POWERFUL).getTicksRemaining();
+	}
+
 	public void wakeUp() {
 		process(new PacManWakeUpEvent());
 	}
@@ -175,18 +176,14 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		process(new PacManFallAsleepEvent());
 	}
 
-	public int getPowerTicks() {
-		return state(POWERFUL).getTicksRemaining();
+	public IPacManRenderer renderer() {
+		return renderer;
 	}
 
 	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 		renderer = theme.createPacManRenderer(this);
-	}
-
-	public IPacManRenderer renderer() {
-		return renderer;
 	}
 
 	@Override
@@ -208,8 +205,8 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		Tile tileAhead = world.tileToDir(tileLocation(), moveDir(), numTiles);
-		if (moveDir() == UP && !settings.fixOverflowBug) {
+		Tile tileAhead = world.tileToDir(tileLocation(), moveDir, numTiles);
+		if (moveDir == UP && !settings.fixOverflowBug) {
 			return world.tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;
