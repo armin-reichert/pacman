@@ -30,15 +30,14 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 	private final Folks folks;
 	private final PacMan me;
 	private WorldGraph graph;
-	private Ghost enemy;
 	private double distance;
 	private Direction newDir;
-	private Tile target;
+	private Tile targetTile;
 
-	public SearchingForFoodAndAvoidingGhosts(PacMan pacMan, Folks folks) {
-		me = pacMan;
+	public SearchingForFoodAndAvoidingGhosts(Folks folks) {
 		this.folks = folks;
-		graph = new WorldGraph(pacMan.world());
+		me = folks.pacMan;
+		graph = new WorldGraph(folks.world);
 		graph.setPathFinder(PathFinder.ASTAR);
 	}
 
@@ -49,7 +48,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 
 	@Override
 	public boolean isPathComputationEnabled() {
-		return target != null;
+		return targetTile != null;
 	}
 
 	@Override
@@ -58,13 +57,12 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 
 	@Override
 	public void steer(PacMan pacMan) {
-		if (!pacMan.enteredNewTile() && pacMan.canCrossBorderTo(pacMan.moveDir())
-				|| pacMan.world().isPortalAt(pacMan.tileLocation())) {
+		if (!pacMan.enteredNewTile() && pacMan.canCrossBorderTo(pacMan.moveDir()) || pacMan.isTeleporting()) {
 			return;
 		}
 
-		// is dangerous ghost just in front of pacMan moving in the same direction?
-		enemy = dangerousGhostInRange(1).filter(ghost -> pacMan.moveDir() == ghost.moveDir()).orElse(null);
+		// is dangerous ghost just in front of pacMan and is moving in the same direction?
+		Ghost enemy = dangerousGhostInRange(1).filter(ghost -> pacMan.moveDir() == ghost.moveDir()).orElse(null);
 		if (enemy != null) {
 			pacMan.reverseDirection();
 			return;
@@ -78,19 +76,19 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 		}
 
 		// determine direction for finding food
-		target = null;
+		targetTile = null;
 		distance = Integer.MAX_VALUE;
 		//@formatter:off
 		aheadThenRightThenLeft()
 			.filter(pacMan::canCrossBorderTo)
 			.forEach(dir -> {
-				Tile neighbor = pacMan.world().neighbor(pacMan.tileLocation(), dir);
+				Tile neighbor = pacMan.neighbor(dir);
 				preferredFoodLocationFrom(neighbor).ifPresent(foodLocation -> {
 					double d = neighbor.distance(foodLocation);
 					if (d < distance) {
 						newDir = dir;
 						distance = d;
-						target = foodLocation;
+						targetTile = foodLocation;
 					}
 				});
 			});
@@ -103,22 +101,17 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 
 	@Override
 	public List<Tile> pathToTarget(MobileLifeform pacMan) {
-		return target != null ? graph.shortestPath(pacMan.tileLocation(), target) : Collections.emptyList();
+		return targetTile != null ? graph.shortestPath(pacMan.tileLocation(), targetTile) : Collections.emptyList();
 	}
 
 	private Stream<Ghost> dangerousGhosts() {
-		return ghostsInWorld().filter(ghost -> ghost.is(CHASING, SCATTERING));
+		return folks.ghostsInWorld().filter(ghost -> ghost.is(CHASING, SCATTERING));
 	}
 
-	private Stream<Ghost> ghostsInWorld() {
-		return folks.ghosts().filter(me.world()::contains);
-
-	}
-
-	private Optional<Ghost> dangerousGhostInRange(int dist) {
+	private Optional<Ghost> dangerousGhostInRange(int numTiles) {
 		//@formatter:off
 		return dangerousGhosts()
-			.filter(ghost -> shortestPathLength(ghost.tileLocation(), me.tileLocation()) <= dist)
+			.filter(ghost -> shortestPathLength(ghost.tileLocation(), me.tileLocation()) <= numTiles)
 			.findAny();
 		//@formatter:on
 	}

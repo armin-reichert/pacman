@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model.world.api;
 
+import java.util.Objects;
+
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
@@ -77,6 +79,17 @@ public interface Lifeform extends Lifecycle {
 	 */
 	default boolean isInsideWorld() {
 		return world().contains(this);
+	}
+
+	/**
+	 * The neighbor tile of this lifeforms current tile.
+	 * 
+	 * @param dir a direction
+	 * @return the neighbor tile towards the given direction
+	 */
+	default Tile neighbor(Direction dir) {
+		dir = Objects.requireNonNull(dir);
+		return world().tileToDir(tileLocation(), dir, 1);
 	}
 
 	/**

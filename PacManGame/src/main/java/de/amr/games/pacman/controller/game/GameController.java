@@ -24,7 +24,6 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
@@ -212,7 +211,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							playView.showGameReady();
 							sound.music_playing().play();
 						}
-						folksInsideWorld().forEach(Creature::update);
+						folks.allInWorld().forEach(Creature::update);
 					})
 					.onExit(() -> {
 						folks.pacMan.wakeUp();
@@ -236,7 +235,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						
 						// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.
 						if (passed == sec(2)) {
-							ghostsInsideWorld().forEach(ghost -> ghost.setVisible(false));
+							folks.ghostsInWorld().forEach(ghost -> ghost.setVisible(false));
 							if (flashingSeconds > 0) {
 								world.setChanging(true);
 							}
@@ -247,14 +246,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							game.enterLevel(game.level.number + 1);
 							world.setChanging(false);
 							world.fillFood();
-							folksInsideWorld().forEach(Creature::init);
+							folks.allInWorld().forEach(Creature::init);
 							playView.enableGhostAnimations(true);
 							playView.init();
 						}
 						
 						// Wait a second, then let ghosts jump again inside the house
 						if (passed >= sec(3 + flashingSeconds)) {
-							folksInsideWorld().forEach(Creature::update);
+							folks.allInWorld().forEach(Creature::update);
 						}
 					})
 				
@@ -265,7 +264,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick(() -> {
 						bonusControl.update();
-						ghostsInsideWorld()
+						folks.ghostsInWorld()
 							.filter(ghost -> ghost.is(GhostState.DEAD, GhostState.ENTERING_HOUSE))
 							.forEach(Ghost::update);
 					})
@@ -287,17 +286,17 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 								dyingEndTime = dyingStartTime + sec(2.5f);
 						if (t == waitTime) {
 							bonusControl.setState(BonusState.INACTIVE);
-							ghostsInsideWorld().forEach(ghost -> ghost.setVisible(false));
+							folks.ghostsInWorld().forEach(ghost -> ghost.setVisible(false));
 						}
 						else if (t == dyingStartTime) {
 							sound.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
-							folksInsideWorld().forEach(Creature::init);
+							folks.allInWorld().forEach(Creature::init);
 							playView.init();
 						}
 						else if (t > dyingEndTime) {
-							folksInsideWorld().forEach(Creature::update);
+							folks.allInWorld().forEach(Creature::update);
 						}
 					})
 					.onExit(() -> {
@@ -306,7 +305,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.state(GAME_OVER)
 					.onEntry(() -> {
-						ghostsInsideWorld().forEach(ghost -> {
+						folks.ghostsInWorld().forEach(ghost -> {
 							ghost.init();
 							Bed bed = world.house(0).bed(0);
 							ghost.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
@@ -317,15 +316,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						sound.gameOver();
 					})
 					.onTick(() -> {
-						ghostsInsideWorld().forEach(ghost -> {
-							ghost.move();
-						});
+						folks.ghostsInWorld().forEach(Ghost::move);
 					})
 					.onExit(() -> {
 						world.fillFood();
-						ghostsInsideWorld().forEach(ghost -> {
-							ghost.init();
-						});
+						folks.ghostsInWorld().forEach(Ghost::init);
 						playView.clearMessage(2);
 						sound.stopAll();
 					})
@@ -414,7 +409,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			world.setFrozen(false);
 			bonusControl.init();
 			ghostCommand.init();
-			folksInsideWorld().forEach(Creature::init);
+			folks.allInWorld().forEach(Creature::init);
 			folks.pacMan.wakeUp();
 			playView.enableGhostAnimations(true);
 			sound.resumePlayingMusic();
@@ -425,7 +420,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			ghostCommand.update();
 			doorMan.update();
 			bonusControl.update();
-			folksInsideWorld().forEach(Creature::update);
+			folks.allInWorld().forEach(Creature::update);
 			sound.updatePlayingSounds();
 		}
 
@@ -505,7 +500,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				sound.pacManGainsPower();
 				ghostCommand.stopAttacking();
 				int powerTicks = sec(game.level.pacManPowerSeconds);
-				folksInsideWorld().forEach(creature -> creature.process(new PacManGainsPowerEvent(powerTicks)));
+				folks.allInWorld().forEach(creature -> creature.process(new PacManGainsPowerEvent(powerTicks)));
 			}
 		}
 	}
@@ -568,14 +563,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return folks;
 	}
 
-	public Stream<Ghost> ghostsInsideWorld() {
-		return folks.ghosts().filter(world::contains);
-	}
-
-	public Stream<Creature<?, ?>> folksInsideWorld() {
-		return folks.all().filter(world::contains);
-	}
-
 	public void selectTheme(String themeName) {
 		currentThemeIndex = range(0, themes.length).filter(i -> themes[i].name().equalsIgnoreCase(themeName)).findFirst()
 				.orElse(0);
@@ -629,7 +616,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected void setDemoMode(boolean demoMode) {
 		if (demoMode) {
 			settings.pacManImmortable = true;
-			folks.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(folks.pacMan, folks));
+			folks.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(folks));
 			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 		} else {
 			settings.pacManImmortable = false;

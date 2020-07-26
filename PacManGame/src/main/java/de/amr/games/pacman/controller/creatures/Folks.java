@@ -81,7 +81,16 @@ public class Folks {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
+	public Stream<Ghost> ghostsInWorld() {
+		return ghosts().filter(world::contains);
+	}
+
 	public Stream<Creature<?, ?>> all() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
+
+	public Stream<Creature<?, ?>> allInWorld() {
+		return all().filter(world::contains);
+	}
+
 }
