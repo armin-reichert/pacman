@@ -59,11 +59,11 @@ public class EnhancedGameController extends GameController {
 
 	@Override
 	protected void newGame() {
-		folks.all().forEach(creature -> StateMachineRegistry.IT.unregister(creature.machines()));
-		StateMachineRegistry.IT.unregister(machines());
+		folks.all().forEach(creature -> StateMachineRegistry.REGISTRY.unregister(creature.machines()));
+		StateMachineRegistry.REGISTRY.unregister(machines());
 		super.newGame();
-		folks.all().forEach(creature -> StateMachineRegistry.IT.register(creature.machines()));
-		StateMachineRegistry.IT.register(machines());
+		folks.all().forEach(creature -> StateMachineRegistry.REGISTRY.register(creature.machines()));
+		StateMachineRegistry.REGISTRY.register(machines());
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class EnhancedGameController extends GameController {
 		}
 
 		else if (Keyboard.keyPressedOnce("l")) {
-			StateMachineRegistry.IT.shutUp(!StateMachineRegistry.IT.isKeepingItsMouth());
+			StateMachineRegistry.REGISTRY.shutUp(!StateMachineRegistry.REGISTRY.isKeepingItsMouth());
 		}
 
 		if (currentView == playView) {

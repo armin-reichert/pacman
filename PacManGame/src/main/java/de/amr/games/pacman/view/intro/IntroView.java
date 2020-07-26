@@ -42,7 +42,7 @@ import de.amr.statemachine.core.StateMachine;
  * @author Armin Reichert
  */
 public class IntroView extends StateMachine<IntroState, Void> implements PacManGameView {
-	
+
 	static final String GITHUB_URL = "https://github.com/armin-reichert/pacman";
 
 	public enum IntroState {
@@ -139,12 +139,12 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		gitHubLink.tf.y = (height - 16);
 		gitHubLink.tf.centerHorizontally(0, width);
 		super.init();
-		StateMachineRegistry.IT.register(Stream.of(this));
+		StateMachineRegistry.REGISTRY.register(Stream.of(this));
 	}
 
 	@Override
 	public void exit() {
-		StateMachineRegistry.IT.unregister(Stream.of(this));
+		StateMachineRegistry.REGISTRY.unregister(Stream.of(this));
 	}
 
 	@Override

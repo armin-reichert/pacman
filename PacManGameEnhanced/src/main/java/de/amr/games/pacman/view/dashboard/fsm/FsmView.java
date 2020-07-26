@@ -186,8 +186,8 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (machines == null || !machines.equals(StateMachineRegistry.IT.machines())) {
-			List<StateMachine<?, ?>> machinesList = new ArrayList<>(StateMachineRegistry.IT.machines());
+		if (machines == null || !machines.equals(StateMachineRegistry.REGISTRY.machines())) {
+			List<StateMachine<?, ?>> machinesList = new ArrayList<>(StateMachineRegistry.REGISTRY.machines());
 			machinesList.sort(Comparator.comparing(StateMachine::getDescription));
 			machines = new LinkedHashSet<>(machinesList);
 			tree.rebuild(machinesList);

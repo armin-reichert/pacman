@@ -210,7 +210,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						musicLoadingView = new MusicLoadingView(theme(), settings.width, settings.height);
 						musicLoadingView.init();
-						showView(musicLoadingView);
+						currentView = musicLoadingView;
 					})
 					.onExit(() -> {
 						musicLoadingView.exit();
@@ -223,7 +223,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						introView = new IntroView(world, folks, theme(), settings.width, settings.height);
 						introView.init();
-						showView(introView);
+						currentView = introView;
 					})
 					.onExit(() -> {
 						sounds.stopAll();
@@ -237,8 +237,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						world.setFrozen(true);
 						playView = createPlayView();
 						playView.init();
-						showView(playView);
 						playView.showMessage(2, "Ready!", Color.YELLOW);
+						currentView = playView;
 						sounds.playClipGameReady();
 					})
 					.onTick((state, passed, remaining) -> {
@@ -629,12 +629,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public Optional<BonusControl> bonusControl() {
 		return Optional.ofNullable(bonusControl);
-	}
-
-	protected void showView(PacManGameView view) {
-		if (currentView != view) {
-			currentView = view;
-		}
 	}
 
 	@Override
