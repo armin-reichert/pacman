@@ -28,12 +28,12 @@ public class ArcadeTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IWorldRenderer createWorldRenderer(World world) {
+	public IWorldRenderer worldRenderer(World world) {
 		return new WorldRenderer(world);
 	}
 
 	@Override
-	public IRenderer createScoreRenderer(World world, Game game) {
+	public IRenderer scoreRenderer(World world, Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
 		Font font = $font("font");
 		renderer.setFont(font);
@@ -41,34 +41,34 @@ public class ArcadeTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IRenderer createLiveCounterRenderer(World world, Game game) {
+	public IRenderer livesCounterRenderer(World world, Game game) {
 		return new LiveCounterRenderer(game);
 	}
 
 	@Override
-	public IRenderer createLevelCounterRenderer(World world, Game game) {
+	public IRenderer levelCounterRenderer(World world, Game game) {
 		return new LevelCounterRenderer(game);
 	}
 
 	@Override
-	public IPacManRenderer createPacManRenderer(PacMan pacMan) {
+	public IPacManRenderer pacManRenderer(PacMan pacMan) {
 		return new PacManRenderer(pacMan);
 	}
 
 	@Override
-	public IRenderer createGhostRenderer(Ghost ghost) {
+	public IRenderer ghostRenderer(Ghost ghost) {
 		return new GhostRenderer(ghost);
 	}
 
 	@Override
-	public MessagesRenderer createMessagesRenderer() {
+	public MessagesRenderer messagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
 		renderer.setFont($font("font"));
 		return renderer;
 	}
 
 	@Override
-	public PacManSounds createSounds() {
+	public PacManSounds sounds() {
 		return new ArcadeSounds();
 	}
 }

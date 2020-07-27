@@ -183,7 +183,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
-		renderer = theme.createPacManRenderer(this);
+		renderer = theme.pacManRenderer(this);
 	}
 
 	@Override

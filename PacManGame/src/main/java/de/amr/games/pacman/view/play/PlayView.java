@@ -75,11 +75,11 @@ public class PlayView implements PacManGameView {
 	public void setTheme(Theme theme) {
 		if (this.theme != theme) {
 			this.theme = theme;
-			worldRenderer = theme.createWorldRenderer(world);
-			scoreRenderer = theme.createScoreRenderer(world, game);
-			liveCounterRenderer = theme.createLiveCounterRenderer(world, game);
-			levelCounterRenderer = theme.createLevelCounterRenderer(world, game);
-			messagesRenderer = theme.createMessagesRenderer();
+			worldRenderer = theme.worldRenderer(world);
+			scoreRenderer = theme.scoreRenderer(world, game);
+			liveCounterRenderer = theme.livesCounterRenderer(world, game);
+			levelCounterRenderer = theme.levelCounterRenderer(world, game);
+			messagesRenderer = theme.messagesRenderer();
 			folks.pacMan.setTheme(theme);
 			folks.ghosts().forEach(ghost -> ghost.setTheme(theme));
 		}

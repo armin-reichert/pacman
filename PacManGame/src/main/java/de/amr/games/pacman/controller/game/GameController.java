@@ -632,7 +632,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (currentView != null) {
 			currentView.setTheme(theme());
 		}
-		sounds = theme().createSounds();
+		sounds = theme().sounds();
 	}
 
 	public Theme theme() {

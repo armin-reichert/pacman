@@ -10,19 +10,19 @@ public interface Theme extends ThemeParameters {
 
 	String name();
 
-	IRenderer createGhostRenderer(Ghost ghost);
+	IRenderer ghostRenderer(Ghost ghost);
 
-	IPacManRenderer createPacManRenderer(PacMan pacMan);
+	IPacManRenderer pacManRenderer(PacMan pacMan);
 
-	IRenderer createLevelCounterRenderer(World world, Game game);
+	IRenderer levelCounterRenderer(World world, Game game);
 
-	IRenderer createLiveCounterRenderer(World world, Game game);
+	IRenderer livesCounterRenderer(World world, Game game);
 
-	IRenderer createScoreRenderer(World world, Game game);
+	IRenderer scoreRenderer(World world, Game game);
 
-	IWorldRenderer createWorldRenderer(World world);
+	IWorldRenderer worldRenderer(World world);
 
-	MessagesRenderer createMessagesRenderer();
+	MessagesRenderer messagesRenderer();
 
-	PacManSounds createSounds();
+	PacManSounds sounds();
 }

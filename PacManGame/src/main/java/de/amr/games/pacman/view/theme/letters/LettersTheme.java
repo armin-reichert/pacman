@@ -67,7 +67,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IRenderer createGhostRenderer(Ghost ghost) {
+	public IRenderer ghostRenderer(Ghost ghost) {
 		return g -> {
 			if (ghost.isVisible()) {
 				Font font = $font("font");
@@ -84,7 +84,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IPacManRenderer createPacManRenderer(PacMan pacMan) {
+	public IPacManRenderer pacManRenderer(PacMan pacMan) {
 		return g -> {
 			if (pacMan.isVisible()) {
 				Font font = $font("font");
@@ -98,7 +98,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IRenderer createLevelCounterRenderer(World world, Game game) {
+	public IRenderer levelCounterRenderer(World world, Game game) {
 		return g -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -110,7 +110,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IRenderer createLiveCounterRenderer(World world, Game game) {
+	public IRenderer livesCounterRenderer(World world, Game game) {
 		return g -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -121,7 +121,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IRenderer createScoreRenderer(World world, Game game) {
+	public IRenderer scoreRenderer(World world, Game game) {
 		return g -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -134,7 +134,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IWorldRenderer createWorldRenderer(World world) {
+	public IWorldRenderer worldRenderer(World world) {
 		return g -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -169,7 +169,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public MessagesRenderer createMessagesRenderer() {
+	public MessagesRenderer messagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
 		Font font = $font("font");
 		renderer.setFont(font);
@@ -177,7 +177,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public PacManSounds createSounds() {
+	public PacManSounds sounds() {
 		return new ArcadeSounds();
 	}
 }

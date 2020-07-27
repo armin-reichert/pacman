@@ -213,7 +213,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
-		renderer = theme.createGhostRenderer(this);
+		renderer = theme.ghostRenderer(this);
 	}
 
 	@Override

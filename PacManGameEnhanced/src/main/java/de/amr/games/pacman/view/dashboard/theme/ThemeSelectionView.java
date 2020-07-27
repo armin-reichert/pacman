@@ -143,7 +143,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		folks.pacMan.setState(PacManState.AWAKE);
 		folks.pacMan.setMoveDir(Direction.RIGHT);
 		folks.pacMan.entity.tf.setPosition(Tile.SIZE / 2, Tile.SIZE / 2);
-		theme.createPacManRenderer(folks.pacMan).render(small.createGraphics());
+		theme.pacManRenderer(folks.pacMan).render(small.createGraphics());
 		large.getGraphics().drawImage(small, 0, 0, size, size, null);
 		lblPacMan.setIcon(new ImageIcon(large));
 	}
@@ -155,7 +155,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 			ghost.entity.tf.setPosition(Tile.SIZE / 2, Tile.SIZE / 2);
 			BufferedImage small = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 			BufferedImage large = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
-			theme.createGhostRenderer(ghost).render(small.createGraphics());
+			theme.ghostRenderer(ghost).render(small.createGraphics());
 			large.getGraphics().drawImage(small, 0, 0, size, size, null);
 			ImageIcon icon = new ImageIcon(large);
 			switch (ghost.name) {

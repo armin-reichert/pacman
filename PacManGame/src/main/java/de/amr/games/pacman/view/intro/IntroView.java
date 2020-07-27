@@ -73,8 +73,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		this.world = world;
 		this.folks = folks;
 		this.theme = theme;
-		this.messagesRenderer = theme.createMessagesRenderer();
-		this.sounds = theme.createSounds();
+		this.messagesRenderer = theme.messagesRenderer();
+		this.sounds = theme.sounds();
 		this.width = width;
 		this.height = height;
 		/*@formatter:off*/
@@ -158,7 +158,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		chaseGhosts.setTheme(theme);
 		chasePacMan.setTheme(theme);
 		ghostPointsAnimation.setTheme(theme);
-		messagesRenderer = theme.createMessagesRenderer();
+		messagesRenderer = theme.messagesRenderer();
 	}
 
 	private class ScrollingLogoAnimation extends State<IntroState> implements View {
