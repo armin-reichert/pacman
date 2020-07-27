@@ -10,9 +10,9 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
-import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
+import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
@@ -27,7 +27,9 @@ import de.amr.games.pacman.view.theme.sound.ArcadeSounds;
 public class BlocksTheme extends AbstractTheme {
 
 	public static final BlocksTheme THEME = new BlocksTheme();
-	
+
+	private MessagesRenderer messagesRenderer;
+
 	private BlocksTheme() {
 		super("BLOCKS");
 		put("font", Assets.storeTrueTypeFont("ConcertOne", "themes/blocks/ConcertOne-Regular.ttf", Font.PLAIN, 10));
@@ -54,7 +56,7 @@ public class BlocksTheme extends AbstractTheme {
 		"STRAWBERRY", Color.RED
 		//@formatter:on
 		));
-		
+
 		put("sounds", new ArcadeSounds());
 	}
 
@@ -102,10 +104,12 @@ public class BlocksTheme extends AbstractTheme {
 
 	@Override
 	public MessagesRenderer messagesRenderer() {
-		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont($font("font").deriveFont(14f));
-		renderer.setSmoothText(true);
-		return renderer;
+		if (messagesRenderer == null) {
+			messagesRenderer = new MessagesRenderer();
+			messagesRenderer.setFont($font("font").deriveFont(14f));
+			messagesRenderer.setSmoothText(true);
+		}
+		return messagesRenderer;
 	}
 
 	@Override

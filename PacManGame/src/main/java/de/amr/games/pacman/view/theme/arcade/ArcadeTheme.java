@@ -20,6 +20,8 @@ public class ArcadeTheme extends AbstractTheme {
 
 	public static final ArcadeTheme THEME = new ArcadeTheme();
 
+	private MessagesRenderer messagesRenderer;
+	
 	private ArcadeTheme() {
 		super("ARCADE");
 		put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
@@ -63,9 +65,11 @@ public class ArcadeTheme extends AbstractTheme {
 
 	@Override
 	public MessagesRenderer messagesRenderer() {
-		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont($font("font"));
-		return renderer;
+		if (messagesRenderer == null) {
+			messagesRenderer = new MessagesRenderer();
+			messagesRenderer.setFont($font("font"));
+		}
+		return messagesRenderer;
 	}
 
 	@Override

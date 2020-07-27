@@ -32,6 +32,8 @@ public class LettersTheme extends AbstractTheme {
 
 	public static final LettersTheme THEME = new LettersTheme();
 
+	private MessagesRenderer messagesRenderer;
+
 	private LettersTheme() {
 		super("LETTERS");
 		put("font", new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
@@ -171,10 +173,11 @@ public class LettersTheme extends AbstractTheme {
 
 	@Override
 	public MessagesRenderer messagesRenderer() {
-		MessagesRenderer renderer = new MessagesRenderer();
-		Font font = $font("font");
-		renderer.setFont(font);
-		return renderer;
+		if (messagesRenderer == null) {
+			messagesRenderer = new MessagesRenderer();
+			messagesRenderer.setFont($font("font"));
+		}
+		return messagesRenderer;
 	}
 
 	@Override
