@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.theme.sound;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
@@ -19,18 +20,7 @@ public class ArcadeSounds implements PacManSounds {
 		return Assets.sound("sfx/" + name + ".mp3");
 	}
 
-	private SoundClip musicGameReady;
-	private SoundClip musicGameRunning;
-	private SoundClip musicGameOver;
-
-	@Override
-	public void loadMusic() {
-		CompletableFuture.runAsync(() -> {
-			musicGameReady = mp3("ready");
-			musicGameRunning = mp3("bgmusic");
-			musicGameOver = mp3("ending");
-		});
-	}
+	private SoundClip musicGameReady, musicGameRunning, musicGameOver;
 
 	@Override
 	public Stream<SoundClip> clips() {
@@ -89,16 +79,17 @@ public class ArcadeSounds implements PacManSounds {
 	}
 
 	@Override
-	public void stopAllClips() {
-		clips().forEach(SoundClip::stop);
+	public void loadMusic() {
+		CompletableFuture.runAsync(() -> {
+			musicGameReady = mp3("ready");
+			musicGameRunning = mp3("bgmusic");
+			musicGameOver = mp3("ending");
+		});
 	}
 
 	@Override
-	public void stopAll() {
-		stopAllClips();
-		musicGameReady().ifPresent(SoundClip::stop);
-		musicGameRunning().ifPresent(SoundClip::stop);
-		musicGameOver().ifPresent(SoundClip::stop);
+	public Stream<SoundClip> loadedMusic() {
+		return Stream.of(musicGameReady, musicGameRunning, musicGameOver).filter(Objects::nonNull);
 	}
 
 	@Override

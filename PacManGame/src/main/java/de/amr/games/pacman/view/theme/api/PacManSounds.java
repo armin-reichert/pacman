@@ -32,13 +32,11 @@ public interface PacManSounds {
 
 	Stream<SoundClip> clips();
 
-	void stopAllClips();
-
-	void stopAll();
-
 	void loadMusic();
 
 	boolean isMusicLoaded();
+
+	Stream<SoundClip> loadedMusic();
 
 	Optional<SoundClip> musicGameReady();
 
@@ -56,5 +54,10 @@ public interface PacManSounds {
 
 	default boolean isMusicRunning(Optional<SoundClip> music) {
 		return music.map(SoundClip::isRunning).orElse(false);
+	}
+
+	default void stopAll() {
+		clips().forEach(SoundClip::stop);
+		loadedMusic().forEach(SoundClip::stop);
 	}
 }

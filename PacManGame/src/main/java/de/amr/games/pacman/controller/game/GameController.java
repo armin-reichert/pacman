@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -262,7 +263,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						folks.pacMan.fallAsleep();
 						doorMan.onLevelChange();
 						playView.enableGhostAnimations(false);
-						sounds.stopAllClips();
+						sounds.clips().forEach(SoundClip::stop);
 					})
 					.onTick((state, passed, remaining) -> {
 						float flashingSeconds = game.level.numFlashes * theme().$float("maze-flash-sec");
@@ -310,7 +311,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> game.lives > 1 ? sec(7) : sec(5))
 					.onEntry(() -> {
 						game.lives -= settings.pacManImmortable ? 0 : 1;
-						sounds.stopAllClips();
+						sounds.clips().forEach(SoundClip::stop);
 						world.setFrozen(true);
 					})
 					.onTick((state, t, remaining) -> {
@@ -462,7 +463,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onExit() {
-			sounds.stopAllClips();
+			sounds.clips().forEach(SoundClip::stop);
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
