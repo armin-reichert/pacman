@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.theme.arcade;
 import java.awt.Font;
 
 import de.amr.easy.game.assets.Assets;
-import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
@@ -69,7 +68,7 @@ public class ArcadeTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IPacManSounds createSounds(Folks folks) {
-		return new PacManSounds(folks);
+	public IPacManSounds createSounds() {
+		return new PacManSounds();
 	}
 }

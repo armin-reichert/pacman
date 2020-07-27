@@ -74,7 +74,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		this.folks = folks;
 		this.theme = theme;
 		this.messagesRenderer = theme.createMessagesRenderer();
-		this.sounds = theme.createSounds(folks);
+		this.sounds = theme.createSounds();
 		this.width = width;
 		this.height = height;
 		/*@formatter:off*/

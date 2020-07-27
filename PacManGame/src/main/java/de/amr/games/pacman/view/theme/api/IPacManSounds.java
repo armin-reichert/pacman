@@ -11,11 +11,11 @@ public interface IPacManSounds {
 
 	boolean isMusicLoadingComplete();
 
-	void updateRunningClips();
-
 	void playEatingPelletsSound();
 
 	void stopEatingPelletsSound();
+	
+	boolean isEeatingPelletsSoundRunning();
 
 	void playClipEatBonus();
 
@@ -30,6 +30,16 @@ public interface IPacManSounds {
 	void loopClipGhostChasing();
 
 	void stopClipGhostChasing();
+	
+	boolean isClipGhostChasingRunning();
+	
+	void playClipGhostDead();
+
+	void loopClipGhostDead();
+
+	void stopClipGhostDead();
+	
+	boolean isClipGhostDeadRunning();
 
 	void playClipInsertCoin();
 

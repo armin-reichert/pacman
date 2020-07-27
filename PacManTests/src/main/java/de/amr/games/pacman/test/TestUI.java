@@ -61,7 +61,7 @@ public class TestUI implements Lifecycle, VisualController {
 
 		folks.all().forEach(world::exclude);
 
-		sounds = new PacManSounds(folks);
+		sounds = new PacManSounds();
 
 		game = new Game(1, world.totalFoodCount());
 

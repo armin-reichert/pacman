@@ -6,8 +6,6 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.SoundClip;
-import de.amr.games.pacman.controller.creatures.Folks;
-import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.view.theme.api.IPacManSounds;
 
 /**
@@ -20,8 +18,6 @@ public class PacManSounds implements IPacManSounds {
 	private static SoundClip mp3(String name) {
 		return Assets.sound("sfx/" + name + ".mp3");
 	}
-
-	private final Folks folks;
 
 	private final SoundClip clipEating = mp3("eating");
 	private final SoundClip clipEatFruit = mp3("eat-fruit");
@@ -39,12 +35,6 @@ public class PacManSounds implements IPacManSounds {
 
 	private CompletableFuture<Void> asyncLoader;
 
-	private long lastPelletEatenTimeMillis;
-
-	public PacManSounds(Folks folks) {
-		this.folks = folks;
-	}
-
 	@Override
 	public void loadMusicAsync() {
 		asyncLoader = CompletableFuture.runAsync(() -> {
@@ -57,27 +47,6 @@ public class PacManSounds implements IPacManSounds {
 	public Stream<SoundClip> clips() {
 		return Stream.of(clipEating, clipEatFruit, clipEatGhost, clipExtraLife, clipGhostChase, clipGhostDead,
 				clipInsertCoin, clipPacmanDies, clipWaza);
-	}
-
-	@Override
-	public void updateRunningClips() {
-		if (clipEating.isRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
-			clipEating.stop();
-		}
-		if (folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
-			if (!clipGhostChase.isRunning()) {
-				clipGhostChase.loop();
-			}
-		} else {
-			clipGhostChase.stop();
-		}
-		if (folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
-			if (!clipGhostDead.isRunning()) {
-				clipGhostDead.loop();
-			}
-		} else {
-			clipGhostDead.stop();
-		}
 	}
 
 	@Override
@@ -103,12 +72,16 @@ public class PacManSounds implements IPacManSounds {
 		if (!clipEating.isRunning()) {
 			clipEating.loop();
 		}
-		lastPelletEatenTimeMillis = System.currentTimeMillis();
 	}
 
 	@Override
 	public void stopEatingPelletsSound() {
 		clipEating.stop();
+	}
+
+	@Override
+	public boolean isEeatingPelletsSoundRunning() {
+		return clipEating.isRunning();
 	}
 
 	@Override
@@ -139,6 +112,31 @@ public class PacManSounds implements IPacManSounds {
 	@Override
 	public void stopClipGhostChasing() {
 		clipGhostChase.stop();
+	}
+
+	@Override
+	public boolean isClipGhostChasingRunning() {
+		return clipGhostChase.isRunning();
+	}
+
+	@Override
+	public void playClipGhostDead() {
+		clipGhostDead.play();
+	}
+
+	@Override
+	public void loopClipGhostDead() {
+		clipGhostDead.loop();
+	}
+
+	@Override
+	public void stopClipGhostDead() {
+		clipGhostDead.stop();
+	}
+
+	@Override
+	public boolean isClipGhostDeadRunning() {
+		return clipGhostDead.isRunning();
 	}
 
 	@Override
