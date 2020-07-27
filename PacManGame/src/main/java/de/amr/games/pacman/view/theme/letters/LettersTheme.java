@@ -18,10 +18,10 @@ import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.api.PacManSounds;
+import de.amr.games.pacman.view.theme.arcade.sounds.ArcadeSounds;
 import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
-import de.amr.games.pacman.view.theme.sound.ArcadeSounds;
 
 /**
  * Theme using letters only.

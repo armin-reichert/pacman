@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.sound;
+package de.amr.games.pacman.view.theme.arcade.sounds;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -17,7 +17,7 @@ import de.amr.games.pacman.view.theme.api.PacManSounds;
 public class ArcadeSounds implements PacManSounds {
 
 	private static SoundClip mp3(String name) {
-		return Assets.sound("sfx/" + name + ".mp3");
+		return Assets.sound("themes/arcade/sounds/" + name + ".mp3");
 	}
 
 	private SoundClip musicGameReady, musicGameRunning, musicGameOver;
