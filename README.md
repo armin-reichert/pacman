@@ -1,6 +1,6 @@
 ## A Pac-Man implementation using finite-state machines all over the place
 
-## Ghost Lives Matter! Yellow man bad! Pac-Man is a racist!
+## Ghost Lives Matter! Yellow man bad!
 
 Pac-Man, a *racist, homophobic game*? 
 
