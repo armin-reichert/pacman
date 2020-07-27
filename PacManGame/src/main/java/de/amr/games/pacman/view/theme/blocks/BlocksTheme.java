@@ -27,7 +27,7 @@ import de.amr.games.pacman.view.theme.sound.ArcadeSounds;
 public class BlocksTheme extends AbstractTheme {
 
 	public static final BlocksTheme THEME = new BlocksTheme();
-
+	
 	private BlocksTheme() {
 		super("BLOCKS");
 		put("font", Assets.storeTrueTypeFont("ConcertOne", "themes/blocks/ConcertOne-Regular.ttf", Font.PLAIN, 10));
@@ -54,6 +54,8 @@ public class BlocksTheme extends AbstractTheme {
 		"STRAWBERRY", Color.RED
 		//@formatter:on
 		));
+		
+		put("sounds", new ArcadeSounds());
 	}
 
 	public Color ghostColor(Ghost ghost) {
@@ -108,6 +110,6 @@ public class BlocksTheme extends AbstractTheme {
 
 	@Override
 	public PacManSounds sounds() {
-		return new ArcadeSounds();
+		return $value("sounds");
 	}
 }

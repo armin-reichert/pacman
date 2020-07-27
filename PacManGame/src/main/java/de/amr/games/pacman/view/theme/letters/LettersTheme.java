@@ -15,9 +15,9 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
-import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
+import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
@@ -44,6 +44,7 @@ public class LettersTheme extends AbstractTheme {
 		Ghost.ORANGE_GHOST, Color.ORANGE
 		//@formatter:on
 		));
+		put("sounds", new ArcadeSounds());
 	}
 
 	private Color ghostColor(Ghost ghost) {
@@ -178,6 +179,6 @@ public class LettersTheme extends AbstractTheme {
 
 	@Override
 	public PacManSounds sounds() {
-		return new ArcadeSounds();
+		return $value("sounds");
 	}
 }

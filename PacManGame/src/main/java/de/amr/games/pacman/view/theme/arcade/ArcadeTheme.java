@@ -8,9 +8,9 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
-import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
+import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
@@ -25,6 +25,7 @@ public class ArcadeTheme extends AbstractTheme {
 		put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		put("maze-flash-sec", 0.4f);
 		put("sprites", new ArcadeThemeSprites());
+		put("sounds", new ArcadeSounds());
 	}
 
 	@Override
@@ -69,6 +70,6 @@ public class ArcadeTheme extends AbstractTheme {
 
 	@Override
 	public PacManSounds sounds() {
-		return new ArcadeSounds();
+		return $value("sounds");
 	}
 }
