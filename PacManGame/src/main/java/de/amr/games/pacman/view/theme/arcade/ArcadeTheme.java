@@ -14,7 +14,7 @@ import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
-import de.amr.games.pacman.view.theme.sound.ArcadePacManSounds;
+import de.amr.games.pacman.view.theme.sound.ArcadeSounds;
 
 public class ArcadeTheme extends AbstractTheme {
 
@@ -69,6 +69,6 @@ public class ArcadeTheme extends AbstractTheme {
 
 	@Override
 	public PacManSounds createSounds() {
-		return new ArcadePacManSounds();
+		return new ArcadeSounds();
 	}
 }

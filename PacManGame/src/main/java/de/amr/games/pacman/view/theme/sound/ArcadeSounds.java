@@ -13,7 +13,7 @@ import de.amr.games.pacman.view.theme.api.PacManSounds;
  * 
  * @author Armin Reichert
  */
-public class ArcadePacManSounds implements PacManSounds {
+public class ArcadeSounds implements PacManSounds {
 
 	private static SoundClip mp3(String name) {
 		return Assets.sound("sfx/" + name + ".mp3");
@@ -23,14 +23,12 @@ public class ArcadePacManSounds implements PacManSounds {
 	private SoundClip musicGameRunning;
 	private SoundClip musicGameOver;
 
-	private CompletableFuture<Void> asyncLoader;
-
 	@Override
 	public void loadMusic() {
-		asyncLoader = CompletableFuture.runAsync(() -> {
+		CompletableFuture.runAsync(() -> {
+			musicGameReady = mp3("ready");
 			musicGameRunning = mp3("bgmusic");
 			musicGameOver = mp3("ending");
-			musicGameReady = mp3("ready");
 		});
 	}
 
@@ -87,7 +85,7 @@ public class ArcadePacManSounds implements PacManSounds {
 
 	@Override
 	public boolean isMusicLoaded() {
-		return asyncLoader != null && asyncLoader.isDone();
+		return musicGameReady().isPresent() && musicGameRunning().isPresent() && musicGameOver().isPresent();
 	}
 
 	@Override
