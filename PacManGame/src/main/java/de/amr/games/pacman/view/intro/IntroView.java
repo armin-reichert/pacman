@@ -28,7 +28,7 @@ import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
-import de.amr.games.pacman.view.theme.api.IPacManSounds;
+import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeThemeSprites;
@@ -55,7 +55,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 	private final World world;
 	private final Folks folks;
-	private final IPacManSounds sounds;
+	private final PacManSounds sounds;
 	private final int width;
 	private final int height;
 
@@ -165,7 +165,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 		@Override
 		public void onEntry() {
-			sounds.playClipInsertCoin();
+			sounds.clipInsertCoin().play();
 			pacManLogo.tf.y = height;
 			pacManLogo.tf.vy = -2f;
 			pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
@@ -228,7 +228,9 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			chasePacMan.initPositions(width / 2 + 5 * Tile.SIZE);
 			folks.all().forEach(creature -> creature.entity.tf.vx = 0);
 			gitHubLink.visible = true;
-			sounds.playEatingPelletsSound();
+			if (!sounds.clipEating().isRunning()) {
+				sounds.clipEating().loop();
+			}
 		}
 
 		@Override

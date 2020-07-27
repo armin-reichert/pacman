@@ -17,7 +17,7 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.view.theme.api.IPacManSounds;
+import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.Theme;
 
 /**
@@ -30,7 +30,7 @@ public class GhostPointsAnimation extends GameObject {
 
 	private final Folks folks;
 	private final Ghost[] ghosts;
-	private final IPacManSounds sounds;
+	private final PacManSounds sounds;
 	private final BitSet killed = new BitSet(5);
 	private int ghostToKill;
 	private int ghostTimer;
@@ -38,7 +38,7 @@ public class GhostPointsAnimation extends GameObject {
 	private boolean energizer;
 	private int dx = 2 * Tile.SIZE + 3;
 
-	public GhostPointsAnimation(Theme theme, IPacManSounds sounds, Folks folks) {
+	public GhostPointsAnimation(Theme theme, PacManSounds sounds, Folks folks) {
 		this.sounds = sounds;
 		this.folks = folks;
 		tf.width = 6 * dx;
@@ -140,7 +140,7 @@ public class GhostPointsAnimation extends GameObject {
 				if (ghostToKill == 4) {
 					stop();
 				} else {
-					sounds.playClipEatGhost();
+					sounds.clipEatGhost().play();
 					ghosts[ghostToKill].setState(GhostState.DEAD);
 					ghosts[ghostToKill].setBounty(GHOST_BOUNTIES[ghostToKill]);
 					killed.set(ghostToKill);

@@ -59,7 +59,7 @@ import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.MusicLoadingView;
 import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.api.IPacManSounds;
+import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -165,7 +165,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	protected ArcadeWorld world;
 	protected Folks folks;
-	protected IPacManSounds sounds;
+	protected PacManSounds sounds;
 
 	protected GhostCommand ghostCommand;
 	protected DoorMan doorMan;
@@ -203,7 +203,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
-						sounds.loadMusicAsync();
+						sounds.loadMusic();
 						if (musicLoadingView != null) {
 							musicLoadingView.exit();
 						}
@@ -238,12 +238,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						playView.init();
 						playView.showMessage(2, "Ready!", Color.YELLOW);
 						currentView = playView;
-						sounds.playMusicGameReady();
+						sounds.playMusic(sounds.musicGameReady());
 					})
 					.onTick((state, passed, remaining) -> {
 						if (passed == sec(5)) {
 							world.setFrozen(false);
-							sounds.playMusicGameRunning();
+							sounds.playMusic(sounds.musicGameRunning());
 						}
 						folks.allInWorld().forEach(Creature::update);
 					})
@@ -323,8 +323,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							folks.ghostsInWorld().forEach(ghost -> ghost.setVisible(false));
 						}
 						else if (t == dyingStartTime) {
-							sounds.stopMusicGameRunning();
-							sounds.playClipPacManDies();
+							sounds.stopMusic(sounds.musicGameRunning());
+							sounds.clipPacManDies().play();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
 							folks.allInWorld().forEach(Creature::init);
@@ -348,8 +348,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghost.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
 						playView.showMessage(2, "Game Over!", Color.RED);
-						sounds.stopMusicGameRunning();
-						sounds.playMusicGameOver();
+						sounds.stopMusic(sounds.musicGameRunning());
+						sounds.playMusic(sounds.musicGameOver());
 					})
 					.onTick(() -> {
 						folks.ghostsInWorld().forEach(Ghost::move);
@@ -362,11 +362,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			.transitions()
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
-					.condition(() -> sounds.isMusicLoadingComplete()	&& settings.skipIntro)
+					.condition(() -> sounds.isMusicLoaded()	&& settings.skipIntro)
 					.annotation("Music loaded, skipping intro")
 					
 				.when(LOADING_MUSIC).then(INTRO)
-					.condition(() -> sounds.isMusicLoadingComplete())
+					.condition(() -> sounds.isMusicLoaded())
 					.annotation("Music loaded")
 			
 				.when(INTRO).then(GETTING_READY)
@@ -427,7 +427,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.annotation("New game requested by user")
 					
 				.when(GAME_OVER).then(INTRO)
-					.condition(() -> !sounds.isGameOverMusicRunning())
+					.condition(() -> !sounds.isMusicRunning(sounds.musicGameOver()))
 					.annotation("Game over music finished")
 							
 		.endStateMachine();
@@ -448,7 +448,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			folks.allInWorld().forEach(Creature::init);
 			folks.pacMan.wakeUp();
 			playView.enableGhostAnimations(true);
-			sounds.playMusicGameRunning();
+			sounds.playMusic(sounds.musicGameRunning());
 		}
 
 		@Override
@@ -466,7 +466,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
-			sounds.playClipPacManLostPower();
+			sounds.clipWaza().stop();
 			ghostCommand.resumeAttacking();
 		}
 
@@ -477,9 +477,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				int livesBefore = game.lives;
 				game.scoreGhostKilled(ghost.name);
 				if (game.lives > livesBefore) {
-					sounds.playClipExtraLife();
+					sounds.clipExtraLife().play();
 				}
-				sounds.playClipEatGhost();
+				sounds.clipEatGhost().play();
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
 				loginfo("%s got killed at %s", ghost.name, ghost.tileLocation());
@@ -501,9 +501,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			loginfo("PacMan found bonus '%s' of value %d", bonus.symbol, bonus.value);
 			int livesBefore = game.lives;
 			game.score(bonus.value);
-			sounds.playClipEatBonus();
+			sounds.clipEatFruit().play();
 			if (game.lives > livesBefore) {
-				sounds.playClipExtraLife();
+				sounds.clipExtraLife().play();
 			}
 			bonusControl.process(event);
 		}
@@ -520,10 +520,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				game.scoreSimplePelletFound();
 			}
 			if (game.lives > livesBeforeScoring) {
-				sounds.playClipExtraLife();
+				sounds.clipExtraLife().play();
 			}
 			doorMan.onPacManFoundFood();
-			sounds.playEatingPelletsSound();
+			if (!sounds.clipEating().isRunning()) {
+				sounds.clipEating().loop();
+			}
 
 			if (game.level.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
@@ -534,7 +536,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				bonusControl.setState(BonusState.ACTIVE);
 			}
 			if (energizer && game.level.pacManPowerSeconds > 0) {
-				sounds.playClipPacManGainsPower();
+				if (!sounds.clipWaza().isRunning()) {
+					sounds.clipWaza().loop();
+				}
 				ghostCommand.stopAttacking();
 				int powerTicks = sec(game.level.pacManPowerSeconds);
 				folks.allInWorld().forEach(creature -> creature.process(new PacManGainsPowerEvent(powerTicks)));
@@ -542,22 +546,22 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void updateRunningClips() {
-			if (sounds.isEeatingPelletsSoundRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
-				sounds.stopEatingPelletsSound();
+			if (sounds.clipEating().isRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
+				sounds.clipEating().stop();
 			}
 			if (folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
-				if (!sounds.isClipGhostChasingRunning()) {
-					sounds.loopClipGhostChasing();
+				if (!sounds.clipGhostChase().isRunning()) {
+					sounds.clipGhostChase().loop();
 				}
 			} else {
-				sounds.stopClipGhostChasing();
+				sounds.clipGhostChase().stop();
 			}
 			if (folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
-				if (!sounds.isClipGhostDeadRunning()) {
-					sounds.loopClipGhostDead();
+				if (!sounds.clipGhostDead().isRunning()) {
+					sounds.clipGhostDead().loop();
 				}
 			} else {
-				sounds.stopClipGhostDead();
+				sounds.clipGhostDead().stop();
 			}
 		}
 

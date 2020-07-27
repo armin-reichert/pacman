@@ -24,5 +24,5 @@ public interface Theme extends ThemeParameters {
 
 	MessagesRenderer createMessagesRenderer();
 
-	IPacManSounds createSounds();
+	PacManSounds createSounds();
 }

@@ -11,17 +11,17 @@ import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.view.theme.api.IPacManSounds;
+import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.Theme;
 
 public class ChaseGhostsAnimation extends GameObject {
 
 	private final ArcadeWorld world;
 	private final Folks folks;
-	private final IPacManSounds sounds;
+	private final PacManSounds sounds;
 	private int points;
 
-	public ChaseGhostsAnimation(Theme theme, IPacManSounds sounds, ArcadeWorld world, Folks folks) {
+	public ChaseGhostsAnimation(Theme theme, PacManSounds sounds, ArcadeWorld world, Folks folks) {
 		this.sounds = sounds;
 		this.world = world;
 		this.folks = folks;
@@ -34,7 +34,7 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	@Override
 	public void stop() {
-		sounds.stopEatingPelletsSound();
+		sounds.clipEating().stop();
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class ChaseGhostsAnimation extends GameObject {
 				ghost.setState(GhostState.DEAD);
 				ghost.setBounty(points);
 				points *= 2;
-				sounds.playClipEatGhost();
+				sounds.clipEatGhost().play();
 			});
 		//@formatter:on
 		folks.all().forEach(creature -> creature.entity.tf.move());

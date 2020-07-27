@@ -15,13 +15,13 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
-import de.amr.games.pacman.view.theme.api.IPacManSounds;
+import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
-import de.amr.games.pacman.view.theme.sound.PacManSounds;
+import de.amr.games.pacman.view.theme.sound.ArcadePacManSounds;
 
 /**
  * Theme using letters only.
@@ -177,7 +177,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IPacManSounds createSounds() {
-		return new PacManSounds();
+	public PacManSounds createSounds() {
+		return new ArcadePacManSounds();
 	}
 }

@@ -17,7 +17,7 @@ import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.theme.Themes;
 import de.amr.games.pacman.view.theme.api.Theme;
-import de.amr.games.pacman.view.theme.sound.PacManSounds;
+import de.amr.games.pacman.view.theme.sound.ArcadePacManSounds;
 
 public class TestUI implements Lifecycle, VisualController {
 
@@ -25,7 +25,7 @@ public class TestUI implements Lifecycle, VisualController {
 	protected final Folks folks;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
-	protected final PacManSounds sounds;
+	protected final ArcadePacManSounds sounds;
 	protected EnhancedPlayView view;
 	protected Theme[] themes = Themes.all().toArray(Theme[]::new);
 	protected int currentThemeIndex = 0;
@@ -61,7 +61,7 @@ public class TestUI implements Lifecycle, VisualController {
 
 		folks.all().forEach(world::exclude);
 
-		sounds = new PacManSounds();
+		sounds = new ArcadePacManSounds();
 
 		game = new Game(1, world.totalFoodCount());
 

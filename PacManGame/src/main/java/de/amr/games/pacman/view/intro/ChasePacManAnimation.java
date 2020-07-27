@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.view.theme.api.IPacManSounds;
+import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.Theme;
 
 public class ChasePacManAnimation extends GameObject {
@@ -26,11 +26,11 @@ public class ChasePacManAnimation extends GameObject {
 
 	private final ArcadeWorld world;
 	private final Folks folks;
-	private final IPacManSounds sounds;
+	private final PacManSounds sounds;
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
 
-	public ChasePacManAnimation(Theme theme, IPacManSounds sounds, ArcadeWorld world, Folks folks) {
+	public ChasePacManAnimation(Theme theme, PacManSounds sounds, ArcadeWorld world, Folks folks) {
 		this.world = world;
 		this.folks = folks;
 		this.sounds = sounds;
@@ -93,14 +93,16 @@ public class ChasePacManAnimation extends GameObject {
 	@Override
 	public void start() {
 		init();
-		sounds.loopClipGhostChasing();
-		sounds.playEatingPelletsSound();
+		sounds.clipGhostChase().loop();
+		if (!sounds.clipEating().isRunning()) {
+			sounds.clipEating().loop();
+		}
 	}
 
 	@Override
 	public void stop() {
-		sounds.stopClipGhostChasing();
-		sounds.stopEatingPelletsSound();
+		sounds.clipGhostChase().stop();
+		sounds.clipEating().stop();
 		folks.all().forEach(creature -> creature.entity.tf.vx = 0);
 	}
 
