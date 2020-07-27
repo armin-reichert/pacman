@@ -19,18 +19,18 @@ public class ArcadePacManSounds implements PacManSounds {
 		return Assets.sound("sfx/" + name + ".mp3");
 	}
 
-	private Optional<SoundClip> musicGameReady = Optional.empty();
-	private Optional<SoundClip> musicGameRunning = Optional.empty();
-	private Optional<SoundClip> musicGameOver = Optional.empty();
+	private SoundClip musicGameReady;
+	private SoundClip musicGameRunning;
+	private SoundClip musicGameOver;
 
 	private CompletableFuture<Void> asyncLoader;
 
 	@Override
 	public void loadMusic() {
 		asyncLoader = CompletableFuture.runAsync(() -> {
-			musicGameRunning = Optional.of(mp3("bgmusic"));
-			musicGameOver = Optional.of(mp3("ending"));
-			musicGameReady = Optional.of(mp3("ready"));
+			musicGameRunning = mp3("bgmusic");
+			musicGameOver = mp3("ending");
+			musicGameReady = mp3("ready");
 		});
 	}
 
@@ -98,23 +98,23 @@ public class ArcadePacManSounds implements PacManSounds {
 	@Override
 	public void stopAll() {
 		stopAllClips();
-		musicGameReady.ifPresent(SoundClip::stop);
-		musicGameRunning.ifPresent(SoundClip::stop);
-		musicGameOver.ifPresent(SoundClip::stop);
+		musicGameReady().ifPresent(SoundClip::stop);
+		musicGameRunning().ifPresent(SoundClip::stop);
+		musicGameOver().ifPresent(SoundClip::stop);
 	}
 
 	@Override
 	public Optional<SoundClip> musicGameOver() {
-		return musicGameOver;
+		return Optional.ofNullable(musicGameOver);
 	}
 
 	@Override
 	public Optional<SoundClip> musicGameReady() {
-		return musicGameReady;
+		return Optional.ofNullable(musicGameReady);
 	}
 
 	@Override
 	public Optional<SoundClip> musicGameRunning() {
-		return musicGameRunning;
+		return Optional.ofNullable(musicGameRunning);
 	}
 }
