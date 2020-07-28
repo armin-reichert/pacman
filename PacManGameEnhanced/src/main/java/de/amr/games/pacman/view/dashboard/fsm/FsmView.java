@@ -125,17 +125,12 @@ public class FsmView extends JPanel implements Lifecycle {
 		splitPane.setRightComponent(tabbedPane);
 
 		fsmEmbeddedTextView = new FsmTextView();
-		tabbedPane.addTab("Source", null, fsmEmbeddedTextView, null);
 
 		fsmEmbeddedGraphView = new FsmGraphView();
 		fsmEmbeddedGraphView.setEmbedded(true);
-		tabbedPane.addTab("Preview", null, fsmEmbeddedGraphView, null);
 
-		tabbedPane.addChangeListener(change -> {
-			if (tabbedPane.getSelectedComponent() == fsmEmbeddedGraphView) {
-				update();
-			}
-		});
+		tabbedPane.addTab("Graph", null, fsmEmbeddedGraphView, null);
+		tabbedPane.addTab("Source", null, fsmEmbeddedTextView, null);
 
 		toolBar = new JToolBar();
 		add(toolBar, BorderLayout.NORTH);
