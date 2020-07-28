@@ -123,11 +123,11 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		pacManLogo = new ImageWidget(arcadeSprites.image_logo());
 		pacManLogo.tf.centerHorizontally(0, width);
 		pacManLogo.tf.y = 20;
-		chasePacMan = new ChasePacManAnimation(theme, sounds, world, new Folks(world, world.house(0)));
+		chasePacMan = new ChasePacManAnimation(theme, world, new Folks(world, world.house(0)));
 		chasePacMan.tf.centerHorizontally(0, width);
 		chasePacMan.tf.y = 100;
-		chaseGhosts = new ChaseGhostsAnimation(theme, sounds, world, new Folks(world, world.house(0)));
-		ghostPointsAnimation = new GhostPointsAnimation(theme, sounds, new Folks(world, world.house(0)));
+		chaseGhosts = new ChaseGhostsAnimation(theme, world, new Folks(world, world.house(0)));
+		ghostPointsAnimation = new GhostPointsAnimation(theme, new Folks(world, world.house(0)));
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/
 			.text(GITHUB_URL)

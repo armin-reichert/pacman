@@ -21,10 +21,10 @@ public class ChaseGhostsAnimation extends GameObject {
 	private final PacManSounds sounds;
 	private int points;
 
-	public ChaseGhostsAnimation(Theme theme, PacManSounds sounds, ArcadeWorld world, Folks folks) {
-		this.sounds = sounds;
+	public ChaseGhostsAnimation(Theme theme, ArcadeWorld world, Folks folks) {
 		this.world = world;
 		this.folks = folks;
+		this.sounds = theme.sounds();
 		setTheme(theme);
 	}
 

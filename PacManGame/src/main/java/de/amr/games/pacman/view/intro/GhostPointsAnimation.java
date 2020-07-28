@@ -38,12 +38,12 @@ public class GhostPointsAnimation extends GameObject {
 	private boolean energizer;
 	private int dx = 2 * Tile.SIZE + 3;
 
-	public GhostPointsAnimation(Theme theme, PacManSounds sounds, Folks folks) {
-		this.sounds = sounds;
+	public GhostPointsAnimation(Theme theme, Folks folks) {
 		this.folks = folks;
 		tf.width = 6 * dx;
 		tf.height = 2 * Tile.SIZE;
 		ghosts = folks.ghosts().toArray(Ghost[]::new);
+		this.sounds = theme.sounds();
 		setTheme(theme);
 	}
 

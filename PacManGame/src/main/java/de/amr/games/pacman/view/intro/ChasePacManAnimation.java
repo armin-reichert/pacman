@@ -30,10 +30,10 @@ public class ChasePacManAnimation extends GameObject {
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
 
-	public ChasePacManAnimation(Theme theme, PacManSounds sounds, ArcadeWorld world, Folks folks) {
+	public ChasePacManAnimation(Theme theme, ArcadeWorld world, Folks folks) {
 		this.world = world;
 		this.folks = folks;
-		this.sounds = sounds;
+		this.sounds = theme.sounds();
 		setTheme(theme);
 	}
 
