@@ -11,14 +11,15 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.PacManAppEnhanced;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.EnhancedGameController;
+import de.amr.games.pacman.controller.game.PacManGameState;
 import de.amr.statemachine.core.State;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.SwingConstants;
 
 /**
  * Displays information (state, timer values, directions, speed) about the actors and the global
@@ -116,7 +117,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 			gameController.game().ifPresent(game -> {
 				table.update();
 				ghostHouseStateView.update();
-				updateStateLabel();
+				setStateLabel();
 				cbShowRoutes.setSelected(gameController.isShowingRoutes());
 				cbShowGrid.setSelected(gameController.isShowingGrid());
 				cbShowStates.setSelected(gameController.isShowingStates());
@@ -125,12 +126,14 @@ public class GameStateView extends JPanel implements Lifecycle {
 		}
 	}
 
-	private void updateStateLabel() {
-		State<?> state = gameController.state();
-		long remaining = state.getTicksRemaining(), duration = state.getDuration();
-		String stateText = duration != Integer.MAX_VALUE
-				? String.format("%s (%s of %s sec remaining)", state.id(), seconds(remaining), seconds(duration))
-				: state.id().toString();
-		lblGameState.setText(stateText);
+	private void setStateLabel() {
+		State<PacManGameState> state = gameController.state();
+		if (state.hasTimer()) {
+			long remaining = state.getTicksRemaining(), duration = state.getDuration();
+			lblGameState
+					.setText(String.format("%s (%s of %s sec remaining)", state.id(), seconds(remaining), seconds(duration)));
+		} else {
+			lblGameState.setText(state.id().name());
+		}
 	}
 }

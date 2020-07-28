@@ -415,7 +415,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private boolean ghostEaten;
 
 		public PlayingState() {
-			setTimer(Integer.MAX_VALUE);
 		}
 
 		@Override
