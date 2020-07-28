@@ -27,7 +27,7 @@ public class ArcadeTheme extends AbstractTheme {
 		put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		put("maze-flash-sec", 0.4f);
 		put("sprites", new ArcadeThemeSprites());
-		put("sounds", new ArcadeSounds());
+		put("sounds", ArcadeSounds.SOUNDS);
 	}
 
 	@Override

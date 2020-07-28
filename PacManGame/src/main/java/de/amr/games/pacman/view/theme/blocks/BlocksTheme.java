@@ -57,7 +57,7 @@ public class BlocksTheme extends AbstractTheme {
 		//@formatter:on
 		));
 
-		put("sounds", new ArcadeSounds());
+		put("sounds", ArcadeSounds.SOUNDS);
 	}
 
 	public Color ghostColor(Ghost ghost) {

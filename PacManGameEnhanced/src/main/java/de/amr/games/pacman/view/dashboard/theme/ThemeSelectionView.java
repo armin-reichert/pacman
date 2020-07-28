@@ -3,6 +3,8 @@ package de.amr.games.pacman.view.dashboard.theme;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ItemEvent;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
@@ -123,7 +125,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 	private void updateSelectionFromTheme() {
 		currentView().ifPresent(view -> {
 			PacManGameView gameView = (PacManGameView) view;
-			if (!comboSelectTheme.getSelectedItem().equals(gameController.theme().name())) {
+			if (!comboSelectTheme.getSelectedItem().equals(gameController.getTheme().name())) {
 				comboSelectTheme.setSelectedItem(gameView.getTheme().name().toUpperCase());
 				updatePreviewLabels();
 			}
@@ -131,21 +133,27 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 	}
 
 	private void updatePreviewLabels() {
-		Theme theme = gameController.theme();
+		Theme theme = gameController.getTheme();
 		int size = 32;
 		setPacManLabel(folks, theme, size);
 		setGhostLabels(folks, theme, size);
 	}
 
+	private static BufferedImage scaled(BufferedImage source, int scaledWidth, int scaledHeight) {
+		BufferedImage result = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = result.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g.drawImage(source, 0, 0, scaledWidth, scaledHeight, null);
+		return result;
+	}
+
 	private void setPacManLabel(Folks folks, Theme theme, int size) {
-		BufferedImage small = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-		BufferedImage large = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 		folks.pacMan.setState(PacManState.AWAKE);
 		folks.pacMan.setMoveDir(Direction.RIGHT);
 		folks.pacMan.entity.tf.setPosition(Tile.SIZE / 2, Tile.SIZE / 2);
+		BufferedImage small = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 		theme.pacManRenderer(folks.pacMan).render(small.createGraphics());
-		large.getGraphics().drawImage(small, 0, 0, size, size, null);
-		lblPacMan.setIcon(new ImageIcon(large));
+		lblPacMan.setIcon(new ImageIcon(scaled(small, size, size)));
 	}
 
 	private void setGhostLabels(Folks folks, Theme theme, int size) {
@@ -154,10 +162,8 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 			ghost.setMoveDir(Direction.RIGHT);
 			ghost.entity.tf.setPosition(Tile.SIZE / 2, Tile.SIZE / 2);
 			BufferedImage small = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-			BufferedImage large = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 			theme.ghostRenderer(ghost).render(small.createGraphics());
-			large.getGraphics().drawImage(small, 0, 0, size, size, null);
-			ImageIcon icon = new ImageIcon(large);
+			ImageIcon icon = new ImageIcon(scaled(small, size, size));
 			switch (ghost.name) {
 			case "Blinky":
 				lblBlinky.setIcon(icon);

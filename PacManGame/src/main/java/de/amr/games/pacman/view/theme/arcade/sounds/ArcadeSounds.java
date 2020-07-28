@@ -16,6 +16,8 @@ import de.amr.games.pacman.view.theme.api.PacManSounds;
  */
 public class ArcadeSounds implements PacManSounds {
 
+	public static final ArcadeSounds SOUNDS = new ArcadeSounds();
+
 	private static SoundClip mp3(String name) {
 		return Assets.sound("themes/arcade/sounds/" + name + ".mp3");
 	}

@@ -46,7 +46,7 @@ public class LettersTheme extends AbstractTheme {
 		Ghost.ORANGE_GHOST, Color.ORANGE
 		//@formatter:on
 		));
-		put("sounds", new ArcadeSounds());
+		put("sounds", ArcadeSounds.SOUNDS);
 	}
 
 	private Color ghostColor(Ghost ghost) {
