@@ -21,7 +21,7 @@ class GameStateRecord {
 	public float speed;
 	public String state;
 	public GhostSanity ghostSanity;
-	public int ticksRemaining;
-	public int duration;
+	public long ticksRemaining;
+	public long duration;
 	public boolean pacManCollision;
 }

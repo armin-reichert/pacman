@@ -69,7 +69,7 @@ public class Game {
 	 * @param seconds seconds
 	 * @return ticks corresponding to given number of seconds
 	 */
-	public static int sec(float seconds) {
+	public static long sec(float seconds) {
 		return Math.round(60 * seconds);
 	}
 

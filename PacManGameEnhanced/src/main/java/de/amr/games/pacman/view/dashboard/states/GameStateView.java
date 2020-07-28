@@ -127,7 +127,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 
 	private void updateStateLabel() {
 		State<?> state = gameController.state();
-		int remaining = state.getTicksRemaining(), duration = state.getDuration();
+		long remaining = state.getTicksRemaining(), duration = state.getDuration();
 		String stateText = duration != Integer.MAX_VALUE
 				? String.format("%s (%s of %s sec remaining)", state.id(), seconds(remaining), seconds(duration))
 				: state.id().toString();

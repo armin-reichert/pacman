@@ -62,9 +62,7 @@ public class StatesRenderer implements IRenderer {
 			text += String.format("(%d)", pacMan.getPowerTicks());
 		}
 		if (pacMan.state().hasTimer()) {
-			int consumed = pacMan.state().getTicksConsumed();
-			int duration = pacMan.state().getDuration();
-			text += String.format("(%d of %d)", consumed, duration);
+			text += String.format("(%d of %d)", pacMan.state().getTicksConsumed(), pacMan.state().getDuration());
 		}
 		if (settings.pacManImmortable) {
 			text += " lives " + Rendering.INFTY;
@@ -90,22 +88,33 @@ public class StatesRenderer implements IRenderer {
 		StringBuilder text = new StringBuilder();
 		// show ghost name if not obvious
 		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name : "");
-		// timer values
-		int duration = ghost.state().getDuration();
-		int remaining = ghost.state().getTicksRemaining();
 		// chasing or scattering time
 		if (ghostCommand != null && ghost.is(SCATTERING, CHASING)) {
-			if (ghostCommand.state() != null) {
-				duration = ghostCommand.state().getDuration();
-				remaining = ghostCommand.state().getTicksRemaining();
+			long remaining = ghostCommand.state().getTicksRemaining();
+			String remainingText = formatLargeTicks(remaining);
+			long duration = ghostCommand.state().getDuration();
+			String durationText = formatLargeTicks(duration);
+			text.append(String.format("(%s,%s|%s)", ghost.getState(), remainingText, durationText));
+		} else {
+			if (ghost.state().hasTimer()) {
+				text.append(String.format("(%s,%d|%d)", ghost.getState(), ghost.state().getTicksRemaining(),
+						ghost.state().getDuration()));
 			}
 		}
-		if (duration != Integer.MAX_VALUE) {
-			text.append(String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
-		} else {
-			text.append(String.format("(%s,%s)", ghost.getState(), Rendering.INFTY));
-		}
 		drawEntityState(g, ghost.entity, text.toString(), ghostColor(ghost));
+	}
+
+	private String formatLargeTicks(long ticks) {
+		if (ticks <= 1000) {
+			return String.valueOf(ticks);
+		}
+		if (ticks <= 10_000) {
+			return ">1000";
+		}
+		if (ticks <= 100_000) {
+			return ">10_000";
+		}
+		return ">100_000";
 	}
 
 	private void drawActorsOffTrack(Graphics2D g) {

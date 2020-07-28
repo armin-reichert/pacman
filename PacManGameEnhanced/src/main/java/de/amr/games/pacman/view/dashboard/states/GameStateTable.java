@@ -41,7 +41,7 @@ public class GameStateTable extends JTable implements Lifecycle {
 		format(ColumnInfo.Speed, speedFmt);
 
 		UniversalFormatter ticksFmt = new UniversalFormatter();
-		ticksFmt.fnTextFormat = c -> Formatting.ticksAndSeconds((int) c.value);
+		ticksFmt.fnTextFormat = c -> Formatting.ticksAndSeconds((Long) c.value);
 		format(ColumnInfo.Remaining, ticksFmt);
 		format(ColumnInfo.Duration, ticksFmt);
 	}

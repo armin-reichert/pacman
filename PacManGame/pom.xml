@@ -5,9 +5,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.amr.games.pacman</groupId>
 	<artifactId>PacManGame</artifactId>
-	<version>1.0</version>
 	<name>PacManGame</name>
 	<description>Pac-Man game using explicit state machines</description>
 	<build>
@@ -65,4 +63,10 @@
 		</dependency>
 	</dependencies>
 	<url>https://github.com/armin-reichert/pacman</url>
+	<parent>
+		<groupId>de.amr.games.pacman</groupId>
+		<artifactId>pacman</artifactId>
+		<version>1.0</version>
+		<relativePath>..</relativePath>
+	</parent>
 </project>

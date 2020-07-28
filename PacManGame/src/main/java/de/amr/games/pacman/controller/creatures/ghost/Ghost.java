@@ -11,7 +11,6 @@ import static de.amr.games.pacman.model.game.Game.sec;
 
 import java.awt.Graphics2D;
 import java.util.Optional;
-import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -55,7 +54,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private Steering<Ghost> previousSteering;
 	private int bounty;
 	private boolean flashing;
-	private IntSupplier fnFlashTimeTicks = () -> 0;
+	private Supplier<Long> fnFlashTimeTicks = () -> 0L;
 	private IRenderer renderer;
 
 	public Ghost(World world, PacMan pacMan, String name, int color, Bed bed) {
@@ -109,7 +108,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 						maybeMeetPacMan(pacMan);
 						move();
 						// one flashing animation takes 0.5 sec
-						flashing = remaining < fnFlashTimeTicks.getAsInt() * 0.5f;
+						flashing = remaining < fnFlashTimeTicks.get() * 0.5f;
 					})
 				
 				.state(DEAD)

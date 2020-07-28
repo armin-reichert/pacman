@@ -164,7 +164,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		return foodWeight > 0;
 	}
 
-	public int getPowerTicks() {
+	public long getPowerTicks() {
 		return state(POWERFUL).getTicksRemaining();
 	}
 

@@ -13,11 +13,11 @@ public class Formatting {
 		return DecimalFormat.getPercentInstance(Locale.ENGLISH).format(f);
 	}
 
-	public static String ticksAndSeconds(int ticks) {
+	public static String ticksAndSeconds(long ticks) {
 		return ticks == Integer.MAX_VALUE ? Character.toString('\u221E') : String.format("%d (%.2fs)", ticks, ticks / 60f);
 	}
 
-	public static String seconds(int ticks) {
+	public static String seconds(long ticks) {
 		return ticks == Integer.MAX_VALUE ? Character.toString('\u221E') : String.format("%.2fs", ticks / 60f);
 	}
 

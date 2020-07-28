@@ -33,8 +33,8 @@ public class GhostPointsAnimation extends GameObject {
 	private final PacManSounds sounds;
 	private final BitSet killed = new BitSet(5);
 	private int ghostToKill;
-	private int ghostTimer;
-	private int energizerTimer;
+	private long ghostTimer;
+	private long energizerTimer;
 	private boolean energizer;
 	private int dx = 2 * Tile.SIZE + 3;
 

@@ -33,7 +33,7 @@ public class GhostCommand extends StateMachine<GhostCommandState, String> {
 	}
 
 	static class Round {
-		int scatterTicks, chaseTicks;
+		long scatterTicks, chaseTicks;
 
 		static Round[] newRounds() {
 			Round[] rounds = new Round[5];
@@ -82,11 +82,11 @@ public class GhostCommand extends StateMachine<GhostCommandState, String> {
 	}
 	/*@formatter:on*/
 
-	private static int scatterTicks(int level, int round) {
+	private static long scatterTicks(int level, int round) {
 		return level == 1 ? L1[round].scatterTicks : level <= 4 ? L4[round].scatterTicks : L5[round].scatterTicks;
 	}
 
-	private static int chaseTicks(int level, int round) {
+	private static long chaseTicks(int level, int round) {
 		return level == 1 ? L1[round].chaseTicks : level <= 4 ? L4[round].chaseTicks : L5[round].chaseTicks;
 	}
 

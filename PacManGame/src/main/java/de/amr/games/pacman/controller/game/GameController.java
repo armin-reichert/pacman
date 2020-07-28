@@ -393,7 +393,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		@Override
-		public void onTick(State<?> state, int passed, int remaining) {
+		public void onTick(State<PacManGameState> state, long passed, long remaining) {
 			if (remaining == sec(1)) {
 				world.setFrozen(false);
 			}
@@ -408,13 +408,43 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private class PlayingState extends State<PacManGameState> {
 
-		final int INITIAL_WAIT_TIME = sec(2);
+		final long INITIAL_WAIT_TIME = sec(2);
 
 		private long lastMealTime;
 		private boolean extraLife;
+		private boolean ghostEaten;
 
 		public PlayingState() {
-			setTimer(Integer.MAX_VALUE - 1);
+			setTimer(Integer.MAX_VALUE);
+		}
+
+		@Override
+		public void onEntry() {
+			setDemoMode(settings.demoMode);
+			sounds.musicGameRunning().ifPresent(music -> {
+				music.volume(0.5f);
+				music.loop();
+			});
+		}
+
+		@Override
+		public void onTick(State<PacManGameState> state, long passed, long remaining) {
+			extraLife = false;
+			ghostEaten = false;
+			if (passed == INITIAL_WAIT_TIME) {
+				folks.pacMan.wakeUp();
+			} else if (passed > INITIAL_WAIT_TIME) {
+				ghostCommand.update();
+				doorMan.update();
+				bonusControl.update();
+			}
+			folks.allInWorld().forEach(Creature::update);
+			updateSound();
+		}
+
+		@Override
+		public void onExit() {
+			sounds.clips().forEach(SoundClip::stop);
 		}
 
 		private void resumePlaying() {
@@ -423,36 +453,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			ghostCommand.init();
 			folks.allInWorld().forEach(Creature::init);
 			playView.enableGhostAnimations(true);
-		}
-
-		@Override
-		public void onEntry() {
-			setDemoMode(settings.demoMode);
-			if (!sounds.isMusicRunning(sounds.musicGameRunning())) {
-				sounds.playMusic(sounds.musicGameRunning());
-			}
-		}
-
-		@Override
-		public void onTick(State<?> state, int passed, int remaining) {
-			extraLife = false;
-			if (passed < INITIAL_WAIT_TIME) {
-				folks.ghostsInWorld().forEach(Ghost::update);
-				folks.pacMan.update();
-			} else if (passed == INITIAL_WAIT_TIME) {
-				folks.pacMan.wakeUp();
-			} else if (passed > INITIAL_WAIT_TIME) {
-				ghostCommand.update();
-				doorMan.update();
-				bonusControl.update();
-				folks.allInWorld().forEach(Creature::update);
-				updateSound();
-			}
-		}
-
-		@Override
-		public void onExit() {
-			sounds.clips().forEach(SoundClip::stop);
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
@@ -469,7 +469,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				if (game.lives > livesBefore) {
 					extraLife = true;
 				}
-				sounds.clipEatGhost().play();
+				ghostEaten = true;
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
 				loginfo("%s got killed at %s", ghost.name, ghost.tileLocation());
@@ -545,6 +545,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					sounds.clipWaza().loop();
 				}
 			}
+			if (ghostEaten) {
+				sounds.clipEatGhost().play();
+			}
 			if (folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
 				if (!sounds.clipGhostDead().isRunning()) {
 					sounds.clipGhostDead().loop();
@@ -554,7 +557,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 			if (extraLife) {
 				sounds.clipExtraLife().play();
-				extraLife = false;
 			}
 		}
 	}
@@ -582,7 +584,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		@Override
-		public void onTick(State<?> state, int passed, int ticksRemaining) {
+		public void onTick(State<PacManGameState> state, long passed, long ticksRemaining) {
 			float flashingSeconds = flashingSeconds(theme(), game);
 
 			// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.

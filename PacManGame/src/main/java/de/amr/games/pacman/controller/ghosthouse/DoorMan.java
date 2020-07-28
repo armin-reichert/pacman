@@ -188,7 +188,7 @@ public class DoorMan implements Lifecycle {
 				|| door.includes(fromGhostTowardsHouse);
 	}
 
-	private int pacManStarvingTimeLimit() {
+	private long pacManStarvingTimeLimit() {
 		return game.level.number < 5 ? sec(4) : sec(3);
 	}
 

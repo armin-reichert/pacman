@@ -7,7 +7,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.amr.games.pacman.test</groupId>
 	<artifactId>PacManTests</artifactId>
-	<version>1.0</version>
 	<name>PacManTests</name>
 	<description>Pac-Man game tests</description>
 	<build>
@@ -62,4 +61,10 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<parent>
+		<groupId>de.amr.games.pacman</groupId>
+		<artifactId>pacman</artifactId>
+		<version>1.0</version>
+		<relativePath>..</relativePath>
+	</parent>
 </project>
