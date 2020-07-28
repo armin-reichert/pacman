@@ -69,7 +69,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 					.onTick(this::wander)
 					
 				.state(DEAD)
-					.timeoutAfter(sec(2.5f))
+					.timeoutAfter(sec(1.5f))
 
 				.state(COLLAPSING)
 

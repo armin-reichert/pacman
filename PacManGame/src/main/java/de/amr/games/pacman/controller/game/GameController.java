@@ -36,6 +36,7 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -230,67 +231,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						introView.exit();
 					})
 				
-				.state(GETTING_READY)
-					.timeoutAfter(sec(7))
-					.onEntry(() -> {
-						newGame();
-						world.setFrozen(true);
-						playView = createPlayView();
-						playView.init();
-						playView.showMessage(2, "Ready!", Color.YELLOW);
-						currentView = playView;
-						sounds.playMusic(sounds.musicGameReady());
-					})
-					.onTick((state, passed, remaining) -> {
-						if (passed == sec(5)) {
-							world.setFrozen(false);
-							sounds.playMusic(sounds.musicGameRunning());
-						}
-						folks.allInWorld().forEach(Creature::update);
-					})
-					.onExit(() -> {
-						folks.pacMan.wakeUp();
-						setDemoMode(settings.demoMode);
-						playView.clearMessage(2);
-					})
+				.state(GETTING_READY).customState(new GettingReadyState())
 				
 				.state(PLAYING).customState(new PlayingState())
 				
-				.state(CHANGING_LEVEL)
-					.timeoutAfter(() -> sec(4 + game.level.numFlashes * theme().$float("maze-flash-sec")))
-					.onEntry(() -> {
-						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
-						folks.pacMan.fallAsleep();
-						doorMan.onLevelChange();
-						playView.enableGhostAnimations(false);
-						sounds.clips().forEach(SoundClip::stop);
-					})
-					.onTick((state, passed, remaining) -> {
-						float flashingSeconds = game.level.numFlashes * theme().$float("maze-flash-sec");
-						
-						// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.
-						if (passed == sec(2)) {
-							folks.ghostsInWorld().forEach(ghost -> ghost.setVisible(false));
-							if (flashingSeconds > 0) {
-								world.setChanging(true);
-							}
-						}
-	
-						// After two more seconds, enter next level
-						if (passed == sec(2 + flashingSeconds)) {
-							game.enterLevel(game.level.number + 1);
-							world.setChanging(false);
-							world.fillFood();
-							folks.allInWorld().forEach(Creature::init);
-							playView.enableGhostAnimations(true);
-							playView.init();
-						}
-						
-						// Wait a second, then let ghosts jump again inside the house
-						if (passed >= sec(3 + flashingSeconds)) {
-							folks.allInWorld().forEach(Creature::update);
-						}
-					})
+				.state(CHANGING_LEVEL).customState(new ChangingLevelState())
 				
 				.state(GHOST_DYING)
 					.timeoutAfter(sec(1))
@@ -308,35 +253,31 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 				
 				.state(PACMAN_DYING)
-					.timeoutAfter(() -> game.lives > 1 ? sec(7) : sec(5))
+					.timeoutAfter(sec(4))
 					.onEntry(() -> {
-						game.lives -= settings.pacManImmortable ? 0 : 1;
-						sounds.clips().forEach(SoundClip::stop);
+						if (!settings.pacManImmortable) {
+							game.lives -= 1;
+						}
 						world.setFrozen(true);
+						sounds.clips().forEach(SoundClip::stop);
 					})
-					.onTick((state, t, remaining) -> {
-						folks.pacMan.update();
-						int waitTime = sec(1f),
-								dyingStartTime = waitTime + sec(1.5f),
-								dyingEndTime = dyingStartTime + sec(2.5f);
-						if (t == waitTime) {
+					.onTick((state, passed, remaining) -> {
+						if (passed == sec(1)) {
 							bonusControl.setState(BonusState.INACTIVE);
 							folks.ghostsInWorld().forEach(ghost -> ghost.setVisible(false));
 						}
-						else if (t == dyingStartTime) {
+						else if (remaining == sec(2.5f)) {
 							sounds.stopMusic(sounds.musicGameRunning());
 							sounds.clipPacManDies().play();
 						}
-						else if (t == dyingEndTime && game.lives > 0) {
-							folks.allInWorld().forEach(Creature::init);
-							playView.init();
-						}
-						else if (t > dyingEndTime) {
-							folks.allInWorld().forEach(Creature::update);
-						}
+						folks.pacMan.update();
 					})
 					.onExit(() -> {
 						world.setFrozen(false);
+						if (game.lives > 0) {
+							folks.allInWorld().forEach(Creature::init);
+							playView.init();
+						}
 					})
 				
 				.state(GAME_OVER)
@@ -369,9 +310,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.when(LOADING_MUSIC).then(INTRO)
 					.condition(() -> sounds.isMusicLoaded())
 					.annotation("Music loaded")
-			
+
 				.when(INTRO).then(GETTING_READY)
-					.condition(() -> currentView.isComplete())
+					.condition(() -> introView.isComplete())
 					.annotation("Intro complete")
 					
 				.when(GETTING_READY).then(PLAYING)
@@ -421,7 +362,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTimeout()
 					.condition(() -> game.lives > 0)
 					.act(playingState()::resumePlaying)
-					.annotation(() -> String.format("%d lives remaining, if > 0, game resumed", game.lives))
+					.annotation(() -> String.format("Lives remaining = %d, resume game", game.lives))
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce("space") || Keyboard.keyPressedOnce("enter"))
@@ -435,30 +376,78 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		//@formatter:on
 	}
 
-	/**
-	 * "PLAYING" state implementation.
-	 */
-	public class PlayingState extends State<PacManGameState> {
+	private class GettingReadyState extends State<PacManGameState> {
 
-		private long lastPelletEatenTimeMillis;
+		public GettingReadyState() {
+			setTimer(sec(6));
+		}
+
+		@Override
+		public void onEntry() {
+			newGame();
+			world.setFrozen(true);
+			currentView = playView = createPlayView();
+			playView.init();
+			playView.showMessage(2, "Ready!", Color.YELLOW);
+			sounds.playMusic(sounds.musicGameReady());
+		}
+
+		@Override
+		public void onTick(State<?> state, int passed, int remaining) {
+			if (remaining == sec(1)) {
+				world.setFrozen(false);
+			}
+			folks.allInWorld().forEach(Creature::update);
+		}
+
+		@Override
+		public void onExit() {
+			playView.clearMessage(2);
+		}
+	}
+
+	private class PlayingState extends State<PacManGameState> {
+
+		final int INITIAL_WAIT_TIME = sec(2);
+
+		private long lastMealTime;
+		private boolean extraLife;
+
+		public PlayingState() {
+			setTimer(Integer.MAX_VALUE - 1);
+		}
 
 		private void resumePlaying() {
 			world.setFrozen(false);
 			bonusControl.init();
 			ghostCommand.init();
 			folks.allInWorld().forEach(Creature::init);
-			folks.pacMan.wakeUp();
 			playView.enableGhostAnimations(true);
-			sounds.playMusic(sounds.musicGameRunning());
 		}
 
 		@Override
-		public void onTick(State<?> state, int consumed, int remaining) {
-			ghostCommand.update();
-			doorMan.update();
-			bonusControl.update();
-			folks.allInWorld().forEach(Creature::update);
-			updateRunningClips();
+		public void onEntry() {
+			setDemoMode(settings.demoMode);
+			if (!sounds.isMusicRunning(sounds.musicGameRunning())) {
+				sounds.playMusic(sounds.musicGameRunning());
+			}
+		}
+
+		@Override
+		public void onTick(State<?> state, int passed, int remaining) {
+			extraLife = false;
+			if (passed < INITIAL_WAIT_TIME) {
+				folks.ghostsInWorld().forEach(Ghost::update);
+				folks.pacMan.update();
+			} else if (passed == INITIAL_WAIT_TIME) {
+				folks.pacMan.wakeUp();
+			} else if (passed > INITIAL_WAIT_TIME) {
+				ghostCommand.update();
+				doorMan.update();
+				bonusControl.update();
+				folks.allInWorld().forEach(Creature::update);
+				updateSound();
+			}
 		}
 
 		@Override
@@ -478,7 +467,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				int livesBefore = game.lives;
 				game.scoreGhostKilled(ghost.name);
 				if (game.lives > livesBefore) {
-					sounds.clipExtraLife().play();
+					extraLife = true;
 				}
 				sounds.clipEatGhost().play();
 				ghost.process(new GhostKilledEvent(ghost));
@@ -511,43 +500,37 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
-			lastPelletEatenTimeMillis = System.currentTimeMillis();
-			int livesBeforeScoring = game.lives;
+			lastMealTime = System.currentTimeMillis();
+			doorMan.onPacManFoundFood();
 			boolean energizer = world.containsEnergizer(found.tile);
 			world.clearFood(found.tile);
+			int livesBeforeScoring = game.lives;
 			if (energizer) {
 				game.scoreEnergizerFound();
 			} else {
 				game.scoreSimplePelletFound();
 			}
-			if (game.lives > livesBeforeScoring) {
-				sounds.clipExtraLife().play();
-			}
-			doorMan.onPacManFoundFood();
-			if (!sounds.clipEating().isRunning()) {
-				sounds.clipEating().loop();
-			}
-
-			if (game.level.remainingFoodCount() == 0) {
-				enqueue(new LevelCompletedEvent());
-				return;
-			}
-
 			if (game.isBonusDue()) {
 				bonusControl.setState(BonusState.ACTIVE);
 			}
-			if (energizer && game.level.pacManPowerSeconds > 0) {
-				if (!sounds.clipWaza().isRunning()) {
-					sounds.clipWaza().loop();
-				}
+			if (game.lives > livesBeforeScoring) {
+				extraLife = true;
+			}
+			if (game.level.remainingFoodCount() == 0) {
+				enqueue(new LevelCompletedEvent());
+			} else if (energizer && game.level.pacManPowerSeconds > 0) {
 				ghostCommand.stopAttacking();
-				int powerTicks = sec(game.level.pacManPowerSeconds);
-				folks.allInWorld().forEach(creature -> creature.process(new PacManGainsPowerEvent(powerTicks)));
+				folks.allInWorld()
+						.forEach(creature -> creature.process(new PacManGainsPowerEvent(sec(game.level.pacManPowerSeconds))));
 			}
 		}
 
-		private void updateRunningClips() {
-			if (sounds.clipEating().isRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
+		private void updateSound() {
+			if (System.currentTimeMillis() - lastMealTime < 300) {
+				if (!sounds.clipEating().isRunning()) {
+					sounds.clipEating().loop();
+				}
+			} else {
 				sounds.clipEating().stop();
 			}
 			if (folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
@@ -557,6 +540,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else {
 				sounds.clipGhostChase().stop();
 			}
+			if (folks.pacMan.is(PacManState.POWERFUL)) {
+				if (!sounds.clipWaza().isRunning()) {
+					sounds.clipWaza().loop();
+				}
+			}
 			if (folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
 				if (!sounds.clipGhostDead().isRunning()) {
 					sounds.clipGhostDead().loop();
@@ -564,8 +552,62 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else {
 				sounds.clipGhostDead().stop();
 			}
+			if (extraLife) {
+				sounds.clipExtraLife().play();
+				extraLife = false;
+			}
+		}
+	}
+
+	private class ChangingLevelState extends State<PacManGameState> {
+
+		private float flashingSeconds(Theme theme, Game game) {
+			if (game != null) {
+				return game.level.numFlashes * theme.$float("maze-flash-sec");
+			}
+			return 0;
 		}
 
+		public ChangingLevelState() {
+			setTimer(() -> sec(4 + flashingSeconds(theme(), game)));
+		}
+
+		@Override
+		public void onEntry() {
+			loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
+			folks.pacMan.fallAsleep();
+			doorMan.onLevelChange();
+			playView.enableGhostAnimations(false);
+			sounds.clips().forEach(SoundClip::stop);
+		}
+
+		@Override
+		public void onTick(State<?> state, int passed, int ticksRemaining) {
+			float flashingSeconds = flashingSeconds(theme(), game);
+
+			// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.
+			if (passed == sec(2)) {
+				folks.ghostsInWorld().forEach(ghost -> ghost.setVisible(false));
+				if (flashingSeconds > 0) {
+					world.setChanging(true);
+				}
+			}
+
+			// After two more seconds, enter next level
+			if (passed == sec(2 + flashingSeconds)) {
+				game.enterLevel(game.level.number + 1);
+				world.setChanging(false);
+				world.fillFood();
+				folks.allInWorld().forEach(Creature::init);
+				playView.enableGhostAnimations(true);
+				playView.init();
+			}
+
+			// Wait a second, then let ghosts jump again inside the house
+			if (passed >= sec(3 + flashingSeconds)) {
+				folks.allInWorld().forEach(Creature::update);
+			}
+		}
 	}
 
 	@Override

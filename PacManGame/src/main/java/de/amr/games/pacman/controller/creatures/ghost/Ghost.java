@@ -167,7 +167,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 					
 				.stay(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(() -> restartTimer(FRIGHTENED))
+					.act(() -> resetTimer(FRIGHTENED))
 				
 				.when(FRIGHTENED).then(DEAD)
 					.on(GhostKilledEvent.class)
