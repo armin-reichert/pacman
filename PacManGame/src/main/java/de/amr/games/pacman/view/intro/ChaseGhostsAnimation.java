@@ -11,30 +11,36 @@ import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.Theme;
+import de.amr.games.pacman.view.theme.api.Themeable;
 
-public class ChaseGhostsAnimation extends GameObject {
+public class ChaseGhostsAnimation extends GameObject implements Themeable {
 
 	private final ArcadeWorld world;
 	private final Folks folks;
-	private final PacManSounds sounds;
+	private Theme theme;
 	private int points;
 
 	public ChaseGhostsAnimation(Theme theme, ArcadeWorld world, Folks folks) {
 		this.world = world;
 		this.folks = folks;
-		this.sounds = theme.sounds();
 		setTheme(theme);
 	}
 
+	@Override
 	public void setTheme(Theme theme) {
+		this.theme = theme;
 		folks.all().forEach(creature -> creature.setTheme(theme));
 	}
 
 	@Override
+	public Theme getTheme() {
+		return theme;
+	}
+
+	@Override
 	public void stop() {
-		sounds.clipEating().stop();
+		theme.sounds().clipEating().stop();
 	}
 
 	@Override
@@ -78,7 +84,7 @@ public class ChaseGhostsAnimation extends GameObject {
 				ghost.setState(GhostState.DEAD);
 				ghost.setBounty(points);
 				points *= 2;
-				sounds.clipEatGhost().play();
+				theme.sounds().clipEatGhost().play();
 			});
 		//@formatter:on
 		folks.all().forEach(creature -> creature.entity.tf.move());

@@ -15,10 +15,10 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.Theme;
+import de.amr.games.pacman.view.theme.api.Themeable;
 
-public class ChasePacManAnimation extends GameObject {
+public class ChasePacManAnimation extends GameObject implements Themeable {
 
 	enum PelletDisplay {
 		SIMPLE, TEN, ENERGIZER, FIFTY
@@ -26,19 +26,25 @@ public class ChasePacManAnimation extends GameObject {
 
 	private final ArcadeWorld world;
 	private final Folks folks;
-	private final PacManSounds sounds;
+	private Theme theme;
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
 
 	public ChasePacManAnimation(Theme theme, ArcadeWorld world, Folks folks) {
 		this.world = world;
 		this.folks = folks;
-		this.sounds = theme.sounds();
 		setTheme(theme);
 	}
 
+	@Override
 	public void setTheme(Theme theme) {
+		this.theme = theme;
 		folks.all().forEach(creature -> creature.setTheme(theme));
+	}
+
+	@Override
+	public Theme getTheme() {
+		return theme;
 	}
 
 	@Override
@@ -93,16 +99,16 @@ public class ChasePacManAnimation extends GameObject {
 	@Override
 	public void start() {
 		init();
-		sounds.clipGhostChase().loop();
-		if (!sounds.clipEating().isRunning()) {
-			sounds.clipEating().loop();
+		theme.sounds().clipGhostChase().loop();
+		if (!theme.sounds().clipEating().isRunning()) {
+			theme.sounds().clipEating().loop();
 		}
 	}
 
 	@Override
 	public void stop() {
-		sounds.clipGhostChase().stop();
-		sounds.clipEating().stop();
+		theme.sounds().clipGhostChase().stop();
+		theme.sounds().clipEating().stop();
 		folks.all().forEach(creature -> creature.entity.tf.vx = 0);
 	}
 

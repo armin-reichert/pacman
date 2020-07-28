@@ -17,8 +17,8 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.api.Theme;
+import de.amr.games.pacman.view.theme.api.Themeable;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
@@ -26,12 +26,12 @@ import de.amr.games.pacman.view.theme.api.Theme;
  * 
  * @author Armin Reichert
  */
-public class GhostPointsAnimation extends GameObject {
+public class GhostPointsAnimation extends GameObject implements Themeable {
 
 	private final Folks folks;
 	private final Ghost[] ghosts;
-	private final PacManSounds sounds;
 	private final BitSet killed = new BitSet(5);
+	private Theme theme;
 	private int ghostToKill;
 	private long ghostTimer;
 	private long energizerTimer;
@@ -43,12 +43,18 @@ public class GhostPointsAnimation extends GameObject {
 		tf.width = 6 * dx;
 		tf.height = 2 * Tile.SIZE;
 		ghosts = folks.ghosts().toArray(Ghost[]::new);
-		this.sounds = theme.sounds();
 		setTheme(theme);
 	}
 
+	@Override
 	public void setTheme(Theme theme) {
+		this.theme = theme;
 		folks.all().forEach(creature -> creature.setTheme(theme));
+	}
+
+	@Override
+	public Theme getTheme() {
+		return theme;
 	}
 
 	@Override
@@ -140,7 +146,7 @@ public class GhostPointsAnimation extends GameObject {
 				if (ghostToKill == 4) {
 					stop();
 				} else {
-					sounds.clipEatGhost().play();
+					theme.sounds().clipEatGhost().play();
 					ghosts[ghostToKill].setState(GhostState.DEAD);
 					ghosts[ghostToKill].setBounty(GHOST_BOUNTIES[ghostToKill]);
 					killed.set(ghostToKill);
