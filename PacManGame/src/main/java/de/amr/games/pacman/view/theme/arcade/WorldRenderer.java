@@ -14,6 +14,7 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.Cookie;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
@@ -93,7 +94,7 @@ public class WorldRenderer implements IWorldRenderer {
 		});
 		// simulate energizer blinking animation
 		if (energizerAnimation.isEnabled() && energizerAnimation.currentFrameIndex() == 1) {
-			world.habitat().filter(world::containsEnergizer).forEach(tile -> {
+			world.habitat().filter(tile -> world.containsFood(Cookie.ENERGIZER, tile)).forEach(tile -> {
 				g.setColor(fnEatenFoodColor.apply(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});

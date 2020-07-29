@@ -1,17 +1,18 @@
 package de.amr.games.pacman.view.theme.letters;
 
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Map;
 
-import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.Cookie;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
@@ -146,11 +147,11 @@ public class LettersTheme extends AbstractTheme {
 				for (int col = 0; col < world.width(); ++col) {
 					Tile tile = Tile.at(col, row);
 					if (world.isAccessible(tile)) {
-						if (world.containsEnergizer(tile) && Application.app().clock().getTotalTicks() % 60 < 30) {
+						if (world.containsFood(Cookie.ENERGIZER, tile) && app().clock().getTotalTicks() % 60 < 30) {
 							g.setColor(Color.PINK);
 							g.drawString("Ö", col * Tile.SIZE + 2, row * Tile.SIZE + offset_baseline);
 						}
-						if (world.containsSimplePellet(tile)) {
+						if (world.containsFood(Cookie.PELLET, tile)) {
 							g.setColor(Color.PINK);
 							g.drawString(".", col * Tile.SIZE + 1, row * Tile.SIZE - 3 + offset_baseline);
 						}

@@ -27,6 +27,7 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.Cookie;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.Bonus;
 import de.amr.games.pacman.model.world.components.BonusState;
@@ -147,7 +148,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 			foodWeight += Game.DIGEST_BIG_MEAL_TICKS;
 			event = new BonusFoundEvent(maybeBonus.get());
 		} else if (world.containsFood(tile)) {
-			foodWeight += world.containsEnergizer(tile) ? Game.DIGEST_BIG_MEAL_TICKS : Game.DIGEST_SNACK_TICKS;
+			foodWeight += world.containsFood(Cookie.ENERGIZER, tile) ? Game.DIGEST_BIG_MEAL_TICKS : Game.DIGEST_SNACK_TICKS;
 			event = new FoodFoundEvent(tile);
 		}
 		return Optional.ofNullable(event);

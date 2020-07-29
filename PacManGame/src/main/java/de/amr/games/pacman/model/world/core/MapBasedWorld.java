@@ -145,12 +145,10 @@ public abstract class MapBasedWorld extends AbstractWorld {
 		return is(tile, B_FOOD) && is(tile, B_EATEN);
 	}
 
-	@Override
 	public boolean containsSimplePellet(Tile tile) {
 		return containsFood(tile) && !is(tile, B_ENERGIZER);
 	}
 
-	@Override
 	public boolean containsEnergizer(Tile tile) {
 		return containsFood(tile) && is(tile, B_ENERGIZER);
 	}

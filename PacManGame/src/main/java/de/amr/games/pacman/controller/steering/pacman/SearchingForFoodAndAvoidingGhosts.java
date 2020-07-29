@@ -18,6 +18,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.Cookie;
 import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
@@ -168,7 +169,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 	private Optional<Tile> energizerAtMostAway(Tile here, int distance) {
 		//@formatter:off
 		return foodTiles()
-				.filter(world::containsEnergizer)
+				.filter(tile -> world.containsFood(Cookie.ENERGIZER, tile))
 				.filter(energizer -> here.manhattanDistance(energizer) <= distance)
 				.findFirst();
 		//@formatter:on

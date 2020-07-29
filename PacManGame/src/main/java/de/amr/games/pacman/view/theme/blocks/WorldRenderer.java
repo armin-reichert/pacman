@@ -11,6 +11,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.Cookie;
 import de.amr.games.pacman.model.world.components.Bonus;
 import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
@@ -45,9 +46,9 @@ class WorldRenderer implements IWorldRenderer {
 		smoothDrawingOn(g);
 		for (int row = 0; row < world.height(); ++row) {
 			for (int col = 0; col < world.width(); ++col) {
-				if (world.containsEnergizer(Tile.at(col, row))) {
+				if (world.containsFood(Cookie.ENERGIZER, Tile.at(col, row))) {
 					drawEnergizer(g, row, col);
-				} else if (world.containsSimplePellet(Tile.at(col, row))) {
+				} else if (world.containsFood(Cookie.PELLET, Tile.at(col, row))) {
 					drawSimplePellet(g, row, col);
 				}
 			}

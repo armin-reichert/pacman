@@ -11,6 +11,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.arcade.Cookie;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
@@ -79,25 +80,25 @@ public class WorldPreview extends JFrame {
 	}
 
 	private String text(int cell) {
-		Tile tile = graph.tile(cell);
-		if (world.pacManBed().includes(tile)) {
+		Tile location = graph.tile(cell);
+		if (world.pacManBed().includes(location)) {
 			return "P";
 		}
 		for (int i = 0; i < 4; ++i) {
-			if (world.house(0).bed(i).includes(tile)) {
+			if (world.house(0).bed(i).includes(location)) {
 				return "" + i;
 			}
 		}
-		if (!world.isAccessible(tile)) {
+		if (!world.isAccessible(location)) {
 			return "#";
 		}
-		if (world.containsSimplePellet(tile)) {
+		if (world.containsFood(Cookie.PELLET, location)) {
 			return ".";
 		}
-		if (world.containsEnergizer(tile)) {
+		if (world.containsFood(Cookie.ENERGIZER, location)) {
 			return "Ö";
 		}
-		if (world.isPortal(tile)) {
+		if (world.isPortal(location)) {
 			return "~";
 		}
 		return "";

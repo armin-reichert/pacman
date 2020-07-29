@@ -1,6 +1,7 @@
 package de.amr.games.pacman.model.world.api;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.components.Bonus;
 
@@ -11,23 +12,29 @@ import de.amr.games.pacman.model.world.components.Bonus;
  */
 public interface FoodSource {
 
+	Stream<Food> food();
+
+	Optional<Food> foodAt(Tile location);
+
 	int totalFoodCount();
 
 	void clearFood();
 
 	void fillFood();
 
-	void clearFood(Tile tile);
+	void clearFood(Tile location);
 
-	void fillFood(Tile tile);
+	void fillFood(Tile location);
 
-	boolean containsFood(Tile tile);
+	default boolean containsFood(Tile location) {
+		return foodAt(location).isPresent();
+	}
 
-	boolean containsSimplePellet(Tile tile);
+	default boolean containsFood(Food food, Tile location) {
+		return foodAt(location).filter(f -> f.equals(food)).isPresent();
+	}
 
-	boolean containsEnergizer(Tile tile);
-
-	boolean didContainFood(Tile tile);
+	boolean didContainFood(Tile location);
 
 	void setBonus(Bonus bonus);
 

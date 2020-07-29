@@ -6,9 +6,11 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.Bonus;
+import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.HouseBuilder;
@@ -143,5 +145,25 @@ public class ArcadeWorld extends MapBasedWorld {
 	@Override
 	public Stream<Tile> habitat() {
 		return IntStream.range(3 * width(), (height() + 4) * width()).mapToObj(i -> Tile.at(i % width(), i / width()));
+	}
+
+	@Override
+	public Stream<Food> food() {
+		return habitat().filter(this::containsFood).map(this::foodAt).map(Optional::get);
+	}
+
+	@Override
+	public Optional<Food> foodAt(Tile location) {
+		if (containsSimplePellet(location)) {
+			return Optional.of(Cookie.PELLET);
+		}
+		if (containsEnergizer(location)) {
+			return Optional.of(Cookie.ENERGIZER);
+		}
+		if (bonus != null && bonus.state == BonusState.ACTIVE && bonus.location.equals(location)) {
+			Symbol symbol = Symbol.valueOf(bonus.symbol);
+			return Optional.of(symbol);
+		}
+		return Optional.empty();
 	}
 }
