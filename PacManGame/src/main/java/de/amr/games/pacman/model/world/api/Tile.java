@@ -135,6 +135,15 @@ public final class Tile {
 		return Direction.dirs().filter(dir -> dir.vector().equals(v)).findFirst();
 	}
 
+	/**
+	 * @param dir some direction
+	 * @return the tile towards the given direction
+	 */
+	public Tile towards(Direction dir) {
+		Vector2f v = dir.vector();
+		return Tile.at(col + (int) v.x, row + (int) v.y);
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(col, row);

@@ -52,19 +52,19 @@ public class WorldPreview extends JFrame {
 			if (!world.isAccessible(tile)) {
 				return Color.LIGHT_GRAY;
 			}
-			if (world.isPortalAt(tile)) {
+			if (world.isPortal(tile)) {
 				return Color.YELLOW;
 			}
 			if (world.isTunnel(tile)) {
 				return Color.GRAY;
 			}
-			if (world.isDoorAt(tile)) {
+			if (world.houses().anyMatch(house -> house.isDoor(tile))) {
 				return Color.PINK;
 			}
-			if (world.insideHouseOrDoor(tile)) {
+			if (world.houses().anyMatch(house -> house.includes(tile))) {
 				return Color.CYAN;
 			}
-			if (world.isOneWayTile(tile, Direction.DOWN)) {
+			if (world.isOneWay(tile, Direction.DOWN)) {
 				return Color.YELLOW;
 			}
 			if (world.isIntersection(tile)) {
@@ -97,7 +97,7 @@ public class WorldPreview extends JFrame {
 		if (world.containsEnergizer(tile)) {
 			return "Ö";
 		}
-		if (world.isPortalAt(tile)) {
+		if (world.isPortal(tile)) {
 			return "~";
 		}
 		return "";

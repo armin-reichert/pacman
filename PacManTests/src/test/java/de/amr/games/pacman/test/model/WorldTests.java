@@ -26,16 +26,18 @@ public class WorldTests {
 
 	@Test
 	public void testStructure() {
+		assertEquals(1, world.houses().count());
 		assertNotNull(world.pacManBed());
-		assertTrue(world.houses().count() > 0);
+		assertEquals(4, world.house(0).beds().count());
 		assertNotNull(world.house(0).bed(0));
 		assertNotNull(world.house(0).bed(1));
 		assertNotNull(world.house(0).bed(2));
 		assertNotNull(world.house(0).bed(3));
+		assertEquals(1, world.portals().count());
 		assertTrue(world.portals().findFirst().get().either.equals(Tile.at(0, 17)));
 		assertTrue(world.portals().findFirst().get().other.equals(Tile.at(27, 17)));
 		assertFalse(world.isAccessible(Tile.at(0, 3)));
-		assertTrue(world.isDoorAt(Tile.at(13, 15)));
+		assertTrue(world.house(0).isDoor(Tile.at(13, 15)));
 	}
 
 	@Test

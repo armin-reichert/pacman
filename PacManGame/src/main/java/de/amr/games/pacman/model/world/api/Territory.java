@@ -34,22 +34,16 @@ public interface Territory {
 	boolean isIntersection(Tile tile);
 
 	/**
-	 * @param tile some tile
-	 * @return if this tile is accessible
+	 * @param location some tile location
+	 * @return if this location is accessible
 	 */
-	boolean isAccessible(Tile tile);
+	boolean isAccessible(Tile location);
 
 	/**
-	 * @param tile some tile
-	 * @return if this tile is located inside a tunnel
+	 * @param location some tile location
+	 * @return if there is a tunnel at this location
 	 */
-	boolean isTunnel(Tile tile);
-
-	/**
-	 * @param tile some tile
-	 * @return if a door is located at this tile
-	 */
-	boolean isDoorAt(Tile tile);
+	boolean isTunnel(Tile location);
 
 	/**
 	 * Part of the territory where creatures live.
@@ -72,7 +66,7 @@ public interface Territory {
 	void include(Lifeform life);
 
 	/**
-	 * Temporarily excludes the life from the territory.
+	 * Excludes the life from the territory.
 	 * 
 	 * @param life a life
 	 */
@@ -100,28 +94,16 @@ public interface Territory {
 	House house(int i);
 
 	/**
-	 * @param tile some tile
-	 * @return if there is a door at this tile or the tile is located inside a house
-	 */
-	boolean insideHouseOrDoor(Tile tile);
-
-	/**
-	 * @param tile some tile
-	 * @return if this tile is the entry to a house
-	 */
-	boolean isHouseEntry(Tile tile);
-
-	/**
 	 * @return all portals in this territory
 	 */
 	Stream<Portal> portals();
 
 	/**
-	 * @param tile some tile
+	 * @param location some tile location
 	 * @return if there is some portal at this tile
 	 */
-	default boolean isPortalAt(Tile tile) {
-		return portals().anyMatch(portal -> portal.includes(tile));
+	default boolean isPortal(Tile location) {
+		return portals().anyMatch(portal -> portal.includes(location));
 	}
 
 	/**
@@ -130,11 +112,11 @@ public interface Territory {
 	Stream<OneWayTile> oneWayTiles();
 
 	/**
-	 * @param tile some tile
-	 * @param dir  some direction
+	 * @param location some tile location
+	 * @param dir      some direction
 	 * @return if this tile can only get traversed in the given direction
 	 */
-	default boolean isOneWayTile(Tile tile, Direction dir) {
-		return oneWayTiles().anyMatch(oneWay -> oneWay.tile.equals(tile) && oneWay.dir == dir);
+	default boolean isOneWay(Tile location, Direction dir) {
+		return oneWayTiles().anyMatch(oneWay -> oneWay.tile.equals(location) && oneWay.dir == dir);
 	}
 }

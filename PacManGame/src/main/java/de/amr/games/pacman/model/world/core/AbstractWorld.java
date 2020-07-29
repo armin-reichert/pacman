@@ -10,8 +10,6 @@ import de.amr.games.pacman.model.world.api.Lifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Block;
-import de.amr.games.pacman.model.world.components.Door;
-import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Portal;
 
 /**
@@ -62,7 +60,7 @@ public abstract class AbstractWorld extends Block implements World {
 		int col = tile.col, row = tile.row;
 		while (n-- > 0) {
 			Tile t = Tile.at(col, row);
-			if (isPortalAt(t)) {
+			if (isPortal(t)) {
 				Portal portal = portals().filter(p -> p.includes(t)).findAny().get();
 				if (portal.vertical) {
 					if (t.equals(portal.either) && dir == Direction.UP) {
@@ -89,28 +87,6 @@ public abstract class AbstractWorld extends Block implements World {
 			}
 		}
 		return Tile.at(col, row);
-	}
-
-	@Override
-	public boolean insideHouseOrDoor(Tile tile) {
-		return isDoorAt(tile) || houses().map(House::layout).anyMatch(layout -> layout.includes(tile));
-	}
-
-	@Override
-	public boolean isDoorAt(Tile tile) {
-		return houses().flatMap(House::doors).anyMatch(door -> door.includes(tile));
-	}
-
-	@Override
-	public boolean isHouseEntry(Tile tile) {
-		for (Direction dir : Direction.values()) {
-			Tile neighbor = neighbor(tile, dir);
-			if (isDoorAt(neighbor)) {
-				Door door = houses().flatMap(House::doors).filter(d -> d.includes(neighbor)).findFirst().get();
-				return door.intoHouse == dir;
-			}
-		}
-		return false;
 	}
 
 	@Override

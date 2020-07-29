@@ -188,7 +188,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (world.isDoorAt(neighbor)) {
+		if (world.houses().anyMatch(house -> house.isDoor(neighbor))) {
 			return false;
 		}
 		return super.canMoveBetween(tile, neighbor);

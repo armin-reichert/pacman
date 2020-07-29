@@ -55,5 +55,4 @@ public enum Direction {
 	public Direction right() {
 		return RIGHT_DIR[ordinal()];
 	}
-
 }

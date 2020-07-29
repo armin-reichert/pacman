@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.api.Area;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 
 /**
@@ -27,6 +28,10 @@ public class House implements Area {
 		return doors.stream();
 	}
 
+	public boolean isDoor(Tile location) {
+		return doors().anyMatch(door -> door.includes(location));
+	}
+
 	public Door door(int i) {
 		return doors.get(i);
 	}
@@ -41,6 +46,21 @@ public class House implements Area {
 
 	public Bed bed(int i) {
 		return beds.get(i);
+	}
+
+	public boolean isInsideOrDoor(Tile tile) {
+		return isDoor(tile) || layout.includes(tile);
+	}
+
+	public boolean isEntry(Tile tile) {
+		for (Direction dir : Direction.values()) {
+			Tile neighbor = tile.towards(dir);
+			if (isDoor(neighbor)) {
+				Door door = doors().filter(d -> d.includes(neighbor)).findFirst().get();
+				return dir == door.intoHouse;
+			}
+		}
+		return false;
 	}
 
 	@Override

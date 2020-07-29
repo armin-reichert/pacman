@@ -79,7 +79,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	@Override
 	public boolean isAccessible(Tile tile) {
 		boolean inside = includes(tile);
-		return inside && !is(tile, B_WALL) || !inside && isPortalAt(tile);
+		return inside && !is(tile, B_WALL) || !inside && isPortal(tile);
 	}
 
 	@Override

@@ -28,6 +28,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
@@ -46,9 +47,10 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
-	private final Bed bed;
 	private final int color;
 
+	private House house;
+	private Bed bed;
 	private Supplier<GhostState> fnSubsequentState;
 	private GhostSanityControl sanity;
 	private Steering<Ghost> previousSteering;
@@ -57,9 +59,8 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private Supplier<Long> fnFlashTimeTicks = () -> 0L;
 	private IRenderer renderer;
 
-	public Ghost(World world, PacMan pacMan, String name, int color, Bed bed) {
+	public Ghost(World world, PacMan pacMan, String name, int color) {
 		super(GhostState.class, world, name);
-		this.bed = bed;
 		this.color = color;
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		/*@formatter:off*/
@@ -224,6 +225,11 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		return renderer;
 	}
 
+	public void assignBed(House house, int bedNumber) {
+		this.house = house;
+		this.bed = house.bed(bedNumber);
+	}
+
 	/**
 	 * Prepares the ghost for taking part in the game.
 	 * 
@@ -278,12 +284,13 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	private boolean hasLeftGhostHouse() {
 		Tile location = tileLocation();
-		return world.isHouseEntry(location) && entity.tf.y == location.row * Tile.SIZE;
+		return house.isEntry(location) && entity.tf.y == location.row * Tile.SIZE;
 	}
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (world.isDoorAt(neighbor)) {
+		// TODO ghost should know its house(s)
+		if (house.isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		Optional<OneWayTile> maybeOneWay = world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst();
@@ -312,10 +319,10 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	}
 
 	public boolean isAtHouseEntry() {
-		return world.isHouseEntry(tileLocation()) && (tileOffsetX() - Tile.SIZE / 2) <= 1;
+		return house.isEntry(tileLocation()) && (tileOffsetX() - Tile.SIZE / 2) <= 1;
 	}
 
 	public boolean isInsideHouse() {
-		return world.insideHouseOrDoor(tileLocation());
+		return house.isInsideOrDoor(tileLocation());
 	}
 }

@@ -37,11 +37,18 @@ public class Folks {
 	public Folks(World world, House ghostHouse) {
 		this.world = world;
 		this.ghostHouse = ghostHouse;
+		
 		pacMan = new PacMan(world);
-		blinky = new Ghost(world, pacMan, "Blinky", Ghost.RED_GHOST, ghostHouse.bed(0));
-		inky = new Ghost(world, pacMan, "Inky", Ghost.CYAN_GHOST, ghostHouse.bed(1));
-		pinky = new Ghost(world, pacMan, "Pinky", Ghost.PINK_GHOST, ghostHouse.bed(2));
-		clyde = new Ghost(world, pacMan, "Clyde", Ghost.ORANGE_GHOST, ghostHouse.bed(3));
+		blinky = new Ghost(world, pacMan, "Blinky", Ghost.RED_GHOST);
+		inky = new Ghost(world, pacMan, "Inky", Ghost.CYAN_GHOST);
+		pinky = new Ghost(world, pacMan, "Pinky", Ghost.PINK_GHOST);
+		clyde = new Ghost(world, pacMan, "Clyde", Ghost.ORANGE_GHOST);
+		
+		blinky.assignBed(ghostHouse, 0);
+		inky.assignBed(ghostHouse, 1);
+		pinky.assignBed(ghostHouse, 2);
+		clyde.assignBed(ghostHouse, 3);
+		
 		tellEmWhatToDo();
 	}
 
