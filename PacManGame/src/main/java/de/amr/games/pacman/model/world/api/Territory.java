@@ -8,7 +8,7 @@ import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
 
-public interface Territory {
+public interface Territory extends RectangularArea {
 
 	/**
 	 * @param tile reference tile
