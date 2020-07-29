@@ -1,5 +1,8 @@
 package de.amr.games.pacman.model.world.arcade;
 
+import static de.amr.games.pacman.model.world.core.WorldMap.B_ENERGIZER;
+import static de.amr.games.pacman.model.world.core.WorldMap.B_FOOD;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -9,8 +12,6 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.model.world.components.Bonus;
-import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.HouseBuilder;
@@ -70,7 +71,10 @@ public class ArcadeWorld extends MapBasedWorld {
 	protected List<Portal> portals;
 	protected List<OneWayTile> oneWayTiles;
 	protected Bed pacManBed;
-	protected Bonus bonus;
+	protected Tile bonusLocation;
+	protected Symbol bonusSymbol;
+	protected BonusState bonusState;
+	protected int bonusValue;
 
 	public ArcadeWorld() {
 		super(DATA);
@@ -86,6 +90,8 @@ public class ArcadeWorld extends MapBasedWorld {
 				.bed(15, 17, Direction.UP)
 			.build()
 		);
+		
+		bonusLocation = Tile.at(13, 20);
 		
 		portals = List.of(
 			horizontalPortal(Tile.at(1, 17), Tile.at(26, 17))
@@ -128,13 +134,57 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public Optional<Bonus> getBonus() {
-		return Optional.ofNullable(bonus);
+	public void setFood(Food food, Tile location) {
+		int row = location.row, col = location.col;
+		if (food.equals(Cookie.PELLET)) {
+			map.set1(row, col, B_FOOD);
+			map.set0(row, col, B_ENERGIZER);
+		} else if (food.equals(Cookie.ENERGIZER)) {
+			map.set1(row, col, B_FOOD);
+			map.set1(row, col, B_ENERGIZER);
+		} else if (food instanceof Symbol) {
+			if (!location.equals(bonusLocation)) {
+				throw new IllegalStateException("Cannot add set symbol at non-bonus location " + location);
+			}
+			bonusSymbol = (Symbol) food;
+		}
 	}
 
 	@Override
-	public void setBonus(Bonus bonus) {
-		this.bonus = bonus;
+	public void clearFood(Tile tile) {
+		if (bonusLocation.equals(tile)) {
+			bonusSymbol = null;
+		} else {
+			super.clearFood(tile);
+		}
+	}
+
+	public void setBonusSymbol(Symbol bonusSymbol) {
+		this.bonusSymbol = bonusSymbol;
+	}
+
+	public Optional<Symbol> getBonusSymbol() {
+		return Optional.ofNullable(bonusSymbol);
+	}
+
+	public Tile getBonusLocation() {
+		return bonusLocation;
+	}
+
+	public BonusState getBonusState() {
+		return bonusState;
+	}
+
+	public void setBonusState(BonusState bonusState) {
+		this.bonusState = bonusState;
+	}
+
+	public int getBonusValue() {
+		return bonusValue;
+	}
+
+	public void setBonusValue(int bonusValue) {
+		this.bonusValue = bonusValue;
 	}
 
 	/**
@@ -160,9 +210,8 @@ public class ArcadeWorld extends MapBasedWorld {
 		if (containsEnergizer(location)) {
 			return Optional.of(Cookie.ENERGIZER);
 		}
-		if (bonus != null && bonus.state == BonusState.ACTIVE && bonus.location.equals(location)) {
-			Symbol symbol = Symbol.valueOf(bonus.symbol);
-			return Optional.of(symbol);
+		if (bonusSymbol != null && bonusLocation.equals(location)) {
+			return Optional.of(bonusSymbol);
 		}
 		return Optional.empty();
 	}

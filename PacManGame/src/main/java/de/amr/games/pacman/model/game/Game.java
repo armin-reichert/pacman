@@ -5,7 +5,6 @@ import static de.amr.easy.game.Application.loginfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 
 /**
@@ -59,7 +58,6 @@ public class Game {
 	public static final int DIGEST_BIG_MEAL_TICKS = 3;
 	public static final int BONUS_ACTIVATION_1 = 70;
 	public static final int BONUS_ACTIVATION_2 = 170;
-	public static final Tile BONUS_LOCATION = Tile.at(13, 20);
 	public static final int BONUS_SECONDS = 9;
 
 	/**

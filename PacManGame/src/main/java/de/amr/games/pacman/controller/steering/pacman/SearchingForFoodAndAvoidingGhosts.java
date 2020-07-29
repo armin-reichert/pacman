@@ -18,8 +18,9 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.arcade.BonusState;
 import de.amr.games.pacman.model.world.arcade.Cookie;
-import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
 
@@ -159,11 +160,14 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 
 	private Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
 		//@formatter:off
-		return world.getBonus()
-			.filter(bonus -> bonus.state == BonusState.ACTIVE)
-			.filter(bonus -> here.manhattanDistance(bonus.location) <= maxDistance)
-			.map(bonus -> bonus.location);
-		//@formatter:on
+		ArcadeWorld arcadeWorld = (ArcadeWorld) world;
+		if (arcadeWorld.getBonusState() != BonusState.INACTIVE) {
+			int dist = here.manhattanDistance(arcadeWorld.getBonusLocation());
+			if (dist <= maxDistance) {
+				return Optional.of(arcadeWorld.getBonusLocation());
+			}
+		}
+		return Optional.empty();
 	}
 
 	private Optional<Tile> energizerAtMostAway(Tile here, int distance) {

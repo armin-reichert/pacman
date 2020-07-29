@@ -13,23 +13,23 @@ import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.arcade.BonusState;
 import de.amr.games.pacman.model.world.arcade.Cookie;
 import de.amr.games.pacman.model.world.arcade.Symbol;
-import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 
 public class WorldRenderer implements IWorldRenderer {
 
-	private final World world;
+	private final ArcadeWorld world;
 	private final Map<String, Image> symbolImages = new HashMap<>();
 	private final Map<Integer, Image> pointsImages = new HashMap<>();
 	private final SpriteMap mazeSprites;
 	private final SpriteAnimation energizerAnimation;
 	private Function<Tile, Color> fnEatenFoodColor;
 
-	public WorldRenderer(World world) {
+	public WorldRenderer(ArcadeWorld world) {
 		this.world = world;
 		fnEatenFoodColor = tile -> Color.BLACK;
 		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
@@ -88,7 +88,7 @@ public class WorldRenderer implements IWorldRenderer {
 
 	private void drawMazeContent(Graphics2D g) {
 		// hide eaten food
-		world.habitat().filter(world::didContainFood).forEach(tile -> {
+		world.habitat().filter(world::isEaten).forEach(tile -> {
 			g.setColor(fnEatenFoodColor.apply(tile));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
@@ -100,13 +100,17 @@ public class WorldRenderer implements IWorldRenderer {
 			});
 		}
 		// draw bonus as image when active or as number when consumed
-		world.getBonus().ifPresent(bonus -> {
-			Vector2f position = Vector2f.of(bonus.location.x(), bonus.location.y() - Tile.SIZE / 2);
-			if (bonus.state == BonusState.ACTIVE) {
-				g.drawImage(symbolImages.get(bonus.symbol), position.roundedX(), position.roundedY(), null);
-			} else if (bonus.state == BonusState.CONSUMED) {
-				g.drawImage(pointsImages.get(bonus.value), position.roundedX(), position.roundedY(), null);
-			}
-		});
+		BonusState bonusState = world.getBonusState();
+		if (bonusState == BonusState.ACTIVE) {
+			Tile bonusLocation = world.getBonusLocation();
+			Vector2f position = Vector2f.of(bonusLocation.x(), bonusLocation.y() - Tile.SIZE / 2);
+			Symbol bonusSymbol = world.getBonusSymbol().get();
+			g.drawImage(symbolImages.get(bonusSymbol.name()), position.roundedX(), position.roundedY(), null);
+		} else if (bonusState == BonusState.CONSUMED) {
+			Tile bonusLocation = world.getBonusLocation();
+			Vector2f position = Vector2f.of(bonusLocation.x(), bonusLocation.y() - Tile.SIZE / 2);
+			int bonusValue = world.getBonusValue();
+			g.drawImage(pointsImages.get(bonusValue), position.roundedX(), position.roundedY(), null);
+		}
 	}
 }

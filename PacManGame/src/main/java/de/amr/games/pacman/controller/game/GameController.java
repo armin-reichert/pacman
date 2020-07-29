@@ -55,9 +55,8 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.arcade.BonusState;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.model.world.components.Bonus;
-import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.MusicLoadingView;
@@ -486,10 +485,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void onBonusFound(PacManGameEvent event) {
 			BonusFoundEvent bonusFound = (BonusFoundEvent) event;
-			Bonus bonus = bonusFound.bonus;
-			loginfo("PacMan found bonus '%s' of value %d", bonus.symbol, bonus.value);
+			int value = game.level.bonusValue;
+			loginfo("PacMan found bonus '%s' of value %d", bonusFound.symbol, value);
 			int livesBefore = game.lives;
-			game.score(bonus.value);
+			game.score(value);
 			theme.sounds().clipEatFruit().play();
 			if (game.lives > livesBefore) {
 				theme.sounds().clipExtraLife().play();

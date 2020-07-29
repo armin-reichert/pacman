@@ -44,12 +44,6 @@ public abstract class MapBasedWorld extends AbstractWorld {
 		return new Portal(top, bottom, true);
 	}
 
-	protected void setEnergizer(Tile tile) {
-		map.set0(tile.row, tile.col, B_WALL);
-		map.set1(tile.row, tile.col, B_FOOD);
-		map.set1(tile.row, tile.col, B_ENERGIZER);
-	}
-
 	protected boolean is(Tile tile, byte bit) {
 		return includes(tile) && map.is(tile.row, tile.col, bit);
 	}
@@ -141,7 +135,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	}
 
 	@Override
-	public boolean didContainFood(Tile tile) {
+	public boolean isEaten(Tile tile) {
 		return is(tile, B_FOOD) && is(tile, B_EATEN);
 	}
 

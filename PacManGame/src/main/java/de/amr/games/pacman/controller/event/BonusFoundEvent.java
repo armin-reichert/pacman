@@ -1,17 +1,17 @@
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.model.world.components.Bonus;
+import de.amr.games.pacman.model.world.arcade.Symbol;
 
 public class BonusFoundEvent implements PacManGameEvent {
 
-	public final Bonus bonus;
+	public final Symbol symbol;
 
-	public BonusFoundEvent(Bonus bonus) {
-		this.bonus = bonus;
+	public BonusFoundEvent(Symbol symbol) {
+		this.symbol = symbol;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("BonusFound(%s,%s,%s)", bonus.symbol, bonus.value, bonus.state);
+		return String.format("BonusFound(%s)", symbol);
 	}
 }

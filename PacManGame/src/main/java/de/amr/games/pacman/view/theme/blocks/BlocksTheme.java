@@ -9,6 +9,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
@@ -72,7 +73,7 @@ public class BlocksTheme extends AbstractTheme {
 
 	@Override
 	public IWorldRenderer worldRenderer(World world) {
-		return new WorldRenderer(world);
+		return new WorldRenderer((ArcadeWorld) world);
 	}
 
 	@Override

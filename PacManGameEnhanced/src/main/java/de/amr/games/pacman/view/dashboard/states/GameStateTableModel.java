@@ -17,8 +17,8 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.components.Bonus;
-import de.amr.games.pacman.model.world.components.BonusState;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.arcade.BonusState;
 
 /**
  * Data model of the table displaying actor data.
@@ -171,14 +171,27 @@ class GameStateTableModel extends AbstractTableModel {
 	}
 
 	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {
+		if (!(world instanceof ArcadeWorld)) {
+			return;
+		}
+		ArcadeWorld arcadeWorld = (ArcadeWorld) world;
 		gameController.bonusControl().ifPresent(bonusControl -> {
-			Bonus bonus = world.getBonus().orElse(null);
-			r.included = bonus != null && bonus.state != BonusState.INACTIVE;
-			r.name = bonus != null ? bonus.symbol : "Bonus";
-			r.tile = bonus != null ? bonus.location : null;
-			r.state = bonusControl.getState().name();
-			r.ticksRemaining = bonusControl.state().getTicksRemaining();
-			r.duration = bonusControl.state().getDuration();
+			BonusState state = bonusControl.getState();
+			if (state == BonusState.INACTIVE) {
+				r.included = false;
+				r.name = null;
+				r.tile = null;
+				r.state = null;
+				r.ticksRemaining = 0;
+				r.duration = 0;
+			} else {
+				r.included = true;
+				r.name = arcadeWorld.getBonusSymbol().get().name();
+				r.tile = arcadeWorld.getBonusLocation();
+				r.state = bonusControl.getState().name();
+				r.ticksRemaining = bonusControl.state().getTicksRemaining();
+				r.duration = bonusControl.state().getDuration();
+			}
 		});
 	}
 

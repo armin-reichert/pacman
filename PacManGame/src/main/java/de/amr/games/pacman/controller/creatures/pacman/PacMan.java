@@ -27,10 +27,10 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.arcade.Cookie;
+import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.model.world.components.Bonus;
-import de.amr.games.pacman.model.world.components.BonusState;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 
@@ -140,18 +140,22 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		findSomethingInteresting(tileLocation()).ifPresent(this::publish);
 	}
 
-	private Optional<PacManGameEvent> findSomethingInteresting(Tile tile) {
-		PacManGameEvent event = null;
-		Optional<Bonus> maybeBonus = world.getBonus().filter(bonus -> bonus.state == BonusState.ACTIVE)
-				.filter(bonus -> tile.equals(bonus.location));
-		if (maybeBonus.isPresent()) {
-			foodWeight += Game.DIGEST_BIG_MEAL_TICKS;
-			event = new BonusFoundEvent(maybeBonus.get());
-		} else if (world.containsFood(tile)) {
-			foodWeight += world.containsFood(Cookie.ENERGIZER, tile) ? Game.DIGEST_BIG_MEAL_TICKS : Game.DIGEST_SNACK_TICKS;
-			event = new FoodFoundEvent(tile);
+	private Optional<PacManGameEvent> findSomethingInteresting(Tile location) {
+		if (world instanceof ArcadeWorld) {
+			ArcadeWorld arcadeWorld = (ArcadeWorld) world;
+			if (arcadeWorld.getBonusLocation().equals(location)) {
+				Optional<Symbol> symbol = arcadeWorld.getBonusSymbol();
+				if (symbol.isPresent() && !arcadeWorld.isEaten(location)) {
+					foodWeight += Game.DIGEST_BIG_MEAL_TICKS;
+					return Optional.of(new BonusFoundEvent(symbol.get()));
+				}
+			}
 		}
-		return Optional.ofNullable(event);
+		if (world.containsFood(location)) {
+			foodWeight += world.containsFood(Cookie.ENERGIZER, location) ? Game.DIGEST_BIG_MEAL_TICKS : Game.DIGEST_SNACK_TICKS;
+			return Optional.of(new FoodFoundEvent(location));
+		}
+		return Optional.empty();
 	}
 
 	public void goToBed() {

@@ -3,8 +3,6 @@ package de.amr.games.pacman.model.world.api;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.world.components.Bonus;
-
 /**
  * Provides food-related functionality.
  * 
@@ -26,6 +24,8 @@ public interface FoodSource {
 
 	void fillFood(Tile location);
 
+	void setFood(Food food, Tile location);
+	
 	default boolean containsFood(Tile location) {
 		return foodAt(location).isPresent();
 	}
@@ -34,9 +34,5 @@ public interface FoodSource {
 		return foodAt(location).filter(f -> f.equals(food)).isPresent();
 	}
 
-	boolean didContainFood(Tile location);
-
-	void setBonus(Bonus bonus);
-
-	Optional<Bonus> getBonus();
+	boolean isEaten(Tile location);
 }

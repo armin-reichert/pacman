@@ -6,22 +6,21 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.function.Function;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.arcade.BonusState;
 import de.amr.games.pacman.model.world.arcade.Cookie;
-import de.amr.games.pacman.model.world.components.Bonus;
-import de.amr.games.pacman.model.world.components.BonusState;
+import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 
 class WorldRenderer implements IWorldRenderer {
 
-	private final World world;
+	private final ArcadeWorld world;
 
-	public WorldRenderer(World world) {
+	public WorldRenderer(ArcadeWorld world) {
 		this.world = world;
 	}
 
@@ -54,43 +53,44 @@ class WorldRenderer implements IWorldRenderer {
 			}
 		}
 		// draw bonus as image when active or as number when consumed
-		world.getBonus().ifPresent(bonus -> {
-			Vector2f center = Vector2f.of(bonus.location.x() + Tile.SIZE, bonus.location.y() + Tile.SIZE / 2);
-			if (bonus.state == BonusState.ACTIVE) {
-				drawActiveBonus(g, center, bonus);
-			} else if (bonus.state == BonusState.CONSUMED) {
-				drawConsumedBonus(g, center, bonus);
-			}
-		});
+		BonusState bonusState = world.getBonusState();
+		Tile bonusLocation = world.getBonusLocation();
+		Vector2f center = Vector2f.of(bonusLocation.x() + Tile.SIZE, bonusLocation.y() + Tile.SIZE / 2);
+		if (bonusState == BonusState.ACTIVE) {
+			drawActiveBonus(g, center, world.getBonusSymbol().get());
+
+		} else if (bonusState == BonusState.CONSUMED) {
+			drawConsumedBonus(g, center, world.getBonusSymbol().get(), world.getBonusValue());
+		}
 		smoothDrawingOff(g);
 	}
 
-	private void drawActiveBonus(Graphics2D g, Vector2f center, Bonus bonus) {
-		if (Application.app().clock().getTotalTicks() % 60 < 30) {
+	private void drawActiveBonus(Graphics2D g, Vector2f center, Symbol symbol) {
+		if (app().clock().getTotalTicks() % 60 < 30) {
 			return; // blink effect
 		}
-		drawBonusShape(g, center, bonus);
+		drawBonusShape(g, center, symbol);
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
 			pen.font(BlocksTheme.THEME.$font("font"));
-			String text = bonus.symbol.substring(0, 1) + bonus.symbol.substring(1).toLowerCase();
+			String text = symbol.name().substring(0, 1) + symbol.name().substring(1).toLowerCase();
 			pen.drawCentered(text, center.x, center.y + Tile.SIZE / 2);
 		}
 	}
 
-	private void drawBonusShape(Graphics2D g, Vector2f center, Bonus bonus) {
-		int radius = 4;
-		g.setColor(BlocksTheme.THEME.symbolColor(bonus.symbol));
-		g.fillOval(center.roundedX() - radius, center.roundedY() - radius, 2 * radius, 2 * radius);
-	}
-
-	private void drawConsumedBonus(Graphics2D g, Vector2f center, Bonus bonus) {
+	private void drawConsumedBonus(Graphics2D g, Vector2f center, Symbol symbol, int value) {
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
 			pen.font(BlocksTheme.THEME.$font("font"));
-			String text = String.valueOf(bonus.value);
+			String text = String.valueOf(value);
 			pen.drawCentered(text, center.x, center.y + 4);
 		}
+	}
+
+	private void drawBonusShape(Graphics2D g, Vector2f center, Symbol symbol) {
+		int radius = 4;
+		g.setColor(BlocksTheme.THEME.symbolColor(symbol.name()));
+		g.fillOval(center.roundedX() - radius, center.roundedY() - radius, 2 * radius, 2 * radius);
 	}
 
 	private void drawSimplePellet(Graphics2D g, int row, int col) {
