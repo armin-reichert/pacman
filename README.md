@@ -20,9 +20,11 @@ If you want to use the many command-line arguments (see below), open a command w
 
 ```
 cd directory/where/jarfile/was/downloaded
-java -jar PacManGame-1.0.jar command-line-args...
-java -jar PacManGameEnhanced-1.0.jar command-line-args...
+java -jar PacManGame-1.0-jar-with-dependencies.jar command-line-args...
+java -jar PacManGameEnhanced-1.0-jar-with-dependencies.jar command-line-args...
 ```
+
+or when running on Windows, run the .bat files `pacman.bat`and `pacman-enhanced.bat`.
 
 ## How to build the executable jar file
 
