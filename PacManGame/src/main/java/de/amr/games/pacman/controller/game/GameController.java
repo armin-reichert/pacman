@@ -417,9 +417,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private boolean extraLife;
 		private boolean ghostEaten;
 
-		public PlayingState() {
-		}
-
 		@Override
 		public void onEntry() {
 			setDemoMode(settings.demoMode);
