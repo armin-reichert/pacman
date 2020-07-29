@@ -19,6 +19,9 @@ import de.amr.games.pacman.model.world.components.Portal;
  */
 public abstract class AbstractWorld extends Block implements World {
 
+	protected boolean changing;
+	protected boolean frozen;
+
 	private int distFromCornerNW(Tile t1, Tile t2) {
 		return Integer.compare(t1.col + t1.row, t2.col + t2.row);
 	}
@@ -104,5 +107,25 @@ public abstract class AbstractWorld extends Block implements World {
 	@Override
 	public boolean contains(Lifeform life) {
 		return !excluded.contains(life);
+	}
+
+	@Override
+	public boolean isFrozen() {
+		return frozen;
+	}
+
+	@Override
+	public void setFrozen(boolean frozen) {
+		this.frozen = frozen;
+	}
+
+	@Override
+	public boolean isChanging() {
+		return changing;
+	}
+
+	@Override
+	public void setChanging(boolean changing) {
+		this.changing = changing;
 	}
 }

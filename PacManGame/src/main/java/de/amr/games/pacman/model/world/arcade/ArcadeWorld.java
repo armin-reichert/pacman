@@ -69,8 +69,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	protected List<OneWayTile> oneWayTiles;
 	protected Bed pacManBed;
 	protected Bonus bonus;
-	protected boolean changing;
-	protected boolean frozen;
 
 	public ArcadeWorld() {
 		super(DATA);
@@ -100,26 +98,6 @@ public class ArcadeWorld extends MapBasedWorld {
 			new OneWayTile(15, 25, Direction.DOWN)
 		);
 		//@formatter:on
-	}
-
-	@Override
-	public boolean isFrozen() {
-		return frozen;
-	}
-
-	@Override
-	public void setFrozen(boolean frozen) {
-		this.frozen = frozen;
-	}
-
-	@Override
-	public boolean isChanging() {
-		return changing;
-	}
-
-	@Override
-	public void setChanging(boolean changing) {
-		this.changing = changing;
 	}
 
 	@Override
