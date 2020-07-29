@@ -18,7 +18,6 @@
 							<mainClass>de.amr.games.pacman.PacManApp</mainClass>
 						</manifest>
 					</archive>
-					<appendAssemblyId>false</appendAssemblyId>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>

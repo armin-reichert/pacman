@@ -1,1 +1,0 @@
-java -jar target\PacManGameEnhanced-1.0.jar %*
