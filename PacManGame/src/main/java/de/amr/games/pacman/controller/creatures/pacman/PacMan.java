@@ -18,6 +18,7 @@ import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
+import de.amr.games.pacman.controller.event.PacManFallAsleepEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
