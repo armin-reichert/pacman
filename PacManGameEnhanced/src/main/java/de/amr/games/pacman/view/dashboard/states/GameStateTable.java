@@ -4,6 +4,7 @@ import static de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ROW_
 import static de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ROW_PACMAN;
 
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
@@ -41,6 +42,7 @@ public class GameStateTable extends JTable implements Lifecycle {
 		format(ColumnInfo.Speed, speedFmt);
 
 		UniversalFormatter ticksFmt = new UniversalFormatter();
+		ticksFmt.horizontalAlignment = SwingConstants.TRAILING;
 		ticksFmt.fnTextFormat = c -> Formatting.ticksAndSeconds((Long) c.value);
 		format(ColumnInfo.Remaining, ticksFmt);
 		format(ColumnInfo.Duration, ticksFmt);

@@ -14,11 +14,11 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.api.BonusFoodState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 
 /**
  * Data model of the table displaying actor data.
@@ -171,17 +171,20 @@ class GameStateTableModel extends AbstractTableModel {
 	}
 
 	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {
-		if (!(world instanceof ArcadeWorld)) {
-			return;
-		}
 		gameController.bonusControl().ifPresent(bonusControl -> {
-			ArcadeBonus bonus = (ArcadeBonus) world.bonusFood().get();
-			r.included = bonus.isPresent() || bonus.isConsumed();
-			r.name = bonus.symbol.name();
-			r.tile = bonus.location();
-			r.state = bonus.state().name();
-			r.ticksRemaining = bonusControl.state().getTicksRemaining();
-			r.duration = bonusControl.state().getDuration();
+			r.included = false;
+			r.name = "Bonus";
+			r.tile = null;
+			r.state = BonusFoodState.ABSENT.name();
+			r.ticksRemaining = r.duration = 0;
+			world.bonusFood().filter(bonus -> bonus instanceof ArcadeBonus).map(ArcadeBonus.class::cast).ifPresent(bonus -> {
+				r.included = true;
+				r.name = bonus.symbol.name();
+				r.tile = bonus.location();
+				r.state = bonus.state().name();
+				r.ticksRemaining = bonusControl.state().getTicksRemaining();
+				r.duration = bonusControl.state().getDuration();
+			});
 		});
 	}
 

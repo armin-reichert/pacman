@@ -3,6 +3,9 @@ package de.amr.games.pacman.view.dashboard.util;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
+import de.amr.games.pacman.view.theme.common.Rendering;
+import de.amr.statemachine.core.InfiniteTimer;
+
 public class Formatting {
 
 	public static String integer(int i) {
@@ -14,11 +17,15 @@ public class Formatting {
 	}
 
 	public static String ticksAndSeconds(long ticks) {
-		return ticks == Integer.MAX_VALUE ? Character.toString('\u221E') : String.format("%d (%.2fs)", ticks, ticks / 60f);
+		float seconds = ticks / 60f;
+		return ticks == InfiniteTimer.INFINITY ? Rendering.INFTY
+				: seconds > 10 * 60 ? "> 10 min" : String.format("%d (%.2fs)", ticks, seconds);
 	}
 
 	public static String seconds(long ticks) {
-		return ticks == Integer.MAX_VALUE ? Character.toString('\u221E') : String.format("%.2fs", ticks / 60f);
+		float seconds = ticks / 60f;
+		return ticks == InfiniteTimer.INFINITY ? Rendering.INFTY
+				: seconds > 10 * 60 ? "> 10 min" : String.format("%.2fs", ticks / 60f);
 	}
 
 	public static String pixelsPerSec(float speed) {

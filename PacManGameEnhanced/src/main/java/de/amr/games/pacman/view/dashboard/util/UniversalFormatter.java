@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.util.function.Function;
 
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -20,10 +21,12 @@ public class UniversalFormatter extends DefaultTableCellRenderer {
 	}
 
 	private Context context = new Context();
+	
 	public Color hilightColor = new Color(255, 0, 0, 100);
 	public Function<Context, Boolean> fnHilightCondition = context -> false;
 	public Function<Context, String> fnTextFormat = context -> context.value == null ? "" : String.valueOf(context.value);
 	public Function<Context, Boolean> fnBoldCondition = context -> false;
+	public int horizontalAlignment = JLabel.LEADING;
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
@@ -37,6 +40,7 @@ public class UniversalFormatter extends DefaultTableCellRenderer {
 		context.column = column;
 		Color bg = isSelected ? table.getSelectionBackground() : table.getBackground();
 		setBackground(fnHilightCondition.apply(context) ? hilightColor : bg);
+		setHorizontalAlignment(horizontalAlignment);
 		setText(fnTextFormat.apply(context));
 		if (fnBoldCondition.apply(context)) {
 			setFont(new Font(getFont().getFamily(), Font.BOLD, getFont().getSize()));
