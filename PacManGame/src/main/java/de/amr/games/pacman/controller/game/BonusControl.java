@@ -2,9 +2,9 @@ package de.amr.games.pacman.controller.game;
 
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.model.game.Game.sec;
-import static de.amr.games.pacman.model.world.api.BonusFoodState.ACTIVE;
+import static de.amr.games.pacman.model.world.api.BonusFoodState.ABSENT;
 import static de.amr.games.pacman.model.world.api.BonusFoodState.CONSUMED;
-import static de.amr.games.pacman.model.world.api.BonusFoodState.INACTIVE;
+import static de.amr.games.pacman.model.world.api.BonusFoodState.PRESENT;
 
 import java.util.Random;
 
@@ -29,51 +29,44 @@ public class BonusControl extends StateMachine<BonusFoodState, PacManGameEvent> 
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("BonusControl")
-			.initialState(INACTIVE)
+			.initialState(ABSENT)
 			.states()
 			
-				.state(INACTIVE)
-					.onEntry(() -> {
-						world.bonusFood().ifPresent(bonusFood -> {
-							bonusFood.setState(INACTIVE);
-						});
-					})
+				.state(ABSENT)
+					.onEntry(world::clearBonusFood)
 			
-				.state(ACTIVE)
+				.state(PRESENT)
 					.timeoutAfter(() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()))
 					.onEntry(() -> {
-						world.bonusFood().ifPresent(bonusFood -> {
-							bonusFood.setState(ACTIVE);
-							ArcadeBonus bonus = (ArcadeBonus) bonusFood;
+							ArcadeBonus bonus = new ArcadeBonus();
 							bonus.symbol = game.level.bonusSymbol;
 							bonus.value = game.level.bonusValue;
-							loginfo("Bonus '%s' (value %d) activated for %.2f sec",	
-									bonus.symbol, bonus.value, state().getDuration() / 60f);
-						});
+							bonus.setState(PRESENT);
+							world.addBonusFood(bonus);
+							loginfo("Bonus '%s' activated for %.2f sec", bonus, state().getDuration() / 60f);
 					})
 				
-				.state(CONSUMED)
-					.timeoutAfter(() -> sec(3))
-					.onEntry(() -> {
-						world.bonusFood().ifPresent(bonusFood -> {
-							bonusFood.setState(CONSUMED);
-						});
-					})
+				.state(CONSUMED).timeoutAfter(sec(3))
 
 			.transitions()
 				
-				.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
+				.when(PRESENT).then(CONSUMED).on(BonusFoundEvent.class)
 					.act(() -> {
 						world.bonusFood().ifPresent(bonusFood -> {
-							ArcadeBonus bonus = (ArcadeBonus) bonusFood;
-							loginfo("Bonus '%s' (value %d) consumed after %.2f sec", 
-									bonus.symbol, bonus.value, state().getTicksConsumed() / 60f);
+							bonusFood.setState(CONSUMED);
+							loginfo("Bonus '%s' consumed after %.2f sec",	bonusFood, state().getTicksConsumed() / 60f);
 						});
 					})
 					
-				.when(ACTIVE).then(INACTIVE).onTimeout()
+				.when(PRESENT).then(ABSENT).onTimeout()
+					.act(() -> {
+						world.bonusFood().ifPresent(bonusFood -> {
+							bonusFood.setState(CONSUMED);
+							loginfo("Bonus '%s' not consumed", bonusFood);
+						});
+					})
 				
-				.when(CONSUMED).then(INACTIVE).onTimeout()
+				.when(CONSUMED).then(ABSENT).onTimeout()
 		
 		.endStateMachine();
 		/*@formatter:on*/

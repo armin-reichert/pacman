@@ -161,7 +161,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 		//@formatter:off
 		if (world.bonusFood().isPresent()) {
 			BonusFood bonus = world.bonusFood().get();
-			if (bonus.isActive()) {
+			if (bonus.isPresent()) {
 				int dist = here.manhattanDistance(bonus.location());
 				if (dist <= maxDistance) {
 					return Optional.of(bonus.location());

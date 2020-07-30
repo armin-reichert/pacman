@@ -265,7 +265,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick((state, passed, remaining) -> {
 						if (passed == sec(1)) {
-							bonusControl.setState(BonusFoodState.INACTIVE);
+							bonusControl.setState(BonusFoodState.ABSENT);
 							folks.ghostsInWorld().forEach(ghost -> ghost.setVisible(false));
 						}
 						else if (remaining == sec(2.5f)) {
@@ -486,7 +486,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private void onBonusFound(PacManGameEvent event) {
 			BonusFoundEvent bonusFound = (BonusFoundEvent) event;
 			int value = game.level.bonusValue;
-			loginfo("PacMan found bonus '%s' of value %d", bonusFound.food, value);
+			loginfo("PacMan found bonus '%s'", bonusFound.food);
 			int livesBefore = game.lives;
 			game.score(value);
 			theme.sounds().clipEatFruit().play();
@@ -509,7 +509,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				game.scoreSimplePelletFound();
 			}
 			if (game.isBonusDue()) {
-				bonusControl.setState(BonusFoodState.ACTIVE);
+				bonusControl.setState(BonusFoodState.PRESENT);
 			}
 			if (game.lives > livesBeforeScoring) {
 				extraLife = true;

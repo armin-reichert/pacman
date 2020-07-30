@@ -10,6 +10,11 @@ public class ArcadeBonus implements BonusFood {
 	public BonusFoodState state;
 	public Symbol symbol;
 	public int value;
+	
+	@Override
+	public String toString() {
+		return String.format("(%s,%s,%s)", symbol, value, state);
+	}
 
 	@Override
 	public Tile location() {

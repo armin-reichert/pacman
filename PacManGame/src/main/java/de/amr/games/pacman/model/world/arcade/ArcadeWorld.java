@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.BonusFood;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
@@ -68,6 +68,8 @@ public class ArcadeWorld extends MapBasedWorld {
 			//@formatter:on
 	};
 
+	static final Tile BONUS_LOCATION = Tile.at(13, 20);
+
 	protected List<House> houses;
 	protected List<Portal> portals;
 	protected List<OneWayTile> oneWayTiles;
@@ -88,9 +90,6 @@ public class ArcadeWorld extends MapBasedWorld {
 				.bed(15, 17, Direction.UP)
 			.build()
 		);
-		
-		bonus = new ArcadeBonus();
-		bonus.location = Tile.at(13, 20);
 		
 		portals = List.of(
 			horizontalPortal(Tile.at(1, 17), Tile.at(26, 17))
@@ -141,21 +140,22 @@ public class ArcadeWorld extends MapBasedWorld {
 		} else if (food.equals(Pellet.ENERGIZER)) {
 			map.set1(row, col, B_FOOD);
 			map.set1(row, col, B_ENERGIZER);
-		} else if (food instanceof ArcadeBonus) {
-			ArcadeBonus bonus = (ArcadeBonus) food;
-			if (!location.equals(bonus.location())) {
-				throw new IllegalStateException("Cannot add set symbol at non-bonus location " + location);
-			}
 		}
 	}
 
 	@Override
-	public void clearFood(Tile tile) {
-		if (bonus != null && bonus.location().equals(tile)) {
-			bonus = null;
+	public void addBonusFood(BonusFood bonusFood) {
+		if (bonusFood instanceof ArcadeBonus) {
+			bonus = (ArcadeBonus) bonusFood;
+			bonus.location = BONUS_LOCATION;
 		} else {
-			super.clearFood(tile);
+			throw new IllegalArgumentException("Cannot add this type of bonus food to Aracde world");
 		}
+	}
+
+	@Override
+	public void clearBonusFood() {
+		bonus = null;
 	}
 
 	@Override
@@ -186,8 +186,8 @@ public class ArcadeWorld extends MapBasedWorld {
 		if (containsEnergizer(location)) {
 			return Optional.of(Pellet.ENERGIZER);
 		}
-		if (bonus != null && bonus.location().equals(location)) {
-			return Optional.of(bonus);
+		if (BONUS_LOCATION.equals(location)) {
+			return Optional.ofNullable(bonus);
 		}
 		return Optional.empty();
 	}

@@ -143,7 +143,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		Tile location = tileLocation();
 		if (world.bonusFood().isPresent()) {
 			BonusFood bonus = world.bonusFood().get();
-			if (bonus.isActive() && bonus.location().equals(location)) {
+			if (bonus.isPresent() && bonus.location().equals(location)) {
 				foodWeight += Game.BIG_MEAL_WEIGHT;
 				return Optional.of(new BonusFoundEvent(bonus));
 			}

@@ -53,7 +53,7 @@ class WorldRenderer implements IWorldRenderer {
 		});
 		world.bonusFood().ifPresent(bonusFood -> {
 			Vector2f center = Vector2f.of(bonusFood.location().x() + Tile.SIZE, bonusFood.location().y() + Tile.SIZE / 2);
-			if (bonusFood.isActive()) {
+			if (bonusFood.isPresent()) {
 				ArcadeBonus bonus = (ArcadeBonus) bonusFood;
 				drawActiveBonus(g, center, bonus.symbol);
 			} else if (bonusFood.isConsumed()) {

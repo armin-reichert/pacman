@@ -101,7 +101,7 @@ public class WorldRenderer implements IWorldRenderer {
 		}
 		// draw bonus as image when active or as number when consumed
 		world.bonusFood().ifPresent(bonusFood -> {
-			if (bonusFood.isActive()) {
+			if (bonusFood.isPresent()) {
 				ArcadeBonus bonus = (ArcadeBonus) bonusFood;
 				Vector2f position = Vector2f.of(bonusFood.location().x(), bonusFood.location().y() - Tile.SIZE / 2);
 				g.drawImage(symbolImages.get(bonus.symbol.name()), position.roundedX(), position.roundedY(), null);

@@ -14,8 +14,6 @@ public interface FoodSource {
 
 	Optional<Food> foodAt(Tile location);
 
-	Optional<BonusFood> bonusFood();
-
 	int totalFoodCount();
 
 	void clearFood();
@@ -37,4 +35,10 @@ public interface FoodSource {
 	}
 
 	boolean hasEatenFood(Tile location);
+
+	Optional<BonusFood> bonusFood();
+
+	void addBonusFood(BonusFood bonusFood);
+
+	void clearBonusFood();
 }

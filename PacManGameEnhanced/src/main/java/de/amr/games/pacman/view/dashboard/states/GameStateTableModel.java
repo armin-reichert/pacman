@@ -176,7 +176,7 @@ class GameStateTableModel extends AbstractTableModel {
 		}
 		gameController.bonusControl().ifPresent(bonusControl -> {
 			ArcadeBonus bonus = (ArcadeBonus) world.bonusFood().get();
-			r.included = bonus.isActive() || bonus.isConsumed();
+			r.included = bonus.isPresent() || bonus.isConsumed();
 			r.name = bonus.symbol.name();
 			r.tile = bonus.location();
 			r.state = bonus.state().name();
