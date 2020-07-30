@@ -35,29 +35,27 @@ public class BlocksTheme extends AbstractTheme {
 		super("BLOCKS");
 		put("font", Assets.storeTrueTypeFont("ConcertOne", "themes/blocks/ConcertOne-Regular.ttf", Font.PLAIN, 10));
 		put("maze-flash-sec", 0.5f);
-
+		put("wall-color", new Color(139, 69, 19));
 		put("ghost-colors", Map.of(
 		//@formatter:off
-		Ghost.RED_GHOST,    Color.RED,
-		Ghost.PINK_GHOST,   Color.PINK,
-		Ghost.CYAN_GHOST,   Color.CYAN,
-		Ghost.ORANGE_GHOST, Color.ORANGE
+			Ghost.RED_GHOST,    Color.RED,
+			Ghost.PINK_GHOST,   Color.PINK,
+			Ghost.CYAN_GHOST,   Color.CYAN,
+			Ghost.ORANGE_GHOST, Color.ORANGE
 		//@formatter:on
 		));
-
 		put("symbol-colors", Map.of(
 		//@formatter:off
-		"APPLE",      Color.RED,		
-		"BELL",       Color.YELLOW,
-		"CHERRIES",   Color.RED,
-		"GALAXIAN",   Color.BLUE,
-		"GRAPES",     Color.GREEN,
-		"KEY",        Color.BLUE,
-		"PEACH",      Color.ORANGE,
-		"STRAWBERRY", Color.RED
+			"APPLE",      Color.RED,		
+			"BELL",       Color.YELLOW,
+			"CHERRIES",   Color.RED,
+			"GALAXIAN",   Color.BLUE,
+			"GRAPES",     Color.GREEN,
+			"KEY",        Color.BLUE,
+			"PEACH",      Color.ORANGE,
+			"STRAWBERRY", Color.RED
 		//@formatter:on
 		));
-
 		put("sounds", ArcadeSounds.SOUNDS);
 	}
 

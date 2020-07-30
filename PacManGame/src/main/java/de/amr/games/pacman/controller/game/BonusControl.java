@@ -2,30 +2,30 @@ package de.amr.games.pacman.controller.game;
 
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.model.game.Game.sec;
-import static de.amr.games.pacman.model.world.arcade.BonusState.ACTIVE;
-import static de.amr.games.pacman.model.world.arcade.BonusState.CONSUMED;
-import static de.amr.games.pacman.model.world.arcade.BonusState.INACTIVE;
+import static de.amr.games.pacman.model.world.api.BonusFoodState.ACTIVE;
+import static de.amr.games.pacman.model.world.api.BonusFoodState.CONSUMED;
+import static de.amr.games.pacman.model.world.api.BonusFoodState.INACTIVE;
 
 import java.util.Random;
 
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.arcade.BonusState;
+import de.amr.games.pacman.model.world.api.BonusFoodState;
+import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Bonus symbols (fruit or other symbol) appear at the bonus position for around 9 seconds. When
- * consumed, the bonus is displayed for 3 seconds as a number representing its value and then it
- * disappears.
+ * Bonus food (fruits, symbols) appear at a dedicated position for around 9 seconds. When consumed,
+ * the bonus is displayed for 3 seconds as a number representing its value and then it disappears.
  * 
  * @author Armin Reichert
  */
-public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
+public class BonusControl extends StateMachine<BonusFoodState, PacManGameEvent> {
 
-	public BonusControl(Game game, ArcadeWorld world) {
-		super(BonusState.class);
+	public BonusControl(Game game, World world) {
+		super(BonusFoodState.class);
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("BonusControl")
@@ -34,34 +34,41 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 			
 				.state(INACTIVE)
 					.onEntry(() -> {
-						world.setBonusState(INACTIVE);
-						world.setBonusSymbol(null);
-						world.setBonusValue(0);
+						world.bonusFood().ifPresent(bonusFood -> {
+							bonusFood.setState(INACTIVE);
+						});
 					})
 			
 				.state(ACTIVE)
 					.timeoutAfter(() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()))
 					.onEntry(() -> {
-						world.setBonusState(ACTIVE);
-						world.setBonusSymbol(game.level.bonusSymbol);
-						world.setBonusValue(game.level.bonusValue);
-						loginfo("Bonus '%s' (value %d) activated for %.2f sec",
-								world.getBonusSymbol(), world.getBonusValue(), state().getDuration() / 60f);
+						world.bonusFood().ifPresent(bonusFood -> {
+							bonusFood.setState(ACTIVE);
+							ArcadeBonus bonus = (ArcadeBonus) bonusFood;
+							bonus.symbol = game.level.bonusSymbol;
+							bonus.value = game.level.bonusValue;
+							loginfo("Bonus '%s' (value %d) activated for %.2f sec",	
+									bonus.symbol, bonus.value, state().getDuration() / 60f);
+						});
 					})
 				
 				.state(CONSUMED)
 					.timeoutAfter(() -> sec(3))
 					.onEntry(() -> {
-						world.setBonusState(CONSUMED);
-						world.setBonusSymbol(null);
+						world.bonusFood().ifPresent(bonusFood -> {
+							bonusFood.setState(CONSUMED);
+						});
 					})
 
 			.transitions()
 				
 				.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
 					.act(() -> {
-						loginfo("Bonus '%s' (value %d) consumed after %.2f sec", 
-								world.getBonusSymbol(), game.level.bonusValue, state().getTicksConsumed() / 60f);
+						world.bonusFood().ifPresent(bonusFood -> {
+							ArcadeBonus bonus = (ArcadeBonus) bonusFood;
+							loginfo("Bonus '%s' (value %d) consumed after %.2f sec", 
+									bonus.symbol, bonus.value, state().getTicksConsumed() / 60f);
+						});
 					})
 					
 				.when(ACTIVE).then(INACTIVE).onTimeout()

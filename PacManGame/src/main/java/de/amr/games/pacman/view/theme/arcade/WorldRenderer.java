@@ -13,23 +13,23 @@ import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.arcade.BonusState;
-import de.amr.games.pacman.model.world.arcade.Cookie;
+import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
+import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 
 public class WorldRenderer implements IWorldRenderer {
 
-	private final ArcadeWorld world;
+	private final World world;
 	private final Map<String, Image> symbolImages = new HashMap<>();
 	private final Map<Integer, Image> pointsImages = new HashMap<>();
 	private final SpriteMap mazeSprites;
 	private final SpriteAnimation energizerAnimation;
 	private Function<Tile, Color> fnEatenFoodColor;
 
-	public WorldRenderer(ArcadeWorld world) {
+	public WorldRenderer(World world) {
 		this.world = world;
 		fnEatenFoodColor = tile -> Color.BLACK;
 		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
@@ -88,29 +88,28 @@ public class WorldRenderer implements IWorldRenderer {
 
 	private void drawMazeContent(Graphics2D g) {
 		// hide eaten food
-		world.habitat().filter(world::isEaten).forEach(tile -> {
+		world.habitat().filter(world::hasEatenFood).forEach(tile -> {
 			g.setColor(fnEatenFoodColor.apply(tile));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
 		// simulate energizer blinking animation
 		if (energizerAnimation.isEnabled() && energizerAnimation.currentFrameIndex() == 1) {
-			world.habitat().filter(tile -> world.containsFood(Cookie.ENERGIZER, tile)).forEach(tile -> {
+			world.habitat().filter(tile -> world.hasFood(Pellet.ENERGIZER, tile)).forEach(tile -> {
 				g.setColor(fnEatenFoodColor.apply(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 		}
 		// draw bonus as image when active or as number when consumed
-		BonusState bonusState = world.getBonusState();
-		if (bonusState == BonusState.ACTIVE) {
-			Tile bonusLocation = world.getBonusLocation();
-			Vector2f position = Vector2f.of(bonusLocation.x(), bonusLocation.y() - Tile.SIZE / 2);
-			Symbol bonusSymbol = world.getBonusSymbol().get();
-			g.drawImage(symbolImages.get(bonusSymbol.name()), position.roundedX(), position.roundedY(), null);
-		} else if (bonusState == BonusState.CONSUMED) {
-			Tile bonusLocation = world.getBonusLocation();
-			Vector2f position = Vector2f.of(bonusLocation.x(), bonusLocation.y() - Tile.SIZE / 2);
-			int bonusValue = world.getBonusValue();
-			g.drawImage(pointsImages.get(bonusValue), position.roundedX(), position.roundedY(), null);
-		}
+		world.bonusFood().ifPresent(bonusFood -> {
+			if (bonusFood.isActive()) {
+				ArcadeBonus bonus = (ArcadeBonus) bonusFood;
+				Vector2f position = Vector2f.of(bonusFood.location().x(), bonusFood.location().y() - Tile.SIZE / 2);
+				g.drawImage(symbolImages.get(bonus.symbol.name()), position.roundedX(), position.roundedY(), null);
+			} else if (bonusFood.isConsumed()) {
+				Vector2f position = Vector2f.of(bonusFood.location().x(), bonusFood.location().y() - Tile.SIZE / 2);
+				ArcadeBonus bonus = (ArcadeBonus) bonusFood;
+				g.drawImage(pointsImages.get(bonus.value), position.roundedX(), position.roundedY(), null);
+			}
+		});
 	}
 }

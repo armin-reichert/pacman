@@ -25,11 +25,10 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.arcade.Cookie;
-import de.amr.games.pacman.model.world.arcade.Symbol;
+import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
@@ -137,22 +136,24 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		if (isTeleporting()) {
 			return;
 		}
-		findSomethingInteresting(tileLocation()).ifPresent(this::publish);
+		searchForFood().ifPresent(this::publish);
 	}
 
-	private Optional<PacManGameEvent> findSomethingInteresting(Tile location) {
-		if (world instanceof ArcadeWorld) {
-			ArcadeWorld arcadeWorld = (ArcadeWorld) world;
-			if (arcadeWorld.getBonusLocation().equals(location)) {
-				Optional<Symbol> symbol = arcadeWorld.getBonusSymbol();
-				if (symbol.isPresent() && !arcadeWorld.isEaten(location)) {
-					foodWeight += Game.DIGEST_BIG_MEAL_TICKS;
-					return Optional.of(new BonusFoundEvent(symbol.get()));
-				}
+	private Optional<PacManGameEvent> searchForFood() {
+		Tile location = tileLocation();
+		if (world.bonusFood().isPresent()) {
+			BonusFood bonus = world.bonusFood().get();
+			if (bonus.isActive() && bonus.location().equals(location)) {
+				foodWeight += Game.BIG_MEAL_WEIGHT;
+				return Optional.of(new BonusFoundEvent(bonus));
 			}
 		}
-		if (world.containsFood(location)) {
-			foodWeight += world.containsFood(Cookie.ENERGIZER, location) ? Game.DIGEST_BIG_MEAL_TICKS : Game.DIGEST_SNACK_TICKS;
+		if (world.hasFood(Pellet.ENERGIZER, location)) {
+			foodWeight += Game.BIG_MEAL_WEIGHT;
+			return Optional.of(new FoodFoundEvent(location));
+		}
+		if (world.hasFood(Pellet.SNACK, location)) {
+			foodWeight += Game.SNACK_WEIGHT;
 			return Optional.of(new FoodFoundEvent(location));
 		}
 		return Optional.empty();

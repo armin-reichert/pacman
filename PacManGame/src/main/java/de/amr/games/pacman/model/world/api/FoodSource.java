@@ -14,6 +14,8 @@ public interface FoodSource {
 
 	Optional<Food> foodAt(Tile location);
 
+	Optional<BonusFood> bonusFood();
+
 	int totalFoodCount();
 
 	void clearFood();
@@ -25,14 +27,14 @@ public interface FoodSource {
 	void fillFood(Tile location);
 
 	void setFood(Food food, Tile location);
-	
-	default boolean containsFood(Tile location) {
+
+	default boolean hasFood(Tile location) {
 		return foodAt(location).isPresent();
 	}
 
-	default boolean containsFood(Food food, Tile location) {
+	default boolean hasFood(Food food, Tile location) {
 		return foodAt(location).filter(f -> f.equals(food)).isPresent();
 	}
 
-	boolean isEaten(Tile location);
+	boolean hasEatenFood(Tile location);
 }

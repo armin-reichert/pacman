@@ -54,8 +54,8 @@ public class Game {
 	public static final int POINTS_KILLED_ALL_GHOSTS = 12_000;
 	public static final int POINTS_BONUS[] = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 	public static final int GHOST_BOUNTIES[] = { 200, 400, 800, 1600 };
-	public static final int DIGEST_SNACK_TICKS = 1;
-	public static final int DIGEST_BIG_MEAL_TICKS = 3;
+	public static final int SNACK_WEIGHT = 1;
+	public static final int BIG_MEAL_WEIGHT = 3;
 	public static final int BONUS_ACTIVATION_1 = 70;
 	public static final int BONUS_ACTIVATION_2 = 170;
 	public static final int BONUS_SECONDS = 9;

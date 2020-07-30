@@ -12,7 +12,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.Cookie;
+import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
@@ -41,10 +41,10 @@ public class LettersTheme extends AbstractTheme {
 		put("offset-baseline", Tile.SIZE - 1);
 		put("ghost-colors", Map.of(
 		//@formatter:off
-		Ghost.RED_GHOST,    Color.RED,
-		Ghost.PINK_GHOST,   Color.PINK,
-		Ghost.CYAN_GHOST,   Color.CYAN,
-		Ghost.ORANGE_GHOST, Color.ORANGE
+			Ghost.RED_GHOST,    Color.RED,
+			Ghost.PINK_GHOST,   Color.PINK,
+			Ghost.CYAN_GHOST,   Color.CYAN,
+			Ghost.ORANGE_GHOST, Color.ORANGE
 		//@formatter:on
 		));
 		put("sounds", ArcadeSounds.SOUNDS);
@@ -147,14 +147,15 @@ public class LettersTheme extends AbstractTheme {
 				for (int col = 0; col < world.width(); ++col) {
 					Tile tile = Tile.at(col, row);
 					if (world.isAccessible(tile)) {
-						if (world.containsFood(Cookie.ENERGIZER, tile) && app().clock().getTotalTicks() % 60 < 30) {
+						if (world.hasFood(Pellet.ENERGIZER, tile) && app().clock().getTotalTicks() % 60 < 30) {
 							g.setColor(Color.PINK);
 							g.drawString("Ö", col * Tile.SIZE + 2, row * Tile.SIZE + offset_baseline);
 						}
-						if (world.containsFood(Cookie.PELLET, tile)) {
+						if (world.hasFood(Pellet.SNACK, tile)) {
 							g.setColor(Color.PINK);
 							g.drawString(".", col * Tile.SIZE + 1, row * Tile.SIZE - 3 + offset_baseline);
 						}
+						// TODO Bonus display
 					} else {
 						g.setColor(Rendering.alpha(Color.GREEN, 80));
 						g.drawString("#", col * Tile.SIZE + 1, row * Tile.SIZE + offset_baseline - 1);

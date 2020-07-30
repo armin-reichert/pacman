@@ -52,10 +52,10 @@ import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidin
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.game.GameLevel;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.BonusFoodState;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.arcade.BonusState;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
@@ -265,7 +265,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick((state, passed, remaining) -> {
 						if (passed == sec(1)) {
-							bonusControl.setState(BonusState.INACTIVE);
+							bonusControl.setState(BonusFoodState.INACTIVE);
 							folks.ghostsInWorld().forEach(ghost -> ghost.setVisible(false));
 						}
 						else if (remaining == sec(2.5f)) {
@@ -486,7 +486,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private void onBonusFound(PacManGameEvent event) {
 			BonusFoundEvent bonusFound = (BonusFoundEvent) event;
 			int value = game.level.bonusValue;
-			loginfo("PacMan found bonus '%s' of value %d", bonusFound.symbol, value);
+			loginfo("PacMan found bonus '%s' of value %d", bonusFound.food, value);
 			int livesBefore = game.lives;
 			game.score(value);
 			theme.sounds().clipEatFruit().play();
@@ -509,7 +509,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				game.scoreSimplePelletFound();
 			}
 			if (game.isBonusDue()) {
-				bonusControl.setState(BonusState.ACTIVE);
+				bonusControl.setState(BonusFoodState.ACTIVE);
 			}
 			if (game.lives > livesBeforeScoring) {
 				extraLife = true;

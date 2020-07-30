@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
@@ -71,10 +72,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	protected List<Portal> portals;
 	protected List<OneWayTile> oneWayTiles;
 	protected Bed pacManBed;
-	protected Tile bonusLocation;
-	protected Symbol bonusSymbol;
-	protected BonusState bonusState;
-	protected int bonusValue;
+	protected ArcadeBonus bonus;
 
 	public ArcadeWorld() {
 		super(DATA);
@@ -91,7 +89,8 @@ public class ArcadeWorld extends MapBasedWorld {
 			.build()
 		);
 		
-		bonusLocation = Tile.at(13, 20);
+		bonus = new ArcadeBonus();
+		bonus.location = Tile.at(13, 20);
 		
 		portals = List.of(
 			horizontalPortal(Tile.at(1, 17), Tile.at(26, 17))
@@ -136,55 +135,32 @@ public class ArcadeWorld extends MapBasedWorld {
 	@Override
 	public void setFood(Food food, Tile location) {
 		int row = location.row, col = location.col;
-		if (food.equals(Cookie.PELLET)) {
+		if (food.equals(Pellet.SNACK)) {
 			map.set1(row, col, B_FOOD);
 			map.set0(row, col, B_ENERGIZER);
-		} else if (food.equals(Cookie.ENERGIZER)) {
+		} else if (food.equals(Pellet.ENERGIZER)) {
 			map.set1(row, col, B_FOOD);
 			map.set1(row, col, B_ENERGIZER);
-		} else if (food instanceof Symbol) {
-			if (!location.equals(bonusLocation)) {
+		} else if (food instanceof ArcadeBonus) {
+			ArcadeBonus bonus = (ArcadeBonus) food;
+			if (!location.equals(bonus.location())) {
 				throw new IllegalStateException("Cannot add set symbol at non-bonus location " + location);
 			}
-			bonusSymbol = (Symbol) food;
 		}
 	}
 
 	@Override
 	public void clearFood(Tile tile) {
-		if (bonusLocation.equals(tile)) {
-			bonusSymbol = null;
+		if (bonus != null && bonus.location().equals(tile)) {
+			bonus = null;
 		} else {
 			super.clearFood(tile);
 		}
 	}
 
-	public void setBonusSymbol(Symbol bonusSymbol) {
-		this.bonusSymbol = bonusSymbol;
-	}
-
-	public Optional<Symbol> getBonusSymbol() {
-		return Optional.ofNullable(bonusSymbol);
-	}
-
-	public Tile getBonusLocation() {
-		return bonusLocation;
-	}
-
-	public BonusState getBonusState() {
-		return bonusState;
-	}
-
-	public void setBonusState(BonusState bonusState) {
-		this.bonusState = bonusState;
-	}
-
-	public int getBonusValue() {
-		return bonusValue;
-	}
-
-	public void setBonusValue(int bonusValue) {
-		this.bonusValue = bonusValue;
+	@Override
+	public Optional<BonusFood> bonusFood() {
+		return Optional.ofNullable(bonus);
 	}
 
 	/**
@@ -199,19 +175,19 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public Stream<Food> food() {
-		return habitat().filter(this::containsFood).map(this::foodAt).map(Optional::get);
+		return habitat().filter(this::hasFood).map(this::foodAt).map(Optional::get);
 	}
 
 	@Override
 	public Optional<Food> foodAt(Tile location) {
 		if (containsSimplePellet(location)) {
-			return Optional.of(Cookie.PELLET);
+			return Optional.of(Pellet.SNACK);
 		}
 		if (containsEnergizer(location)) {
-			return Optional.of(Cookie.ENERGIZER);
+			return Optional.of(Pellet.ENERGIZER);
 		}
-		if (bonusSymbol != null && bonusLocation.equals(location)) {
-			return Optional.of(bonusSymbol);
+		if (bonus != null && bonus.location().equals(location)) {
+			return Optional.of(bonus);
 		}
 		return Optional.empty();
 	}

@@ -15,12 +15,11 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.arcade.BonusState;
-import de.amr.games.pacman.model.world.arcade.Cookie;
+import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
 
@@ -141,7 +140,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 	}
 
 	private Stream<Tile> foodTiles() {
-		return world.habitat().filter(world::containsFood);
+		return world.habitat().filter(world::hasFood);
 	}
 
 	private Optional<Tile> preferredFoodLocationFrom(Tile here) {
@@ -160,11 +159,13 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 
 	private Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
 		//@formatter:off
-		ArcadeWorld arcadeWorld = (ArcadeWorld) world;
-		if (arcadeWorld.getBonusState() != BonusState.INACTIVE) {
-			int dist = here.manhattanDistance(arcadeWorld.getBonusLocation());
-			if (dist <= maxDistance) {
-				return Optional.of(arcadeWorld.getBonusLocation());
+		if (world.bonusFood().isPresent()) {
+			BonusFood bonus = world.bonusFood().get();
+			if (bonus.isActive()) {
+				int dist = here.manhattanDistance(bonus.location());
+				if (dist <= maxDistance) {
+					return Optional.of(bonus.location());
+				}
 			}
 		}
 		return Optional.empty();
@@ -173,7 +174,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 	private Optional<Tile> energizerAtMostAway(Tile here, int distance) {
 		//@formatter:off
 		return foodTiles()
-				.filter(tile -> world.containsFood(Cookie.ENERGIZER, tile))
+				.filter(tile -> world.hasFood(Pellet.ENERGIZER, tile))
 				.filter(energizer -> here.manhattanDistance(energizer) <= distance)
 				.findFirst();
 		//@formatter:on
