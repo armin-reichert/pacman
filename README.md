@@ -4,9 +4,9 @@
 
 *If you don't share my (or any) sense of humor, just skip this section...*
 
-In 1980 they would have thought: what a cute boy hunting those litte colorful ghosty girls. But we are in the year 2020, where madness has taken over, and now it goes like this:
+In 1980, they would have thought: what a cute boy hunting those litte colorful ghosty girls. But we are in the year 2020, where madness has taken over, and now it goes like this:
 
-**Pac-Man, a female-hating, homophobi,c old yellow racist man!** 
+**Pac-Man, a female-hating, homophobic, racist, old yellow man!** 
 
 Why that? First of all, without any doubt, this Pac-Man guy is, as his name clearly proves, a **man**, born around 1980 certainly an **old man** (thank god not an **old white man** or even worse an **orange man**), but he certainly is (hmm, wasn't the Nintendo guy in fact an orange man?) an **old yellow man**.
 
