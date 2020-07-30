@@ -2,19 +2,23 @@
 
 ## Ghost Lives Matter! Yellow man bad!
 
-Pac-Man, a *racist, homophobic game*? 
+*If you don't share my (or any) sense of humor, just skip this section...*
+
+In 1980, they would have thought: what a cute boy hunting those litte colorful ghosty girls. But we are in the year 2020, where madness has taken over, and now it goes like this:
+
+**Pac-Man, a female-hating, homophobic, racist, old yellow man!** 
 
 Why that? First of all, without any doubt, this Pac-Man guy is, as his name clearly proves, a **man**, born around 1980 certainly an **old man** (thank god not an **old white man** or even worse an **orange man**), but he certainly is (hmm, wasn't the Nintendo guy in fact an orange man?) an **old yellow man**.
 
-And what has this **old yellow man** been doing all his life? He has been chasing **ghost people of color**! And these ghosts, as their dresses (are that burkas?) indicate, are most probably **females** or **transgenders** or any of the other 300 cis-trans-bullshit genders! 
+And what has this **old yellow man** been doing all his life? He has been chasing **ghost people of color**! And these ghosts, as their dresses (are that burkas?) indicate, are most probably **females** or **transgenders** or any of the other 300 cis-trans-WTF genders! 
 
-WTF! Why hasn't this **racist, homophobic game** long been forbidden? GLM, LGBTQ activists, please take over!
+Why hasn't this **racist, homophobic game** long been forbidden? GLM, LGBTQ activists, please take over!
 
 And Now for Something Completely Different...
 
 ## How to run the game
 
-Download the executable "PacManGame-1.0.jar" or the extended version "PacManGameEnhanced-1.0.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. For just playing Pac-Man, the first jar file is sufficient, if you want to see the fancy stuff in the custom tabs, use the enhanced version.
+Download the executable "PacManGame-1.0-jar-with-dependencies.jar" or the extended version "PacManGameEnhanced-1.0-jar-with-dependencies.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. For just playing Pac-Man, the first jar file is sufficient, if you want to see the fancy stuff in the custom tabs, use the enhanced version.
 
 If you want to use the many command-line arguments (see below), open a command window and enter:
 
@@ -31,8 +35,8 @@ or when running on Windows, run the .bat files `pacman.bat`and `pacman-enhanced.
 Clone all used repositories (see pom.xml), build each of them using 'mvn clean install' and then enter:
 
 ```
-cd your/path/to/git/repository/pacman/PacManGame
-mvn clean install assembly:single
+cd your/path/to/git/repository/pacman
+mvn clean package
 ```
 
 [![Pac-Man](PacManDoc/app-and-f2dialog.png)](https://www.youtube.com/watch?v=JU3kmUC3T2k&t=210s)
