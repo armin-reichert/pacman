@@ -23,6 +23,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.BonusFood;
@@ -104,6 +105,11 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
+	}
+
+	@Override
+	public void getReadyToRumble(Game game) {
+		setSpeed(() -> GameController.pacManSpeed(this, game.level));
 	}
 
 	/**

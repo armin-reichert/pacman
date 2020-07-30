@@ -51,8 +51,8 @@ import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.game.GameLevel;
-import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.BonusFoodState;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
@@ -651,10 +651,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		bonusControl = new BonusControl(game, world);
 		bonusControl.init();
 		doorMan = new DoorMan(world, world.house(0), game, folks);
-		folks.all().forEach(world::include);
-		folks.all().forEach(Creature::init);
-		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
-		folks.pacMan.setSpeed(() -> pacManSpeed(folks.pacMan, game.level));
+		folks.all().forEach(creature -> {
+			creature.init();
+			creature.getReadyToRumble(game);
+			world.include(creature);
+		});
 	}
 
 	protected PlayView createPlayView() {

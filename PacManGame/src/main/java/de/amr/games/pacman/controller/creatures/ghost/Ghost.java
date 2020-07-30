@@ -230,11 +230,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		this.bed = house.bed(bedNumber);
 	}
 
-	/**
-	 * Prepares the ghost for taking part in the game.
-	 * 
-	 * @param game game where this ghost will take part
-	 */
+	@Override
 	public void getReadyToRumble(Game game) {
 		if ("Blinky".equals(name)) {
 			sanity = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);

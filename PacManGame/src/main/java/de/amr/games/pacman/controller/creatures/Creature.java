@@ -17,6 +17,7 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.api.TargetTileSteering;
 import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.controller.steering.common.MovementType;
+import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -64,6 +65,13 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	public World world() {
 		return world;
 	}
+
+	/**
+	 * Must be called before this creature can take part in a game.
+	 * 
+	 * @param game the game this creature takes part in
+	 */
+	public abstract void getReadyToRumble(Game game);
 
 	public Stream<StateMachine<?, ?>> machines() {
 		return Stream.of(this, movement);
