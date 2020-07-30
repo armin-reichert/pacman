@@ -145,6 +145,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	@Override
 	public void exit() {
 		StateMachineRegistry.REGISTRY.unregister(Stream.of(this));
+		theme.sounds().stopAll();
 	}
 
 	@Override

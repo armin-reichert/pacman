@@ -164,24 +164,24 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return fraction * BASE_SPEED;
 	}
 
-	protected final Theme[] themes;
-
-	protected ArcadeWorld world;
-	protected Folks folks;
-
-	protected GhostCommand ghostCommand;
-	protected DoorMan doorMan;
-	protected BonusControl bonusControl;
-
+	// model
 	protected Game game;
+	protected ArcadeWorld world;
 
+	// view
+	protected final Theme[] themes;
 	protected Theme theme;
 	protected int currentThemeIndex = 0;
-
 	protected PacManGameView currentView;
 	protected IntroView introView;
 	protected MusicLoadingView musicLoadingView;
 	protected PlayView playView;
+
+	// controller
+	protected Folks folks;
+	protected GhostCommand ghostCommand;
+	protected DoorMan doorMan;
+	protected BonusControl bonusControl;
 
 	/**
 	 * Creates a new game controller.
@@ -192,25 +192,23 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		super(PacManGameState.class);
 
 		themes = themesStream.toArray(Theme[]::new);
+		currentThemeIndex = 0;
 		theme = themes[currentThemeIndex];
 
 		app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
+
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		//@formatter:off
 		beginStateMachine()
 			
-			.description("GameController")
+			.description("Game Controller")
 			.initialState(LOADING_MUSIC)
 			
 			.states()
 			
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
-						theme.sounds().loadMusic();
-						if (musicLoadingView != null) {
-							musicLoadingView.exit();
-						}
 						musicLoadingView = new MusicLoadingView(theme, settings.width, settings.height);
 						musicLoadingView.init();
 						currentView = musicLoadingView;
@@ -221,15 +219,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.state(INTRO)
 					.onEntry(() -> {
-						if (introView != null) {
-							introView.exit();
-						}
 						introView = new IntroView(world, folks, theme, settings.width, settings.height);
 						introView.init();
 						currentView = introView;
 					})
 					.onExit(() -> {
-						theme.sounds().stopAll();
 						introView.exit();
 					})
 				
