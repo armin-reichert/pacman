@@ -35,8 +35,8 @@ or when running on Windows, run the .bat files `pacman.bat`and `pacman-enhanced.
 Clone all used repositories (see pom.xml), build each of them using 'mvn clean install' and then enter:
 
 ```
-cd your/path/to/git/repository/pacman/PacManGame
-mvn clean install assembly:single
+cd your/path/to/git/repository/pacman
+mvn clean package
 ```
 
 [![Pac-Man](PacManDoc/app-and-f2dialog.png)](https://www.youtube.com/watch?v=JU3kmUC3T2k&t=210s)
