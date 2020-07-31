@@ -18,7 +18,6 @@ import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
-import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -26,7 +25,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.IntStream;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
@@ -197,7 +198,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		currentThemeIndex = 0;
 		theme = themes[currentThemeIndex];
 
-		app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
+		Application.app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
 
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
@@ -229,11 +230,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						introView.exit();
 					})
 				
-				.state(GETTING_READY).customState(GettingReadyState::new)
+				.state(GETTING_READY).customStateClass(GettingReadyState.class)
 				
-				.state(PLAYING).customState(PlayingState::new)
+				.state(PLAYING).customStateClass(PlayingState.class)
 				
-				.state(CHANGING_LEVEL).customState(ChangingLevelState::new)
+				.state(CHANGING_LEVEL).customStateClass(ChangingLevelState.class)
 				
 				.state(GHOST_DYING)
 					.timeoutAfter(sec(1))
@@ -382,7 +383,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private long lastMealAt;
 	}
 
-	private class GettingReadyState extends State<PacManGameState> {
+	public class GettingReadyState extends State<PacManGameState> {
 
 		public GettingReadyState() {
 			setTimer(sec(6));
@@ -413,7 +414,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	private class PlayingState extends State<PacManGameState> {
+	public class PlayingState extends State<PacManGameState> {
 
 		final long INITIAL_WAIT_TIME = sec(2);
 
@@ -532,7 +533,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	private class ChangingLevelState extends State<PacManGameState> {
+	public class ChangingLevelState extends State<PacManGameState> {
 
 		public ChangingLevelState() {
 			setTimer(() -> sec(4 + game.level.numFlashes * theme.$float("maze-flash-sec")));
@@ -692,8 +693,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	public void selectTheme(String themeName) {
-		currentThemeIndex = range(0, themes.length).filter(i -> themes[i].name().equalsIgnoreCase(themeName)).findFirst()
-				.orElse(0);
+		currentThemeIndex = IntStream.range(0, themes.length).filter(i -> themes[i].name().equalsIgnoreCase(themeName))
+				.findFirst().orElse(0);
 		setTheme(themes[currentThemeIndex]);
 	}
 
