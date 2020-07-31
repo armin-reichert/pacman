@@ -565,6 +565,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				world.fillFood();
 				game.enterLevel(game.level.number + 1);
 				folks.allInWorld().forEach(Creature::init);
+				folks.blinky.getMadnessController().init();
 				playView.init();
 				playView.enableGhostAnimations(true);
 			}

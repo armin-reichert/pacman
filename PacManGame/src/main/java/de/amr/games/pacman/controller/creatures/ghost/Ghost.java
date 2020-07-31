@@ -191,14 +191,6 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	}
 
 	@Override
-	public void init() {
-		if (madnessController != null) {
-			madnessController.init();
-		}
-		super.init();
-	}
-
-	@Override
 	public World world() {
 		return world;
 	}

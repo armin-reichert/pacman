@@ -132,6 +132,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	private void setPowerTimer(PacManGameEvent e) {
 		PacManGainsPowerEvent powerEvent = (PacManGainsPowerEvent) e;
 		state(POWERFUL).setTimer(powerEvent.duration);
+		state(POWERFUL).resetTimer();
 	}
 
 	private void wander() {
