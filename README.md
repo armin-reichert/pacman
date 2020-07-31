@@ -386,9 +386,14 @@ enum Sanity {
 };
 ```
 
-Blinky's chasing behavior is to directly attack Pac-Man:
+Blinky's chasing behavior is to directly attack Pac-Man. When in "Elroy" mode, he attacks Pac-Man also in SCATTERING state:
 
 ```java
+you(blinky).when(SCATTERING).headFor().tile(() -> {
+	GhostSanity sanity = blinky.getSanity();
+	return sanity == GhostSanity.ELROY1 || sanity == GhostSanity.ELROY2 ? pacMan.tileLocation()
+			: Tile.at(world.width() - 3, 0);
+}).ok();
 you(blinky).when(CHASING).headFor().tile(pacMan::location).ok();
 ```
 
