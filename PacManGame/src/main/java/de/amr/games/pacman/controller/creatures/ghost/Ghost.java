@@ -282,7 +282,6 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		// TODO ghost should know its house(s)
 		if (house.isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
