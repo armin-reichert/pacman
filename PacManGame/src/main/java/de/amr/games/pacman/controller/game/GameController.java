@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.input.Keyboard;
@@ -178,6 +177,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected IntroView introView;
 	protected MusicLoadingView musicLoadingView;
 	protected PlayView playView;
+	protected SoundState sound = new SoundState();
 
 	// controller
 	protected Folks folks;
@@ -185,17 +185,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected DoorMan doorMan;
 	protected BonusControl bonusControl;
 
-	protected SoundState sound = new SoundState();
-
 	/**
 	 * Creates a new game controller.
 	 * 
 	 * @param themesStream supported themes
 	 */
-	public GameController(Stream<Theme> themesStream) {
+	public GameController(Theme... supportedThemes) {
 		super(PacManGameState.class);
 
-		themes = themesStream.toArray(Theme[]::new);
+		themes = supportedThemes;
 		currentThemeIndex = 0;
 		theme = themes[currentThemeIndex];
 
@@ -231,11 +229,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						introView.exit();
 					})
 				
-				.state(GETTING_READY).customState(new GettingReadyState())
+				.state(GETTING_READY).customState(GettingReadyState::new)
 				
-				.state(PLAYING).customState(new PlayingState())
+				.state(PLAYING).customState(PlayingState::new)
 				
-				.state(CHANGING_LEVEL).customState(new ChangingLevelState())
+				.state(CHANGING_LEVEL).customState(ChangingLevelState::new)
 				
 				.state(GHOST_DYING)
 					.timeoutAfter(sec(1))
@@ -318,19 +316,19 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
-					.act(playingState()::onFoodFound)
+					.act(state_PLAYING()::onFoodFound)
 					
 				.stay(PLAYING)
 					.on(BonusFoundEvent.class)
-					.act(playingState()::onBonusFound)
+					.act(state_PLAYING()::onBonusFound)
 					
 				.stay(PLAYING)
 					.on(PacManLostPowerEvent.class)
-					.act(playingState()::onPacManLostPower)
+					.act(state_PLAYING()::onPacManLostPower)
 			
 				.stay(PLAYING)
 					.on(PacManGhostCollisionEvent.class)
-					.act(playingState()::onPacManGhostCollision)
+					.act(state_PLAYING()::onPacManGhostCollision)
 			
 				.when(PLAYING).then(PACMAN_DYING)	
 					.on(PacManKilledEvent.class)
@@ -343,7 +341,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
-					.act(playingState()::resumePlaying)
+					.act(state_PLAYING()::resumePlaying)
 					.annotation("Level change complete")
 					
 				.when(GHOST_DYING).then(PLAYING)
@@ -358,7 +356,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
 					.condition(() -> game.lives > 0)
-					.act(playingState()::resumePlaying)
+					.act(state_PLAYING()::resumePlaying)
 					.annotation(() -> String.format("Lives remaining = %d, resume game", game.lives))
 			
 				.when(GAME_OVER).then(GETTING_READY)
@@ -646,7 +644,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			theme.sounds().clipGhostDead().loop();
 		}
 		if (sound.ghostEaten) {
-			// TODO WTF!
 			theme.sounds().clipEatGhost().play();
 			sound.ghostEaten = false;
 		}
@@ -671,7 +668,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return new PlayView(world, theme, folks, game, ghostCommand, doorMan);
 	}
 
-	protected PlayingState playingState() {
+	/**
+	 * Returns the typed PLAYING-state such that method references can be used. I found the expression
+	 * {@code this.<PlayingState>state(PLAYING)} too ugly.
+	 */
+	protected PlayingState state_PLAYING() {
 		return state(PLAYING);
 	}
 

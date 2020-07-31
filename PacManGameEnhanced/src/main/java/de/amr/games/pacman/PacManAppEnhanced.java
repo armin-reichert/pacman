@@ -9,6 +9,7 @@ import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
 import de.amr.games.pacman.view.dashboard.theme.ThemeSelectionView;
 import de.amr.games.pacman.view.theme.Themes;
+import de.amr.games.pacman.view.theme.api.Theme;
 
 /**
  * The Pac-Man game application with inspection views and lots of bells and whistles.
@@ -32,7 +33,7 @@ public class PacManAppEnhanced extends PacManApp {
 	@Override
 	public void init() {
 		setIcon("/images/pacman-icon.png");
-		setController(new EnhancedGameController(Themes.all()));
+		setController(new EnhancedGameController(Themes.all().toArray(Theme[]::new)));
 	}
 
 	@Override

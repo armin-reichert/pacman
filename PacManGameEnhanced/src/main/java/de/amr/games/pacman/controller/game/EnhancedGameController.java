@@ -41,7 +41,7 @@ public class EnhancedGameController extends GameController {
 	 * 
 	 * @param themes supported themes
 	 */
-	public EnhancedGameController(Stream<Theme> themes) {
+	public EnhancedGameController(Theme... themes) {
 		super(themes);
 	}
 
