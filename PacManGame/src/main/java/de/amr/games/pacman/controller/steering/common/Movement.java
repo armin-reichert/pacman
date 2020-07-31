@@ -10,6 +10,7 @@ import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -33,9 +34,10 @@ public class Movement extends StateMachine<MovementType, Void> {
 		super(MovementType.class);
 		this.mover = mover;
 		this.moverName = moverName;
+		String description = mover instanceof Ghost ? "Ghost " + moverName + " Movement" : "Pac-Man Movement";
 		//@formatter:off
 		beginStateMachine()
-			.description(String.format("%s movement", moverName))
+			.description(description)
 			.initialState(WALKING)
 			.states()
 				.state(WALKING)
@@ -94,8 +96,8 @@ public class Movement extends StateMachine<MovementType, Void> {
 	private void setActivePortal(Portal portal, Tile entry) {
 		activePortal = portal;
 		activePortal.setPassageDir(mover.moveDir());
-		loginfo("%s enters portal at %s moving %s with offsetX %.2f", 
-				moverName, entry, activePortal.getPassageDir(), mover.tileOffsetX());
+		loginfo("%s enters portal at %s moving %s with offsetX %.2f", moverName, entry, activePortal.getPassageDir(),
+				mover.tileOffsetX());
 	}
 
 	private void teleport() {

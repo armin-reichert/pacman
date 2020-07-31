@@ -28,7 +28,7 @@ public class BonusControl extends StateMachine<BonusFoodState, PacManGameEvent> 
 		super(BonusFoodState.class);
 		/*@formatter:off*/
 		beginStateMachine()
-			.description("BonusControl")
+			.description("Bonus Controller")
 			.initialState(ABSENT)
 			.states()
 			

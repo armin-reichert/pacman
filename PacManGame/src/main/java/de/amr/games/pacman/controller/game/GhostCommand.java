@@ -98,7 +98,7 @@ public class GhostCommand extends StateMachine<GhostCommandState, String> {
 		List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
 		/*@formatter:off*/
 		beginStateMachine()
-			.description("GhostCommand")
+			.description("Ghost Attack Controller")
 			.initialState(SCATTER)
 		.states()
 			.state(SCATTER)

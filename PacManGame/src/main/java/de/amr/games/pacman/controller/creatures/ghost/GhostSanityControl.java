@@ -22,7 +22,7 @@ public class GhostSanityControl extends StateMachine<GhostSanity, Void> {
 		//@formatter:off
 		beginStateMachine()
 			.initialState(initialSanity)
-			.description(() -> String.format("%s sanity", ghostName))
+			.description(() -> String.format("Ghost %s Sanity", ghostName))
 			.states()
 				.state(IMMUNE)
 				.state(INFECTABLE)
