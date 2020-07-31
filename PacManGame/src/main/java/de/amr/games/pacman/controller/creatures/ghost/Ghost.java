@@ -49,7 +49,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private House house;
 	private Bed bed;
 	private Supplier<GhostState> fnSubsequentState;
-	private GhostSanityControl sanity;
+	private MadnessController madnessController;
 	private Steering<Ghost> previousSteering;
 	private int bounty;
 	private boolean flashing;
@@ -187,13 +187,13 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	@Override
 	public Stream<StateMachine<?, ?>> machines() {
-		return Stream.concat(super.machines(), Stream.of(sanity));
+		return Stream.concat(super.machines(), Stream.of(madnessController));
 	}
 
 	@Override
 	public void init() {
-		if (sanity != null) {
-			sanity.init();
+		if (madnessController != null) {
+			madnessController.init();
 		}
 		super.init();
 	}
@@ -227,12 +227,16 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		this.bed = house.bed(bedNumber);
 	}
 
+	public GhostMadness getMadness() {
+		return Optional.ofNullable(madnessController).map(MadnessController::getState).orElse(GhostMadness.HEALTHY);
+	}
+
+	public void setMadnessController(MadnessController controller) {
+		this.madnessController = controller;
+	}
+
 	@Override
 	public void getReadyToRumble(Game game) {
-		if ("Blinky".equals(name)) {
-			sanity = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
-			sanity.init();
-		}
 		fnFlashTimeTicks = () -> game.level.numFlashes * sec(0.5f);
 		setSpeed(() -> GameController.ghostSpeed(this, game.level));
 		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
@@ -253,10 +257,6 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	public GhostState getNextStateToEnter() {
 		return fnSubsequentState.get();
-	}
-
-	public GhostSanity getSanity() {
-		return sanity != null ? sanity.getState() : GhostSanity.IMMUNE;
 	}
 
 	public GhostPersonality getPersonality() {
@@ -305,8 +305,8 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		}
 		currentSteering.steer(this);
 		movement.update();
-		if (sanity != null) {
-			sanity.update();
+		if (madnessController != null) {
+			madnessController.update();
 		}
 	}
 

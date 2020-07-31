@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
-import de.amr.games.pacman.controller.creatures.ghost.GhostSanity;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -69,11 +68,7 @@ public class Folks {
 		});
 
 		you(blinky).when(ENTERING_HOUSE).enterDoorAndGoToBed().door(door).bed(pinky.bed()).ok();
-		you(blinky).when(SCATTERING).headFor().tile(() -> {
-			GhostSanity sanity = blinky.getSanity();
-			return sanity == GhostSanity.ELROY1 || sanity == GhostSanity.ELROY2 ? pacMan.tileLocation()
-					: Tile.at(world.width() - 3, 0);
-		}).ok();
+		you(blinky).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
 		you(blinky).when(CHASING).headFor().tile(pacMan::tileLocation).ok();
 
 		you(inky).when(SCATTERING).headFor().tile(world.width() - 1, world.height() - 1).ok();
@@ -105,5 +100,4 @@ public class Folks {
 	public Stream<Creature<?, ?>> allInWorld() {
 		return all().filter(world::contains);
 	}
-
 }

@@ -34,7 +34,9 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostMadness;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.creatures.ghost.MadnessController;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -125,6 +127,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (ghost.getState() == null) {
 			throw new IllegalStateException(String.format("Ghost %s is not initialized.", ghost.name));
 		}
+		boolean tunnel = ghost.world().isTunnel(ghost.tileLocation());
 		switch (ghost.getState()) {
 		case LOCKED:
 			return speed(ghost.isInsideHouse() ? level.ghostSpeed / 2 : 0);
@@ -134,22 +137,19 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			return speed(level.ghostSpeed);
 		case CHASING:
 		case SCATTERING:
-			if (ghost.world().isTunnel(ghost.tileLocation())) {
+			if (tunnel) {
 				return speed(level.ghostTunnelSpeed);
 			}
-			switch (ghost.getSanity()) {
-			case ELROY1:
+			GhostMadness sanity = ghost.getMadness();
+			if (sanity == GhostMadness.ELROY1) {
 				return speed(level.elroy1Speed);
-			case ELROY2:
-				return speed(level.elroy2Speed);
-			case INFECTABLE:
-			case IMMUNE:
-				return speed(level.ghostSpeed);
-			default:
-				throw new IllegalArgumentException("Illegal ghost sanity state: " + ghost.getSanity());
 			}
+			if (sanity == GhostMadness.ELROY2) {
+				return speed(level.elroy2Speed);
+			}
+			return speed(level.ghostSpeed);
 		case FRIGHTENED:
-			return speed(ghost.world().isTunnel(ghost.tileLocation()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
+			return speed(tunnel ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
 		case DEAD:
 			return speed(2 * level.ghostSpeed);
 		default:
@@ -427,16 +427,18 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onTick(State<PacManGameState> state, long passed, long remaining) {
+			folks.allInWorld().forEach(Creature::update);
 			if (passed == INITIAL_WAIT_TIME) {
 				folks.pacMan.wakeUp();
-			} else if (passed > INITIAL_WAIT_TIME) {
+			}
+			if (passed > INITIAL_WAIT_TIME) {
 				ghostCommand.update();
 				doorMan.update();
 				bonusControl.update();
+
+				sound.chasingGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.CHASING));
+				sound.deadGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.DEAD));
 			}
-			folks.allInWorld().forEach(Creature::update);
-			sound.chasingGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.CHASING));
-			sound.deadGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.DEAD));
 		}
 
 		@Override
@@ -662,6 +664,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			creature.getReadyToRumble(game);
 			world.include(creature);
 		});
+		MadnessController madnessController = new MadnessController(game, world, folks.blinky, folks.pacMan);
+		madnessController.init();
+		folks.blinky.setMadnessController(madnessController);
 	}
 
 	protected PlayView createPlayView() {
