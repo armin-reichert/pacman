@@ -159,11 +159,11 @@ public class DoorMan implements Lifecycle {
 				.filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
-	private void closeDoor(Door door) {
+	public void closeDoor(Door door) {
 		door.state = DoorState.CLOSED;
 	}
 
-	private void openDoor(Door door) {
+	public void openDoor(Door door) {
 		door.state = DoorState.OPEN;
 	}
 

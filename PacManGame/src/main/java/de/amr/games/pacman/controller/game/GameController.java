@@ -58,6 +58,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.MusicLoadingView;
@@ -392,6 +393,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		public void onEntry() {
 			newGame();
 			world.setFrozen(true);
+			world.houses().flatMap(House::doors).forEach(doorMan::closeDoor);
 			currentView = playView = createPlayView();
 			playView.init();
 			playView.showMessage(2, "Ready!", Color.YELLOW);
