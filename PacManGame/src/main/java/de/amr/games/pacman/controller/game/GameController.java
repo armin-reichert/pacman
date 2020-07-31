@@ -258,6 +258,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							game.lives -= 1;
 						}
 						world.setFrozen(true);
+						folks.blinky.getMadnessController().suspendElroyState();
 						theme.sounds().stopMusic(theme.sounds().musicGameRunning());
 						theme.sounds().clips().forEach(SoundClip::stop);
 					})
@@ -435,7 +436,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				ghostCommand.update();
 				doorMan.update();
 				bonusControl.update();
-
+				// when Elroy state has been suspended (because Pac-Man was killed during Elroy state) it gets
+				// resumed as soon as Clyde has left the ghost house
+				if (folks.blinky.getMadnessController().isElroySuspended() && !folks.clyde.isInsideHouse()) {
+					folks.blinky.getMadnessController().resumeElroyState(game);
+				}
 				sound.chasingGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.CHASING));
 				sound.deadGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.is(GhostState.DEAD));
 			}

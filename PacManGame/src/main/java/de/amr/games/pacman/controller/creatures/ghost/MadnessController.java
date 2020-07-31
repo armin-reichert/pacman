@@ -20,6 +20,8 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class MadnessController extends StateMachine<GhostMadness, Void> {
 
+	private boolean elroySuspended;
+
 	public MadnessController(Game game, World world, Ghost ghost, PacMan pacMan) {
 		super(GhostMadness.class);
 		//@formatter:off
@@ -49,14 +51,38 @@ public class MadnessController extends StateMachine<GhostMadness, Void> {
 					.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
 			
 				.when(HEALTHY).then(ELROY2)
-					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
+					.condition(() -> !elroySuspended && game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
 					.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
 					
 				.when(HEALTHY).then(ELROY1)
-					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy1DotsLeft)
+					.condition(() -> !elroySuspended && game.level.remainingFoodCount() <= game.level.elroy1DotsLeft)
 					.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy1DotsLeft))
 				
 		.endStateMachine();
 		//@formatter:on
+	}
+
+	public void suspendElroyState() {
+		if (getState() == ELROY1 || getState() == ELROY2) {
+			setState(HEALTHY);
+			elroySuspended = true;
+		}
+	}
+
+	public void resumeElroyState(Game game) {
+		if (getState() == HEALTHY) {
+			if (game.level.remainingFoodCount() <= game.level.elroy1DotsLeft) {
+				if (game.level.remainingFoodCount() <= game.level.elroy2DotsLeft) {
+					setState(ELROY2);
+				} else {
+					setState(ELROY1);
+				}
+			}
+			elroySuspended = false;
+		}
+	}
+
+	public boolean isElroySuspended() {
+		return elroySuspended;
 	}
 }

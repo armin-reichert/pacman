@@ -231,6 +231,10 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		return Optional.ofNullable(madnessController).map(MadnessController::getState).orElse(GhostMadness.HEALTHY);
 	}
 
+	public MadnessController getMadnessController() {
+		return madnessController;
+	}
+
 	public void setMadnessController(MadnessController controller) {
 		this.madnessController = controller;
 	}
