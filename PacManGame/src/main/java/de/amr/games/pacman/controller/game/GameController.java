@@ -442,6 +442,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onExit() {
 			theme.sounds().clips().forEach(SoundClip::stop);
+			theme.sounds().stopMusic(theme.sounds().musicGameRunning());
 			sound.chasingGhosts = false;
 			sound.deadGhosts = false;
 		}
@@ -526,15 +527,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private class ChangingLevelState extends State<PacManGameState> {
 
-		private float flashingSeconds(Theme theme, Game game) {
-			if (game != null) {
-				return game.level.numFlashes * theme.$float("maze-flash-sec");
-			}
-			return 0;
-		}
-
 		public ChangingLevelState() {
-			setTimer(() -> sec(4 + flashingSeconds(theme, game)));
+			setTimer(() -> sec(4 + game.level.numFlashes * theme.$float("maze-flash-sec")));
 		}
 
 		@Override
@@ -548,27 +542,27 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onTick(State<PacManGameState> state, long passed, long ticksRemaining) {
-			float flashingSeconds = flashingSeconds(theme, game);
+			float flashingSeconds = game.level.numFlashes * theme.$float("maze-flash-sec");
 
-			// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.
+			// During first two seconds, do nothing.
+
+			// After 2 seconds, hide ghosts and start flashing.
 			if (passed == sec(2)) {
+				world.setChanging(true);
 				folks.ghostsInWorld().forEach(ghost -> ghost.setVisible(false));
-				if (flashingSeconds > 0) {
-					world.setChanging(true);
-				}
 			}
 
-			// After two more seconds, enter next level
+			// After flashing has finished, enter next level
 			if (passed == sec(2 + flashingSeconds)) {
-				game.enterLevel(game.level.number + 1);
 				world.setChanging(false);
 				world.fillFood();
+				game.enterLevel(game.level.number + 1);
 				folks.allInWorld().forEach(Creature::init);
-				playView.enableGhostAnimations(true);
 				playView.init();
+				playView.enableGhostAnimations(true);
 			}
 
-			// Wait a second, then let ghosts jump again inside the house
+			// One second later, let ghosts jump again inside the house
 			if (passed >= sec(3 + flashingSeconds)) {
 				folks.allInWorld().forEach(Creature::update);
 			}
