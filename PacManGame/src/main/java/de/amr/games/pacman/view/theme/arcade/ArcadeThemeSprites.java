@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 
@@ -43,7 +44,7 @@ public class ArcadeThemeSprites {
 	private final Map<String, BufferedImage> imageMapSymbols = new HashMap<>();
 
 	// in the spritesheet, the order of directions is: RIGHT, LEFT, UP, DOWN
-	private int sheetOrder(Direction dir) {
+	private int index(Direction dir) {
 		switch (dir) {
 		case RIGHT:
 			return 0;
@@ -56,6 +57,11 @@ public class ArcadeThemeSprites {
 		default:
 			throw new IllegalArgumentException("Illegal direction: " + dir);
 		}
+	}
+
+	// in the spritesheet, the ghost order is: BLINKY, PINKY, INKY, CLYDE
+	private int index(GhostPersonality personality) {
+		return personality.ordinal();
 	}
 
 	private BufferedImage section(int x, int y, int w, int h) {
@@ -167,16 +173,16 @@ public class ArcadeThemeSprites {
 	}
 
 	public Sprite makeSprite_pacManWalking(Direction dir) {
-		return Sprite.of(imagePacManWalking[sheetOrder(dir)]).animate(BACK_AND_FORTH, 20);
+		return Sprite.of(imagePacManWalking[index(dir)]).animate(BACK_AND_FORTH, 20);
 	}
 
 	public Sprite makeSprite_pacManDying() {
 		return Sprite.of(imagePacManDying).animate(LINEAR, 100);
 	}
 
-	public Sprite makeSprite_ghostColored(int color, Direction dir) {
-		BufferedImage[] frames = Arrays.copyOfRange(imageGhostColored[color], 2 * sheetOrder(dir),
-				2 * (sheetOrder(dir) + 1));
+	public Sprite makeSprite_ghostColored(GhostPersonality personality, Direction dir) {
+		BufferedImage[] frames = Arrays.copyOfRange(imageGhostColored[index(personality)], 2 * index(dir),
+				2 * (index(dir) + 1));
 		return Sprite.of(frames).animate(BACK_AND_FORTH, 300);
 	}
 
@@ -189,6 +195,6 @@ public class ArcadeThemeSprites {
 	}
 
 	public Sprite makeSprite_ghostEyes(Direction dir) {
-		return Sprite.of(imageGhostEyes[sheetOrder(dir)]);
+		return Sprite.of(imageGhostEyes[index(dir)]);
 	}
 }

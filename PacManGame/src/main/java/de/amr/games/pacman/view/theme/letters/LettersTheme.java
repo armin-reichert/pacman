@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.util.Map;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -41,21 +42,21 @@ public class LettersTheme extends AbstractTheme {
 		put("offset-baseline", Tile.SIZE - 1);
 		put("ghost-colors", Map.of(
 		//@formatter:off
-			Ghost.RED_GHOST,    Color.RED,
-			Ghost.PINK_GHOST,   Color.PINK,
-			Ghost.CYAN_GHOST,   Color.CYAN,
-			Ghost.ORANGE_GHOST, Color.ORANGE
+			GhostPersonality.BLINKY, Color.RED,
+			GhostPersonality.PINKY,  Color.PINK,
+			GhostPersonality.INKY,   Color.CYAN,
+			GhostPersonality.CLYDE,  Color.ORANGE
 		//@formatter:on
 		));
 		put("sounds", ArcadeSounds.SOUNDS);
 	}
 
-	private Color ghostColor(Ghost ghost) {
-		Map<Integer, Color> colors = THEME.$value("ghost-colors");
-		return colors.getOrDefault(ghost.getColor(), Color.WHITE);
+	Color ghostColor(Ghost ghost) {
+		Map<Integer, Color> colorByPersonality = $value("ghost-colors");
+		return colorByPersonality.getOrDefault(ghost.getPersonality(), Color.WHITE);
 	}
 
-	private String ghostLetter(Ghost ghost) {
+	String ghostLetter(Ghost ghost) {
 		if (ghost.getState() == null) {
 			return ghost.name.substring(0, 1);
 		}

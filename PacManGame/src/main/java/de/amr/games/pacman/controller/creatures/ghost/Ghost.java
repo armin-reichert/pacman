@@ -45,10 +45,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class Ghost extends Creature<Ghost, GhostState> {
 
-	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
-
-	private final int color;
-
+	private final GhostPersonality personality;
 	private House house;
 	private Bed bed;
 	private Supplier<GhostState> fnSubsequentState;
@@ -59,9 +56,9 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private Supplier<Long> fnFlashTimeTicks = () -> 0L;
 	private IRenderer renderer;
 
-	public Ghost(World world, PacMan pacMan, String name, int color) {
+	public Ghost(World world, PacMan pacMan, String name, GhostPersonality personality) {
 		super(GhostState.class, world, name);
-		this.color = color;
+		this.personality = personality;
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		/*@formatter:off*/
 		beginStateMachine()
@@ -262,8 +259,8 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		return sanity != null ? sanity.getState() : GhostSanity.IMMUNE;
 	}
 
-	public int getColor() {
-		return color;
+	public GhostPersonality getPersonality() {
+		return personality;
 	}
 
 	public int getBounty() {

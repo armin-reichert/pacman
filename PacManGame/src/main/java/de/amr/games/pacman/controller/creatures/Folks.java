@@ -16,6 +16,8 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
+import de.amr.games.pacman.controller.creatures.ghost.GhostSanity;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -37,18 +39,18 @@ public class Folks {
 	public Folks(World world, House ghostHouse) {
 		this.world = world;
 		this.ghostHouse = ghostHouse;
-		
+
 		pacMan = new PacMan(world);
-		blinky = new Ghost(world, pacMan, "Blinky", Ghost.RED_GHOST);
-		inky = new Ghost(world, pacMan, "Inky", Ghost.CYAN_GHOST);
-		pinky = new Ghost(world, pacMan, "Pinky", Ghost.PINK_GHOST);
-		clyde = new Ghost(world, pacMan, "Clyde", Ghost.ORANGE_GHOST);
-		
+		blinky = new Ghost(world, pacMan, "Blinky", GhostPersonality.BLINKY);
+		inky = new Ghost(world, pacMan, "Inky", GhostPersonality.INKY);
+		pinky = new Ghost(world, pacMan, "Pinky", GhostPersonality.PINKY);
+		clyde = new Ghost(world, pacMan, "Clyde", GhostPersonality.CLYDE);
+
 		blinky.assignBed(ghostHouse, 0);
 		inky.assignBed(ghostHouse, 1);
 		pinky.assignBed(ghostHouse, 2);
 		clyde.assignBed(ghostHouse, 3);
-		
+
 		tellEmWhatToDo();
 	}
 
@@ -67,7 +69,11 @@ public class Folks {
 		});
 
 		you(blinky).when(ENTERING_HOUSE).enterDoorAndGoToBed().door(door).bed(pinky.bed()).ok();
-		you(blinky).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
+		you(blinky).when(SCATTERING).headFor().tile(() -> {
+			GhostSanity sanity = blinky.getSanity();
+			return sanity == GhostSanity.ELROY1 || sanity == GhostSanity.ELROY2 ? pacMan.tileLocation()
+					: Tile.at(world.width() - 3, 0);
+		}).ok();
 		you(blinky).when(CHASING).headFor().tile(pacMan::tileLocation).ok();
 
 		you(inky).when(SCATTERING).headFor().tile(world.width() - 1, world.height() - 1).ok();

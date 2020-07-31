@@ -6,6 +6,7 @@ import java.util.Map;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
@@ -38,10 +39,10 @@ public class BlocksTheme extends AbstractTheme {
 		put("wall-color", new Color(139, 69, 19));
 		put("ghost-colors", Map.of(
 		//@formatter:off
-			Ghost.RED_GHOST,    Color.RED,
-			Ghost.PINK_GHOST,   Color.PINK,
-			Ghost.CYAN_GHOST,   Color.CYAN,
-			Ghost.ORANGE_GHOST, Color.ORANGE
+			GhostPersonality.BLINKY, Color.RED,
+			GhostPersonality.PINKY,  Color.PINK,
+			GhostPersonality.INKY,   Color.CYAN,
+			GhostPersonality.CLYDE,  Color.ORANGE
 		//@formatter:on
 		));
 		put("symbol-colors", Map.of(
@@ -59,14 +60,14 @@ public class BlocksTheme extends AbstractTheme {
 		put("sounds", ArcadeSounds.SOUNDS);
 	}
 
-	public Color ghostColor(Ghost ghost) {
-		Map<Integer, Color> colors = $value("ghost-colors");
-		return colors.getOrDefault(ghost.getColor(), Color.WHITE);
+	Color ghostColor(Ghost ghost) {
+		Map<Integer, Color> colorByPersonality = $value("ghost-colors");
+		return colorByPersonality.getOrDefault(ghost.getPersonality(), Color.WHITE);
 	}
 
-	public Color symbolColor(String symbolName) {
-		Map<String, Color> colors = $value("symbol-colors");
-		return colors.getOrDefault(symbolName, Color.GREEN);
+	Color symbolColor(String symbolName) {
+		Map<String, Color> colorBySymbol = $value("symbol-colors");
+		return colorBySymbol.getOrDefault(symbolName, Color.GREEN);
 	}
 
 	@Override
