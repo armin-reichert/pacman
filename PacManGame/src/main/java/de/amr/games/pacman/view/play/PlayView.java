@@ -64,6 +64,11 @@ public class PlayView implements PacManGameView {
 	}
 
 	@Override
+	public void init() {
+		clearMessages();
+	}
+
+	@Override
 	public void update() {
 	}
 
@@ -88,11 +93,6 @@ public class PlayView implements PacManGameView {
 	@Override
 	public Theme getTheme() {
 		return theme;
-	}
-
-	@Override
-	public void init() {
-		clearMessages();
 	}
 
 	@Override

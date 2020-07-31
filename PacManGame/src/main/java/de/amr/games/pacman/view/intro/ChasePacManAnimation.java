@@ -100,15 +100,15 @@ public class ChasePacManAnimation extends GameObject implements Themeable {
 	public void start() {
 		init();
 		theme.sounds().clipGhostChase().loop();
-		if (!theme.sounds().clipEating().isRunning()) {
-			theme.sounds().clipEating().loop();
+		if (!theme.sounds().clipCrunching().isRunning()) {
+			theme.sounds().clipCrunching().loop();
 		}
 	}
 
 	@Override
 	public void stop() {
 		theme.sounds().clipGhostChase().stop();
-		theme.sounds().clipEating().stop();
+		theme.sounds().clipCrunching().stop();
 		folks.all().forEach(creature -> creature.entity.tf.vx = 0);
 	}
 

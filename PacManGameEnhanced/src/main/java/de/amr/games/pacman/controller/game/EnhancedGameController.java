@@ -18,6 +18,7 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
+import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.api.Theme;
@@ -266,7 +267,7 @@ public class EnhancedGameController extends GameController {
 		if (getState() != PLAYING) {
 			return;
 		}
-		world.habitat().filter(world::containsSimplePellet).forEach(tile -> {
+		world.habitat().filter(location -> world.hasFood(Pellet.SNACK, location)).forEach(tile -> {
 			world.clearFood(tile);
 			game.scoreSimplePelletFound();
 			doorMan().ifPresent(doorMan -> {

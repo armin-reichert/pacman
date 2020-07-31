@@ -161,7 +161,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		ghostPointsAnimation.setTheme(theme);
 		messagesRenderer = theme.messagesRenderer();
 	}
-
+	
 	private class ScrollingLogoAnimation extends State<IntroState> implements View {
 
 		@Override

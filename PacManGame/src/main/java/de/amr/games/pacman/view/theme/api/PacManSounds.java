@@ -12,7 +12,7 @@ import de.amr.easy.game.assets.SoundClip;
  */
 public interface PacManSounds {
 
-	SoundClip clipEating();
+	SoundClip clipCrunching();
 
 	SoundClip clipEatFruit();
 

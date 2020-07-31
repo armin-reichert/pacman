@@ -40,7 +40,7 @@ public class ChaseGhostsAnimation extends GameObject implements Themeable {
 
 	@Override
 	public void stop() {
-		theme.sounds().clipEating().stop();
+		theme.sounds().clipCrunching().stop();
 	}
 
 	@Override
