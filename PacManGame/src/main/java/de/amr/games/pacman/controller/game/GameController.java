@@ -140,11 +140,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (tunnel) {
 				return speed(level.ghostTunnelSpeed);
 			}
-			GhostMadness sanity = ghost.getMadness();
-			if (sanity == GhostMadness.ELROY1) {
+			GhostMadness madness = ghost.getMadness();
+			if (madness == GhostMadness.ELROY1) {
 				return speed(level.elroy1Speed);
 			}
-			if (sanity == GhostMadness.ELROY2) {
+			if (madness == GhostMadness.ELROY2) {
 				return speed(level.elroy2Speed);
 			}
 			return speed(level.ghostSpeed);
