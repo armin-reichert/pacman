@@ -230,11 +230,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						introView.exit();
 					})
 				
-				.state(GETTING_READY).customStateClass(GettingReadyState.class)
+				.state(GETTING_READY).customState(new GettingReadyState())
 				
-				.state(PLAYING).customStateClass(PlayingState.class)
+				.state(PLAYING).customState(new PlayingState())
 				
-				.state(CHANGING_LEVEL).customStateClass(ChangingLevelState.class)
+				.state(CHANGING_LEVEL).customState(new ChangingLevelState())
 				
 				.state(GHOST_DYING)
 					.timeoutAfter(sec(1))
