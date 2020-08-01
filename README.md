@@ -233,32 +233,46 @@ Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGa
 
 ```java
 beginStateMachine()
-	.description("BonusControl")
-	.initialState(INACTIVE)
+	.description("Bonus Controller")
+	.initialState(ABSENT)
 	.states()
-		.state(INACTIVE)
-			.onEntry(() -> world.setBonus(null))
-		.state(ACTIVE)
+
+		.state(ABSENT)
+			.onEntry(world::clearBonusFood)
+
+		.state(PRESENT)
 			.timeoutAfter(() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()))
 			.onEntry(() -> {
-				Bonus bonus = new Bonus(Game.BONUS_LOCATION, game.level.bonusSymbol.name(), game.level.bonusValue);
-				bonus.state = ACTIVE;
-				world.setBonus(bonus);
-				loginfo("Bonus '%s' (value %d) activated for %.2f sec", 
-						bonus.symbol, bonus.value, state().getDuration() / 60f);
+					ArcadeBonus bonus = new ArcadeBonus();
+					bonus.symbol = game.level.bonusSymbol;
+					bonus.value = game.level.bonusValue;
+					bonus.setState(PRESENT);
+					world.addBonusFood(bonus);
+					loginfo("Bonus '%s' activated for %.2f sec", bonus, state().getDuration() / 60f);
 			})
-		.state(CONSUMED)
-			.timeoutAfter(() -> sec(3))
-			.onEntry(() -> {
-				Bonus bonus = world.getBonus().get();
-				bonus.state = CONSUMED;
-				loginfo("Bonus '%s' (value %d) consumed after %.2f sec", 
-						bonus.symbol, bonus.value, state(ACTIVE).getTicksConsumed() / 60f);
-			})
+
+		.state(CONSUMED).timeoutAfter(sec(3))
+
 	.transitions()
-		.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
-		.when(ACTIVE).then(INACTIVE).onTimeout()
-		.when(CONSUMED).then(INACTIVE).onTimeout()
+
+		.when(PRESENT).then(CONSUMED).on(BonusFoundEvent.class)
+			.act(() -> {
+				world.bonusFood().ifPresent(bonusFood -> {
+					bonusFood.setState(CONSUMED);
+					loginfo("Bonus '%s' consumed after %.2f sec",	bonusFood, state().getTicksConsumed() / 60f);
+				});
+			})
+
+		.when(PRESENT).then(ABSENT).onTimeout()
+			.act(() -> {
+				world.bonusFood().ifPresent(bonusFood -> {
+					bonusFood.setState(CONSUMED);
+					loginfo("Bonus '%s' not consumed", bonusFood);
+				});
+			})
+
+		.when(CONSUMED).then(ABSENT).onTimeout()
+
 .endStateMachine();
 ```
 
