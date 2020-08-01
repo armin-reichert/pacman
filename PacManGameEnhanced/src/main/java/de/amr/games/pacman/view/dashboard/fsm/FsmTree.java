@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import de.amr.statemachine.core.StateMachine;
@@ -33,6 +34,22 @@ public class FsmTree extends DefaultTreeModel {
 		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
 		if (selectedNode != null && selectedNode.getUserObject() instanceof FsmData) {
 			return Optional.of((FsmData) selectedNode.getUserObject());
+		}
+		return Optional.empty();
+	}
+
+	public Optional<FsmData> getData(StateMachine<?, ?> fsm) {
+		for (int i = 0; i < root.getChildCount(); ++i) {
+			TreeNode child = root.getChildAt(i);
+			if (child instanceof DefaultMutableTreeNode) {
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) child;
+				if (node.getUserObject() instanceof FsmData) {
+					FsmData data = (FsmData) node.getUserObject();
+					if (data.fsm == fsm) {
+						return Optional.of(data);
+					}
+				}
+			}
 		}
 		return Optional.empty();
 	}

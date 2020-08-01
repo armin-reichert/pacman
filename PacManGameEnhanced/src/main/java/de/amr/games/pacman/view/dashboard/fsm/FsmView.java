@@ -13,8 +13,10 @@ import java.io.FileWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import javax.swing.AbstractAction;
@@ -42,24 +44,29 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	static final String GRAPHVIZ_ONLINE_URL = "https://dreampuf.github.io/GraphvizOnline";
 
-	private Action actionViewInWindow = new AbstractAction("View in Window") {
+	static class FsmWindow extends JFrame {
+		FsmGraphView graphView;
+		StateMachine<?, ?> fsm;
+
+		public FsmWindow() {
+			setSize(800, 600);
+			setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+			setLocationRelativeTo(null);
+			graphView = new FsmGraphView();
+			getContentPane().add(graphView);
+		}
+	}
+
+	private Action actionViewInWindow = new AbstractAction("Show in Window") {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (fsmWindow == null) {
-				fsmWindow = new JFrame();
-				fsmWindow.setSize(800, 600);
-				fsmWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				fsmWindow.setLocationRelativeTo(null);
-				fsmWindowGraphView = new FsmGraphView();
-				fsmWindow.getContentPane().add(fsmWindowGraphView);
-			}
-			fsmWindowGraphView.requestFocus();
-			fsmWindow.setVisible(true);
+			tree.getSelectedData().ifPresent(data -> showInWindow(data.fsm));
 		}
 	};
 
 	private Action actionViewOnline = new AbstractAction("View Online") {
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			tree.getSelectedData().ifPresent(data -> {
@@ -83,8 +90,7 @@ public class FsmView extends JPanel implements Lifecycle {
 	};
 
 	private LinkedHashSet<StateMachine<?, ?>> machines;
-	private JFrame fsmWindow;
-	private FsmGraphView fsmWindowGraphView;
+	private Map<StateMachine<?, ?>, FsmWindow> fsmWindowMap = new HashMap<>();
 	private FsmTree tree;
 	private JTree treeView;
 	private JToolBar toolBar;
@@ -169,9 +175,21 @@ public class FsmView extends JPanel implements Lifecycle {
 		if (path != null && e.getClickCount() == 2) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
 			if (node != null && node.getUserObject() instanceof FsmData) {
-				actionViewInWindow.actionPerformed(null);
+				FsmData data = (FsmData) node.getUserObject();
+				showInWindow(data.fsm);
 			}
 		}
+	}
+
+	private void showInWindow(StateMachine<?, ?> fsm) {
+		FsmWindow window = fsmWindowMap.get(fsm);
+		if (window == null) {
+			window = new FsmWindow();
+			fsmWindowMap.put(fsm, window);
+		}
+		window.graphView.requestFocus();
+		window.setTitle("State Machine: " + fsm.getDescription());
+		window.setVisible(true);
 	}
 
 	@Override
@@ -188,25 +206,28 @@ public class FsmView extends JPanel implements Lifecycle {
 			tree.rebuild(machinesList);
 			treeView.setSelectionPath(tree.getSelectedPath());
 		}
-		FsmData data = tree.getSelectedData().orElse(null);
-		if (data != null) {
+		actions().forEach(action -> action.setEnabled(false));
+		tree.getSelectedData().ifPresent(data -> {
 			data.updateGraph();
-		}
-		fsmEmbeddedGraphView.setData(data);
-		fsmEmbeddedTextView.setData(data);
-		if (fsmWindow != null) {
-			fsmWindow.setTitle("State Machine: " + (data != null ? data.fsm.getDescription() : "No machine selected"));
-			fsmWindowGraphView.setData(data);
-		}
-		actions().forEach(action -> action.setEnabled(data != null));
+			fsmEmbeddedGraphView.setData(data);
+			fsmEmbeddedTextView.setData(data);
+			actions().forEach(action -> action.setEnabled(true));
+		});
+		fsmWindowMap.entrySet().forEach(entry -> {
+			FsmWindow window = entry.getValue();
+			if (window.isVisible()) {
+				tree.getData(entry.getKey()).ifPresent(fsmData -> {
+					fsmData.updateGraph();
+					window.graphView.setData(fsmData);
+				});
+			}
+		});
 	}
 
 	private Stream<Action> actions() {
 		Stream<Action> actions = Stream.of(actionViewOnline, actionSave, fsmEmbeddedGraphView.actionZoomIn,
 				fsmEmbeddedGraphView.actionZoomOut);
-		return fsmWindow != null
-				? Stream.concat(Stream.of(fsmWindowGraphView.actionZoomIn, fsmWindowGraphView.actionZoomOut), actions)
-				: actions;
+		return actions;
 	}
 
 	private void saveDotFile(String fileName, String dotText) {

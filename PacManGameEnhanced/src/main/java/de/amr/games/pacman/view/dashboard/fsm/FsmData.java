@@ -3,12 +3,12 @@ package de.amr.games.pacman.view.dashboard.fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;
 
-class FsmData {
+public class FsmData {
 
-	StateMachine<?, ?> fsm;
-	String graph;
-	double scalingEmbedded;
-	double scalingWindow;
+	public StateMachine<?, ?> fsm;
+	public String graph;
+	public double scalingEmbedded;
+	public double scalingWindow;
 
 	public FsmData(StateMachine<?, ?> fsm) {
 		this.fsm = fsm;
