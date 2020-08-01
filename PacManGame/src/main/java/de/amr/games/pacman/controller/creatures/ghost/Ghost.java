@@ -49,7 +49,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private House house;
 	private Bed bed;
 	private Supplier<GhostState> fnSubsequentState;
-	private MadnessController madnessController;
+	private GhostMadnessController madnessController;
 	private Steering<Ghost> previousSteering;
 	private int bounty;
 	private boolean flashing;
@@ -220,14 +220,14 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	}
 
 	public GhostMadness getMadness() {
-		return Optional.ofNullable(madnessController).map(MadnessController::getState).orElse(GhostMadness.HEALTHY);
+		return Optional.ofNullable(madnessController).map(GhostMadnessController::getState).orElse(GhostMadness.HEALTHY);
 	}
 
-	public MadnessController getMadnessController() {
+	public GhostMadnessController getMadnessController() {
 		return madnessController;
 	}
 
-	public void setMadnessController(MadnessController controller) {
+	public void setMadnessController(GhostMadnessController controller) {
 		this.madnessController = controller;
 	}
 

@@ -18,11 +18,11 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class MadnessController extends StateMachine<GhostMadness, Void> {
+public class GhostMadnessController extends StateMachine<GhostMadness, Void> {
 
 	private boolean elroySuspended;
 
-	public MadnessController(Game game, World world, Ghost ghost, PacMan pacMan) {
+	public GhostMadnessController(Game game, World world, Ghost ghost, PacMan pacMan) {
 		super(GhostMadness.class);
 		//@formatter:off
 		beginStateMachine()

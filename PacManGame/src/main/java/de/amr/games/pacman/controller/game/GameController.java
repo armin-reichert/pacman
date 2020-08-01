@@ -37,7 +37,7 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostMadness;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.controller.creatures.ghost.MadnessController;
+import de.amr.games.pacman.controller.creatures.ghost.GhostMadnessController;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -671,7 +671,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			creature.getReadyToRumble(game);
 			world.include(creature);
 		});
-		MadnessController madnessController = new MadnessController(game, world, folks.blinky, folks.pacMan);
+		GhostMadnessController madnessController = new GhostMadnessController(game, world, folks.blinky, folks.pacMan);
 		madnessController.init();
 		folks.blinky.setMadnessController(madnessController);
 	}
