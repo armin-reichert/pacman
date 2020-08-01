@@ -123,15 +123,15 @@ public class Ghost extends Creature<Ghost, GhostState> {
 					.on(GhostUnlockedEvent.class)
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == SCATTERING)
+					.condition(() -> justLeftGhostHouse() && getNextStateToEnter() == SCATTERING)
 					.annotation("Outside house")
 		
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == CHASING)
+					.condition(() -> justLeftGhostHouse() && getNextStateToEnter() == CHASING)
 					.annotation("Outside house")
 				
 				.when(LEAVING_HOUSE).then(FRIGHTENED)
-					.condition(() -> hasLeftGhostHouse() && getNextStateToEnter() == FRIGHTENED)
+					.condition(() -> justLeftGhostHouse() && getNextStateToEnter() == FRIGHTENED)
 					.annotation("Outside house")
 					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
@@ -271,9 +271,9 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		return flashing;
 	}
 
-	private boolean hasLeftGhostHouse() {
+	public boolean justLeftGhostHouse() {
 		Tile location = tileLocation();
-		return house.isEntry(location) && entity.tf.y == location.row * Tile.SIZE;
+		return getState() == LEAVING_HOUSE && house.isEntry(location) && entity.tf.y == location.row * Tile.SIZE;
 	}
 
 	@Override
