@@ -38,7 +38,6 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 		};
 	};
 
-	private boolean embedded;
 	private FsmData data;
 	private JLabel graphDisplay;
 
@@ -61,10 +60,6 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 		getActionMap().put(actionZoomOut, actionZoomOut);
 	}
 
-	public void setEmbedded(boolean embedded) {
-		this.embedded = embedded;
-	}
-
 	@Override
 	public void init() {
 	}
@@ -72,8 +67,8 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		if (data != null) {
-			BufferedImage png = Graphviz.fromString(data.graph).totalMemory(20_000_000).scale(scaling())
-					.render(Format.PNG).toImage();
+			BufferedImage png = Graphviz.fromString(data.graph).totalMemory(20_000_000).scale(scaling()).render(Format.PNG)
+					.toImage();
 			graphDisplay.setIcon(new ImageIcon(png));
 		} else {
 			graphDisplay.setIcon(null);
@@ -86,25 +81,17 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 	}
 
 	public void zoomIn() {
-		if (embedded) {
-			data.scalingEmbedded = larger();
-		} else {
-			data.scalingWindow = larger();
-		}
+		data.scaling = larger();
 		update();
 	}
 
 	public void zoomOut() {
-		if (embedded) {
-			data.scalingEmbedded = smaller();
-		} else {
-			data.scalingWindow = smaller();
-		}
+		data.scaling = smaller();
 		update();
 	}
 
 	private double scaling() {
-		return embedded ? data.scalingEmbedded : data.scalingWindow;
+		return data.scaling;
 	}
 
 	private double larger() {

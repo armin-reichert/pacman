@@ -6,17 +6,9 @@ import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import javax.swing.AbstractAction;
@@ -31,12 +23,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.easy.game.controller.StateMachineRegistry;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;
 
@@ -56,14 +45,6 @@ public class FsmView extends JPanel implements Lifecycle {
 			getContentPane().add(graphView);
 		}
 	}
-
-	private Action actionViewInWindow = new AbstractAction("Show in Window") {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			tree.getSelectedData().ifPresent(data -> showInWindow(data.fsm));
-		}
-	};
 
 	private Action actionViewOnline = new AbstractAction("View Online") {
 
@@ -89,19 +70,28 @@ public class FsmView extends JPanel implements Lifecycle {
 		}
 	};
 
-	private LinkedHashSet<StateMachine<?, ?>> machines;
-	private Map<StateMachine<?, ?>, FsmWindow> fsmWindowMap = new HashMap<>();
+	private Action actionOpenDashboard = new AbstractAction("Open Dashboard") {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			dashboard.window.setVisible(true);
+		};
+	};
+
+	private FsmModel model = new FsmModel();
+
+	private FsmDashboard dashboard;
 	private FsmTree tree;
 	private JTree treeView;
 	private JToolBar toolBar;
 	private JButton btnViewOnline;
 	private JButton btnSave;
+	private JButton btnZoomIn;
+	private JButton btnZoomOut;
+	private JButton btnOpenDashboard;
 	private JTabbedPane tabbedPane;
 	private FsmTextView fsmEmbeddedTextView;
 	private FsmGraphView fsmEmbeddedGraphView;
-	private JButton btnZoomIn;
-	private JButton btnZoomOut;
-	private JButton btnViewInWindow;
 
 	public FsmView() {
 		setLayout(new BorderLayout(0, 0));
@@ -120,20 +110,12 @@ public class FsmView extends JPanel implements Lifecycle {
 		treeView.setModel(tree);
 		treeView.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		treeView.addTreeSelectionListener(this::onTreeViewSelectionChange);
-		treeView.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				onTreeViewMousePressed(e);
-			}
-		});
 
 		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 		splitPane.setRightComponent(tabbedPane);
 
 		fsmEmbeddedTextView = new FsmTextView();
-
 		fsmEmbeddedGraphView = new FsmGraphView();
-		fsmEmbeddedGraphView.setEmbedded(true);
 
 		tabbedPane.addTab("Graph", null, fsmEmbeddedGraphView, null);
 		tabbedPane.addTab("Source", null, fsmEmbeddedTextView, null);
@@ -145,9 +127,9 @@ public class FsmView extends JPanel implements Lifecycle {
 		btnSave.setAction(actionSave);
 		toolBar.add(btnSave);
 
-		btnViewInWindow = new JButton("New button");
-		btnViewInWindow.setAction(actionViewInWindow);
-		toolBar.add(btnViewInWindow);
+		btnOpenDashboard = new JButton("Open Dashboard");
+		btnOpenDashboard.setAction(actionOpenDashboard);
+		toolBar.add(btnOpenDashboard);
 
 		btnViewOnline = new JButton("Preview");
 		toolBar.add(btnViewOnline);
@@ -170,28 +152,6 @@ public class FsmView extends JPanel implements Lifecycle {
 		}
 	}
 
-	private void onTreeViewMousePressed(MouseEvent e) {
-		TreePath path = treeView.getPathForLocation(e.getX(), e.getY());
-		if (path != null && e.getClickCount() == 2) {
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-			if (node != null && node.getUserObject() instanceof FsmData) {
-				FsmData data = (FsmData) node.getUserObject();
-				showInWindow(data.fsm);
-			}
-		}
-	}
-
-	private void showInWindow(StateMachine<?, ?> fsm) {
-		FsmWindow window = fsmWindowMap.get(fsm);
-		if (window == null) {
-			window = new FsmWindow();
-			fsmWindowMap.put(fsm, window);
-		}
-		window.graphView.requestFocus();
-		window.setTitle("State Machine: " + fsm.getDescription());
-		window.setVisible(true);
-	}
-
 	@Override
 	public void init() {
 		// not used
@@ -199,28 +159,23 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (machines == null || !machines.equals(StateMachineRegistry.REGISTRY.machines())) {
-			List<StateMachine<?, ?>> machinesList = new ArrayList<>(StateMachineRegistry.REGISTRY.machines());
-			machinesList.sort(Comparator.comparing(StateMachine::getDescription));
-			machines = new LinkedHashSet<>(machinesList);
-			tree.rebuild(machinesList);
+		actions().forEach(action -> action.setEnabled(false));
+		if (dashboard == null) {
+			dashboard = new FsmDashboard(model);
+		}
+		model.update();
+		if (dashboard.window.isVisible()) {
+			dashboard.update();
+		}
+		if (model.hasChanged()) {
+			tree.rebuild(model);
 			treeView.setSelectionPath(tree.getSelectedPath());
 		}
-		actions().forEach(action -> action.setEnabled(false));
 		tree.getSelectedData().ifPresent(data -> {
 			data.updateGraph();
 			fsmEmbeddedGraphView.setData(data);
 			fsmEmbeddedTextView.setData(data);
 			actions().forEach(action -> action.setEnabled(true));
-		});
-		fsmWindowMap.entrySet().forEach(entry -> {
-			FsmWindow window = entry.getValue();
-			if (window.isVisible()) {
-				tree.getData(entry.getKey()).ifPresent(fsmData -> {
-					fsmData.updateGraph();
-					window.graphView.setData(fsmData);
-				});
-			}
 		});
 	}
 

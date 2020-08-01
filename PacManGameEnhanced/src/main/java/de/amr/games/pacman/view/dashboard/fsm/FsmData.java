@@ -7,14 +7,12 @@ public class FsmData {
 
 	public StateMachine<?, ?> fsm;
 	public String graph;
-	public double scalingEmbedded;
-	public double scalingWindow;
+	public double scaling;
 
 	public FsmData(StateMachine<?, ?> fsm) {
 		this.fsm = fsm;
 		graph = DotPrinter.printToString(fsm);
-		scalingEmbedded = 1.0;
-		scalingWindow = 1.2;
+		scaling = 1.0;
 	}
 
 	@Override
