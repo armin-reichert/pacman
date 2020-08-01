@@ -6,7 +6,10 @@
 	<artifactId>pacman</artifactId>
 	<version>1.0</version>
 	<packaging>pom</packaging>
-	<name>Pac-Man</name>
+	<name>PacMan</name>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<description>Pac-Man game implementation based on finite-state machines</description>
 	<modules>
 		<module>PacManGame</module>
