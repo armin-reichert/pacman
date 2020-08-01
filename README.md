@@ -371,46 +371,46 @@ This behavior is implemented by the following state machine:
 <img src="PacManDoc/blinky-elroy-fsm.png"/>
 
 ```java
-		beginStateMachine()
-			.initialState(HEALTHY)
-			.description(() -> String.format("Ghost %s Madness", ghost.name))
-			.states()
-			
-				.state(HEALTHY).onEntry(this::runAroundMazeCorner)
-				
-				.state(ELROY1).onEntry(this::chasePacMan)
-					
-				.state(ELROY2).onEntry(this::chasePacMan)
-					
-				.state(SUSPENDED).onEntry(this::runAroundMazeCorner)
-			
-			.transitions()
-			
-				.when(HEALTHY).then(ELROY2)
-					.condition(this::reachedElroy2Score)
-					.annotation(() -> String.format("Pellets left <= %d", game.level.elroy2DotsLeft))
-			
-				.when(HEALTHY).then(ELROY1)
-					.condition(this::reachedElroy1Score)
-					.annotation(() -> String.format("Pellets left <= %d", game.level.elroy1DotsLeft))
+beginStateMachine()
+	.initialState(HEALTHY)
+	.description(() -> String.format("Ghost %s Madness", ghost.name))
+	.states()
 
-				.when(SUSPENDED).then(ELROY2)
-					.on(CLYDE_EXITS_HOUSE)
-					.condition(this::reachedElroy2Score)
-					
-				.when(SUSPENDED).then(ELROY1)
-					.on(CLYDE_EXITS_HOUSE)
-					.condition(this::reachedElroy1Score)
-					
-				.when(ELROY1).then(ELROY2)
-					.condition(this::reachedElroy2Score)
-					.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
+		.state(HEALTHY).onEntry(this::runAroundMazeCorner)
 
-				.when(ELROY1).then(SUSPENDED).on(PACMAN_DIES)
-				
-				.when(ELROY2).then(SUSPENDED).on(PACMAN_DIES)
-					
-		.endStateMachine();
+		.state(ELROY1).onEntry(this::chasePacMan)
+
+		.state(ELROY2).onEntry(this::chasePacMan)
+
+		.state(SUSPENDED).onEntry(this::runAroundMazeCorner)
+
+	.transitions()
+
+		.when(HEALTHY).then(ELROY2)
+			.condition(this::reachedElroy2Score)
+			.annotation(() -> String.format("Pellets left <= %d", game.level.elroy2DotsLeft))
+
+		.when(HEALTHY).then(ELROY1)
+			.condition(this::reachedElroy1Score)
+			.annotation(() -> String.format("Pellets left <= %d", game.level.elroy1DotsLeft))
+
+		.when(SUSPENDED).then(ELROY2)
+			.on(CLYDE_EXITS_HOUSE)
+			.condition(this::reachedElroy2Score)
+
+		.when(SUSPENDED).then(ELROY1)
+			.on(CLYDE_EXITS_HOUSE)
+			.condition(this::reachedElroy1Score)
+
+		.when(ELROY1).then(ELROY2)
+			.condition(this::reachedElroy2Score)
+			.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
+
+		.when(ELROY1).then(SUSPENDED).on(PACMAN_DIES)
+
+		.when(ELROY2).then(SUSPENDED).on(PACMAN_DIES)
+
+.endStateMachine();
 ```
 
 See class [GhostMadnessController](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/ghost/GhostMadnessController.java)
