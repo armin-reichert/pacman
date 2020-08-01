@@ -92,18 +92,22 @@ public class GhostMadnessController extends StateMachine<GhostMadness, Byte> {
 				.when(SUSPENDED).then(ELROY2)
 					.on(CLYDE_EXITS_HOUSE)
 					.condition(this::reachedElroy2Score)
+					.annotation("Become Elroy again when Clyde exits house")
 					
 				.when(SUSPENDED).then(ELROY1)
 					.on(CLYDE_EXITS_HOUSE)
 					.condition(this::reachedElroy1Score)
+					.annotation("Become Elroy again when Clyde exits house")
 					
 				.when(ELROY1).then(ELROY2)
 					.condition(this::reachedElroy2Score)
 					.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
 
 				.when(ELROY1).then(SUSPENDED).on(PACMAN_DIES)
+					.annotation("Suspend Elroy when Pac-Man dies")
 				
 				.when(ELROY2).then(SUSPENDED).on(PACMAN_DIES)
+					.annotation("Suspend Elroy when Pac-Man dies")
 					
 		.endStateMachine();
 		//@formatter:on
