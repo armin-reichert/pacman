@@ -8,7 +8,9 @@ In 1980, they would have thought: what a cute boy hunting those litte colorful g
 
 **Pac-Man, a female-hating, homophobic, racist, old yellow man!** 
 
-Why that? First of all, without any doubt, this Pac-Man guy is, as his name clearly proves, a **man**, born around 1980 certainly an **old man** (thank god not an **old white man** or even worse an **orange man**), but he certainly is (hmm, wasn't the Nintendo guy in fact an orange man?) an **old yellow man**.
+Why that? 
+
+First of all, without any doubt, this Pac-Man guy is, as his name clearly proves, a **man**, born around 1980 certainly an **old man** (thank god not an **old white man** or even worse an **orange man**), but he certainly is (hmm, wasn't the Nintendo guy in fact an orange man?) an **old yellow man**.
 
 And what has this **old yellow man** been doing all his life? He has been chasing **ghost people of color**! And these ghosts, as their dresses (are that burkas?) indicate, are most probably **females** or **transgenders** or any of the other 300 cis-trans-WTF genders! 
 
@@ -347,53 +349,60 @@ you(clyde).when(SCATTERING).headFor().tile(0, world.height() - 1).ok();
 
 #### Blinky (the red ghost)
 
-Blinky is special because he becomes "insane" when the number of remaining pellets reaches certain values, depending on the current game level. He then becomes "cruise elroy", whatever that means. All other ghosts are "immune".
+Blinky is special because he becomes "Cruise Elroy" when the number of remaining pellets reaches certain values, depending on the current game level. He then 
+chases Pac-Man also in SCATTERING state and increases his speed. When Pac-Man gets killed, this behavior is suspended until Clyde has left the ghosthouse.
 
 This behavior is implemented by the following state machine:
 
 ```java
-beginStateMachine()
-	.initialState(initialSanity)
-	.description(() -> String.format("%s sanity", ghostName))
-	.states()
-		.state(IMMUNE)
-		.state(INFECTABLE)
-		.state(ELROY1)
-		.state(ELROY2)
+		beginStateMachine()
+			.initialState(HEALTHY)
+			.description(() -> String.format("Ghost %s Madness", ghost.name))
+			.states()
+			
+				.state(HEALTHY).onEntry(this::runAroundMazeCorner)
+				
+				.state(ELROY1).onEntry(this::chasePacMan)
+					
+				.state(ELROY2).onEntry(this::chasePacMan)
+					
+				.state(SUSPENDED).onEntry(this::runAroundMazeCorner)
+			
+			.transitions()
+			
+				.when(HEALTHY).then(ELROY2)
+					.condition(this::reachedElroy2Score)
+					.annotation(() -> String.format("Pellets left <= %d", game.level.elroy2DotsLeft))
+			
+				.when(HEALTHY).then(ELROY1)
+					.condition(this::reachedElroy1Score)
+					.annotation(() -> String.format("Pellets left <= %d", game.level.elroy1DotsLeft))
 
-	.transitions()
+				.when(SUSPENDED).then(ELROY2)
+					.on(CLYDE_EXITS_HOUSE)
+					.condition(this::reachedElroy2Score)
+					
+				.when(SUSPENDED).then(ELROY1)
+					.on(CLYDE_EXITS_HOUSE)
+					.condition(this::reachedElroy1Score)
+					
+				.when(ELROY1).then(ELROY2)
+					.condition(this::reachedElroy2Score)
+					.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
 
-		.when(ELROY1).then(ELROY2)
-			.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
-			.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
-
-		.when(INFECTABLE).then(ELROY2)
-			.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
-			.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
-
-		.when(INFECTABLE).then(ELROY1)
-			.condition(() -> game.level.remainingFoodCount() <= game.level.elroy1DotsLeft)
-			.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy1DotsLeft))
-
-.endStateMachine();
+				.when(ELROY1).then(SUSPENDED).on(PACMAN_DIES)
+				
+				.when(ELROY2).then(SUSPENDED).on(PACMAN_DIES)
+					
+		.endStateMachine();
 ```
 
-where the states are from this enumeration type:
+See class [GhostMadnessController](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/ghost/GhostMadnessController.java)
+
+
+Blinky's chasing behavior is to directly attack Pac-Man. 
 
 ```java
-enum Sanity {
-	INFECTABLE, ELROY1, ELROY2, IMMUNE;
-};
-```
-
-Blinky's chasing behavior is to directly attack Pac-Man. When in "Elroy" mode, he attacks Pac-Man also in SCATTERING state:
-
-```java
-you(blinky).when(SCATTERING).headFor().tile(() -> {
-	GhostSanity sanity = blinky.getSanity();
-	return sanity == GhostSanity.ELROY1 || sanity == GhostSanity.ELROY2 ? pacMan.tileLocation()
-			: Tile.at(world.width() - 3, 0);
-}).ok();
 you(blinky).when(CHASING).headFor().tile(pacMan::location).ok();
 ```
 
