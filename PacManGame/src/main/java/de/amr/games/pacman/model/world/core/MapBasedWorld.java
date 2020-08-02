@@ -1,12 +1,9 @@
 package de.amr.games.pacman.model.world.core;
 
-import static de.amr.games.pacman.model.world.core.WorldMap.B_EATEN;
-import static de.amr.games.pacman.model.world.core.WorldMap.B_ENERGIZER;
-import static de.amr.games.pacman.model.world.core.WorldMap.B_FOOD;
-import static de.amr.games.pacman.model.world.core.WorldMap.B_INTERSECTION;
-import static de.amr.games.pacman.model.world.core.WorldMap.B_TUNNEL;
-import static de.amr.games.pacman.model.world.core.WorldMap.B_WALL;
+import java.util.Optional;
+import java.util.stream.Stream;
 
+import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Portal;
 
@@ -17,11 +14,23 @@ import de.amr.games.pacman.model.world.components.Portal;
  */
 public abstract class MapBasedWorld extends AbstractWorld {
 
+	//@formatter:off
+	public static final byte B_WALL       = 0;
+	public static final byte B_TUNNEL       = 1;
+	public static final byte B_INTERSECTION = 2;
+	public static final byte B_FOOD         = 3;
+	public static final byte B_EATEN        = 4;
+	//@formatter:on
+
 	protected final WorldMap map;
 
 	public MapBasedWorld(byte[][] data) {
 		super(data.length, data[0].length);
 		map = new WorldMap(data);
+	}
+
+	public WorldMap map() {
+		return map;
 	}
 
 	protected Portal horizontalPortal(Tile leftEntry, Tile rightEntry) {
@@ -89,8 +98,8 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	// food container
 
 	@Override
-	public int totalFoodCount() {
-		return map.totalFoodCount;
+	public Stream<Food> food() {
+		return habitat().filter(this::hasFood).map(this::foodAt).map(Optional::get);
 	}
 
 	@Override
@@ -137,13 +146,5 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	@Override
 	public boolean hasEatenFood(Tile tile) {
 		return is(tile, B_FOOD) && is(tile, B_EATEN);
-	}
-
-	public boolean containsSimplePellet(Tile tile) {
-		return hasFood(tile) && !is(tile, B_ENERGIZER);
-	}
-
-	public boolean containsEnergizer(Tile tile) {
-		return hasFood(tile) && is(tile, B_ENERGIZER);
 	}
 }
