@@ -51,14 +51,12 @@ class WorldRenderer implements IWorldRenderer {
 				drawSimplePellet(g, location);
 			}
 		});
-		world.bonusFood().ifPresent(bonusFood -> {
-			Vector2f center = Vector2f.of(bonusFood.location().x() + Tile.SIZE, bonusFood.location().y() + Tile.SIZE / 2);
-			if (bonusFood.isPresent()) {
-				ArcadeBonus bonus = (ArcadeBonus) bonusFood;
-				drawActiveBonus(g, center, bonus.symbol);
-			} else if (bonusFood.isConsumed()) {
-				ArcadeBonus bonus = (ArcadeBonus) bonusFood;
-				drawConsumedBonus(g, center, bonus.value);
+		world.bonusFood().ifPresent(bonus -> {
+			Vector2f center = Vector2f.of(bonus.location().x() + Tile.SIZE, bonus.location().y() + Tile.SIZE / 2);
+			if (bonus.isPresent() && bonus instanceof ArcadeBonus) {
+				drawActiveBonus(g, center, ((ArcadeBonus) bonus).symbol());
+			} else if (bonus.isConsumed()) {
+				drawConsumedBonus(g, center, bonus.value());
 			}
 		});
 		smoothDrawingOff(g);

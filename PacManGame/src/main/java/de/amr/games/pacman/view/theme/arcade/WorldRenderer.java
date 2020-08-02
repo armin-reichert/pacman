@@ -100,15 +100,14 @@ public class WorldRenderer implements IWorldRenderer {
 			});
 		}
 		// draw bonus as image when active or as number when consumed
-		world.bonusFood().ifPresent(bonusFood -> {
-			if (bonusFood.isPresent()) {
-				ArcadeBonus bonus = (ArcadeBonus) bonusFood;
-				Vector2f position = Vector2f.of(bonusFood.location().x(), bonusFood.location().y() - Tile.SIZE / 2);
-				g.drawImage(symbolImages.get(bonus.symbol.name()), position.roundedX(), position.roundedY(), null);
-			} else if (bonusFood.isConsumed()) {
-				Vector2f position = Vector2f.of(bonusFood.location().x(), bonusFood.location().y() - Tile.SIZE / 2);
-				ArcadeBonus bonus = (ArcadeBonus) bonusFood;
-				g.drawImage(pointsImages.get(bonus.value), position.roundedX(), position.roundedY(), null);
+		world.bonusFood().ifPresent(bonus -> {
+			if (bonus.isPresent()) {
+				ArcadeBonus arcadeBonus = (ArcadeBonus) bonus;
+				Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.SIZE / 2);
+				g.drawImage(symbolImages.get(arcadeBonus.symbol.name()), position.roundedX(), position.roundedY(), null);
+			} else if (bonus.isConsumed()) {
+				Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.SIZE / 2);
+				g.drawImage(pointsImages.get(bonus.value()), position.roundedX(), position.roundedY(), null);
 			}
 		});
 	}

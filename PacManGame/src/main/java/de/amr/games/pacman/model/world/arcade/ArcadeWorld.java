@@ -151,9 +151,9 @@ public class ArcadeWorld extends MapBasedWorld {
 	public void addBonusFood(BonusFood bonusFood) {
 		if (bonusFood instanceof ArcadeBonus) {
 			bonus = (ArcadeBonus) bonusFood;
-			bonus.location = BONUS_LOCATION;
+			bonus.setLocation(BONUS_LOCATION);
 		} else {
-			throw new IllegalArgumentException("Cannot add this type of bonus food to Aracde world");
+			throw new IllegalArgumentException("Cannot add this type of bonus food to Arcade world");
 		}
 	}
 

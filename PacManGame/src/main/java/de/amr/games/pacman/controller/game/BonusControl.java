@@ -38,9 +38,8 @@ public class BonusControl extends StateMachine<BonusFoodState, PacManGameEvent> 
 				.state(PRESENT)
 					.timeoutAfter(() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()))
 					.onEntry(() -> {
-							ArcadeBonus bonus = new ArcadeBonus();
-							bonus.symbol = game.level.bonusSymbol;
-							bonus.value = game.level.bonusValue;
+							ArcadeBonus bonus = new ArcadeBonus(game.level.bonusSymbol);
+							bonus.setValue(game.level.bonusValue);
 							bonus.setState(PRESENT);
 							world.addBonusFood(bonus);
 							loginfo("Bonus '%s' activated for %.2f sec", bonus, state().getDuration() / 60f);
