@@ -14,6 +14,8 @@ import de.amr.statemachine.dot.DotPrinter;
 
 public class FsmDashboard implements Lifecycle {
 
+	static int WIDTH = 1024, HEIGHT = 700;
+
 	private class FsmWindow extends JInternalFrame {
 		private FsmGraphView graphView;
 		private FsmData data;
@@ -24,12 +26,17 @@ public class FsmDashboard implements Lifecycle {
 			setResizable(true);
 			setIconifiable(true);
 			setMaximizable(true);
+			try {
+				setMaximum(false);
+			} catch (PropertyVetoException x) {
+				x.printStackTrace();
+			}
 			data = new FsmData(fsm);
 			data.graph = DotPrinter.printToString(fsm);
 			setTitle(fsm.getDescription());
-			setSize(800, 200);
+			setSize(desktop.getWidth(), 250);
 			setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-			setLocation(10 * fsmWindowMap.size(), 15 * fsmWindowMap.size());
+			setLocation(0, 25 * fsmWindowMap.size());
 			graphView = new FsmGraphView();
 			graphView.setData(data);
 			getContentPane().add(graphView);
@@ -44,10 +51,11 @@ public class FsmDashboard implements Lifecycle {
 	public FsmDashboard(FsmModel model) {
 		this.model = model;
 		desktop = new JDesktopPane();
+		desktop.setSize(WIDTH, HEIGHT);
 		desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 		window = new JFrame("Pac-Man State Machines Dashboard");
 		window.setContentPane(desktop);
-		window.setSize(800, 600);
+		window.setSize(WIDTH + 5, HEIGHT + 5);
 	}
 
 	@Override
@@ -83,11 +91,6 @@ public class FsmDashboard implements Lifecycle {
 		FsmWindow fsmWindow = fsmWindowMap.get(fsm);
 		if (fsmWindow == null) {
 			fsmWindow = new FsmWindow(fsm);
-			try {
-				fsmWindow.setMaximum(false);
-			} catch (PropertyVetoException x) {
-				// ignore
-			}
 			fsmWindowMap.put(fsm, fsmWindow);
 			desktop.add(fsmWindow);
 			fsmWindow.setVisible(true);
