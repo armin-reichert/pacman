@@ -22,14 +22,14 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	public static final byte B_EATEN        = 4;
 	//@formatter:on
 
-	protected final WorldMap map;
+	protected final ByteMap map;
 
 	public MapBasedWorld(byte[][] data) {
 		super(data.length, data[0].length);
-		map = new WorldMap(data);
+		map = new ByteMap(data);
 	}
 
-	public WorldMap map() {
+	public ByteMap map() {
 		return map;
 	}
 
