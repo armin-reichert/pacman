@@ -53,17 +53,17 @@ public abstract class MapBasedWorld extends AbstractWorld {
 		return new Portal(top, bottom, true);
 	}
 
-	protected boolean is(Tile tile, byte bit) {
+	protected boolean is(Tile tile, int bit) {
 		return includes(tile) && map.is(tile.row, tile.col, bit);
 	}
 
-	protected void set(Tile tile, byte bit) {
+	protected void set(Tile tile, int bit) {
 		if (includes(tile)) {
 			map.set1(tile.row, tile.col, bit);
 		}
 	}
 
-	protected void clear(Tile tile, byte bit) {
+	protected void clear(Tile tile, int bit) {
 		if (includes(tile)) {
 			map.set0(tile.row, tile.col, bit);
 		}
