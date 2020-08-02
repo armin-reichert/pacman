@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.world.components.Portal;
 public abstract class MapBasedWorld extends AbstractWorld {
 
 	//@formatter:off
-	public static final byte B_WALL       = 0;
+	public static final byte B_WALL         = 0;
 	public static final byte B_TUNNEL       = 1;
 	public static final byte B_INTERSECTION = 2;
 	public static final byte B_FOOD         = 3;
@@ -71,18 +71,18 @@ public abstract class MapBasedWorld extends AbstractWorld {
 
 	@Override
 	public int width() {
-		return map.data[0].length;
+		return map.getWidth();
 	}
 
 	@Override
 	public int height() {
-		return map.data.length;
+		return map.getHeight();
 	}
 
 	@Override
 	public boolean isAccessible(Tile tile) {
 		boolean inside = includes(tile);
-		return inside && !is(tile, B_WALL) || !inside && isPortal(tile);
+		return inside && !is(tile, B_WALL) || isPortal(tile);
 	}
 
 	@Override

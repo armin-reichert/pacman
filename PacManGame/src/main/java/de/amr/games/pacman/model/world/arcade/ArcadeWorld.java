@@ -177,25 +177,17 @@ public class ArcadeWorld extends MapBasedWorld {
 		return IntStream.range(3 * width(), (height() + 4) * width()).mapToObj(i -> Tile.at(i % width(), i / width()));
 	}
 
-	public boolean containsSimplePellet(Tile tile) {
-		return hasFood(tile) && !is(tile, B_ENERGIZER);
-	}
-
-	public boolean containsEnergizer(Tile tile) {
-		return hasFood(tile) && is(tile, B_ENERGIZER);
-	}
-
 	@Override
 	public Optional<Food> foodAt(Tile location) {
-		if (containsSimplePellet(location)) {
-			return Optional.of(Pellet.SNACK);
-		}
-		if (containsEnergizer(location)) {
-			return Optional.of(Pellet.ENERGIZER);
+		if (!hasFood(location)) {
+			return Optional.empty();
 		}
 		if (BONUS_LOCATION.equals(location)) {
 			return Optional.ofNullable(bonus);
 		}
-		return Optional.empty();
+		if (is(location, B_ENERGIZER)) {
+			return Optional.of(Pellet.ENERGIZER);
+		}
+		return Optional.of(Pellet.SNACK);
 	}
 }
