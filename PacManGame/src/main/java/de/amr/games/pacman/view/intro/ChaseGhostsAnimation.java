@@ -21,10 +21,14 @@ public class ChaseGhostsAnimation extends GameObject implements Themeable {
 	private Theme theme;
 	private int points;
 
-	public ChaseGhostsAnimation(Theme theme, ArcadeWorld world, Folks folks) {
+	public ChaseGhostsAnimation(Theme theme, ArcadeWorld world) {
 		this.world = world;
-		this.folks = folks;
+		folks = new Folks(world, world.house(0));
 		setTheme(theme);
+	}
+	
+	public Folks getFolks() {
+		return folks;
 	}
 
 	@Override

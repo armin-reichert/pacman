@@ -30,10 +30,14 @@ public class ChasePacManAnimation extends GameObject implements Themeable {
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
 
-	public ChasePacManAnimation(Theme theme, ArcadeWorld world, Folks folks) {
+	public ChasePacManAnimation(Theme theme, ArcadeWorld world) {
 		this.world = world;
-		this.folks = folks;
+		folks = new Folks(world, world.house(0));
 		setTheme(theme);
+	}
+
+	public Folks getFolks() {
+		return folks;
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.games.pacman.view.theme.api.Themeable;
 
@@ -38,10 +39,10 @@ public class GhostPointsAnimation extends GameObject implements Themeable {
 	private boolean energizer;
 	private int dx = 2 * Tile.SIZE + 3;
 
-	public GhostPointsAnimation(Theme theme, Folks folks) {
-		this.folks = folks;
+	public GhostPointsAnimation(Theme theme, World world) {
 		tf.width = 6 * dx;
 		tf.height = 2 * Tile.SIZE;
+		folks = new Folks(world, world.house(0));
 		ghosts = folks.ghosts().toArray(Ghost[]::new);
 		setTheme(theme);
 	}

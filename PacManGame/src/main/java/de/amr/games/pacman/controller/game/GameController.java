@@ -209,20 +209,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			.states()
 			
 				.state(LOADING_MUSIC)
-					.onEntry(() -> {
-						currentView = new MusicLoadingView(theme);
-					})
-					.onExit(() -> {
-						currentView.exit();
-					})
+					.onEntry(() -> currentView = new MusicLoadingView(theme))
+					.onExit(() -> currentView.exit())
 					
 				.state(INTRO)
-					.onEntry(() -> {
-						currentView = new IntroView(world, folks, theme);
-					})
-					.onExit(() -> {
-						currentView.exit();
-					})
+					.onEntry(() -> currentView = new IntroView(theme))
+					.onExit(() -> currentView.exit())
 				
 				.state(GETTING_READY).customState(new GettingReadyState())
 				

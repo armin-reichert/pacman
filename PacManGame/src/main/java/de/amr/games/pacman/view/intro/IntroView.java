@@ -22,9 +22,7 @@ import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.api.PacManGameView;
@@ -54,8 +52,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	private static final Color RED = new Color(171, 19, 0);
 //	PINK = (248, 120, 88);
 
-	private final World world;
-	private final Folks folks;
+	private final ArcadeWorld world;
 	private final PacManSounds sounds;
 	private final int width;
 	private final int height;
@@ -69,10 +66,9 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 	private MessagesRenderer messagesRenderer;
 
-	public IntroView(World world, Folks folks, Theme theme) {
+	public IntroView(Theme theme) {
 		super(IntroState.class);
-		this.world = world;
-		this.folks = folks;
+		world = new ArcadeWorld();
 		this.theme = theme;
 		this.messagesRenderer = theme.messagesRenderer();
 		this.sounds = theme.sounds();
@@ -120,16 +116,15 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 	@Override
 	public void init() {
-		ArcadeWorld world = new ArcadeWorld();
 		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		pacManLogo = new ImageWidget(arcadeSprites.image_logo());
 		pacManLogo.tf.centerHorizontally(0, width);
 		pacManLogo.tf.y = 20;
-		chasePacMan = new ChasePacManAnimation(theme, world, new Folks(world, world.house(0)));
+		chasePacMan = new ChasePacManAnimation(theme, world);
 		chasePacMan.tf.centerHorizontally(0, width);
 		chasePacMan.tf.y = 100;
-		chaseGhosts = new ChaseGhostsAnimation(theme, world, new Folks(world, world.house(0)));
-		ghostPointsAnimation = new GhostPointsAnimation(theme, new Folks(world, world.house(0)));
+		chaseGhosts = new ChaseGhostsAnimation(theme, world);
+		ghostPointsAnimation = new GhostPointsAnimation(theme, world);
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/
 			.text(GITHUB_URL)
@@ -229,7 +224,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			ghostPointsAnimation.start();
 			chasePacMan.tf.centerHorizontally(0, width);
 			chasePacMan.initPositions(width / 2 + 5 * Tile.SIZE);
-			folks.all().forEach(creature -> creature.entity.tf.vx = 0);
+			chasePacMan.getFolks().all().forEach(creature -> creature.entity.tf.vx = 0);
 			gitHubLink.visible = true;
 		}
 
