@@ -218,8 +218,9 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		this.bed = house.bed(bedNumber);
 	}
 
-	public GhostMadness getMadness() {
-		return Optional.ofNullable(madnessController).map(GhostMadnessController::getState).orElse(GhostMadness.HEALTHY);
+	public GhostMadnessState getMadnessState() {
+		return Optional.ofNullable(madnessController).map(GhostMadnessController::getState)
+				.orElse(GhostMadnessState.HEALTHY);
 	}
 
 	public GhostMadnessController getMadnessController() {
@@ -233,13 +234,23 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	@Override
 	public void getReadyToRumble(Game game) {
 		this.game = game;
+
+		// speed is defined by game level
 		setSpeed(() -> GameController.ghostSpeed(this, game.level));
+
+		// frighened time too
 		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
+
+		// when killed, ghost is displayed for one second as a number (its "bounty"), then returns to
+		// ghosthouse
 		state(DEAD).setTimer(sec(1));
 		state(DEAD).entryAction = () -> bounty = game.killedGhostPoints();
+
+		// Blinky gets mad depending on game score
 		if (madnessController != null) {
 			madnessController.setGame(game);
 		}
+
 		init();
 	}
 
