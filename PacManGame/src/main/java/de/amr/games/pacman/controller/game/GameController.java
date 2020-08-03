@@ -210,7 +210,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
-						currentView = new MusicLoadingView(theme, settings.width, settings.height);
+						currentView = new MusicLoadingView(theme);
 					})
 					.onExit(() -> {
 						currentView.exit();
@@ -218,7 +218,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.state(INTRO)
 					.onEntry(() -> {
-						currentView = new IntroView(world, folks, theme, settings.width, settings.height);
+						currentView = new IntroView(world, folks, theme);
 					})
 					.onExit(() -> {
 						currentView.exit();

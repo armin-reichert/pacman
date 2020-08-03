@@ -21,6 +21,7 @@ import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -68,15 +69,15 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 	private MessagesRenderer messagesRenderer;
 
-	public IntroView(World world, Folks folks, Theme theme, int width, int height) {
+	public IntroView(World world, Folks folks, Theme theme) {
 		super(IntroState.class);
 		this.world = world;
 		this.folks = folks;
 		this.theme = theme;
 		this.messagesRenderer = theme.messagesRenderer();
 		this.sounds = theme.sounds();
-		this.width = width;
-		this.height = height;
+		this.width = PacManApp.settings.width;
+		this.height = PacManApp.settings.height;
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("IntroView")
@@ -162,7 +163,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		ghostPointsAnimation.setTheme(theme);
 		messagesRenderer = theme.messagesRenderer();
 	}
-	
+
 	private class ScrollingLogoAnimation extends State<IntroState> implements View {
 
 		@Override

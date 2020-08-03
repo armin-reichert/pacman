@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
@@ -40,9 +41,9 @@ public class MusicLoadingView implements PacManGameView {
 	private int ghostInc;
 	private Random rnd = new Random();
 
-	public MusicLoadingView(Theme theme, int width, int height) {
-		this.width = width;
-		this.height = height;
+	public MusicLoadingView(Theme theme) {
+		this.width = PacManApp.settings.width;
+		this.height = PacManApp.settings.height;
 		setTheme(theme);
 		init();
 	}
