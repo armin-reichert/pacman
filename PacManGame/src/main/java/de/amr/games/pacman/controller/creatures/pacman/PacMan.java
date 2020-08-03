@@ -111,6 +111,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	@Override
 	public void getReadyToRumble(Game game) {
 		setSpeed(() -> GameController.pacManSpeed(this, game.level));
+		init();
 	}
 
 	/**

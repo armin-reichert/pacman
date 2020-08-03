@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Door;
@@ -40,17 +41,25 @@ public class Folks {
 		this.ghostHouse = ghostHouse;
 
 		pacMan = new PacMan(world);
-		blinky = new Ghost(world, pacMan, "Blinky", GhostPersonality.BLINKY);
-		inky = new Ghost(world, pacMan, "Inky", GhostPersonality.INKY);
-		pinky = new Ghost(world, pacMan, "Pinky", GhostPersonality.PINKY);
-		clyde = new Ghost(world, pacMan, "Clyde", GhostPersonality.CLYDE);
 
+		blinky = new Ghost(world, pacMan, "Blinky", GhostPersonality.BLINKY);
+		blinky.becomesMad(pacMan);
 		blinky.assignBed(ghostHouse, 0);
+
+		inky = new Ghost(world, pacMan, "Inky", GhostPersonality.INKY);
 		inky.assignBed(ghostHouse, 1);
+
+		pinky = new Ghost(world, pacMan, "Pinky", GhostPersonality.PINKY);
 		pinky.assignBed(ghostHouse, 2);
+
+		clyde = new Ghost(world, pacMan, "Clyde", GhostPersonality.CLYDE);
 		clyde.assignBed(ghostHouse, 3);
 
 		tellEmWhatToDo();
+	}
+
+	public void getReadyToRumble(Game game) {
+		all().forEach(creature -> creature.getReadyToRumble(game));
 	}
 
 	private void tellEmWhatToDo() {

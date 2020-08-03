@@ -36,7 +36,6 @@ import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostMadness;
-import de.amr.games.pacman.controller.creatures.ghost.GhostMadnessController;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
@@ -648,14 +647,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		ghostCommand = new GhostCommand(game, folks);
 		bonusControl = new BonusControl(game, world);
 		doorMan = new DoorMan(world, world.house(0), game, folks);
-		folks.all().forEach(creature -> {
-			creature.init();
-			creature.getReadyToRumble(game);
-			world.include(creature);
-		});
-		GhostMadnessController madnessController = new GhostMadnessController(game, world, folks.blinky, folks.pacMan);
-		madnessController.init();
-		folks.blinky.setMadnessController(madnessController);
+		folks.all().forEach(world::include);
+		folks.getReadyToRumble(game);
 	}
 
 	protected MusicLoadingView createMusicLoadingView() {

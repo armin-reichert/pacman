@@ -53,8 +53,8 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private Steering<Ghost> previousSteering;
 	private int bounty;
 	private boolean flashing;
-	private Supplier<Long> fnFlashTimeTicks = () -> 0L;
 	private IRenderer renderer;
+	private Game game;
 
 	public Ghost(World world, PacMan pacMan, String name, GhostPersonality personality) {
 		super(GhostState.class, world, name);
@@ -105,8 +105,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 					.onTick((state, consumed, remaining) -> {
 						maybeMeetPacMan(pacMan);
 						move();
-						// one flashing animation takes 0.5 sec
-						flashing = remaining < fnFlashTimeTicks.get() * 0.5f;
+						flashing = remaining < getFlashTimeTicks() * 0.5f; // one flashing takes 0.5 sec
 					})
 				
 				.state(DEAD)
@@ -227,17 +226,25 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		return madnessController;
 	}
 
-	public void setMadnessController(GhostMadnessController controller) {
-		this.madnessController = controller;
+	public void becomesMad(PacMan pacMan) {
+		this.madnessController = new GhostMadnessController(this, pacMan);
 	}
 
 	@Override
 	public void getReadyToRumble(Game game) {
-		fnFlashTimeTicks = () -> game.level.numFlashes * sec(0.5f);
+		this.game = game;
 		setSpeed(() -> GameController.ghostSpeed(this, game.level));
 		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
 		state(DEAD).setTimer(sec(1));
 		state(DEAD).entryAction = () -> bounty = game.killedGhostPoints();
+		if (madnessController != null) {
+			madnessController.setGame(game);
+		}
+		init();
+	}
+
+	private long getFlashTimeTicks() {
+		return game != null ? game.level.numFlashes * sec(0.5f) : 0;
 	}
 
 	private void maybeMeetPacMan(PacMan pacMan) {

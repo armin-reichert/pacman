@@ -7,9 +7,10 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostMadness.SUSPEN
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
+import java.util.Objects;
+
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
 
@@ -53,17 +54,14 @@ public class GhostMadnessController extends StateMachine<GhostMadness, Byte> {
 	private static final byte PACMAN_DIES = 0;
 	private static final byte CLYDE_EXITS_HOUSE = 1;
 
-	private final Game game;
-	private final World world;
 	private final Ghost ghost;
 	private final PacMan pacMan;
+	private Game game;
 
-	public GhostMadnessController(Game game, World world, Ghost ghost, PacMan pacMan) {
+	public GhostMadnessController(Ghost ghost, PacMan pacMan) {
 		super(GhostMadness.class, TransitionMatchStrategy.BY_VALUE);
-		this.game = game;
-		this.world = world;
-		this.ghost = ghost;
-		this.pacMan = pacMan;
+		this.ghost = Objects.requireNonNull(ghost);
+		this.pacMan = Objects.requireNonNull(pacMan);
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		//@formatter:off
 		beginStateMachine()
@@ -71,13 +69,13 @@ public class GhostMadnessController extends StateMachine<GhostMadness, Byte> {
 			.description(() -> String.format("Ghost %s Madness", ghost.name))
 			.states()
 			
-				.state(HEALTHY).onEntry(this::runAroundMazeCorner)
+				.state(HEALTHY).onEntry(this::targetCorner)
 				
-				.state(ELROY1).onEntry(this::chasePacMan)
+				.state(ELROY1).onEntry(this::targetPacMan)
 					
-				.state(ELROY2).onEntry(this::chasePacMan)
+				.state(ELROY2).onEntry(this::targetPacMan)
 					
-				.state(SUSPENDED).onEntry(this::runAroundMazeCorner)
+				.state(SUSPENDED).onEntry(this::targetCorner)
 			
 			.transitions()
 			
@@ -111,6 +109,12 @@ public class GhostMadnessController extends StateMachine<GhostMadness, Byte> {
 					
 		.endStateMachine();
 		//@formatter:on
+		init();
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+		init();
 	}
 
 	private boolean reachedElroy1Score() {
@@ -121,11 +125,11 @@ public class GhostMadnessController extends StateMachine<GhostMadness, Byte> {
 		return game.level.remainingFoodCount() <= game.level.elroy2DotsLeft;
 	}
 
-	private void runAroundMazeCorner() {
-		you(ghost).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
+	private void targetCorner() {
+		you(ghost).when(SCATTERING).headFor().tile(ghost.world().width() - 3, 0).ok();
 	}
 
-	private void chasePacMan() {
+	private void targetPacMan() {
 		you(ghost).when(SCATTERING).headFor().tile(pacMan::tileLocation).ok();
 	}
 
