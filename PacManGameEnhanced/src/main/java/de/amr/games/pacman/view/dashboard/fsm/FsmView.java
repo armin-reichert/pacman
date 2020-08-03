@@ -164,12 +164,10 @@ public class FsmView extends JPanel implements Lifecycle {
 			dashboard = new FsmDashboard(model);
 		}
 		model.update();
-		if (dashboard.window.isVisible()) {
-			dashboard.update();
-		}
 		if (model.hasChanged()) {
 			tree.rebuild(model);
 			treeView.setSelectionPath(tree.getSelectedPath());
+			dashboard.update();
 		}
 		tree.getSelectedData().ifPresent(data -> {
 			data.updateGraph();
