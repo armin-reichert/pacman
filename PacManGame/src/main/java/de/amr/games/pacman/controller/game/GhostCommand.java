@@ -115,6 +115,7 @@ public class GhostCommand extends StateMachine<GhostCommandState, String> {
 			.when(CHASE).then(PAUSED).on("Pause")
 		.endStateMachine();
 		/*@formatter:on*/
+		init();
 	}
 
 	@Override

@@ -209,11 +209,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			.states()
 			
 				.state(LOADING_MUSIC)
-					.onEntry(() -> currentView = new MusicLoadingView(theme))
+					.onEntry(() -> currentView = createMusicLoadingView())
 					.onExit(() -> currentView.exit())
 					
 				.state(INTRO)
-					.onEntry(() -> currentView = new IntroView(theme))
+					.onEntry(() -> currentView = createIntroView())
 					.onExit(() -> currentView.exit())
 				
 				.state(GETTING_READY).customState(new GettingReadyState())
@@ -646,9 +646,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		world.fillFood();
 		game = new Game(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, folks);
-		ghostCommand.init();
 		bonusControl = new BonusControl(game, world);
-		bonusControl.init();
 		doorMan = new DoorMan(world, world.house(0), game, folks);
 		folks.all().forEach(creature -> {
 			creature.init();
@@ -658,6 +656,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		GhostMadnessController madnessController = new GhostMadnessController(game, world, folks.blinky, folks.pacMan);
 		madnessController.init();
 		folks.blinky.setMadnessController(madnessController);
+	}
+
+	protected MusicLoadingView createMusicLoadingView() {
+		return new MusicLoadingView(theme);
+	}
+
+	protected IntroView createIntroView() {
+		return new IntroView(theme);
 	}
 
 	protected PlayView createPlayView() {
