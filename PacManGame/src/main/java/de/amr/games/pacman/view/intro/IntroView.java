@@ -114,6 +114,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	
 		.endStateMachine();
 	  /*@formatter:on*/
+		init();
 	}
 
 	@Override

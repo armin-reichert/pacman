@@ -14,10 +14,9 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
 import de.amr.easy.game.Application;
-import de.amr.easy.game.controller.Lifecycle;
 import de.amr.statemachine.core.StateMachine;
 
-public class FsmDashboard implements Lifecycle {
+public class FsmDashboard {
 
 	static int WIDTH = 1024, HEIGHT = 700;
 
@@ -27,10 +26,10 @@ public class FsmDashboard implements Lifecycle {
 
 		public FsmFrame(FsmData data) {
 			this.data = data;
-			setClosable(false);
+			setClosable(true);
 			setResizable(true);
-			setIconifiable(true);
-			setMaximizable(true);
+			setIconifiable(false);
+			setMaximizable(false);
 			setTitle(data.getFsm().getDescription());
 			graphView = new FsmGraphView();
 			graphView.setData(data);
@@ -55,52 +54,63 @@ public class FsmDashboard implements Lifecycle {
 		JMenuBar menuBar = new JMenuBar();
 		window.setJMenuBar(menuBar);
 		menuBar.add(framesMenu);
+		buildFrames();
+		buildMenu();
 	}
 
-	@Override
-	public void init() {
-	}
-
-	@Override
 	public void update() {
 		desktop.removeAll();
 		fsmFrameMap.clear();
 		framesMenu.removeAll();
+		buildFrames();
+		buildMenu();
+	}
+
+	private void buildFrames() {
 		model.data().forEach(data -> {
 			FsmFrame frame = new FsmFrame(data);
 			fsmFrameMap.put(data.getFsm(), frame);
-			desktop.add(frame);
 			frame.setSize(desktop.getWidth() * 90 / 100, 250);
 			frame.setLocation(0, 25 * fsmFrameMap.size());
 			frame.setVisible(true);
-			try {
-				frame.setMaximum(false);
-			} catch (PropertyVetoException x) {
-				x.printStackTrace();
-			}
+//			try {
+//				frame.setClosed(true);
+//			} catch (PropertyVetoException x) {
+//				x.printStackTrace();
+//			}
+			frame.graphView.update();
+			desktop.add(frame);
+		});
+	}
+
+	private void buildMenu() {
+		model.data().forEach(data -> {
+			FsmFrame frame = fsmFrameMap.get(data.getFsm());
+			frame.setVisible(true);
 			JCheckBoxMenuItem item = new JCheckBoxMenuItem(frame.data.getFsm().getDescription());
-			item.setSelected(frame.isMaximum());
 			framesMenu.add(item);
+			item.setSelected(!frame.isClosed());
 			item.addActionListener(e -> {
 				try {
-					frame.setMaximum(item.isSelected());
+					frame.setClosed(!item.isSelected());
 				} catch (PropertyVetoException x) {
 					x.printStackTrace();
 				}
+				desktop.revalidate();
+				desktop.repaint();
 			});
 			frame.addInternalFrameListener(new InternalFrameAdapter() {
 				@Override
-				public void internalFrameIconified(InternalFrameEvent e) {
-					item.setSelected(true);
+				public void internalFrameClosed(InternalFrameEvent e) {
+					item.setSelected(false);
 				}
 
 				@Override
-				public void internalFrameDeiconified(InternalFrameEvent e) {
-					item.setSelected(false);
+				public void internalFrameOpened(InternalFrameEvent e) {
+					item.setSelected(true);
 				}
 			});
-			frame.graphView.update();
 		});
-		Application.loginfo("Menu updated, %d entries", framesMenu.getItemCount());
+		Application.loginfo("Menu created, %d entries", framesMenu.getItemCount());
 	}
 }

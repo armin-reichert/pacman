@@ -44,6 +44,7 @@ public class MusicLoadingView implements PacManGameView {
 		this.width = width;
 		this.height = height;
 		setTheme(theme);
+		init();
 	}
 
 	@Override

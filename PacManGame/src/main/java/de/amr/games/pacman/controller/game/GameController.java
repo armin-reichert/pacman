@@ -175,8 +175,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected Theme theme;
 	protected int currentThemeIndex = 0;
 	protected PacManGameView currentView;
-	protected IntroView introView;
-	protected MusicLoadingView musicLoadingView;
 	protected PlayView playView;
 	protected SoundState sound = new SoundState();
 
@@ -189,7 +187,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	/**
 	 * Creates a new game controller.
 	 * 
-	 * @param themesStream supported themes
+	 * @param supportedThemes supported themes
 	 */
 	public GameController(Theme... supportedThemes) {
 		super(PacManGameState.class);
@@ -212,22 +210,18 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
-						musicLoadingView = new MusicLoadingView(theme, settings.width, settings.height);
-						musicLoadingView.init();
-						currentView = musicLoadingView;
+						currentView = new MusicLoadingView(theme, settings.width, settings.height);
 					})
 					.onExit(() -> {
-						musicLoadingView.exit();
+						currentView.exit();
 					})
 					
 				.state(INTRO)
 					.onEntry(() -> {
-						introView = new IntroView(world, folks, theme, settings.width, settings.height);
-						introView.init();
-						currentView = introView;
+						currentView = new IntroView(world, folks, theme, settings.width, settings.height);
 					})
 					.onExit(() -> {
-						introView.exit();
+						currentView.exit();
 					})
 				
 				.state(GETTING_READY).customState(new GettingReadyState())
@@ -309,7 +303,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.annotation("Music loaded")
 
 				.when(INTRO).then(GETTING_READY)
-					.condition(() -> introView.isComplete())
+					.condition(() -> currentView.isComplete())
 					.annotation("Intro complete")
 					
 				.when(GETTING_READY).then(PLAYING)

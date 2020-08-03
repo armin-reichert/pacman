@@ -178,6 +178,8 @@ public class FsmView extends JPanel implements Lifecycle {
 			fsmEmbeddedTextView.setData(data);
 			actions().forEach(action -> action.setEnabled(true));
 		} else {
+			fsmEmbeddedGraphView.setData(null);
+			fsmEmbeddedTextView.setData(null);
 			actions().forEach(action -> action.setEnabled(false));
 		}
 	}
