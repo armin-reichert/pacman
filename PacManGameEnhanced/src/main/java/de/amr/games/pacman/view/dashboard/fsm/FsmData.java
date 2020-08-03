@@ -5,22 +5,23 @@ import de.amr.statemachine.dot.DotPrinter;
 
 public class FsmData {
 
-	public StateMachine<?, ?> fsm;
-	public String graph;
-	public double scaling;
+	private final StateMachine<?, ?> fsm;
+	private String graph;
 
 	public FsmData(StateMachine<?, ?> fsm) {
 		this.fsm = fsm;
-		graph = DotPrinter.printToString(fsm);
-		scaling = 1.0;
+		this.graph = DotPrinter.printToString(fsm);
 	}
 
-	@Override
-	public String toString() {
-		return fsm.getDescription();
+	public StateMachine<?, ?> getFsm() {
+		return fsm;
 	}
-
+	
 	public void updateGraph() {
 		graph = DotPrinter.printToString(fsm);
+	}
+
+	public String getGraph() {
+		return graph;
 	}
 }

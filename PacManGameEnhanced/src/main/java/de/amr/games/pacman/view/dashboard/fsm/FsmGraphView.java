@@ -14,11 +14,10 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
-import de.amr.easy.game.controller.Lifecycle;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 
-public class FsmGraphView extends JPanel implements Lifecycle {
+public class FsmGraphView extends JPanel {
 
 	static final double SCALE_MIN = 0.4;
 	static final double SCALE_MAX = 3.0;
@@ -40,6 +39,7 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 
 	private FsmData data;
 	private JLabel graphDisplay;
+	private double scaling = 1.0;
 
 	public FsmGraphView() {
 		setBackground(Color.WHITE);
@@ -60,14 +60,9 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 		getActionMap().put(actionZoomOut, actionZoomOut);
 	}
 
-	@Override
-	public void init() {
-	}
-
-	@Override
 	public void update() {
 		if (data != null) {
-			BufferedImage png = Graphviz.fromString(data.graph).totalMemory(20_000_000).scale(scaling()).render(Format.PNG)
+			BufferedImage png = Graphviz.fromString(data.getGraph()).totalMemory(20_000_000).scale(scaling).render(Format.PNG)
 					.toImage();
 			graphDisplay.setIcon(new ImageIcon(png));
 		} else {
@@ -81,24 +76,24 @@ public class FsmGraphView extends JPanel implements Lifecycle {
 	}
 
 	public void zoomIn() {
-		data.scaling = larger();
+		scaling = largerScaling();
 		update();
 	}
 
 	public void zoomOut() {
-		data.scaling = smaller();
+		scaling = smallerScaling();
 		update();
 	}
 
 	private double scaling() {
-		return data.scaling;
+		return scaling;
 	}
 
-	private double larger() {
+	private double largerScaling() {
 		return Math.min(SCALE_MAX, scaling() + SCALE_STEP);
 	}
 
-	private double smaller() {
+	private double smallerScaling() {
 		return Math.max(SCALE_MIN, scaling() - SCALE_STEP);
 	}
 }

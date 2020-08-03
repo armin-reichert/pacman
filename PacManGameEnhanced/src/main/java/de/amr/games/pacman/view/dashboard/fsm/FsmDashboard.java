@@ -16,7 +16,6 @@ import javax.swing.event.InternalFrameEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.statemachine.core.StateMachine;
-import de.amr.statemachine.dot.DotPrinter;
 
 public class FsmDashboard implements Lifecycle {
 
@@ -26,14 +25,13 @@ public class FsmDashboard implements Lifecycle {
 		private FsmGraphView graphView;
 		private FsmData data;
 
-		public FsmFrame(StateMachine<?, ?> fsm) {
-			data = new FsmData(fsm);
-			data.graph = DotPrinter.printToString(fsm);
+		public FsmFrame(FsmData data) {
+			this.data = data;
 			setClosable(false);
 			setResizable(true);
 			setIconifiable(true);
 			setMaximizable(true);
-			setTitle(fsm.getDescription());
+			setTitle(data.getFsm().getDescription());
 			graphView = new FsmGraphView();
 			graphView.setData(data);
 			getContentPane().add(graphView);
@@ -68,9 +66,9 @@ public class FsmDashboard implements Lifecycle {
 		desktop.removeAll();
 		fsmFrameMap.clear();
 		framesMenu.removeAll();
-		model.machines().forEach(fsm -> {
-			FsmFrame frame = new FsmFrame(fsm);
-			fsmFrameMap.put(fsm, frame);
+		model.data().forEach(data -> {
+			FsmFrame frame = new FsmFrame(data);
+			fsmFrameMap.put(data.getFsm(), frame);
 			desktop.add(frame);
 			frame.setSize(desktop.getWidth() * 90 / 100, 250);
 			frame.setLocation(0, 25 * fsmFrameMap.size());
@@ -80,7 +78,7 @@ public class FsmDashboard implements Lifecycle {
 			} catch (PropertyVetoException x) {
 				x.printStackTrace();
 			}
-			JCheckBoxMenuItem item = new JCheckBoxMenuItem(frame.data.fsm.getDescription());
+			JCheckBoxMenuItem item = new JCheckBoxMenuItem(frame.data.getFsm().getDescription());
 			item.setSelected(frame.isMaximum());
 			framesMenu.add(item);
 			item.addActionListener(e -> {
@@ -101,7 +99,6 @@ public class FsmDashboard implements Lifecycle {
 					item.setSelected(false);
 				}
 			});
-			frame.data.graph = DotPrinter.printToString(frame.data.fsm);
 			frame.graphView.update();
 		});
 		Application.loginfo("Menu updated, %d entries", framesMenu.getItemCount());

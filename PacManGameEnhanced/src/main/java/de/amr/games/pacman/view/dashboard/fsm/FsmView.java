@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URI;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.swing.AbstractAction;
@@ -27,7 +28,6 @@ import javax.swing.tree.TreeSelectionModel;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.statemachine.core.StateMachine;
-import de.amr.statemachine.dot.DotPrinter;
 
 public class FsmView extends JPanel implements Lifecycle {
 
@@ -52,7 +52,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		public void actionPerformed(ActionEvent e) {
 			tree.getSelectedData().ifPresent(data -> {
 				try {
-					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, data.graph);
+					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, data.getGraph());
 					Desktop.getDesktop().browse(uri);
 				} catch (Exception x) {
 					x.printStackTrace();
@@ -65,7 +65,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			tree.getSelectedData().ifPresent(data -> {
-				saveDotFile(data.fsm.getDescription() + ".dot", data.graph);
+				saveDotFile(data.getFsm().getDescription() + ".dot", data.getGraph());
 			});
 		}
 	};
@@ -148,7 +148,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		tree.setSelectedPath(e.getNewLeadSelectionPath());
 		FsmData node = tree.getSelectedData().orElse(null);
 		if (node != null) {
-			node.graph = DotPrinter.printToString(node.fsm);
+			node.updateGraph();
 		}
 	}
 
@@ -159,22 +159,27 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		actions().forEach(action -> action.setEnabled(false));
-		if (dashboard == null) {
-			dashboard = new FsmDashboard(model);
-		}
-		model.update();
-		if (model.hasChanged()) {
+		model.checkIfValid();
+		if (!model.isValid()) {
+			model.rebuild();
 			tree.rebuild(model);
 			treeView.setSelectionPath(tree.getSelectedPath());
-			dashboard.update();
+			if (dashboard == null) {
+				dashboard = new FsmDashboard(model);
+			} else {
+				dashboard.update();
+			}
 		}
-		tree.getSelectedData().ifPresent(data -> {
+		Optional<FsmData> selection = tree.getSelectedData();
+		if (selection.isPresent()) {
+			FsmData data = selection.get();
 			data.updateGraph();
 			fsmEmbeddedGraphView.setData(data);
 			fsmEmbeddedTextView.setData(data);
 			actions().forEach(action -> action.setEnabled(true));
-		});
+		} else {
+			actions().forEach(action -> action.setEnabled(false));
+		}
 	}
 
 	private Stream<Action> actions() {

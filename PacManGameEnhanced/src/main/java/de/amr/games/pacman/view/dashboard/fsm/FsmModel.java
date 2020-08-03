@@ -1,40 +1,40 @@
 package de.amr.games.pacman.view.dashboard.fsm;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import static de.amr.easy.game.controller.StateMachineRegistry.REGISTRY;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
-import de.amr.easy.game.controller.Lifecycle;
-import de.amr.easy.game.controller.StateMachineRegistry;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import de.amr.statemachine.core.StateMachine;
 
-public class FsmModel implements Lifecycle {
+public class FsmModel {
 
-	private LinkedHashSet<StateMachine<?, ?>> machines;
-	private boolean changed;
+	private List<FsmData> machines = new ArrayList<>();
+	private boolean valid;
 
-	@Override
-	public void init() {
+	public FsmModel() {
+		rebuild();
 	}
 
-	@Override
-	public void update() {
-		changed = false;
-		if (machines == null || !machines.equals(StateMachineRegistry.REGISTRY.machines())) {
-			List<StateMachine<?, ?>> machinesList = new ArrayList<>(StateMachineRegistry.REGISTRY.machines());
-			machinesList.sort(Comparator.comparing(StateMachine::getDescription));
-			machines = new LinkedHashSet<>(machinesList);
-			changed = true;
-		}
+	public Stream<FsmData> data() {
+		return machines.stream();
 	}
 
-	public Set<StateMachine<?, ?>> machines() {
-		return machines;
+	public void checkIfValid() {
+		valid = REGISTRY.machines().equals(machines.stream().map(FsmData::getFsm).collect(Collectors.toSet()));
 	}
 
-	public boolean hasChanged() {
-		return changed;
+	public boolean isValid() {
+		return valid;
+	}
+
+	public void rebuild() {
+		machines = REGISTRY.machines().stream().sorted(comparing(StateMachine::getDescription)).map(FsmData::new)
+				.collect(toList());
+		valid = true;
 	}
 }
