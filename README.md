@@ -532,15 +532,15 @@ The view layer supports theming. The currently implemented themes are
 
 - ARCADE: uses sprites as in the original Arcade game
 
-<img src="PacManDoc/theme-arcade.png">
+<img src="PacManDoc/theming/theme-arcade.png">
 
 - BLOCKS: a theme using simple geometric shapes
 
-<img src="PacManDoc/theme-blocks.png">
+<img src="PacManDoc/theming/theme-blocks.png">
 
 - LETTERS: a theme using letters
 
-<img src="PacManDoc/theme-ascii.png">
+<img src="PacManDoc/theming/theme-ascii.png">
 
 Themes can be switched during the game by pressing the "z" key.
 
