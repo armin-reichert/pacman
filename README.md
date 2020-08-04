@@ -395,13 +395,13 @@ beginStateMachine()
 	.description(() -> String.format("Ghost %s Madness", ghost.name))
 	.states()
 
-		.state(HEALTHY).onEntry(this::runAroundMazeCorner)
+		.state(HEALTHY).onEntry(this::targetCorner)
 
-		.state(ELROY1).onEntry(this::chasePacMan)
+		.state(ELROY1).onEntry(this::targetPacMan)
 
-		.state(ELROY2).onEntry(this::chasePacMan)
+		.state(ELROY2).onEntry(this::targetPacMan)
 
-		.state(SUSPENDED).onEntry(this::runAroundMazeCorner)
+		.state(SUSPENDED).onEntry(this::targetCorner)
 
 	.transitions()
 
@@ -416,18 +416,22 @@ beginStateMachine()
 		.when(SUSPENDED).then(ELROY2)
 			.on(CLYDE_EXITS_HOUSE)
 			.condition(this::reachedElroy2Score)
+			.annotation("Become Elroy again when Clyde exits house")
 
 		.when(SUSPENDED).then(ELROY1)
 			.on(CLYDE_EXITS_HOUSE)
 			.condition(this::reachedElroy1Score)
+			.annotation("Become Elroy again when Clyde exits house")
 
 		.when(ELROY1).then(ELROY2)
 			.condition(this::reachedElroy2Score)
 			.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
 
 		.when(ELROY1).then(SUSPENDED).on(PACMAN_DIES)
+			.annotation("Suspend Elroy when Pac-Man dies")
 
 		.when(ELROY2).then(SUSPENDED).on(PACMAN_DIES)
+			.annotation("Suspend Elroy when Pac-Man dies")
 
 .endStateMachine();
 ```
