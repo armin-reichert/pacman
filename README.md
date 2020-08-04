@@ -390,7 +390,7 @@ chases Pac-Man also in SCATTERING state and increases his speed. When Pac-Man ge
 
 This behavior is implemented by the following state machine:
 
-<img src="PacManDoc/blinky-elroy-fsm.png"/>
+<img src="PacManDoc/fsm/Ghost Blinky Madness.png"/>
 
 ```java
 beginStateMachine()
