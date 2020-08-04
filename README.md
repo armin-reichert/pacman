@@ -154,9 +154,8 @@ As this state machine only uses timers and no other events, *Void* is specified 
 
 ```java
 public enum IntroState {
-	SCROLLING_LOGO, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
+	SCROLLING_LOGO_ANIMATION, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
 };
-
 ...
 
 beginStateMachine()
