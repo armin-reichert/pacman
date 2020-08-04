@@ -6,17 +6,19 @@ import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -27,24 +29,12 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.TreeSelectionModel;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.statemachine.core.StateMachine;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
 
 public class FsmView extends JPanel implements Lifecycle {
 
 	static final String GRAPHVIZ_ONLINE_URL = "https://dreampuf.github.io/GraphvizOnline";
-
-	static class FsmWindow extends JFrame {
-		FsmGraphView graphView;
-		StateMachine<?, ?> fsm;
-
-		public FsmWindow() {
-			setSize(800, 600);
-			setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-			setLocationRelativeTo(null);
-			graphView = new FsmGraphView();
-			getContentPane().add(graphView);
-		}
-	}
 
 	private Action actionViewOnline = new AbstractAction("View Online") {
 
@@ -65,7 +55,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			tree.getSelectedData().ifPresent(data -> {
-				saveDotFile(data.getFsm().getDescription() + ".dot", data.getGraph());
+				saveFile(data);
 			});
 		}
 	};
@@ -74,6 +64,9 @@ public class FsmView extends JPanel implements Lifecycle {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			if (dashboard == null) {
+				dashboard = new FsmDashboard(model);
+			}
 			dashboard.window.setVisible(true);
 		};
 	};
@@ -164,9 +157,7 @@ public class FsmView extends JPanel implements Lifecycle {
 			model.rebuild();
 			tree.rebuild(model);
 			treeView.setSelectionPath(tree.getSelectedPath());
-			if (dashboard == null) {
-				dashboard = new FsmDashboard(model);
-			} else {
+			if (dashboard != null) {
 				dashboard.update();
 			}
 		}
@@ -190,17 +181,26 @@ public class FsmView extends JPanel implements Lifecycle {
 		return actions;
 	}
 
-	private void saveDotFile(String fileName, String dotText) {
+	private void saveFile(FsmData data) {
 		JFileChooser saveDialog = new JFileChooser();
 		saveDialog.setDialogTitle("Save state machine as DOT file");
-		saveDialog.setSelectedFile(new File(fileName));
+		saveDialog.setSelectedFile(new File(data.getFsm().getDescription()));
 		int option = saveDialog.showSaveDialog(this);
 		if (option == JFileChooser.APPROVE_OPTION) {
 			File file = saveDialog.getSelectedFile();
-			try (FileWriter w = new FileWriter(saveDialog.getSelectedFile())) {
-				w.write(dotText);
-			} catch (Exception x) {
-				loginfo("DOT file could not be written", file);
+			if (file.getName().endsWith(".dot")) {
+				try (FileWriter w = new FileWriter(saveDialog.getSelectedFile())) {
+					w.write(data.getGraph());
+				} catch (Exception x) {
+					loginfo("DOT file could not be written", file);
+				}
+			} else if (file.getName().endsWith(".png")) {
+				BufferedImage png = Graphviz.fromString(data.getGraph()).render(Format.PNG).toImage();
+				try {
+					ImageIO.write(png, "png", file);
+				} catch (IOException x) {
+					loginfo("PNG file could not be written", file);
+				}
 			}
 		}
 	}
