@@ -154,9 +154,8 @@ As this state machine only uses timers and no other events, *Void* is specified 
 
 ```java
 public enum IntroState {
-	SCROLLING_LOGO, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
+	SCROLLING_LOGO_ANIMATION, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
 };
-
 ...
 
 beginStateMachine()
@@ -396,13 +395,13 @@ beginStateMachine()
 	.description(() -> String.format("Ghost %s Madness", ghost.name))
 	.states()
 
-		.state(HEALTHY).onEntry(this::runAroundMazeCorner)
+		.state(HEALTHY).onEntry(this::targetCorner)
 
-		.state(ELROY1).onEntry(this::chasePacMan)
+		.state(ELROY1).onEntry(this::targetPacMan)
 
-		.state(ELROY2).onEntry(this::chasePacMan)
+		.state(ELROY2).onEntry(this::targetPacMan)
 
-		.state(SUSPENDED).onEntry(this::runAroundMazeCorner)
+		.state(SUSPENDED).onEntry(this::targetCorner)
 
 	.transitions()
 
@@ -417,18 +416,22 @@ beginStateMachine()
 		.when(SUSPENDED).then(ELROY2)
 			.on(CLYDE_EXITS_HOUSE)
 			.condition(this::reachedElroy2Score)
+			.annotation("Become Elroy again when Clyde exits house")
 
 		.when(SUSPENDED).then(ELROY1)
 			.on(CLYDE_EXITS_HOUSE)
 			.condition(this::reachedElroy1Score)
+			.annotation("Become Elroy again when Clyde exits house")
 
 		.when(ELROY1).then(ELROY2)
 			.condition(this::reachedElroy2Score)
 			.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
 
 		.when(ELROY1).then(SUSPENDED).on(PACMAN_DIES)
+			.annotation("Suspend Elroy when Pac-Man dies")
 
 		.when(ELROY2).then(SUSPENDED).on(PACMAN_DIES)
+			.annotation("Suspend Elroy when Pac-Man dies")
 
 .endStateMachine();
 ```
@@ -532,15 +535,15 @@ The view layer supports theming. The currently implemented themes are
 
 - ARCADE: uses sprites as in the original Arcade game
 
-<img src="PacManDoc/theme-arcade.png">
+<img src="PacManDoc/theming/theme-arcade.png">
 
 - BLOCKS: a theme using simple geometric shapes
 
-<img src="PacManDoc/theme-blocks.png">
+<img src="PacManDoc/theming/theme-blocks.png">
 
 - LETTERS: a theme using letters
 
-<img src="PacManDoc/theme-ascii.png">
+<img src="PacManDoc/theming/theme-ascii.png">
 
 Themes can be switched during the game by pressing the "z" key.
 
