@@ -87,8 +87,8 @@ public class FsmDashboard extends JFrame {
 		for (int i = 0; i < 4; ++i) {
 			multiPanel.getComboBox(i).setModel(new FsmSelectionModel());
 			int selection = Math.min(i, fsmCount);
-			multiPanel.getComboBox(i).setSelectedIndex(selection);
 			if (selection >= 0) {
+				multiPanel.getComboBox(i).setSelectedIndex(selection);
 				view[i].update();
 			}
 		}

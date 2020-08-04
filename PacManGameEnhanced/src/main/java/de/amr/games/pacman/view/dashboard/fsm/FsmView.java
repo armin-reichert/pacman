@@ -66,6 +66,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		public void actionPerformed(ActionEvent e) {
 			if (dashboard == null) {
 				dashboard = new FsmDashboard(model);
+				dashboard.rebuild();
 			}
 			dashboard.setVisible(true);
 		};
