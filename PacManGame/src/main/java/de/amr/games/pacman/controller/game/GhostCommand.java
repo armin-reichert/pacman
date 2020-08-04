@@ -105,7 +105,7 @@ public class GhostCommand extends StateMachine<GhostCommandState, String> {
 				.timeoutAfter(() -> scatterTicks(game.level.number, round))
 				.onTick(() -> ghosts.forEach(ghost -> ghost.setNextStateToEnter(() -> GhostState.SCATTERING)))
 			.state(CHASE)
-			.timeoutAfter(() -> chaseTicks(game.level.number, round))
+				.timeoutAfter(() -> chaseTicks(game.level.number, round))
 				.onTick(() -> ghosts.forEach(ghost -> ghost.setNextStateToEnter(() -> GhostState.CHASING)))
 			.state(PAUSED)
 		.transitions()
