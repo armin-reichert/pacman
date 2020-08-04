@@ -69,6 +69,10 @@ public class FsmGraphView extends JPanel {
 			graphDisplay.setIcon(null);
 		}
 	}
+	
+	public FsmData getData() {
+		return data;
+	}
 
 	public void setData(FsmData data) {
 		this.data = data;

@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.dashboard.fsm;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.util.List;
@@ -32,27 +33,14 @@ public class FsmDashboard extends JFrame {
 		multiPanel = new MultiPanel();
 		multiPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		getContentPane().add(multiPanel);
-
-		multiPanel.getComboBox(0).setModel(new FsmSelectionModel());
-		multiPanel.getComboBox(0).addItemListener(this::onFsmSelection);
-		view[0] = new FsmGraphView();
-		multiPanel.getPanel(0).add(view[0]);
-
-		multiPanel.getComboBox(1).setModel(new FsmSelectionModel());
-		multiPanel.getComboBox(1).addItemListener(this::onFsmSelection);
-		view[1] = new FsmGraphView();
-		multiPanel.getPanel(1).add(view[1]);
-
-		multiPanel.getComboBox(2).setModel(new FsmSelectionModel());
-		multiPanel.getComboBox(2).addItemListener(this::onFsmSelection);
-		view[2] = new FsmGraphView();
-		multiPanel.getPanel(2).add(view[2]);
-
-		multiPanel.getComboBox(3).setModel(new FsmSelectionModel());
-		multiPanel.getComboBox(3).addItemListener(this::onFsmSelection);
-		view[3] = new FsmGraphView();
-		multiPanel.getPanel(3).add(view[3]);
-
+		for (int i = 0; i < 4; ++i) {
+			multiPanel.getComboBox(i).setModel(new FsmSelectionModel());
+			multiPanel.getComboBox(i).addItemListener(this::onFsmSelection);
+			view[i] = new FsmGraphView();
+			multiPanel.getPanel(i).add(view[i], BorderLayout.CENTER);
+			multiPanel.getToolBar(i).add(view[i].actionZoomIn);
+			multiPanel.getToolBar(i).add(view[i].actionZoomOut);
+		}
 		pack();
 	}
 
@@ -60,9 +48,9 @@ public class FsmDashboard extends JFrame {
 	private void onFsmSelection(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 			JComboBox<String> combo = (JComboBox<String>) e.getSource();
-			int comboIndex = comboIndex(combo);
+			int index = comboIndex(combo);
 			List<FsmData> dataList = model.data().collect(Collectors.toList());
-			view[comboIndex].setData(dataList.get(combo.getSelectedIndex()));
+			view[index].setData(dataList.get(combo.getSelectedIndex()));
 		}
 	}
 
@@ -83,23 +71,23 @@ public class FsmDashboard extends JFrame {
 	}
 
 	public void rebuild() {
-		int fsmCount = (int) model.data().count();
+		List<FsmData> dataList = model.data().collect(Collectors.toList());
 		for (int i = 0; i < 4; ++i) {
 			multiPanel.getComboBox(i).setModel(new FsmSelectionModel());
-			int selection = Math.min(i, fsmCount);
-			if (selection >= 0) {
-				multiPanel.getComboBox(i).setSelectedIndex(selection);
-				view[i].update();
+			if (i < dataList.size()) {
+				multiPanel.getComboBox(i).setSelectedIndex(i);
+				view[i].setData(dataList.get(i));
+			} else {
+				multiPanel.getComboBox(i).setSelectedIndex(-1);
+				view[i].setData(null);
 			}
 		}
 	}
 
 	public void update() {
 		for (int i = 0; i < 4; ++i) {
-			int selection = multiPanel.getComboBox(i).getSelectedIndex();
-			if (selection >= 0) {
-				view[i].update();
-			}
+			view[i].getData().updateGraph();
+			view[i].update();
 		}
 	}
 }
