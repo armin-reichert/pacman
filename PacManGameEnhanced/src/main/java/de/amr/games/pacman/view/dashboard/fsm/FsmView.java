@@ -67,7 +67,7 @@ public class FsmView extends JPanel implements Lifecycle {
 			if (dashboard == null) {
 				dashboard = new FsmDashboard(model);
 			}
-			dashboard.window.setVisible(true);
+			dashboard.setVisible(true);
 		};
 	};
 
@@ -159,8 +159,11 @@ public class FsmView extends JPanel implements Lifecycle {
 			tree.rebuild(model);
 			treeView.setSelectionPath(tree.getSelectedPath());
 			if (dashboard != null) {
-				dashboard.update();
+				dashboard.rebuild();
 			}
+		}
+		if (dashboard != null) {
+			dashboard.update();
 		}
 		Optional<FsmData> selection = tree.getSelectedData();
 		if (selection.isPresent()) {
