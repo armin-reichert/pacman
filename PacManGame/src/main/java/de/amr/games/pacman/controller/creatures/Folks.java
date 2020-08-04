@@ -42,17 +42,17 @@ public class Folks {
 
 		pacMan = new PacMan(world);
 
-		blinky = new Ghost(world, pacMan, "Blinky", GhostPersonality.BLINKY);
+		blinky = new Ghost(world, pacMan, "Blinky", GhostPersonality.SHADOW);
 		blinky.becomesMad(pacMan);
 		blinky.assignBed(ghostHouse, 0);
 
-		inky = new Ghost(world, pacMan, "Inky", GhostPersonality.INKY);
+		inky = new Ghost(world, pacMan, "Inky", GhostPersonality.BASHFUL);
 		inky.assignBed(ghostHouse, 1);
 
-		pinky = new Ghost(world, pacMan, "Pinky", GhostPersonality.PINKY);
+		pinky = new Ghost(world, pacMan, "Pinky", GhostPersonality.SPEEDY);
 		pinky.assignBed(ghostHouse, 2);
 
-		clyde = new Ghost(world, pacMan, "Clyde", GhostPersonality.CLYDE);
+		clyde = new Ghost(world, pacMan, "Clyde", GhostPersonality.POKEY);
 		clyde.assignBed(ghostHouse, 3);
 
 		tellEmWhatToDo();

@@ -42,10 +42,10 @@ public class LettersTheme extends AbstractTheme {
 		put("offset-baseline", Tile.SIZE - 1);
 		put("ghost-colors", Map.of(
 		//@formatter:off
-			GhostPersonality.BLINKY, Color.RED,
-			GhostPersonality.PINKY,  Color.PINK,
-			GhostPersonality.INKY,   Color.CYAN,
-			GhostPersonality.CLYDE,  Color.ORANGE
+			GhostPersonality.SHADOW, Color.RED,
+			GhostPersonality.SPEEDY,  Color.PINK,
+			GhostPersonality.BASHFUL,   Color.CYAN,
+			GhostPersonality.POKEY,  Color.ORANGE
 		//@formatter:on
 		));
 		put("sounds", ArcadeSounds.SOUNDS);

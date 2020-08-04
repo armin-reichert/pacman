@@ -1,5 +1,10 @@
 package de.amr.games.pacman.controller.creatures.ghost;
 
+/**
+ * The ghosts' personalities.
+ * 
+ * @author Armin Reichert
+ */
 public enum GhostPersonality {
-	BLINKY, PINKY, INKY, CLYDE;
+	SHADOW, SPEEDY, BASHFUL, POKEY;
 }

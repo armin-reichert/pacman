@@ -129,9 +129,9 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	@Override
 	public void init() {
 		ArcadeThemeSprites sprites = ArcadeTheme.THEME.$value("sprites");
-		Image pinkyImage = sprites.makeSprite_ghostColored(GhostPersonality.PINKY, RIGHT).frame(0);
-		Image inkyImage = sprites.makeSprite_ghostColored(GhostPersonality.INKY, RIGHT).frame(0);
-		Image clydeImage = sprites.makeSprite_ghostColored(GhostPersonality.CLYDE, RIGHT).frame(0);
+		Image pinkyImage = sprites.makeSprite_ghostColored(GhostPersonality.SPEEDY, RIGHT).frame(0);
+		Image inkyImage = sprites.makeSprite_ghostColored(GhostPersonality.BASHFUL, RIGHT).frame(0);
+		Image clydeImage = sprites.makeSprite_ghostColored(GhostPersonality.POKEY, RIGHT).frame(0);
 		Image pacManImage = sprites.makeSprite_pacManWalking(RIGHT).frame(0);
 		setLabelIconOnly(lblPinkyDots, scaledIcon(pinkyImage, 30));
 		setLabelIconOnly(lblInkyDots, scaledIcon(inkyImage, 30));
