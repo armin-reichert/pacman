@@ -160,11 +160,11 @@ public enum IntroState {
 ...
 
 beginStateMachine()
-	.description("[IntroView]")
-	.initialState(SCROLLING_LOGO)
+	.description("IntroView")
+	.initialState(SCROLLING_LOGO_ANIMATION)
 	.states()
 
-		.state(SCROLLING_LOGO)
+		.state(SCROLLING_LOGO_ANIMATION)
 			.customState(new ScrollingLogoAnimation())
 
 		.state(CHASING_ANIMATIONS)
@@ -172,23 +172,26 @@ beginStateMachine()
 
 		.state(WAITING_FOR_INPUT)
 			.customState(new WaitingForInput())
-			.timeoutAfter(sec(10))
+			.timeoutAfter(sec(15))
 
 		.state(READY_TO_PLAY)
 
 	.transitions()
 
-		.when(SCROLLING_LOGO).then(CHASING_ANIMATIONS)
+		.when(SCROLLING_LOGO_ANIMATION).then(CHASING_ANIMATIONS)
 			.condition(() -> pacManLogo.isComplete())
+			.annotation("Pac-Man logo at top")
 
 		.when(CHASING_ANIMATIONS).then(WAITING_FOR_INPUT)
 			.condition(() -> chasePacMan.isComplete() && chaseGhosts.isComplete())
+			.annotation("Chasing animations complete")
 
 		.when(WAITING_FOR_INPUT).then(CHASING_ANIMATIONS)
 			.onTimeout()
 
 		.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
-			.condition(() -> Keyboard.keyPressedOnce(" "))
+			.condition(() -> Keyboard.keyPressedOnce("space"))
+			.annotation("SPACE pressed")
 
 .endStateMachine();
 ```
