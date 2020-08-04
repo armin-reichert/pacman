@@ -146,7 +146,11 @@ All state machines in this implementation are implemented in a declarative way (
 
 Sounds well and nice, but how does that look in the real code? 
 
-To give a first example, consider the **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) which shows different animations coordinated using timers and conditions. As this state machine only uses timers and no other events, *Void* is specified as event type. The states are identified by an enumeration type.
+To give a first example, consider the **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) which shows different animations coordinated using timers and conditions. 
+
+<img src="PacManDoc/fsm/IntroView.png">
+
+As this state machine only uses timers and no other events, *Void* is specified as event type. The states are identified by an enumeration type.
 
 ```java
 public enum IntroState {
@@ -193,7 +197,7 @@ The states in this case are implemented as separate (inner) classes instead of i
 
 A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/game/GameController.java)).
 
-<img src="PacManDoc/GameController.png">
+<img src="PacManDoc/fsm/Game Controller.png">
 
 It processes game events which are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
 game states like changing the level or the dying animations of Pac-Man and the ghosts are controlled by this
@@ -201,6 +205,8 @@ state machine. Further, the more complex states are implemented as subclasses of
 has the advantage that actions which are state-specific can be realized as methods of the state subclass.
 
 The **ghost attack waves** (scattering, chasing) with their level-specific timing are realized by the following state machine:
+
+<img src="PacManDoc/fsm/Ghost Attack Controller.png">
 
 See [GhostCommand](PacManGame/src/main/java/de/amr/games/pacman/controller/game/GhostCommand.java)
 
@@ -226,12 +232,21 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-The actors are also controlled by finite-state machines:
+The actors are also controlled by several finite-state machines.
 
 - **Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/pacman/PacMan.java))
+
+<img src="PacManDoc/fsm/Pac-Man.png">
+
+Each ghost has a state machine controlling its "AI" and a two-state machine controlling its moving (normal movement vs. teleportation mode). The ghost named "Blinky" has an additional state machine controlling its "mental state", see below.
+
 - **Ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/ghost/Ghost.java)) 
 
+<img src="PacManDoc/fsm/Ghost Blinky AI.png">
+
 Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/game/BonusControl.java)) which appears at certain scores is controlled by a finite-state machine:
+
+<img src="PacManDoc/fsm/Bonus Controller.png">
 
 ```java
 beginStateMachine()
@@ -280,15 +295,17 @@ beginStateMachine()
 
 When an actor leaves the board inside a tunnel it leaves its normal movement mode and enters *teleporting* mode. The [movement](PacManGame/src/main/java/de/amr/games/pacman/controller/steering/common/Movement.java) of the actors is controlled by the following state machine:
 
+<img src="PacManDoc/fsm/Pac-Man Movement.png">
+
 ```java
 beginStateMachine()
-	.description(String.format("%s movement", moverName))
+	.description(description)
 	.initialState(WALKING)
 	.states()
 		.state(WALKING)
 			.onTick(this::move)
 		.state(TELEPORTING)
-			.timeoutAfter(sec(0.5f))
+			.timeoutAfter(sec(1.0f))
 			.onEntry(() -> mover.setVisible(false))
 			.onExit(() -> mover.setVisible(true))
 	.transitions()
