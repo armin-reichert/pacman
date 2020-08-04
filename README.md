@@ -215,23 +215,21 @@ See [GhostCommand](PacManGame/src/main/java/de/amr/games/pacman/controller/game/
 
 ```java
 beginStateMachine()
-	.description("GhostCommand")
+	.description("Ghost Attack Controller")
 	.initialState(SCATTER)
 .states()
 	.state(SCATTER)
 		.timeoutAfter(() -> scatterTicks(game.level.number, round))
-		.annotation(() -> String.format("%d of %d ticks", state().getTicksConsumed(), state().getDuration()))
 		.onTick(() -> ghosts.forEach(ghost -> ghost.setNextStateToEnter(() -> GhostState.SCATTERING)))
 	.state(CHASE)
-	.timeoutAfter(() -> chaseTicks(game.level.number, round))
-		.annotation(() -> String.format("%d of %d ticks", state().getTicksConsumed(), state().getDuration()))
+		.timeoutAfter(() -> chaseTicks(game.level.number, round))
 		.onTick(() -> ghosts.forEach(ghost -> ghost.setNextStateToEnter(() -> GhostState.CHASING)))
-	.state(STOPPED)
+	.state(PAUSED)
 .transitions()
 	.when(SCATTER).then(CHASE).onTimeout()
-	.when(SCATTER).then(STOPPED).on("stopAttacking")
+	.when(SCATTER).then(PAUSED).on("Pause")
 	.when(CHASE).then(SCATTER).onTimeout().act(() -> ++round)
-	.when(CHASE).then(STOPPED).on("stopAttacking")
+	.when(CHASE).then(PAUSED).on("Pause")
 .endStateMachine();
 ```
 
