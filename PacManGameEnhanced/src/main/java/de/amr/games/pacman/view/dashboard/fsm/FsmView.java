@@ -85,6 +85,7 @@ public class FsmView extends JPanel implements Lifecycle {
 	private JTabbedPane tabbedPane;
 	private FsmTextView fsmEmbeddedTextView;
 	private FsmGraphView fsmEmbeddedGraphView;
+	private JFileChooser saveDialog = new JFileChooser();
 
 	public FsmView() {
 		setLayout(new BorderLayout(0, 0));
@@ -182,7 +183,6 @@ public class FsmView extends JPanel implements Lifecycle {
 	}
 
 	private void saveFile(FsmData data) {
-		JFileChooser saveDialog = new JFileChooser();
 		saveDialog.setDialogTitle("Save state machine as DOT file");
 		saveDialog.setSelectedFile(new File(data.getFsm().getDescription()));
 		int option = saveDialog.showSaveDialog(this);
