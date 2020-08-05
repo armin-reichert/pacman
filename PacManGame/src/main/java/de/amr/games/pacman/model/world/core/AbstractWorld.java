@@ -32,10 +32,10 @@ public abstract class AbstractWorld extends Block implements World {
 
 	@Override
 	public List<Tile> capes() {
-		Tile capeNW = tiles().filter(this::isAccessible).min((t1, t2) -> distFromCornerNW(t1, t2)).get();
-		Tile capeNE = tiles().filter(this::isAccessible).min((t1, t2) -> distFromCornerNE(t1, t2)).get();
-		Tile capeSE = tiles().filter(this::isAccessible).max((t1, t2) -> distFromCornerNW(t1, t2)).get();
-		Tile capeSW = tiles().filter(this::isAccessible).max((t1, t2) -> distFromCornerNE(t1, t2)).get();
+		Tile capeNW = tiles().filter(this::isAccessible).min(this::distFromCornerNW).get();
+		Tile capeNE = tiles().filter(this::isAccessible).min(this::distFromCornerNE).get();
+		Tile capeSE = tiles().filter(this::isAccessible).max(this::distFromCornerNW).get();
+		Tile capeSW = tiles().filter(this::isAccessible).max(this::distFromCornerNE).get();
 		return List.of(capeNW, capeNE, capeSE, capeSW);
 	}
 
