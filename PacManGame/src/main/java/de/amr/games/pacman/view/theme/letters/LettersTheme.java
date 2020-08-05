@@ -77,7 +77,7 @@ public class LettersTheme extends AbstractTheme {
 			if (ghost.isVisible()) {
 				Font font = $font("font");
 				int offset_baseline = $int("offset-baseline");
-				g.setFont(font);
+				g.setFont(font.deriveFont((float) ghost.entity.tf.width));
 				g.setColor(ghostColor(ghost));
 				if (ghost.getBounty() > 0) {
 					g.drawString("" + ghost.getBounty(), ghost.entity.tf.x, ghost.entity.tf.y + offset_baseline);
@@ -92,9 +92,9 @@ public class LettersTheme extends AbstractTheme {
 	public IPacManRenderer pacManRenderer(PacMan pacMan) {
 		return g -> {
 			if (pacMan.isVisible()) {
-				Font font = $font("font");
 				int offset_baseline = $int("offset-baseline");
-				g.setFont(font);
+				Font font = $font("font");
+				g.setFont(font.deriveFont((float) pacMan.entity.tf.width));
 				g.setColor(Color.YELLOW);
 				String letter = pacMan.is(DEAD) ? "\u2668" : "O";
 				g.drawString(letter, pacMan.entity.tf.x, pacMan.entity.tf.y + offset_baseline);

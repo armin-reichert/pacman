@@ -30,6 +30,7 @@ import net.miginfocom.swing.MigLayout;
 public class ThemeSelectionView extends JPanel implements Lifecycle {
 
 	static final int THUMBNAIL_SIZE = 80;
+	static final int ENTITY_SIZE = 16;
 
 	private boolean initialized = false;
 	private Folks folks;
@@ -147,10 +148,10 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 	private void setPacManLabel(Folks folks, Theme theme) {
 		folks.pacMan.setState(PacManState.AWAKE);
 		folks.pacMan.setMoveDir(Direction.RIGHT);
-		folks.pacMan.entity.tf.width = folks.pacMan.entity.tf.height = 16;
+		folks.pacMan.entity.tf.width = folks.pacMan.entity.tf.height = ENTITY_SIZE;
 		BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
-		g.translate(THUMBNAIL_SIZE / 2 - 8, THUMBNAIL_SIZE / 2 - 8);
+		g.translate((THUMBNAIL_SIZE - ENTITY_SIZE) / 2, (THUMBNAIL_SIZE - ENTITY_SIZE) / 2);
 		theme.pacManRenderer(folks.pacMan).render(g);
 		lblPacMan.setIcon(new ImageIcon(img));
 	}
@@ -159,10 +160,10 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		folks.ghosts().forEach(ghost -> {
 			ghost.setState(GhostState.CHASING);
 			ghost.setMoveDir(Direction.RIGHT);
-			ghost.entity.tf.width = ghost.entity.tf.height = 16;
+			ghost.entity.tf.width = ghost.entity.tf.height = ENTITY_SIZE;
 			BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g = img.createGraphics();
-			g.translate(THUMBNAIL_SIZE / 2 - 8, THUMBNAIL_SIZE / 2 - 8);
+			g.translate((THUMBNAIL_SIZE - ENTITY_SIZE) / 2, (THUMBNAIL_SIZE - ENTITY_SIZE) / 2);
 			theme.ghostRenderer(ghost).render(g);
 			ImageIcon icon = new ImageIcon(img);
 			switch (ghost.name) {
