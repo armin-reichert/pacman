@@ -7,7 +7,6 @@ import java.awt.Stroke;
 
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 
 class PacManRenderer implements IPacManRenderer {
@@ -25,18 +24,19 @@ class PacManRenderer implements IPacManRenderer {
 		}
 		smoothDrawingOn(g);
 		PacManState state = pacMan.getState();
+		int size = 2 * pacMan.entity.tf.width;
 		switch (state) {
 		case AWAKE:
 		case POWERFUL:
-			drawRunning(g);
+			drawRunning(g, size);
 			break;
 		case TIRED:
 		case SLEEPING:
 		case DEAD:
-			drawFull(g);
+			drawFull(g, size);
 			break;
 		case COLLAPSING:
-			drawCollapsed(g);
+			drawCollapsed(g, size);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown Pac-Man state" + state);
@@ -44,31 +44,25 @@ class PacManRenderer implements IPacManRenderer {
 		smoothDrawingOff(g);
 	}
 
-	private int tiles(double amount) {
-		return (int) (amount * Tile.SIZE);
-	}
-
-	private void drawFull(Graphics2D g) {
-		int size = tiles(2);
+	private void drawFull(Graphics2D g, int size) {
 		int x = (int) pacMan.entity.tf.x + (pacMan.entity.tf.width - size) / 2;
 		int y = (int) pacMan.entity.tf.y + (pacMan.entity.tf.width - size) / 2;
 		g.setColor(Color.YELLOW);
 		g.fillOval(x, y, size, size);
 	}
 
-	private void drawRunning(Graphics2D g) {
-		int size = tiles(2);
+	private void drawRunning(Graphics2D g, int size) {
 		int x = (int) pacMan.entity.tf.x + (pacMan.entity.tf.width - size) / 2;
 		int y = (int) pacMan.entity.tf.y + (pacMan.entity.tf.width - size) / 2;
 		g.setColor(Color.YELLOW);
 		g.fillOval(x, y, size, size);
 	}
 
-	private void drawCollapsed(Graphics2D g) {
+	private void drawCollapsed(Graphics2D g, int size) {
 		Stroke stroke = g.getStroke();
 		float thickness = 1f;
 		g.setColor(Color.YELLOW);
-		for (int d = tiles(2); d > tiles(0.25f); d = d / 2) {
+		for (int d = size; d > size / 8; d = d / 2) {
 			int x = (int) pacMan.entity.tf.x + (pacMan.entity.tf.width - d) / 2;
 			int y = (int) pacMan.entity.tf.y + (pacMan.entity.tf.width - d) / 2;
 			g.setStroke(new BasicStroke(thickness));
