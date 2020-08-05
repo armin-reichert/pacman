@@ -10,6 +10,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 
+import de.amr.easy.game.ui.widgets.MultiPanel;
+
 /**
  * Shows up to 4 state machines in a window.
  * 
