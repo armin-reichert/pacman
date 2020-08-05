@@ -3,9 +3,12 @@ package de.amr.games.pacman.model.world.core;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.Lifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -126,5 +129,10 @@ public abstract class AbstractWorld extends Block implements World {
 	@Override
 	public void setChanging(boolean changing) {
 		this.changing = changing;
+	}
+
+	@Override
+	public Stream<Food> food() {
+		return tiles().filter(this::hasFood).map(this::foodAt).map(Optional::get);
 	}
 }

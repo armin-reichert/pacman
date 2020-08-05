@@ -1,9 +1,5 @@
 package de.amr.games.pacman.model.world.core;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Portal;
 
@@ -96,11 +92,6 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	}
 
 	// food container
-
-	@Override
-	public Stream<Food> food() {
-		return tiles().filter(this::hasFood).map(this::foodAt).map(Optional::get);
-	}
 
 	@Override
 	public void clearFood() {
