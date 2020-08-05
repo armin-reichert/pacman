@@ -93,6 +93,12 @@ public class WorldTests {
 		// two tiles away
 		assertEquals(world.tileToDir(Tile.at(26, 17), Direction.RIGHT, 2), either);
 
+		// from portal tiles n tiles to the left/right
+		for (int d = 1; d < 10; ++d) {
+			assertEquals(Tile.at(world.width() - d, either.row), world.tileToDir(either, Direction.LEFT, d));
+			assertEquals(Tile.at(d - 1, either.row), world.tileToDir(other, Direction.RIGHT, d));
+		}
+
 		// other
 		assertEquals(Tile.at(27, 17), other);
 

@@ -19,8 +19,13 @@ import de.amr.games.pacman.model.world.components.Portal;
  */
 public abstract class AbstractWorld extends Block implements World {
 
+	private final Collection<Lifeform> excluded = new HashSet<>();
 	protected boolean changing;
 	protected boolean frozen;
+
+	public AbstractWorld(int width, int height) {
+		super(0, 0, width, height);
+	}
 
 	private int distFromCornerNW(Tile t1, Tile t2) {
 		return Integer.compare(t1.col + t1.row, t2.col + t2.row);
@@ -39,12 +44,6 @@ public abstract class AbstractWorld extends Block implements World {
 		return List.of(capeNW, capeNE, capeSE, capeSW);
 	}
 
-	private final Collection<Lifeform> excluded = new HashSet<>();
-
-	public AbstractWorld(int width, int height) {
-		super(0, 0, width, height);
-	}
-
 	@Override
 	public boolean includes(Tile tile) {
 		return 0 <= tile.row && tile.row < height() && 0 <= tile.col && tile.col < width();
@@ -52,11 +51,11 @@ public abstract class AbstractWorld extends Block implements World {
 
 	@Override
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
-		if (n < 0) {
-			dir = dir.opposite();
-		}
 		if (n == 0) {
 			return tile;
+		}
+		if (n < 0) {
+			throw new IllegalArgumentException("Number of tiles must be non-negative, but is " + n);
 		}
 		Vector2f dirVector = dir.vector();
 		int dx = dirVector.roundedX(), dy = dirVector.roundedY();
