@@ -88,7 +88,9 @@ public class FsmDashboard extends JFrame {
 
 	public void update() {
 		for (int i = 0; i < 4; ++i) {
-			view[i].getData().updateGraph();
+			if (view[i].getData() != null) {
+				view[i].getData().updateGraph();
+			}
 			view[i].update();
 		}
 	}

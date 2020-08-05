@@ -129,11 +129,11 @@ public class FsmView extends JPanel implements Lifecycle {
 		toolBar.add(btnViewOnline);
 		btnViewOnline.setAction(actionViewOnline);
 
-		btnZoomIn = new JButton("New button");
+		btnZoomIn = new JButton("Zoom In");
 		btnZoomIn.setAction(fsmEmbeddedGraphView.actionZoomIn);
 		toolBar.add(btnZoomIn);
 
-		btnZoomOut = new JButton("");
+		btnZoomOut = new JButton("Zoom Out");
 		btnZoomOut.setAction(fsmEmbeddedGraphView.actionZoomOut);
 		toolBar.add(btnZoomOut);
 	}

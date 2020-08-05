@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,6 +27,12 @@ public class FsmGraphView extends JPanel {
 	static final double SCALE_STEP = 0.2;
 
 	public Action actionZoomIn = new AbstractAction("Zoom In") {
+
+		{
+			Icon icon = new ImageIcon(getClass().getResource("/zoom_in.png"));
+			putValue(SMALL_ICON, icon);
+		}
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			zoomIn();
@@ -33,6 +40,12 @@ public class FsmGraphView extends JPanel {
 	};
 
 	public Action actionZoomOut = new AbstractAction("Zoom Out") {
+
+		{
+			Icon icon = new ImageIcon(getClass().getResource("/zoom_out.png"));
+			putValue(SMALL_ICON, icon);
+		}
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			zoomOut();
