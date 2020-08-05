@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
@@ -67,15 +66,17 @@ public class FsmView extends JPanel implements Lifecycle {
 			if (dashboard == null) {
 				dashboard = new FsmDashboard(model);
 				dashboard.rebuild();
+				dashboard.setSize(1024, 768);
 			}
 			dashboard.setVisible(true);
 		};
 	};
 
 	private FsmModel model = new FsmModel();
-
 	private FsmDashboard dashboard;
 	private FsmTree tree;
+	private FsmTextView fsmEmbeddedTextView;
+	private FsmGraphView fsmEmbeddedGraphView;
 	private JTree treeView;
 	private JToolBar toolBar;
 	private JButton btnViewOnline;
@@ -84,8 +85,6 @@ public class FsmView extends JPanel implements Lifecycle {
 	private JButton btnZoomOut;
 	private JButton btnOpenDashboard;
 	private JTabbedPane tabbedPane;
-	private FsmTextView fsmEmbeddedTextView;
-	private FsmGraphView fsmEmbeddedGraphView;
 	private JFileChooser saveDialog = new JFileChooser();
 
 	public FsmView() {
@@ -141,10 +140,7 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	private void onTreeViewSelectionChange(TreeSelectionEvent e) {
 		tree.setSelectedPath(e.getNewLeadSelectionPath());
-		FsmData node = tree.getSelectedData().orElse(null);
-		if (node != null) {
-			node.updateGraph();
-		}
+		tree.getSelectedData().ifPresent(FsmData::updateGraph);
 	}
 
 	@Override
@@ -154,30 +150,22 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		model.checkIfValid();
-		if (!model.isValid()) {
-			model.rebuild();
+		model.update();
+		if (model.setOfMachinesChanged()) {
 			tree.rebuild(model);
 			treeView.setSelectionPath(tree.getSelectedPath());
 			if (dashboard != null) {
 				dashboard.rebuild();
 			}
-		}
-		if (dashboard != null) {
-			dashboard.update();
-		}
-		Optional<FsmData> selection = tree.getSelectedData();
-		if (selection.isPresent()) {
-			FsmData data = selection.get();
-			data.updateGraph();
-			fsmEmbeddedGraphView.setData(data);
-			fsmEmbeddedTextView.setData(data);
-			actions().forEach(action -> action.setEnabled(true));
 		} else {
-			fsmEmbeddedGraphView.setData(null);
-			fsmEmbeddedTextView.setData(null);
-			actions().forEach(action -> action.setEnabled(false));
+			if (dashboard != null) {
+				dashboard.update();
+			}
 		}
+		FsmData selectedData = tree.getSelectedData().orElse(null);
+		fsmEmbeddedGraphView.setData(selectedData);
+		fsmEmbeddedTextView.setData(selectedData);
+		actions().forEach(action -> action.setEnabled(selectedData != null));
 	}
 
 	private Stream<Action> actions() {

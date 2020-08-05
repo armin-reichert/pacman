@@ -10,13 +10,16 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 
+/**
+ * Shows up to 4 state machines in a window.
+ * 
+ * @author Armin Reichert
+ */
 public class FsmDashboard extends JFrame {
 
-	static int WIDTH = 1024, HEIGHT = 700;
+	static class FsmSelectionModel extends DefaultComboBoxModel<String> {
 
-	class FsmSelectionModel extends DefaultComboBoxModel<String> {
-
-		public FsmSelectionModel() {
+		public FsmSelectionModel(FsmModel model) {
 			model.data().forEach(data -> {
 				addElement(data.getFsm().getDescription());
 			});
@@ -34,14 +37,13 @@ public class FsmDashboard extends JFrame {
 		multiPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		getContentPane().add(multiPanel);
 		for (int i = 0; i < 4; ++i) {
-			multiPanel.getComboBox(i).setModel(new FsmSelectionModel());
+			multiPanel.getComboBox(i).setModel(new FsmSelectionModel(model));
 			multiPanel.getComboBox(i).addItemListener(this::onFsmSelection);
 			view[i] = new FsmGraphView();
 			multiPanel.getPanel(i).add(view[i], BorderLayout.CENTER);
 			multiPanel.getToolBar(i).add(view[i].actionZoomIn);
 			multiPanel.getToolBar(i).add(view[i].actionZoomOut);
 		}
-		pack();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -73,7 +75,7 @@ public class FsmDashboard extends JFrame {
 	public void rebuild() {
 		List<FsmData> dataList = model.data().collect(Collectors.toList());
 		for (int i = 0; i < 4; ++i) {
-			multiPanel.getComboBox(i).setModel(new FsmSelectionModel());
+			multiPanel.getComboBox(i).setModel(new FsmSelectionModel(model));
 			if (i < dataList.size()) {
 				multiPanel.getComboBox(i).setSelectedIndex(i);
 				view[i].setData(dataList.get(i));

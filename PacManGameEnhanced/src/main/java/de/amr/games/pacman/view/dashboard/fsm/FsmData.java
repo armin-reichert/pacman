@@ -10,15 +10,15 @@ public class FsmData {
 
 	public FsmData(StateMachine<?, ?> fsm) {
 		this.fsm = fsm;
-		this.graph = DotPrinter.printToString(fsm);
+		updateGraph();
+	}
+
+	public void updateGraph() {
+		graph = DotPrinter.printToString(fsm);
 	}
 
 	public StateMachine<?, ?> getFsm() {
 		return fsm;
-	}
-	
-	public void updateGraph() {
-		graph = DotPrinter.printToString(fsm);
 	}
 
 	public String getGraph() {

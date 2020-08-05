@@ -19,6 +19,8 @@ import guru.nidi.graphviz.engine.Graphviz;
 
 public class FsmGraphView extends JPanel {
 
+	public static int GRAPHVIZ_MEMORY = 20_000_000;
+
 	static final double SCALE_MIN = 0.4;
 	static final double SCALE_MAX = 3.0;
 	static final double SCALE_STEP = 0.2;
@@ -62,14 +64,14 @@ public class FsmGraphView extends JPanel {
 
 	public void update() {
 		if (data != null) {
-			BufferedImage png = Graphviz.fromString(data.getGraph()).totalMemory(20_000_000).scale(scaling).render(Format.PNG)
-					.toImage();
+			BufferedImage png = Graphviz.fromString(data.getGraph()).totalMemory(GRAPHVIZ_MEMORY).scale(scaling)
+					.render(Format.PNG).toImage();
 			graphDisplay.setIcon(new ImageIcon(png));
 		} else {
 			graphDisplay.setIcon(null);
 		}
 	}
-	
+
 	public FsmData getData() {
 		return data;
 	}
@@ -79,25 +81,13 @@ public class FsmGraphView extends JPanel {
 		update();
 	}
 
-	public void zoomIn() {
-		scaling = largerScaling();
+	private void zoomIn() {
+		scaling = Math.min(SCALE_MAX, scaling + SCALE_STEP);
 		update();
 	}
 
-	public void zoomOut() {
-		scaling = smallerScaling();
+	private void zoomOut() {
+		scaling = Math.max(SCALE_MIN, scaling - SCALE_STEP);
 		update();
-	}
-
-	private double scaling() {
-		return scaling;
-	}
-
-	private double largerScaling() {
-		return Math.min(SCALE_MAX, scaling() + SCALE_STEP);
-	}
-
-	private double smallerScaling() {
-		return Math.max(SCALE_MIN, scaling() - SCALE_STEP);
 	}
 }
