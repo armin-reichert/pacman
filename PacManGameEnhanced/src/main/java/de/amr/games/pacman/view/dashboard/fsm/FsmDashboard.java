@@ -32,7 +32,7 @@ public class FsmDashboard extends JFrame {
 
 	public FsmDashboard(FsmModel model) {
 		this.model = model;
-		setTitle("Pac-Man State Machines Dashboard");
+		setTitle("State Machines Dashboard");
 		multiPanel = new MultiPanel();
 		multiPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		getContentPane().add(multiPanel);
