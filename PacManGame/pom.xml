@@ -57,7 +57,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.amr.easy.game</groupId>
-			<artifactId>EasyGame</artifactId>
+			<artifactId>easy-game-framework</artifactId>
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
