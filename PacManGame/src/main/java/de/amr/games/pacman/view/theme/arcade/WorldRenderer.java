@@ -88,13 +88,13 @@ public class WorldRenderer implements IWorldRenderer {
 
 	private void drawMazeContent(Graphics2D g) {
 		// hide eaten food
-		world.habitat().filter(world::hasEatenFood).forEach(tile -> {
+		world.tiles().filter(world::hasEatenFood).forEach(tile -> {
 			g.setColor(fnEatenFoodColor.apply(tile));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
 		// simulate energizer blinking animation
 		if (energizerAnimation.isEnabled() && energizerAnimation.currentFrameIndex() == 1) {
-			world.habitat().filter(tile -> world.hasFood(Pellet.ENERGIZER, tile)).forEach(tile -> {
+			world.tiles().filter(tile -> world.hasFood(Pellet.ENERGIZER, tile)).forEach(tile -> {
 				g.setColor(fnEatenFoodColor.apply(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});

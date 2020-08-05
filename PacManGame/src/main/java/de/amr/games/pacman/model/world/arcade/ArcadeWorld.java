@@ -2,7 +2,6 @@ package de.amr.games.pacman.model.world.arcade;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.api.BonusFood;
@@ -12,7 +11,6 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.House;
-import de.amr.games.pacman.model.world.components.HouseBuilder;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.core.MapBasedWorld;
@@ -80,7 +78,7 @@ public class ArcadeWorld extends MapBasedWorld {
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
 		//@formatter:off
 		houses = List.of(
-			HouseBuilder.house()
+			House.construct()
 				.layout(11, 16, 6, 4)
 				.door(new Door(Direction.DOWN, 13, 15, 2, 1))
 				.bed(13, 14, Direction.LEFT)
@@ -92,8 +90,6 @@ public class ArcadeWorld extends MapBasedWorld {
 		
 		portals = List.of(
 			horizontalPortal(Tile.at(1, 17), Tile.at(26, 17))
-//		 ,horizontalPortal(Tile.at(1, 11), Tile.at(26, 11))
-//		 ,horizontalPortal(Tile.at(1, 23), Tile.at(26, 23))
 		);
 		
 		oneWayTiles = List.of(
@@ -165,16 +161,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	@Override
 	public Optional<BonusFood> bonusFood() {
 		return Optional.ofNullable(bonus);
-	}
-
-	/**
-	 * There are 4 reserved rows at the top and 3 at the bottom used for displaying scores
-	 * 
-	 * @return the habitat tiles
-	 */
-	@Override
-	public Stream<Tile> habitat() {
-		return IntStream.range(3 * width(), (height() + 4) * width()).mapToObj(i -> Tile.at(i % width(), i / width()));
 	}
 
 	@Override

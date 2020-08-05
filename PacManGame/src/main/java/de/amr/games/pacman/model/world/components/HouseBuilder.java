@@ -12,10 +12,6 @@ public class HouseBuilder {
 	private List<Door> doors = new ArrayList<>();
 	private List<Bed> beds = new ArrayList<>();
 
-	public static HouseBuilder house() {
-		return new HouseBuilder();
-	}
-
 	public HouseBuilder layout(int col, int row, int width, int height) {
 		layout = new Block(col, row, width, height);
 		return this;

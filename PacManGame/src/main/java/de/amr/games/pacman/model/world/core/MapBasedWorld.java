@@ -99,7 +99,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 
 	@Override
 	public Stream<Food> food() {
-		return habitat().filter(this::hasFood).map(this::foodAt).map(Optional::get);
+		return tiles().filter(this::hasFood).map(this::foodAt).map(Optional::get);
 	}
 
 	@Override

@@ -44,7 +44,7 @@ class WorldRenderer implements IWorldRenderer {
 
 	private void drawFood(Graphics2D g) {
 		smoothDrawingOn(g);
-		world.habitat().forEach(location -> {
+		world.tiles().forEach(location -> {
 			if (world.hasFood(Pellet.ENERGIZER, location)) {
 				drawEnergizer(g, location);
 			} else if (world.hasFood(Pellet.SNACK, location)) {

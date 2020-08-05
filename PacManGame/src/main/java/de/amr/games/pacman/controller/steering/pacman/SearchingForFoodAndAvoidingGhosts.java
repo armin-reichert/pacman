@@ -140,7 +140,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 	}
 
 	private Stream<Tile> foodTiles() {
-		return world.habitat().filter(world::hasFood);
+		return world.tiles().filter(world::hasFood);
 	}
 
 	private Optional<Tile> preferredFoodLocationFrom(Tile here) {

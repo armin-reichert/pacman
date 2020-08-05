@@ -46,13 +46,6 @@ public interface Territory extends RectangularArea {
 	boolean isTunnel(Tile location);
 
 	/**
-	 * Part of the territory where creatures live.
-	 * 
-	 * @return stream of tiles constituting the habitat
-	 */
-	Stream<Tile> habitat();
-
-	/**
 	 * @param life a life
 	 * @return {@code true} if the life is currently included
 	 */

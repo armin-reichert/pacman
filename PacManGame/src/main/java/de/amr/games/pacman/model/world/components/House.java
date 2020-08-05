@@ -17,6 +17,10 @@ public class House implements Area {
 	private final Area layout;
 	private final List<Door> doors;
 	private final List<Bed> beds;
+	
+	public static HouseBuilder construct() {
+		return new HouseBuilder();
+	}
 
 	public House(Area layout, List<Door> doors, List<Bed> beds) {
 		this.layout = layout;
