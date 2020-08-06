@@ -1,23 +1,23 @@
 package de.amr.games.pacman.view.theme.letters;
 
-import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Map;
 
+import de.amr.easy.game.Application;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
+import de.amr.games.pacman.view.theme.api.IGhostRenderer;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
-import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.arcade.sounds.ArcadeSounds;
@@ -72,8 +72,8 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IRenderer ghostRenderer(Ghost ghost) {
-		return g -> {
+	public IGhostRenderer ghostRenderer(Ghost ghost_) {
+		return (g, ghost) -> {
 			if (ghost.isVisible()) {
 				Font font = $font("font");
 				int offset_baseline = $int("offset-baseline");
@@ -89,21 +89,21 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IPacManRenderer pacManRenderer(PacMan pacMan) {
-		return g -> {
+	public IPacManRenderer pacManRenderer(PacMan pacMan_) {
+		return (g, pacMan) -> {
 			if (pacMan.isVisible()) {
 				int offset_baseline = $int("offset-baseline");
 				Font font = $font("font");
 				g.setFont(font.deriveFont((float) pacMan.entity.tf.width));
 				g.setColor(Color.YELLOW);
-				String letter = pacMan.is(DEAD) ? "\u2668" : "O";
+				String letter = pacMan.is(PacManState.DEAD) ? "\u2668" : "O";
 				g.drawString(letter, pacMan.entity.tf.x, pacMan.entity.tf.y + offset_baseline);
 			}
 		};
 	}
 
 	@Override
-	public IRenderer levelCounterRenderer(World world, Game game) {
+	public View levelCounterView(World world, Game game) {
 		return g -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -115,7 +115,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IRenderer livesCounterRenderer(World world, Game game) {
+	public View livesCounterView(World world, Game game) {
 		return g -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -126,7 +126,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IRenderer scoreRenderer(World world, Game game) {
+	public View scoreView(World world, Game game) {
 		return g -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -139,8 +139,8 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IWorldRenderer worldRenderer(World world) {
-		return g -> {
+	public IWorldRenderer worldRenderer(World w) {
+		return (g, world) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
 			g.setFont(font);
@@ -148,7 +148,7 @@ public class LettersTheme extends AbstractTheme {
 				for (int col = 0; col < world.width(); ++col) {
 					Tile tile = Tile.at(col, row);
 					if (world.isAccessible(tile)) {
-						if (world.hasFood(Pellet.ENERGIZER, tile) && app().clock().getTotalTicks() % 60 < 30) {
+						if (world.hasFood(Pellet.ENERGIZER, tile) && Application.app().clock().getTotalTicks() % 60 < 30) {
 							g.setColor(Color.PINK);
 							g.drawString("Ö", col * Tile.SIZE + 2, row * Tile.SIZE + offset_baseline);
 						}

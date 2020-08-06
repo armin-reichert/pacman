@@ -9,11 +9,9 @@ import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 
 public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
-	private final PacMan pacMan;
 	private boolean stopAnimationWhenStanding;
 
-	public PacManRenderer(PacMan pacMan) {
-		this.pacMan = pacMan;
+	public PacManRenderer() {
 		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, arcadeSprites.makeSprite_pacManWalking(dir)));
 		sprites.set("collapsing", arcadeSprites.makeSprite_pacManDying());
@@ -33,7 +31,7 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 	}
 
 	@Override
-	public void render(Graphics2D g) {
+	public void render(Graphics2D g, PacMan pacMan) {
 		PacManState state = pacMan.getState();
 		if (state == null) {
 			selectSprite("full");

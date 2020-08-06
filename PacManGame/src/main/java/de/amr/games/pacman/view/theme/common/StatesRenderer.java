@@ -42,7 +42,6 @@ public class StatesRenderer implements IRenderer {
 		this.ghostCommand = ghostCommand;
 	}
 
-	@Override
 	public void render(Graphics2D g) {
 		drawActorStates(g);
 		drawActorsOffTrack(g);

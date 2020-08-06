@@ -4,9 +4,9 @@ import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.AWAKE;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.COLLAPSING;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.IN_BED;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
-import static de.amr.games.pacman.controller.creatures.pacman.PacManState.IN_BED;
 import static de.amr.games.pacman.model.game.Game.sec;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
@@ -127,7 +127,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 	@Override
 	public void draw(Graphics2D g) {
-		renderer.render(g);
+		renderer.render(g, this);
 	}
 
 	private void setPowerTimer(PacManGameEvent e) {

@@ -6,9 +6,8 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.view.theme.api.IRenderer;
 
-public class MessagesRenderer implements IRenderer {
+public class MessagesRenderer {
 
 	private int row;
 	private Color textColor;
@@ -21,10 +20,6 @@ public class MessagesRenderer implements IRenderer {
 		textColor = Color.YELLOW;
 		font = new Font(Font.MONOSPACED, Font.PLAIN, Tile.SIZE);
 		smoothText = false;
-	}
-
-	@Override
-	public void render(Graphics2D g) {
 	}
 
 	public void drawCentered(Graphics2D g, String text, int widthInTiles) {

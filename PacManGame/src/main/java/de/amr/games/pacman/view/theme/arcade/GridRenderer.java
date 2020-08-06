@@ -28,7 +28,6 @@ public class GridRenderer implements IRenderer {
 		gridImage = createGridPatternImage(world.width(), world.height());
 	}
 
-	@Override
 	public void render(Graphics2D g) {
 		g.drawImage(gridImage, 0, 0, null);
 		drawBeds(g);

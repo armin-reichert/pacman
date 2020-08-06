@@ -19,21 +19,15 @@ import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 
 class WorldRenderer implements IWorldRenderer {
 
-	private final World world;
-
-	public WorldRenderer(World world) {
-		this.world = world;
-	}
-
 	@Override
 	public void setEatenFoodColor(Function<Tile, Color> fnEatenFoodColor) {
 	}
 
 	@Override
-	public void render(Graphics2D g) {
-		drawEmptyWorld(g);
+	public void render(Graphics2D g, World world) {
+		drawEmptyWorld(g, world);
 		if (!world.isChanging()) {
-			drawFood(g);
+			drawFood(g, world);
 		}
 		// draw doors depending on their state
 		world.houses().flatMap(House::doors).forEach(door -> {
@@ -42,11 +36,11 @@ class WorldRenderer implements IWorldRenderer {
 		});
 	}
 
-	private void drawFood(Graphics2D g) {
+	private void drawFood(Graphics2D g, World world) {
 		smoothDrawingOn(g);
 		world.tiles().forEach(location -> {
 			if (world.hasFood(Pellet.ENERGIZER, location)) {
-				drawEnergizer(g, location);
+				drawEnergizer(g, world, location);
 			} else if (world.hasFood(Pellet.SNACK, location)) {
 				drawSimplePellet(g, location);
 			}
@@ -95,7 +89,7 @@ class WorldRenderer implements IWorldRenderer {
 		g.fillOval(location.x() + 3, location.y() + 3, 2, 2);
 	}
 
-	private void drawEnergizer(Graphics2D g, Tile location) {
+	private void drawEnergizer(Graphics2D g, World world, Tile location) {
 		int size = Tile.SIZE;
 		int x = location.x() + (Tile.SIZE - size) / 2;
 		int y = location.y() + (Tile.SIZE - size) / 2;
@@ -111,19 +105,19 @@ class WorldRenderer implements IWorldRenderer {
 		g.translate(-x, -y);
 	}
 
-	private void drawEmptyWorld(Graphics2D g) {
+	private void drawEmptyWorld(Graphics2D g, World world) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, world.width() * Tile.SIZE, world.height() * Tile.SIZE);
 		for (int row = 0; row < world.height(); ++row) {
 			for (int col = 0; col < world.width(); ++col) {
 				if (!world.isAccessible(Tile.at(col, row))) {
-					drawWall(g, row, col);
+					drawWall(g, world, row, col);
 				}
 			}
 		}
 	}
 
-	private void drawWall(Graphics2D g, int row, int col) {
+	private void drawWall(Graphics2D g, World world, int row, int col) {
 		if (world.isChanging() && app().clock().getTotalTicks() % 30 < 15) {
 			g.setColor(Color.WHITE);
 		} else {

@@ -39,7 +39,6 @@ public class RoutesRenderer implements IRenderer {
 		this.folks = folks;
 	}
 
-	@Override
 	public void render(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		if (folks.pacMan.isVisible()) {

@@ -11,14 +11,8 @@ import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 
 class PacManRenderer implements IPacManRenderer {
 
-	private final PacMan pacMan;
-
-	public PacManRenderer(PacMan pacMan) {
-		this.pacMan = pacMan;
-	}
-
 	@Override
-	public void render(Graphics2D g) {
+	public void render(Graphics2D g, PacMan pacMan) {
 		if (!pacMan.isVisible()) {
 			return;
 		}
@@ -28,15 +22,15 @@ class PacManRenderer implements IPacManRenderer {
 		switch (state) {
 		case AWAKE:
 		case POWERFUL:
-			drawRunning(g, size);
+			drawRunning(g, pacMan, size);
 			break;
 		case IN_BED:
 		case SLEEPING:
 		case DEAD:
-			drawFull(g, size);
+			drawFull(g, pacMan, size);
 			break;
 		case COLLAPSING:
-			drawCollapsed(g, size);
+			drawCollapsed(g, pacMan, size);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown Pac-Man state" + state);
@@ -44,21 +38,21 @@ class PacManRenderer implements IPacManRenderer {
 		smoothDrawingOff(g);
 	}
 
-	private void drawFull(Graphics2D g, int size) {
+	private void drawFull(Graphics2D g, PacMan pacMan, int size) {
 		int x = (int) pacMan.entity.tf.x + (pacMan.entity.tf.width - size) / 2;
 		int y = (int) pacMan.entity.tf.y + (pacMan.entity.tf.width - size) / 2;
 		g.setColor(Color.YELLOW);
 		g.fillOval(x, y, size, size);
 	}
 
-	private void drawRunning(Graphics2D g, int size) {
+	private void drawRunning(Graphics2D g, PacMan pacMan, int size) {
 		int x = (int) pacMan.entity.tf.x + (pacMan.entity.tf.width - size) / 2;
 		int y = (int) pacMan.entity.tf.y + (pacMan.entity.tf.width - size) / 2;
 		g.setColor(Color.YELLOW);
 		g.fillOval(x, y, size, size);
 	}
 
-	private void drawCollapsed(Graphics2D g, int size) {
+	private void drawCollapsed(Graphics2D g, PacMan pacMan, int size) {
 		Stroke stroke = g.getStroke();
 		float thickness = 1f;
 		g.setColor(Color.YELLOW);

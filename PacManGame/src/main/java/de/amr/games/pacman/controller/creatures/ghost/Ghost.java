@@ -30,7 +30,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
-import de.amr.games.pacman.view.theme.api.IRenderer;
+import de.amr.games.pacman.view.theme.api.IGhostRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.statemachine.core.StateMachine;
 
@@ -53,7 +53,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private Steering<Ghost> previousSteering;
 	private int bounty;
 	private boolean flashing;
-	private IRenderer renderer;
+	private IGhostRenderer renderer;
 	private Game game;
 
 	public Ghost(World world, PacMan pacMan, String name, GhostPersonality personality) {
@@ -206,10 +206,10 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	@Override
 	public void draw(Graphics2D g) {
-		renderer.render(g);
+		renderer.render(g, this);
 	}
 
-	public IRenderer renderer() {
+	public IGhostRenderer renderer() {
 		return renderer;
 	}
 

@@ -100,13 +100,13 @@ public class MusicLoadingView implements PacManGameView {
 		messagesRenderer.setRow(18);
 		messagesRenderer.setTextColor(new Color(255, 0, 0, alpha));
 		messagesRenderer.drawCentered(g, Localized.texts.getString("loading_music"), width);
-		pacMan.renderer().render(g);
+		pacMan.draw(g);
 		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2, y = pacMan.entity.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			Ghost ghost = ghosts.get(rnd.nextInt(4));
 			ghost.entity.tf.x = x;
 			ghost.entity.tf.y = y;
-			ghost.renderer().render(g);
+			ghost.draw(g);
 			x += 20;
 		}
 	}

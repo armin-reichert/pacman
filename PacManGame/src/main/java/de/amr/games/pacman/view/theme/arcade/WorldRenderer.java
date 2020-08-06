@@ -22,15 +22,13 @@ import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 
 public class WorldRenderer implements IWorldRenderer {
 
-	private final World world;
 	private final Map<String, Image> symbolImages = new HashMap<>();
 	private final Map<Integer, Image> pointsImages = new HashMap<>();
 	private final SpriteMap mazeSprites;
 	private final SpriteAnimation energizerAnimation;
 	private Function<Tile, Color> fnEatenFoodColor;
 
-	public WorldRenderer(World world) {
-		this.world = world;
+	public WorldRenderer() {
 		fnEatenFoodColor = tile -> Color.BLACK;
 		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		for (Symbol symbol : Symbol.values()) {
@@ -54,14 +52,14 @@ public class WorldRenderer implements IWorldRenderer {
 	}
 
 	@Override
-	public void render(Graphics2D g) {
+	public void render(Graphics2D g, World world) {
 		if (world.isChanging()) {
 			mazeSprites.select("maze-flashing");
 			mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
 		} else {
 			mazeSprites.select("maze-full");
 			mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
-			drawMazeContent(g);
+			drawContent(g, world);
 			// draw doors depending on their state
 			world.house(0).doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
 				g.setColor(Color.BLACK);
@@ -86,7 +84,7 @@ public class WorldRenderer implements IWorldRenderer {
 		});
 	}
 
-	private void drawMazeContent(Graphics2D g) {
+	private void drawContent(Graphics2D g, World world) {
 		// hide eaten food
 		world.tiles().filter(world::hasEatenFood).forEach(tile -> {
 			g.setColor(fnEatenFoodColor.apply(tile));

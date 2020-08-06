@@ -6,18 +6,18 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 import de.amr.easy.game.view.Pen;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.view.theme.api.IRenderer;
 
-public class ScoreRenderer implements IRenderer {
+public class ScoreView implements View {
 
 	private final Game game;
 	private Font font = new Font(Font.MONOSPACED, Font.PLAIN, Tile.SIZE);
 	private int topMargin = 1;
 	private int baselineOffset = Tile.SIZE;
 
-	public ScoreRenderer(Game game) {
+	public ScoreView(Game game) {
 		this.game = game;
 	}
 
@@ -34,7 +34,7 @@ public class ScoreRenderer implements IRenderer {
 	}
 
 	@Override
-	public void render(Graphics2D g) {
+	public void draw(Graphics2D g) {
 		g.translate(0, topMargin);
 		try (Pen pen = new Pen(g)) {
 			Color hilight = Color.YELLOW;

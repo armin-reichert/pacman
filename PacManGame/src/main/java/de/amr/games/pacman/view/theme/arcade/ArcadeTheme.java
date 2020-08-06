@@ -3,19 +3,19 @@ package de.amr.games.pacman.view.theme.arcade;
 import java.awt.Font;
 
 import de.amr.easy.game.assets.Assets;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.view.theme.api.IGhostRenderer;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
-import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.arcade.sounds.ArcadeSounds;
 import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
-import de.amr.games.pacman.view.theme.common.ScoreRenderer;
+import de.amr.games.pacman.view.theme.common.ScoreView;
 
 public class ArcadeTheme extends AbstractTheme {
 
@@ -33,34 +33,34 @@ public class ArcadeTheme extends AbstractTheme {
 
 	@Override
 	public IWorldRenderer worldRenderer(World world) {
-		return new WorldRenderer((ArcadeWorld) world);
+		return new WorldRenderer();
 	}
 
 	@Override
-	public IRenderer scoreRenderer(World world, Game game) {
-		ScoreRenderer renderer = new ScoreRenderer(game);
+	public View scoreView(World world, Game game) {
+		ScoreView view = new ScoreView(game);
 		Font font = $font("font");
-		renderer.setFont(font);
-		return renderer;
+		view.setFont(font);
+		return view;
 	}
 
 	@Override
-	public IRenderer livesCounterRenderer(World world, Game game) {
-		return new LiveCounterRenderer(game);
+	public View livesCounterView(World world, Game game) {
+		return new LivesCounterView(game);
 	}
 
 	@Override
-	public IRenderer levelCounterRenderer(World world, Game game) {
-		return new LevelCounterRenderer(game);
+	public View levelCounterView(World world, Game game) {
+		return new LevelCounterView(game);
 	}
 
 	@Override
 	public IPacManRenderer pacManRenderer(PacMan pacMan) {
-		return new PacManRenderer(pacMan);
+		return new PacManRenderer();
 	}
 
 	@Override
-	public IRenderer ghostRenderer(Ghost ghost) {
+	public IGhostRenderer ghostRenderer(Ghost ghost) {
 		return new GhostRenderer(ghost);
 	}
 

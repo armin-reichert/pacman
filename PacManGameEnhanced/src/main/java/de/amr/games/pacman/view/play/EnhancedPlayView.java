@@ -11,7 +11,6 @@ import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
@@ -26,8 +25,8 @@ import de.amr.games.pacman.view.theme.common.StatesRenderer;
 public class EnhancedPlayView extends PlayView {
 
 	protected final GridRenderer gridRenderer;
-	protected final IRenderer routesRenderer;
-	protected final IRenderer statesRenderer;
+	protected final RoutesRenderer routesRenderer;
+	protected final StatesRenderer statesRenderer;
 	protected final FrameRateWidget frameRateDisplay;
 
 	protected boolean showingFrameRate;
@@ -119,7 +118,7 @@ public class EnhancedPlayView extends PlayView {
 	@Override
 	protected void drawWorld(Graphics2D g) {
 		worldRenderer.setEatenFoodColor(showingGrid ? Rendering::patternColor : tile -> Color.BLACK);
-		worldRenderer.render(g);
+		worldRenderer.render(g, world);
 	}
 
 	protected void drawGrid(Graphics2D g) {

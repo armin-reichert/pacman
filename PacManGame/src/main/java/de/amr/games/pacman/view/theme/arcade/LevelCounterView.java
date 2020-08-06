@@ -5,17 +5,17 @@ import java.awt.Image;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.Symbol;
-import de.amr.games.pacman.view.theme.api.IRenderer;
 
-public class LevelCounterRenderer implements IRenderer {
+public class LevelCounterView implements View {
 
 	private final Game game;
 	private final Map<Symbol, Image> bonusImages = new HashMap<Symbol, Image>();
 
-	public LevelCounterRenderer(Game game) {
+	public LevelCounterView(Game game) {
 		this.game = game;
 		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		for (Symbol symbol : Symbol.values()) {
@@ -24,7 +24,7 @@ public class LevelCounterRenderer implements IRenderer {
 	}
 
 	@Override
-	public void render(Graphics2D g) {
+	public void draw(Graphics2D g) {
 		int max = 7;
 		int first = Math.max(0, game.levelCounter.size() - max);
 		int n = Math.min(max, game.levelCounter.size());

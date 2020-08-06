@@ -6,14 +6,11 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.view.theme.api.IRenderer;
+import de.amr.games.pacman.view.theme.api.IGhostRenderer;
 
-public class GhostRenderer extends SpriteRenderer implements IRenderer {
-
-	private final Ghost ghost;
+public class GhostRenderer extends SpriteRenderer implements IGhostRenderer {
 
 	public GhostRenderer(Ghost ghost) {
-		this.ghost = ghost;
 		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		Direction.dirs().forEach(dir -> {
 			sprites.set("color-" + dir, arcadeSprites.makeSprite_ghostColored(ghost.getPersonality(), dir));
@@ -27,12 +24,13 @@ public class GhostRenderer extends SpriteRenderer implements IRenderer {
 	}
 
 	@Override
-	public void render(Graphics2D g) {
-		selectSprite(ghost.getState());
+	public void render(Graphics2D g, Ghost ghost) {
+		selectSprite(ghost);
 		drawEntity(g, ghost.entity, 2);
 	}
 
-	public void selectSprite(GhostState state) {
+	public void selectSprite(Ghost ghost) {
+		GhostState state = ghost.getState();
 		if (state == null) {
 			selectSprite("color-" + ghost.moveDir());
 		} else {

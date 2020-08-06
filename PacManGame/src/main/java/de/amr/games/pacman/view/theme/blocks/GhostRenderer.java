@@ -9,18 +9,12 @@ import java.awt.geom.Rectangle2D;
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.view.theme.api.IRenderer;
+import de.amr.games.pacman.view.theme.api.IGhostRenderer;
 
-class GhostRenderer implements IRenderer {
-
-	private final Ghost ghost;
-
-	public GhostRenderer(Ghost ghost) {
-		this.ghost = ghost;
-	}
+class GhostRenderer implements IGhostRenderer {
 
 	@Override
-	public void render(Graphics2D g) {
+	public void render(Graphics2D g, Ghost ghost) {
 		if (!ghost.isVisible()) {
 			return;
 		}
@@ -35,21 +29,21 @@ class GhostRenderer implements IRenderer {
 		case SCATTERING:
 		case LOCKED:
 		case LEAVING_HOUSE:
-			drawColored(g, width, height, 0, 0);
+			drawColored(g, ghost, width, height, 0, 0);
 			break;
 		case FRIGHTENED:
 			if (ghost.isFlashing()) {
-				drawFlashing(g, width, height, 0, 0);
+				drawFlashing(g, ghost, width, height, 0, 0);
 			} else {
-				drawFrightened(g, width, height, 0, 0);
+				drawFrightened(g, ghost, width, height, 0, 0);
 			}
 			break;
 		case DEAD:
 		case ENTERING_HOUSE:
 			if (ghost.getBounty() > 0) {
-				drawPoints(g);
+				drawPoints(g, ghost);
 			} else {
-				drawEyes(g, ghost.entity.tf.width, ghost.entity.tf.width);
+				drawEyes(g, ghost, ghost.entity.tf.width, ghost.entity.tf.width);
 			}
 			break;
 		default:
@@ -58,39 +52,39 @@ class GhostRenderer implements IRenderer {
 		smoothDrawingOff(g);
 	}
 
-	private void drawEyes(Graphics2D g, int width, int height) {
-		int x = centerOffsetX(width), y = centerOffsetY(height);
+	private void drawEyes(Graphics2D g, Ghost ghost, int width, int height) {
+		int x = centerOffsetX(ghost, width), y = centerOffsetY(ghost, height);
 		g.setColor(BlocksTheme.THEME.ghostColor(ghost));
 		g.drawRect(x, y, width, height);
 	}
 
-	private void drawPoints(Graphics2D g) {
+	private void drawPoints(Graphics2D g, Ghost ghost) {
 		g.setColor(Color.GREEN);
 		Font font = BlocksTheme.THEME.$font("font").deriveFont((float) ghost.entity.tf.height);
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
 		String text = String.valueOf(ghost.getBounty());
 		Rectangle2D bounds = fm.getStringBounds(text, g);
-		int x = centerOffsetX((int) bounds.getWidth());
-		int y = centerOffsetY((int) bounds.getHeight()) + (int) bounds.getHeight();
+		int x = centerOffsetX(ghost, (int) bounds.getWidth());
+		int y = centerOffsetY(ghost, (int) bounds.getHeight()) + (int) bounds.getHeight();
 		g.drawString(text, x, y);
 	}
 
-	private void drawFrightened(Graphics2D g, int width, int height, int offsetX, int offsetY) {
-		drawShape(g, width, height, offsetX, offsetY, Color.BLUE);
+	private void drawFrightened(Graphics2D g, Ghost ghost, int width, int height, int offsetX, int offsetY) {
+		drawShape(g, ghost, width, height, offsetX, offsetY, Color.BLUE);
 	}
 
-	private void drawFlashing(Graphics2D g, int width, int height, int offsetX, int offsetY) {
+	private void drawFlashing(Graphics2D g, Ghost ghost, int width, int height, int offsetX, int offsetY) {
 		boolean flash = Application.app().clock().getTotalTicks() % 30 < 15;
-		drawShape(g, width, height, offsetX, offsetY, flash ? Color.WHITE : Color.BLUE);
+		drawShape(g, ghost, width, height, offsetX, offsetY, flash ? Color.WHITE : Color.BLUE);
 	}
 
-	private void drawColored(Graphics2D g, int width, int height, int offsetX, int offsetY) {
-		drawShape(g, width, height, offsetX, offsetY, BlocksTheme.THEME.ghostColor(ghost));
+	private void drawColored(Graphics2D g, Ghost ghost, int width, int height, int offsetX, int offsetY) {
+		drawShape(g, ghost, width, height, offsetX, offsetY, BlocksTheme.THEME.ghostColor(ghost));
 	}
 
-	private void drawShape(Graphics2D g, int width, int height, int offsetX, int offsetY, Color color) {
-		int x = centerOffsetX(width) + offsetX, y = centerOffsetY(height) + offsetY;
+	private void drawShape(Graphics2D g, Ghost ghost, int width, int height, int offsetX, int offsetY, Color color) {
+		int x = centerOffsetX(ghost, width) + offsetX, y = centerOffsetY(ghost, height) + offsetY;
 		g.setColor(color);
 		g.fillRect(x, y, width, height);
 		g.fillArc(x, y - height / 4 - 2, width, height, 0, 180);
@@ -100,11 +94,11 @@ class GhostRenderer implements IRenderer {
 		g.fillRect(x, y + height - 2, width, 2);
 	}
 
-	private int centerOffsetX(int width) {
+	private int centerOffsetX(Ghost ghost, int width) {
 		return (int) ghost.entity.tf.x + (ghost.entity.tf.width - width) / 2;
 	}
 
-	private int centerOffsetY(int height) {
+	private int centerOffsetY(Ghost ghost, int height) {
 		return (int) ghost.entity.tf.y + (ghost.entity.tf.height - height) / 2;
 	}
 }
