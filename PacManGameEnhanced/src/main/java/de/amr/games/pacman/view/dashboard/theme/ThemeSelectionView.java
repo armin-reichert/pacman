@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.event.ItemEvent;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
+import java.util.Random;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -64,7 +65,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		add(comboSelectTheme, "cell 1 0,alignx left");
 
 		JPanel panelPreview = new JPanel();
-		panelPreview.setBackground(Color.BLACK);
+		panelPreview.setBackground(new Color(0, 23, 61));
 		add(panelPreview, "cell 1 1,grow");
 		panelPreview.setLayout(new MigLayout("", "[][][][][]", "[][]"));
 
@@ -188,7 +189,8 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		lblClyde.setIcon(createGhostIcon(theme, folks.clyde, GhostState.CHASING, Direction.random()));
 		lblGhostFrightened.setIcon(createGhostIcon(theme, folks.blinky, GhostState.FRIGHTENED, Direction.random()));
 		lblGhostDead.setIcon(createGhostIcon(theme, folks.blinky, GhostState.DEAD, Direction.random()));
-		folks.blinky.setBounty(800);
+		int[] bounties = { 200, 400, 800, 1600 };
+		folks.blinky.setBounty(bounties[new Random().nextInt(4)]);
 		lblGhostDeadBounty.setIcon(createGhostIcon(theme, folks.blinky, GhostState.DEAD, Direction.random()));
 		folks.blinky.setBounty(0);
 	}
