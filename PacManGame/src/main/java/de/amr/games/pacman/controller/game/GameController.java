@@ -100,7 +100,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			throw new IllegalStateException("Pac-Man is not initialized.");
 		}
 		switch (pacMan.getState()) {
-		case TIRED:
+		case IN_BED:
 		case SLEEPING:
 		case DEAD:
 		case COLLAPSING:

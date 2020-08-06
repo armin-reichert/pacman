@@ -6,7 +6,7 @@ import static de.amr.games.pacman.controller.creatures.pacman.PacManState.COLLAP
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
-import static de.amr.games.pacman.controller.creatures.pacman.PacManState.TIRED;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.IN_BED;
 import static de.amr.games.pacman.model.game.Game.sec;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
@@ -51,11 +51,11 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		beginStateMachine()
 
 			.description(name)
-			.initialState(TIRED)
+			.initialState(IN_BED)
 
 			.states()
 			
-				.state(TIRED)
+				.state(IN_BED)
 					.onEntry(() -> {
 						goToBed();
 						setVisible(true);
@@ -77,10 +77,10 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 			.transitions()
 
-				.when(TIRED).then(SLEEPING)
+				.when(IN_BED).then(SLEEPING)
 					.annotation("What else without Ms. Pac-Man?")
 
-				.when(TIRED).then(AWAKE).on(PacManWakeUpEvent.class)
+				.when(IN_BED).then(AWAKE).on(PacManWakeUpEvent.class)
 				
 				.when(SLEEPING).then(AWAKE).on(PacManWakeUpEvent.class)
 				

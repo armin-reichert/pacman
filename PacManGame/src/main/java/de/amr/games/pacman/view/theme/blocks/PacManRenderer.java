@@ -30,7 +30,7 @@ class PacManRenderer implements IPacManRenderer {
 		case POWERFUL:
 			drawRunning(g, size);
 			break;
-		case TIRED:
+		case IN_BED:
 		case SLEEPING:
 		case DEAD:
 			drawFull(g, size);
