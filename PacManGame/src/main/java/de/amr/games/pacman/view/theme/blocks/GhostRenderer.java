@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -58,7 +59,7 @@ class GhostRenderer implements IRenderer {
 	}
 
 	private void drawEyes(Graphics2D g, int width, int height) {
-		int x = centeredX(width), y = centeredY(height);
+		int x = centerOffsetX(width), y = centerOffsetY(height);
 		g.setColor(BlocksTheme.THEME.ghostColor(ghost));
 		g.drawRect(x, y, width, height);
 	}
@@ -68,7 +69,11 @@ class GhostRenderer implements IRenderer {
 		Font font = BlocksTheme.THEME.$font("font").deriveFont((float) ghost.entity.tf.height);
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
-		g.drawString(ghost.getBounty() + "", (int) ghost.entity.tf.x - 4, (int) ghost.entity.tf.y + fm.getAscent());
+		String text = String.valueOf(ghost.getBounty());
+		Rectangle2D bounds = fm.getStringBounds(text, g);
+		int x = centerOffsetX((int) bounds.getWidth());
+		int y = centerOffsetY((int) bounds.getHeight()) + (int) bounds.getHeight();
+		g.drawString(text, x, y);
 	}
 
 	private void drawFrightened(Graphics2D g, int width, int height, int offsetX, int offsetY) {
@@ -85,7 +90,7 @@ class GhostRenderer implements IRenderer {
 	}
 
 	private void drawShape(Graphics2D g, int width, int height, int offsetX, int offsetY, Color color) {
-		int x = centeredX(width) + offsetX, y = centeredY(height) + offsetY;
+		int x = centerOffsetX(width) + offsetX, y = centerOffsetY(height) + offsetY;
 		g.setColor(color);
 		g.fillRect(x, y, width, height);
 		g.fillArc(x, y - height / 4 - 2, width, height, 0, 180);
@@ -95,11 +100,11 @@ class GhostRenderer implements IRenderer {
 		g.fillRect(x, y + height - 2, width, 2);
 	}
 
-	private int centeredX(int width) {
+	private int centerOffsetX(int width) {
 		return (int) ghost.entity.tf.x + (ghost.entity.tf.width - width) / 2;
 	}
 
-	private int centeredY(int height) {
+	private int centerOffsetY(int height) {
 		return (int) ghost.entity.tf.y + (ghost.entity.tf.height - height) / 2;
 	}
 }
