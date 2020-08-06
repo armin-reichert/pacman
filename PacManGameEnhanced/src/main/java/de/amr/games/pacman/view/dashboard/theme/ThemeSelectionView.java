@@ -19,7 +19,9 @@ import javax.swing.border.LineBorder;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.creatures.Folks;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -141,48 +143,33 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 
 	private void updatePreviewLabels() {
 		Theme theme = gameController.getTheme();
-		setPacManLabel(folks, theme);
-		setGhostLabels(folks, theme);
+		lblPacMan.setIcon(createPacManIcon(theme, folks.pacMan));
+		lblBlinky.setIcon(createGhostIcon(theme, folks.blinky, GhostState.CHASING, Direction.random()));
+		lblPinky.setIcon(createGhostIcon(theme, folks.pinky, GhostState.CHASING, Direction.random()));
+		lblInky.setIcon(createGhostIcon(theme, folks.inky, GhostState.CHASING, Direction.random()));
+		lblClyde.setIcon(createGhostIcon(theme, folks.clyde, GhostState.CHASING, Direction.random()));
 	}
 
-	private void setPacManLabel(Folks folks, Theme theme) {
-		folks.pacMan.setState(PacManState.AWAKE);
-		folks.pacMan.setMoveDir(Direction.RIGHT);
-		folks.pacMan.entity.tf.width = folks.pacMan.entity.tf.height = ENTITY_SIZE;
+	private ImageIcon createPacManIcon(Theme theme, PacMan pacMan) {
+		pacMan.setState(PacManState.AWAKE);
+		pacMan.setMoveDir(Direction.RIGHT);
+		pacMan.entity.tf.width = folks.pacMan.entity.tf.height = ENTITY_SIZE;
 		BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
 		g.translate((THUMBNAIL_SIZE - ENTITY_SIZE) / 2, (THUMBNAIL_SIZE - ENTITY_SIZE) / 2);
-		theme.pacManRenderer(folks.pacMan).render(g);
-		lblPacMan.setIcon(new ImageIcon(img));
+		theme.pacManRenderer(pacMan).render(g);
+		return new ImageIcon(img);
 	}
 
-	private void setGhostLabels(Folks folks, Theme theme) {
-		folks.ghosts().forEach(ghost -> {
-			ghost.setState(GhostState.CHASING);
-			ghost.setMoveDir(Direction.random());
-			ghost.entity.tf.width = ghost.entity.tf.height = ENTITY_SIZE;
-			BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D g = img.createGraphics();
-			g.translate((THUMBNAIL_SIZE - ENTITY_SIZE) / 2, (THUMBNAIL_SIZE - ENTITY_SIZE) / 2);
-			theme.ghostRenderer(ghost).render(g);
-			ImageIcon icon = new ImageIcon(img);
-			switch (ghost.name) {
-			case "Blinky":
-				lblBlinky.setIcon(icon);
-				break;
-			case "Pinky":
-				lblPinky.setIcon(icon);
-				break;
-			case "Inky":
-				lblInky.setIcon(icon);
-				break;
-			case "Clyde":
-				lblClyde.setIcon(icon);
-				break;
-			default:
-				break;
-			}
-		});
+	private ImageIcon createGhostIcon(Theme theme, Ghost ghost, GhostState state, Direction moveDir) {
+		ghost.setState(state);
+		ghost.setMoveDir(moveDir);
+		ghost.entity.tf.width = ghost.entity.tf.height = ENTITY_SIZE;
+		BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = img.createGraphics();
+		g.translate((THUMBNAIL_SIZE - ENTITY_SIZE) / 2, (THUMBNAIL_SIZE - ENTITY_SIZE) / 2);
+		theme.ghostRenderer(ghost).render(g);
+		return new ImageIcon(img);
 	}
 
 	@Override
