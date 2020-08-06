@@ -1,13 +1,13 @@
 package de.amr.games.pacman.view.theme.blocks;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 
 class GhostRenderer implements IRenderer {
@@ -28,7 +28,7 @@ class GhostRenderer implements IRenderer {
 			state = GhostState.CHASING;
 		}
 		smoothDrawingOn(g);
-		int width = 2 * ghost.entity.tf.width - 3, height = 2 * ghost.entity.tf.height - 2;
+		int width = 2 * ghost.entity.tf.width - 4, height = 2 * ghost.entity.tf.height - 2;
 		switch (state) {
 		case CHASING:
 		case SCATTERING:
@@ -48,7 +48,7 @@ class GhostRenderer implements IRenderer {
 			if (ghost.getBounty() > 0) {
 				drawPoints(g);
 			} else {
-				drawEyes(g);
+				drawEyes(g, ghost.entity.tf.width, ghost.entity.tf.width);
 			}
 			break;
 		default:
@@ -57,8 +57,7 @@ class GhostRenderer implements IRenderer {
 		smoothDrawingOff(g);
 	}
 
-	private void drawEyes(Graphics2D g) {
-		int width = Tile.SIZE, height = Tile.SIZE;
+	private void drawEyes(Graphics2D g, int width, int height) {
 		int x = centeredX(width), y = centeredY(height);
 		g.setColor(BlocksTheme.THEME.ghostColor(ghost));
 		g.drawRect(x, y, width, height);
@@ -66,7 +65,8 @@ class GhostRenderer implements IRenderer {
 
 	private void drawPoints(Graphics2D g) {
 		g.setColor(Color.GREEN);
-		g.setFont(BlocksTheme.THEME.$font("font"));
+		Font font = BlocksTheme.THEME.$font("font").deriveFont((float) ghost.entity.tf.height);
+		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
 		g.drawString(ghost.getBounty() + "", (int) ghost.entity.tf.x - 4, (int) ghost.entity.tf.y + fm.getAscent());
 	}
@@ -90,9 +90,9 @@ class GhostRenderer implements IRenderer {
 		g.fillRect(x, y, width, height);
 		g.fillArc(x, y - height / 4 - 2, width, height, 0, 180);
 		g.setColor(Color.BLACK);
-		g.fillRect(x, y, width, 1);
+		g.fillRect(x, y, width, 2);
 		g.setColor(Color.WHITE);
-		g.fillRect(x, y + height - 1, width, 1);
+		g.fillRect(x, y + height - 2, width, 2);
 	}
 
 	private int centeredX(int width) {
