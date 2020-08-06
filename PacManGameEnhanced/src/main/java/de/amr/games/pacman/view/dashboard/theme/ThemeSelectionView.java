@@ -29,8 +29,8 @@ import net.miginfocom.swing.MigLayout;
 
 public class ThemeSelectionView extends JPanel implements Lifecycle {
 
-	static final int THUMBNAIL_SIZE = 80;
-	static final int ENTITY_SIZE = 16;
+	static final int THUMBNAIL_SIZE = 100;
+	static final int ENTITY_SIZE = 20;
 
 	private boolean initialized = false;
 	private Folks folks;
@@ -159,7 +159,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 	private void setGhostLabels(Folks folks, Theme theme) {
 		folks.ghosts().forEach(ghost -> {
 			ghost.setState(GhostState.CHASING);
-			ghost.setMoveDir(Direction.RIGHT);
+			ghost.setMoveDir(Direction.random());
 			ghost.entity.tf.width = ghost.entity.tf.height = ENTITY_SIZE;
 			BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g = img.createGraphics();

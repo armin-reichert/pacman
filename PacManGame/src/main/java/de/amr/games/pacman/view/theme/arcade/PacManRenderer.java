@@ -61,6 +61,6 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 		default:
 			break;
 		}
-		drawEntity(g, pacMan.entity);
+		drawEntity(g, pacMan.entity, 2);
 	}
 }

@@ -14,12 +14,14 @@ public abstract class SpriteRenderer implements IRenderer {
 		sprites = new SpriteMap();
 	}
 
-	protected void drawEntity(Graphics2D g, Entity entity) {
+	protected void drawEntity(Graphics2D g, Entity entity, int scaling) {
 		if (entity.visible) {
 			sprites.current().ifPresent(sprite -> {
-				int sw = sprite.getWidth(), sh = sprite.getHeight();
 				int w = entity.tf.width, h = entity.tf.height;
-				float x = entity.tf.x - (sw - w) / 2, y = entity.tf.y - (sh - h) / 2;
+				if (sprite.getWidth() != scaling * w || sprite.getHeight() != scaling * h) {
+					sprite = sprite.scale(scaling * w, scaling * h);
+				}
+				float x = entity.tf.x - (sprite.getWidth() - w) / 2, y = entity.tf.y - (sprite.getHeight() - h) / 2;
 				sprite.draw(g, x, y);
 			});
 		}

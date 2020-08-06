@@ -28,7 +28,7 @@ class GhostRenderer implements IRenderer {
 			state = GhostState.CHASING;
 		}
 		smoothDrawingOn(g);
-		int width = 2 * ghost.entity.tf.width - 2, height = 2 * ghost.entity.tf.height;
+		int width = 2 * ghost.entity.tf.width - 3, height = 2 * ghost.entity.tf.height - 2;
 		switch (state) {
 		case CHASING:
 		case SCATTERING:
