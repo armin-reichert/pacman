@@ -98,6 +98,10 @@ public class Movement extends StateMachine<MovementType, Void> {
 		activePortal.setPassageDir(mover.moveDir());
 		loginfo("%s enters portal at %s moving %s with offsetX %.2f", moverName, entry, activePortal.getPassageDir(),
 				mover.tileOffsetX());
+		// TODO understand portal issue and remove this hack
+		if (mover instanceof Ghost) {
+			mover.tf().setPosition(Float.MAX_VALUE, Float.MAX_VALUE);
+		}
 	}
 
 	private void teleport() {
