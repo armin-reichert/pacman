@@ -26,7 +26,6 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.game.GameLevel;
 import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -40,7 +39,6 @@ import de.amr.games.pacman.model.world.components.Bed;
  */
 public class PacMan extends Creature<PacMan, PacManState> {
 
-	private Game game;
 	private int foodWeight;
 
 	public PacMan(World world) {
@@ -109,12 +107,11 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 	@Override
 	public float getSpeed() {
-		if (game == null) {
-			return 0;
-		}
-		GameLevel level = game.level;
 		if (getState() == null) {
 			throw new IllegalStateException("Pac-Man is not initialized.");
+		}
+		if (game == null) {
+			return 0;
 		}
 		switch (getState()) {
 		case IN_BED:
@@ -123,18 +120,12 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		case COLLAPSING:
 			return 0;
 		case POWERFUL:
-			return speed(mustDigest() ? level.pacManPowerDotsSpeed : level.pacManPowerSpeed);
+			return speed(mustDigest() ? game.level.pacManPowerDotsSpeed : game.level.pacManPowerSpeed);
 		case AWAKE:
-			return speed(mustDigest() ? level.pacManDotsSpeed : level.pacManSpeed);
+			return speed(mustDigest() ? game.level.pacManDotsSpeed : game.level.pacManSpeed);
 		default:
 			throw new IllegalStateException("Illegal Pac-Man state: " + getState());
 		}
-	}
-
-	@Override
-	public void getReadyToRumble(Game game) {
-		this.game = game;
-		init();
 	}
 
 	/**

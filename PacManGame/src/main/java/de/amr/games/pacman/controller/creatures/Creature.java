@@ -40,6 +40,7 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	public final Entity entity;
 	public final String name;
 	protected final World world;
+	protected Game game;
 	protected boolean enabled;
 	protected Map<S, Steering<M>> steeringsByState;
 	protected Movement movement;
@@ -81,11 +82,12 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	}
 
 	/**
-	 * Must be called before this creature can take part in a game.
-	 * 
 	 * @param game the game this creature takes part in
 	 */
-	public abstract void getReadyToRumble(Game game);
+	public void setGame(Game game) {
+		this.game = game;
+		init();
+	}
 
 	public Stream<StateMachine<?, ?>> machines() {
 		return Stream.of(this, movement);

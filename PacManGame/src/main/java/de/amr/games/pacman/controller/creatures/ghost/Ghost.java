@@ -46,7 +46,6 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private PacMan pacMan;
 	private House house;
 	private Bed bed;
-	private Game game;
 	private GhostState nextState;
 	private GhostMadnessController madnessController;
 	private Steering<Ghost> previousSteering;
@@ -259,7 +258,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	}
 
 	@Override
-	public void getReadyToRumble(Game game) {
+	public void setGame(Game game) {
 		this.game = game;
 		if (madnessController != null) {
 			madnessController.setGame(game);

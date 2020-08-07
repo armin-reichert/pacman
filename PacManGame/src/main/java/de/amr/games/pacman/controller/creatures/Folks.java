@@ -82,7 +82,7 @@ public class Folks {
 	}
 
 	public void getReadyToRumble(Game game) {
-		all().forEach(guy -> guy.getReadyToRumble(game));
+		all().forEach(guy -> guy.setGame(game));
 	}
 
 	public Stream<Ghost> ghosts() {
