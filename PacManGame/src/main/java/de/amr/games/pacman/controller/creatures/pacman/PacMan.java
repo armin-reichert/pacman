@@ -28,6 +28,7 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Bed;
 
@@ -40,8 +41,8 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 	private int foodWeight;
 
-	public PacMan() {
-		super(PacManState.class, "Pac-Man");
+	public PacMan(World world) {
+		super(PacManState.class, "Pac-Man", world);
 		/*@formatter:off*/
 		beginStateMachine()
 

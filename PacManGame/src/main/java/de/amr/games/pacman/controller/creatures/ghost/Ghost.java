@@ -24,6 +24,7 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
@@ -51,9 +52,12 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private int bounty;
 	private boolean flashing;
 
-	public Ghost(String name, GhostPersonality personality) {
-		super(GhostState.class, name);
+	public Ghost(String name, GhostPersonality personality, World world) {
+		super(GhostState.class, name, world);
 		this.personality = personality;
+		if (personality == GhostPersonality.SHADOW) {
+			madnessController = new GhostMadnessController(this);
+		}
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		/*@formatter:off*/
 		beginStateMachine()
@@ -185,11 +189,12 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		return Stream.concat(super.machines(), Stream.of(madnessController));
 	}
 
+	public PacMan getPacMan() {
+		return pacMan;
+	}
+
 	public void setPacMan(PacMan pacMan) {
 		this.pacMan = pacMan;
-		if (personality == GhostPersonality.SHADOW) {
-			madnessController = new GhostMadnessController(this, pacMan);
-		}
 	}
 
 	public Bed bed() {

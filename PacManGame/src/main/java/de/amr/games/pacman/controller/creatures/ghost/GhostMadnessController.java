@@ -9,7 +9,6 @@ import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
 import java.util.Objects;
 
-import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
@@ -55,13 +54,11 @@ public class GhostMadnessController extends StateMachine<GhostMentalState, Byte>
 	private static final byte CLYDE_EXITS_HOUSE = 1;
 
 	private final Ghost ghost;
-	private final PacMan pacMan;
 	private Game game;
 
-	public GhostMadnessController(Ghost ghost, PacMan pacMan) {
+	public GhostMadnessController(Ghost ghost) {
 		super(GhostMentalState.class, TransitionMatchStrategy.BY_VALUE);
 		this.ghost = Objects.requireNonNull(ghost);
-		this.pacMan = Objects.requireNonNull(pacMan);
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		//@formatter:off
 		beginStateMachine()
@@ -130,7 +127,7 @@ public class GhostMadnessController extends StateMachine<GhostMentalState, Byte>
 	}
 
 	private void targetPacMan() {
-		you(ghost).when(SCATTERING).headFor().tile(pacMan::tileLocation).ok();
+		you(ghost).when(SCATTERING).headFor().tile(ghost.getPacMan()::tileLocation).ok();
 	}
 
 	public void pacManDies() {

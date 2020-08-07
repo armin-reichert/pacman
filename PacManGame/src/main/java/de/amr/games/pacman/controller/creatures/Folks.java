@@ -35,13 +35,12 @@ public class Folks {
 	public final Ghost blinky, pinky, inky, clyde;
 
 	public Folks(World world, House ghostHouse) {
-		pacMan = new PacMan();
-		blinky = new Ghost("Blinky", GhostPersonality.SHADOW);
-		inky = new Ghost("Inky", GhostPersonality.BASHFUL);
-		pinky = new Ghost("Pinky", GhostPersonality.SPEEDY);
-		clyde = new Ghost("Clyde", GhostPersonality.POKEY);
+		pacMan = new PacMan(world);
+		blinky = new Ghost("Blinky", GhostPersonality.SHADOW, world);
+		inky = new Ghost("Inky", GhostPersonality.BASHFUL, world);
+		pinky = new Ghost("Pinky", GhostPersonality.SPEEDY, world);
+		clyde = new Ghost("Clyde", GhostPersonality.POKEY, world);
 
-		all().forEach(guy -> guy.setWorld(world));
 		ghosts().forEach(ghost -> ghost.setPacMan(pacMan));
 
 		blinky.assignBed(ghostHouse, 0);
@@ -50,12 +49,12 @@ public class Folks {
 		clyde.assignBed(ghostHouse, 3);
 
 		// define behavior
-		
+
 		you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
 
 		Door door = ghostHouse.door(0);
 		Tile houseEntry = world.neighbor(door.tiles().findFirst().get(), door.intoHouse.opposite());
-		
+
 		ghosts().forEach(ghost -> {
 			you(ghost).when(LOCKED).bounceOnBed().ok();
 			you(ghost).when(ENTERING_HOUSE).enterDoorAndGoToBed().door(door).ok();

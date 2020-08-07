@@ -41,9 +41,8 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 
 	public final Entity entity;
 	public final String name;
-
+	protected final World world;
 	protected boolean enabled;
-	protected World world;
 	protected Map<S, Steering<M>> steeringsByState;
 	protected Supplier<Float> fnSpeed = () -> GameController.BASE_SPEED;
 	protected Movement movement;
@@ -52,9 +51,10 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	protected Theme theme;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Creature(Class<S> stateClass, String name) {
+	public Creature(Class<S> stateClass, String name, World world) {
 		super(stateClass);
 		this.name = name;
+		this.world = world;
 		enabled = true;
 		entity = new Entity();
 		entity.tf.width = entity.tf.height = Tile.SIZE;
@@ -65,10 +65,6 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	@Override
 	public World world() {
 		return world;
-	}
-
-	public void setWorld(World world) {
-		this.world = world;
 	}
 
 	public void setEnabled(boolean enabled) {
