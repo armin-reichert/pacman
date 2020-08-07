@@ -30,7 +30,6 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
-import de.amr.games.pacman.view.theme.api.IGhostRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.statemachine.core.StateMachine;
 
@@ -53,7 +52,6 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private Steering<Ghost> previousSteering;
 	private int bounty;
 	private boolean flashing;
-	private IGhostRenderer renderer;
 	private Game game;
 
 	public Ghost(World world, PacMan pacMan, String name, GhostPersonality personality) {
@@ -72,6 +70,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 					.onEntry(() -> {
 						fnSubsequentState = () -> LOCKED;
 						setVisible(true);
+						setEnabled(true);
 						flashing = false;
 						bounty = 0;
 						placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
@@ -201,16 +200,11 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
-		renderer = theme.ghostRenderer(this);
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		renderer.render(g, this);
-	}
-
-	public IGhostRenderer renderer() {
-		return renderer;
+		theme.ghostRenderer(this).render(g, this);
 	}
 
 	public void assignBed(House house, int bedNumber) {
@@ -319,6 +313,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		}
 		currentSteering.steer(this);
 		movement.update();
+		setEnabled(entity.tf.vx != 0 || entity.tf.vy != 0);
 		if (madnessController != null) {
 			madnessController.update();
 		}

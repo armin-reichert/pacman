@@ -5,25 +5,24 @@ import java.awt.Font;
 import java.util.Map;
 
 import de.amr.easy.game.Application;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
+import de.amr.games.pacman.view.common.MessagesRenderer;
+import de.amr.games.pacman.view.common.Rendering;
+import de.amr.games.pacman.view.theme.api.IGameRenderer;
 import de.amr.games.pacman.view.theme.api.IGhostRenderer;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.api.PacManSounds;
 import de.amr.games.pacman.view.theme.arcade.sounds.ArcadeSounds;
-import de.amr.games.pacman.view.theme.common.AbstractTheme;
-import de.amr.games.pacman.view.theme.common.MessagesRenderer;
-import de.amr.games.pacman.view.theme.common.Rendering;
+import de.amr.games.pacman.view.theme.core.AbstractTheme;
 
 /**
  * Theme using letters only.
@@ -103,8 +102,8 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public View levelCounterView(World world, Game game) {
-		return g -> {
+	public IGameRenderer levelCounterRenderer() {
+		return (g, game) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
 			String text = String.format("Level: %d (%s)", game.level.number, game.level.bonusSymbol);
@@ -115,8 +114,8 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public View livesCounterView(World world, Game game) {
-		return g -> {
+	public IGameRenderer livesCounterRenderer() {
+		return (g, game) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
 			g.setColor(Color.YELLOW);
@@ -126,8 +125,8 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public View scoreView(World world, Game game) {
-		return g -> {
+	public IGameRenderer scoreRenderer() {
+		return (g, game) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
 			g.setColor(Color.YELLOW);
@@ -139,7 +138,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IWorldRenderer worldRenderer(World w) {
+	public IWorldRenderer worldRenderer(World world_) {
 		return (g, world) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -156,12 +155,24 @@ public class LettersTheme extends AbstractTheme {
 							g.setColor(Color.PINK);
 							g.drawString(".", col * Tile.SIZE + 1, row * Tile.SIZE - 3 + offset_baseline);
 						}
-						// TODO Bonus display
 					} else {
 						g.setColor(Rendering.alpha(Color.GREEN, 80));
 						g.drawString("#", col * Tile.SIZE + 1, row * Tile.SIZE + offset_baseline - 1);
 					}
 				}
+				world.bonusFood().ifPresent(bonus -> {
+					Tile tile = bonus.location();
+					g.setColor(Color.GREEN);
+					String text = "";
+					int col = tile.col;
+					if (bonus.isPresent()) {
+						text = "WIN " + bonus.value();
+					} else if (bonus.isConsumed()) {
+						text = "WON " + bonus.value() + " POINTS!";
+						col -= 3;
+					}
+					g.drawString(text, (col - 3) * Tile.SIZE, tile.row * Tile.SIZE + offset_baseline - 1);
+				});
 			}
 			world.houses().flatMap(House::doors).forEach(door -> {
 				if (door.state == DoorState.CLOSED) {

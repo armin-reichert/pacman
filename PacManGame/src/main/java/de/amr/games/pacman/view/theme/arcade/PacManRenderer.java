@@ -9,25 +9,12 @@ import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 
 public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
-	private boolean stopAnimationWhenStanding;
-
 	public PacManRenderer() {
 		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, arcadeSprites.makeSprite_pacManWalking(dir)));
 		sprites.set("collapsing", arcadeSprites.makeSprite_pacManDying());
 		sprites.set("full", arcadeSprites.makeSprite_pacManFull());
 		sprites.select("full");
-		stopAnimationWhenStanding = true;
-	}
-
-	@Override
-	public void stopAnimationWhenStanding(boolean b) {
-		stopAnimationWhenStanding = b;
-	}
-
-	@Override
-	public boolean isAnimationStoppedWhenStanding() {
-		return stopAnimationWhenStanding;
 	}
 
 	@Override
@@ -41,8 +28,7 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 		case AWAKE:
 		case POWERFUL:
 			selectSprite("walking-" + pacMan.moveDir());
-			boolean running = pacMan.entity.tf.vx != 0 || pacMan.entity.tf.vy != 0;
-			enableAnimation(running || !running && !isAnimationStoppedWhenStanding());
+			sprites.current().get().enableAnimation(pacMan.isEnabled() || pacMan.alwaysEnabled);
 			break;
 		case IN_BED:
 		case SLEEPING:

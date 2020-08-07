@@ -3,7 +3,7 @@ package de.amr.games.pacman.view.dashboard.util;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
-import de.amr.games.pacman.view.theme.common.Rendering;
+import de.amr.games.pacman.view.common.Rendering;
 import de.amr.statemachine.core.InfiniteTimer;
 
 public class Formatting {

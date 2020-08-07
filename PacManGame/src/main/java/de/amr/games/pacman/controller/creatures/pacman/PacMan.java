@@ -32,8 +32,6 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.view.theme.api.IPacManRenderer;
-import de.amr.games.pacman.view.theme.api.Theme;
 
 /**
  * The one and only.
@@ -43,7 +41,6 @@ import de.amr.games.pacman.view.theme.api.Theme;
 public class PacMan extends Creature<PacMan, PacManState> {
 
 	private int foodWeight;
-	private IPacManRenderer renderer;
 
 	public PacMan(World world) {
 		super(PacManState.class, world, "Pac-Man");
@@ -59,6 +56,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 					.onEntry(() -> {
 						goToBed();
 						setVisible(true);
+						setEnabled(true);
 						foodWeight = 0;
 					})
 
@@ -127,7 +125,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 	@Override
 	public void draw(Graphics2D g) {
-		renderer.render(g, this);
+		theme.pacManRenderer(this).render(g, this);
 	}
 
 	private void setPowerTimer(PacManGameEvent e) {
@@ -139,6 +137,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	private void wander() {
 		steering().steer(this);
 		movement.update();
+		setEnabled(entity.tf.vx != 0 || entity.tf.vy != 0);
 		if (enteredNewTile()) {
 			foodWeight = Math.max(0, foodWeight - 1);
 		}
@@ -189,16 +188,6 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 	public void fallAsleep() {
 		process(new PacManFallAsleepEvent());
-	}
-
-	public IPacManRenderer renderer() {
-		return renderer;
-	}
-
-	@Override
-	public void setTheme(Theme theme) {
-		this.theme = theme;
-		renderer = theme.pacManRenderer(this);
 	}
 
 	@Override

@@ -16,7 +16,7 @@ class PacManRenderer implements IPacManRenderer {
 		if (!pacMan.isVisible()) {
 			return;
 		}
-		smoothDrawingOn(g);
+		smoothOn(g);
 		PacManState state = pacMan.getState();
 		int size = 2 * pacMan.entity.tf.width;
 		switch (state) {
@@ -35,7 +35,7 @@ class PacManRenderer implements IPacManRenderer {
 		default:
 			throw new IllegalArgumentException("Unknown Pac-Man state" + state);
 		}
-		smoothDrawingOff(g);
+		smoothOff(g);
 	}
 
 	private void drawFull(Graphics2D g, PacMan pacMan, int size) {

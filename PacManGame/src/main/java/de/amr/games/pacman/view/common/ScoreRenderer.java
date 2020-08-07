@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.common;
+package de.amr.games.pacman.view.common;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -6,20 +6,15 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 import de.amr.easy.game.view.Pen;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.view.theme.api.IGameRenderer;
 
-public class ScoreView implements View {
+public class ScoreRenderer implements IGameRenderer {
 
-	private final Game game;
 	private Font font = new Font(Font.MONOSPACED, Font.PLAIN, Tile.SIZE);
 	private int topMargin = 1;
 	private int baselineOffset = Tile.SIZE;
-
-	public ScoreView(Game game) {
-		this.game = game;
-	}
 
 	public void setFont(Font font) {
 		this.font = font;
@@ -34,7 +29,7 @@ public class ScoreView implements View {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g, Game game) {
 		g.translate(0, topMargin);
 		try (Pen pen = new Pen(g)) {
 			Color hilight = Color.YELLOW;

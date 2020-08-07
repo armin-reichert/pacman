@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.common;
+package de.amr.games.pacman.view.common;
 
 import static java.lang.Math.PI;
 

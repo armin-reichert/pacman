@@ -32,13 +32,6 @@ public abstract class SpriteRenderer implements IRenderer {
 	}
 
 	@Override
-	public void enableAnimation(boolean enabled) {
-		sprites.current().ifPresent(sprite -> {
-			sprite.enableAnimation(enabled);
-		});
-	}
-
-	@Override
 	public void resetAnimations() {
 		sprites.forEach(sprite -> sprite.resetAnimation());
 	}

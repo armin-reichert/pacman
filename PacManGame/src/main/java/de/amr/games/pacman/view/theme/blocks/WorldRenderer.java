@@ -37,7 +37,7 @@ class WorldRenderer implements IWorldRenderer {
 	}
 
 	private void drawFood(Graphics2D g, World world) {
-		smoothDrawingOn(g);
+		smoothOn(g);
 		world.tiles().forEach(location -> {
 			if (world.hasFood(Pellet.ENERGIZER, location)) {
 				drawEnergizer(g, world, location);
@@ -53,7 +53,7 @@ class WorldRenderer implements IWorldRenderer {
 				drawConsumedBonus(g, center, bonus.value());
 			}
 		});
-		smoothDrawingOff(g);
+		smoothOff(g);
 	}
 
 	private void drawActiveBonus(Graphics2D g, Vector2f center, Symbol symbol) {

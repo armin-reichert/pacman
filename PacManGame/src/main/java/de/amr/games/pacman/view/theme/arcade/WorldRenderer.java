@@ -77,13 +77,6 @@ public class WorldRenderer implements IWorldRenderer {
 		energizerAnimation.update();
 	}
 
-	@Override
-	public void enableAnimation(boolean enabled) {
-		mazeSprites.current().ifPresent(sprite -> {
-			sprite.enableAnimation(enabled);
-		});
-	}
-
 	private void drawContent(Graphics2D g, World world) {
 		// hide eaten food
 		world.tiles().filter(world::hasEatenFood).forEach(tile -> {

@@ -18,11 +18,11 @@ class LivesCounterView implements View, IRenderer {
 
 	@Override
 	public void draw(Graphics2D g) {
-		smoothDrawingOn(g);
+		smoothOn(g);
 		g.setColor(Color.YELLOW);
 		for (int i = 0, x = 0; i < game.lives; ++i, x += 2 * Tile.SIZE) {
 			g.fillOval(x, 0, Tile.SIZE, Tile.SIZE);
 		}
-		smoothDrawingOff(g);
+		smoothOff(g);
 	}
 }

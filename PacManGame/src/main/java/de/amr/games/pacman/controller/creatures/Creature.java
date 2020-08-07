@@ -42,6 +42,8 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 
 	public final String name;
 	public final Entity entity;
+	protected boolean enabled;
+	public boolean alwaysEnabled;
 	protected final World world;
 	protected final Map<S, Steering<M>> steeringsByState;
 	protected Supplier<Float> fnSpeed = () -> GameController.BASE_SPEED;
@@ -55,6 +57,7 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 		super(stateClass);
 		this.world = world;
 		this.name = name;
+		enabled = true;
 		entity = new Entity();
 		entity.tf.width = entity.tf.height = Tile.SIZE;
 		steeringsByState = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
@@ -64,6 +67,14 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	@Override
 	public World world() {
 		return world;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
 	}
 
 	/**

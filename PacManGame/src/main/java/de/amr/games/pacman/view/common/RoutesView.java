@@ -1,10 +1,10 @@
-package de.amr.games.pacman.view.theme.common;
+package de.amr.games.pacman.view.common;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
-import static de.amr.games.pacman.view.theme.common.Rendering.alpha;
-import static de.amr.games.pacman.view.theme.common.Rendering.drawDirectionIndicator;
-import static de.amr.games.pacman.view.theme.common.Rendering.ghostColor;
+import static de.amr.games.pacman.view.common.Rendering.alpha;
+import static de.amr.games.pacman.view.common.Rendering.drawDirectionIndicator;
+import static de.amr.games.pacman.view.common.Rendering.ghostColor;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
@@ -29,17 +30,18 @@ import de.amr.games.pacman.view.theme.api.IRenderer;
  * 
  * @author Armin Reichert
  */
-public class RoutesRenderer implements IRenderer {
+public class RoutesView implements View, IRenderer {
 
 	private final World world;
 	private final Folks folks;
 
-	public RoutesRenderer(World world, Folks folks) {
+	public RoutesView(World world, Folks folks) {
 		this.world = world;
 		this.folks = folks;
 	}
 
-	public void render(Graphics2D g) {
+	@Override
+	public void draw(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		if (folks.pacMan.isVisible()) {
 			drawPacManRoute(g, folks.pacMan);
@@ -79,7 +81,7 @@ public class RoutesRenderer implements IRenderer {
 			return;
 		}
 		g = (Graphics2D) g.create();
-		smoothDrawingOn(g);
+		smoothOn(g);
 
 		// draw dashed line from ghost position to target tile
 		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
@@ -102,7 +104,7 @@ public class RoutesRenderer implements IRenderer {
 			return;
 		}
 		g = (Graphics2D) g.create();
-		smoothDrawingOn(g);
+		smoothOn(g);
 		g.setStroke(new BasicStroke(0.5f));
 		g.setColor(alpha(ghostColor, 200));
 		Tile[] tiles = path.toArray(Tile[]::new);

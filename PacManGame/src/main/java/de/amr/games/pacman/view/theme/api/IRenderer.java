@@ -8,14 +8,13 @@ public interface IRenderer {
 	default void resetAnimations() {
 	}
 
-	default void enableAnimation(boolean enabled) {
-	}
-
-	default void smoothDrawingOn(Graphics2D g) {
+	default void smoothOn(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 	}
 
-	default void smoothDrawingOff(Graphics2D g) {
+	default void smoothOff(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 }

@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.theme.arcade;
 
-import static de.amr.games.pacman.view.theme.common.Rendering.drawDirectionIndicator;
+import static de.amr.games.pacman.view.common.Rendering.drawDirectionIndicator;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,23 +12,25 @@ import java.awt.image.BufferedImage;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.Pen;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.theme.api.IRenderer;
-import de.amr.games.pacman.view.theme.common.Rendering;
 
-public class GridRenderer implements IRenderer {
+public class GridView implements View, IRenderer {
 
 	private final World world;
 	private final Image gridImage;
 
-	public GridRenderer(World world) {
+	public GridView(World world) {
 		this.world = world;
 		gridImage = createGridPatternImage(world.width(), world.height());
 	}
 
-	public void render(Graphics2D g) {
+	@Override
+	public void draw(Graphics2D g) {
 		g.drawImage(gridImage, 0, 0, null);
 		drawBeds(g);
 	}

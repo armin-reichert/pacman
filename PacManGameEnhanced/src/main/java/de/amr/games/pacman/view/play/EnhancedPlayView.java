@@ -11,11 +11,12 @@ import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.view.common.Rendering;
+import de.amr.games.pacman.view.common.RoutesView;
+import de.amr.games.pacman.view.common.StatesView;
+import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
-import de.amr.games.pacman.view.theme.arcade.GridRenderer;
-import de.amr.games.pacman.view.theme.common.Rendering;
-import de.amr.games.pacman.view.theme.common.RoutesRenderer;
-import de.amr.games.pacman.view.theme.common.StatesRenderer;
+import de.amr.games.pacman.view.theme.arcade.GridView;
 
 /**
  * View where the action is.
@@ -24,9 +25,9 @@ import de.amr.games.pacman.view.theme.common.StatesRenderer;
  */
 public class EnhancedPlayView extends PlayView {
 
-	protected final GridRenderer gridRenderer;
-	protected final RoutesRenderer routesRenderer;
-	protected final StatesRenderer statesRenderer;
+	protected final GridView gridView;
+	protected final RoutesView routesView;
+	protected final StatesView statesView;
 	protected final FrameRateWidget frameRateDisplay;
 
 	protected boolean showingFrameRate;
@@ -37,9 +38,9 @@ public class EnhancedPlayView extends PlayView {
 	public EnhancedPlayView(World world, Theme theme, Folks folks, Game game, GhostCommand ghostCommand,
 			DoorMan doorMan) {
 		super(world, theme, folks, game, ghostCommand, doorMan);
-		gridRenderer = new GridRenderer(world);
-		routesRenderer = new RoutesRenderer(world, folks);
-		statesRenderer = new StatesRenderer(world, folks, ghostCommand);
+		gridView = new GridView(world);
+		routesView = new RoutesView(world, folks);
+		statesView = new StatesView(world, folks, ghostCommand);
 		frameRateDisplay = new FrameRateWidget();
 		setTheme(theme);
 	}
@@ -117,19 +118,20 @@ public class EnhancedPlayView extends PlayView {
 
 	@Override
 	protected void drawWorld(Graphics2D g) {
-		worldRenderer.setEatenFoodColor(showingGrid ? Rendering::patternColor : tile -> Color.BLACK);
-		worldRenderer.render(g, world);
+		IWorldRenderer renderer = theme.worldRenderer(world);
+		renderer.setEatenFoodColor(showingGrid ? Rendering::patternColor : tile -> Color.BLACK);
+		renderer.render(g, world);
 	}
 
 	protected void drawGrid(Graphics2D g) {
 		if (showingGrid) {
-			gridRenderer.render(g);
+			gridView.draw(g);
 		}
 	}
 
 	protected void drawOneWayTiles(Graphics2D g) {
 		if (showingGrid) {
-			gridRenderer.drawOneWayTiles(g);
+			gridView.drawOneWayTiles(g);
 		}
 	}
 
@@ -142,13 +144,13 @@ public class EnhancedPlayView extends PlayView {
 
 	protected void drawStates(Graphics2D g) {
 		if (showingStates) {
-			statesRenderer.render(g);
+			statesView.draw(g);
 		}
 	}
 
 	protected void drawRoutes(Graphics2D g) {
 		if (showingRoutes) {
-			routesRenderer.render(g);
+			routesView.draw(g);
 		}
 	}
 }

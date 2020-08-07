@@ -5,20 +5,20 @@ import java.awt.Font;
 import java.util.Map;
 
 import de.amr.easy.game.assets.Assets;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.view.common.MessagesRenderer;
+import de.amr.games.pacman.view.common.ScoreRenderer;
+import de.amr.games.pacman.view.theme.api.IGameRenderer;
 import de.amr.games.pacman.view.theme.api.IGhostRenderer;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.api.PacManSounds;
+import de.amr.games.pacman.view.theme.arcade.LivesCounterRenderer;
 import de.amr.games.pacman.view.theme.arcade.sounds.ArcadeSounds;
-import de.amr.games.pacman.view.theme.common.AbstractTheme;
-import de.amr.games.pacman.view.theme.common.MessagesRenderer;
-import de.amr.games.pacman.view.theme.common.ScoreView;
+import de.amr.games.pacman.view.theme.core.AbstractTheme;
 
 /**
  * A theme using simple geometric figures.
@@ -76,20 +76,8 @@ public class BlocksTheme extends AbstractTheme {
 	}
 
 	@Override
-	public View scoreView(World world, Game game) {
-		ScoreView view = new ScoreView(game);
-		view.setFont($font("font"));
-		return view;
-	}
-
-	@Override
-	public View livesCounterView(World world, Game game) {
-		return new LivesCounterView(game);
-	}
-
-	@Override
-	public View levelCounterView(World world, Game game) {
-		return new LevelCounterRenderer(game);
+	public IGameRenderer levelCounterRenderer() {
+		return new LevelCounterRenderer();
 	}
 
 	@Override
@@ -110,6 +98,18 @@ public class BlocksTheme extends AbstractTheme {
 			messagesRenderer.setSmoothText(true);
 		}
 		return messagesRenderer;
+	}
+
+	@Override
+	public IGameRenderer scoreRenderer() {
+		ScoreRenderer renderer = new ScoreRenderer();
+		renderer.setFont($font("font"));
+		return renderer;
+	}
+
+	@Override
+	public IGameRenderer livesCounterRenderer() {
+		return new LivesCounterRenderer();
 	}
 
 	@Override

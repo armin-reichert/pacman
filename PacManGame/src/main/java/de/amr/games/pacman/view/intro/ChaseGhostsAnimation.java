@@ -60,8 +60,10 @@ public class ChaseGhostsAnimation extends GameObject implements Themeable {
 		folks.pacMan.setMoveDir(Direction.RIGHT);
 		folks.pacMan.entity.tf.vx = 0.8f;
 		folks.pacMan.setState(PacManState.AWAKE);
+		folks.pacMan.alwaysEnabled = true;
 
 		folks.ghosts().forEach(ghost -> {
+			ghost.alwaysEnabled = true;
 			ghost.setMoveDir(Direction.RIGHT);
 			ghost.entity.tf.setVelocity(0.55f, 0);
 			ghost.setState(GhostState.FRIGHTENED);

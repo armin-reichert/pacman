@@ -7,7 +7,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.game.GhostCommand;
@@ -16,9 +15,8 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.api.PacManGameView;
-import de.amr.games.pacman.view.theme.api.IWorldRenderer;
+import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.api.Theme;
-import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 
 /**
  * View where the action is.
@@ -47,10 +45,6 @@ public class PlayView implements PacManGameView {
 	protected final Message[] messages;
 
 	protected Theme theme;
-	protected IWorldRenderer worldRenderer;
-	protected View score;
-	protected View liveCounter;
-	protected View levelCounter;
 	protected MessagesRenderer messagesRenderer;
 
 	protected boolean showingScores = true;
@@ -80,10 +74,6 @@ public class PlayView implements PacManGameView {
 	public void setTheme(Theme theme) {
 		if (this.theme != theme) {
 			this.theme = theme;
-			worldRenderer = theme.worldRenderer(world);
-			score = theme.scoreView(world, game);
-			liveCounter = theme.livesCounterView(world, game);
-			levelCounter = theme.levelCounterView(world, game);
 			messagesRenderer = theme.messagesRenderer();
 			folks.pacMan.setTheme(theme);
 			folks.ghosts().forEach(ghost -> ghost.setTheme(theme));
@@ -130,7 +120,7 @@ public class PlayView implements PacManGameView {
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
-		folks.ghosts().map(Ghost::renderer).forEach(r -> r.enableAnimation(enabled));
+		folks.ghosts().forEach(ghost -> ghost.setEnabled(enabled));
 	}
 
 	public void turnScoresOn() {
@@ -146,7 +136,7 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawWorld(Graphics2D g) {
-		worldRenderer.render(g, world);
+		theme.worldRenderer(world).render(g, world);
 	}
 
 	protected void drawMessages(Graphics2D g) {
@@ -167,19 +157,19 @@ public class PlayView implements PacManGameView {
 
 	protected void drawScores(Graphics2D g) {
 		if (showingScores) {
-			score.draw(g);
+			theme.scoreRenderer().render(g, game);
 		}
 	}
 
 	protected void drawLiveCounter(Graphics2D g) {
 		g.translate(Tile.SIZE, (world.height() - 2) * Tile.SIZE);
-		liveCounter.draw(g);
+		theme.livesCounterRenderer().render(g, game);
 		g.translate(-Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		g.translate(world.width() * Tile.SIZE, (world.height() - 2) * Tile.SIZE);
-		levelCounter.draw(g);
+		theme.levelCounterRenderer().render(g, game);
 		g.translate(-world.width() * Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
 	}
 }

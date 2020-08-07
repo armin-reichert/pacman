@@ -22,7 +22,7 @@ class GhostRenderer implements IGhostRenderer {
 		if (state == null) {
 			state = GhostState.CHASING;
 		}
-		smoothDrawingOn(g);
+		smoothOn(g);
 		int width = 2 * ghost.entity.tf.width - 4, height = 2 * ghost.entity.tf.height - 2;
 		switch (state) {
 		case CHASING:
@@ -49,7 +49,7 @@ class GhostRenderer implements IGhostRenderer {
 		default:
 			break;
 		}
-		smoothDrawingOff(g);
+		smoothOff(g);
 	}
 
 	private void drawEyes(Graphics2D g, Ghost ghost, int width, int height) {

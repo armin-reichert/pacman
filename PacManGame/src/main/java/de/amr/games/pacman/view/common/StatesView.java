@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.common;
+package de.amr.games.pacman.view.common;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
@@ -7,7 +7,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
-import static de.amr.games.pacman.view.theme.common.Rendering.ghostColor;
+import static de.amr.games.pacman.view.common.Rendering.ghostColor;
 import static java.lang.Math.round;
 
 import java.awt.BasicStroke;
@@ -18,6 +18,7 @@ import java.awt.Stroke;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.view.Pen;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -28,7 +29,7 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 
-public class StatesRenderer implements IRenderer {
+public class StatesView implements View, IRenderer {
 
 	private static final Font SMALL_FONT = new Font("Arial", Font.PLAIN, 6);
 
@@ -36,13 +37,14 @@ public class StatesRenderer implements IRenderer {
 	private final Folks folks;
 	private final GhostCommand ghostCommand;
 
-	public StatesRenderer(World world, Folks folks, GhostCommand ghostCommand) {
+	public StatesView(World world, Folks folks, GhostCommand ghostCommand) {
 		this.world = world;
 		this.folks = folks;
 		this.ghostCommand = ghostCommand;
 	}
 
-	public void render(Graphics2D g) {
+	@Override
+	public void draw(Graphics2D g) {
 		drawActorStates(g);
 		drawActorsOffTrack(g);
 	}

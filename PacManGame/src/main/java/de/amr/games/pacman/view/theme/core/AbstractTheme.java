@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.common;
+package de.amr.games.pacman.view.theme.core;
 
 import de.amr.games.pacman.view.theme.api.Theme;
 

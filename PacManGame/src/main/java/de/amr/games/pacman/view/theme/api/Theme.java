@@ -1,27 +1,25 @@
 package de.amr.games.pacman.view.theme.api;
 
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.theme.common.MessagesRenderer;
+import de.amr.games.pacman.view.common.MessagesRenderer;
 
 public interface Theme extends ThemeParameters {
 
 	String name();
 
-	IGhostRenderer ghostRenderer(Ghost ghost);
+	IWorldRenderer worldRenderer(World world);
 
 	IPacManRenderer pacManRenderer(PacMan pacMan);
 
-	View levelCounterView(World world, Game game);
+	IGhostRenderer ghostRenderer(Ghost ghost);
 
-	View livesCounterView(World world, Game game);
+	IGameRenderer levelCounterRenderer();
 
-	View scoreView(World world, Game game);
+	IGameRenderer livesCounterRenderer();
 
-	IWorldRenderer worldRenderer(World world);
+	IGameRenderer scoreRenderer();
 
 	MessagesRenderer messagesRenderer();
 
