@@ -1,9 +1,9 @@
 package de.amr.games.pacman.controller.creatures.ghost;
 
-import static de.amr.games.pacman.controller.creatures.ghost.GhostMadnessState.ELROY1;
-import static de.amr.games.pacman.controller.creatures.ghost.GhostMadnessState.ELROY2;
-import static de.amr.games.pacman.controller.creatures.ghost.GhostMadnessState.HEALTHY;
-import static de.amr.games.pacman.controller.creatures.ghost.GhostMadnessState.SUSPENDED;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.ELROY1;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.ELROY2;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.HEALTHY;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.SUSPENDED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
@@ -48,7 +48,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @see https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=7
  */
-public class GhostMadnessController extends StateMachine<GhostMadnessState, Byte> {
+public class GhostMadnessController extends StateMachine<GhostMentalState, Byte> {
 
 	// events:
 	private static final byte PACMAN_DIES = 0;
@@ -59,7 +59,7 @@ public class GhostMadnessController extends StateMachine<GhostMadnessState, Byte
 	private Game game;
 
 	public GhostMadnessController(Ghost ghost, PacMan pacMan) {
-		super(GhostMadnessState.class, TransitionMatchStrategy.BY_VALUE);
+		super(GhostMentalState.class, TransitionMatchStrategy.BY_VALUE);
 		this.ghost = Objects.requireNonNull(ghost);
 		this.pacMan = Objects.requireNonNull(pacMan);
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);

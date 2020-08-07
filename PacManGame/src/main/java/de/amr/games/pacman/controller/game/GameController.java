@@ -35,7 +35,7 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.ghost.GhostMadnessState;
+import de.amr.games.pacman.controller.creatures.ghost.GhostMentalState;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
@@ -140,11 +140,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (tunnel) {
 				return speed(level.ghostTunnelSpeed);
 			}
-			GhostMadnessState madness = ghost.getMadnessState();
-			if (madness == GhostMadnessState.ELROY1) {
+			GhostMentalState madness = ghost.getMentalState();
+			if (madness == GhostMentalState.ELROY1) {
 				return speed(level.elroy1Speed);
 			}
-			if (madness == GhostMadnessState.ELROY2) {
+			if (madness == GhostMentalState.ELROY2) {
 				return speed(level.elroy2Speed);
 			}
 			return speed(level.ghostSpeed);

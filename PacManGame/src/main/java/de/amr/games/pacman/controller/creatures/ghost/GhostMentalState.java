@@ -1,5 +1,5 @@
 package de.amr.games.pacman.controller.creatures.ghost;
 
-public enum GhostMadnessState {
+public enum GhostMentalState {
 	HEALTHY, ELROY1, ELROY2, SUSPENDED;
 }

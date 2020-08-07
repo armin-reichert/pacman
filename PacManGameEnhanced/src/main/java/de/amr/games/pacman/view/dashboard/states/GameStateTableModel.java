@@ -9,7 +9,7 @@ import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.ghost.GhostMadnessState;
+import de.amr.games.pacman.controller.creatures.ghost.GhostMentalState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.GhostCommand;
@@ -46,7 +46,7 @@ class GameStateTableModel extends AbstractTableModel {
 		WishDir("Wants", Direction.class, false),
 		Speed("px/s", Float.class, false),
 		State(null, Object.class, false),
-		Sanity(null, GhostMadnessState.class, false),
+		Sanity(null, GhostMentalState.class, false),
 		Remaining(null, Integer.class, false), 
 		Duration(null, Integer.class, false);
 		//@formatter:on
@@ -166,7 +166,7 @@ class GameStateTableModel extends AbstractTableModel {
 					: ghost.state().getTicksRemaining();
 			r.duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
 		}
-		r.ghostSanity = ghost.getMadnessState();
+		r.ghostSanity = ghost.getMentalState();
 		r.pacManCollision = ghost.tileLocation().equals(pacMan.tileLocation());
 	}
 

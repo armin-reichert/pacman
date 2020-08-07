@@ -207,9 +207,9 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		this.bed = house.bed(bedNumber);
 	}
 
-	public GhostMadnessState getMadnessState() {
+	public GhostMentalState getMentalState() {
 		return Optional.ofNullable(madnessController).map(GhostMadnessController::getState)
-				.orElse(GhostMadnessState.HEALTHY);
+				.orElse(GhostMentalState.HEALTHY);
 	}
 
 	public GhostMadnessController getMadnessController() {
