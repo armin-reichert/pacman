@@ -11,7 +11,6 @@ import static de.amr.games.pacman.model.game.Game.sec;
 
 import java.awt.Graphics2D;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.creatures.Creature;
@@ -29,7 +28,6 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
-import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -47,12 +45,12 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private PacMan pacMan;
 	private House house;
 	private Bed bed;
-	private Supplier<GhostState> fnSubsequentState;
+	private Game game;
+	private GhostState nextState;
 	private GhostMadnessController madnessController;
 	private Steering<Ghost> previousSteering;
 	private int bounty;
 	private boolean flashing;
-	private Game game;
 
 	public Ghost(String name, GhostPersonality personality) {
 		super(GhostState.class, name);
@@ -68,11 +66,11 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	
 				.state(LOCKED)
 					.onEntry(() -> {
-						fnSubsequentState = () -> LOCKED;
-						setVisible(true);
-						setEnabled(true);
 						flashing = false;
 						bounty = 0;
+						nextState = LOCKED;
+						setVisible(true);
+						setEnabled(true);
 						placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 						setMoveDir(bed.exitDir);
 						setWishDir(bed.exitDir);
@@ -121,15 +119,15 @@ public class Ghost extends Creature<Ghost, GhostState> {
 					.on(GhostUnlockedEvent.class)
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> justLeftGhostHouse() && getNextStateToEnter() == SCATTERING)
+					.condition(() -> justLeftGhostHouse() && nextState == SCATTERING)
 					.annotation("Outside house")
 		
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> justLeftGhostHouse() && getNextStateToEnter() == CHASING)
+					.condition(() -> justLeftGhostHouse() && nextState == CHASING)
 					.annotation("Outside house")
 				
 				.when(LEAVING_HOUSE).then(FRIGHTENED)
-					.condition(() -> justLeftGhostHouse() && getNextStateToEnter() == FRIGHTENED)
+					.condition(() -> justLeftGhostHouse() && nextState == FRIGHTENED)
 					.annotation("Outside house")
 					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
@@ -144,7 +142,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
-					.condition(() -> getNextStateToEnter() == SCATTERING)
+					.condition(() -> nextState == SCATTERING)
 					.act(() -> reverseDirection())
 					.annotation("Got scattering command")
 					
@@ -156,7 +154,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
-					.condition(() -> getNextStateToEnter() == CHASING)
+					.condition(() -> nextState == CHASING)
 					.act(() -> reverseDirection())
 					.annotation("Got chasing command")
 					
@@ -169,11 +167,11 @@ public class Ghost extends Creature<Ghost, GhostState> {
 				
 				.when(FRIGHTENED).then(SCATTERING)
 					.onTimeout()
-					.condition(() -> getNextStateToEnter() == SCATTERING)
+					.condition(() -> nextState == SCATTERING)
 					
 				.when(FRIGHTENED).then(CHASING)
 					.onTimeout()
-					.condition(() -> getNextStateToEnter() == CHASING)
+					.condition(() -> nextState == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(this::isAtHouseEntry)
@@ -195,18 +193,13 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		}
 	}
 
-	public Bed bed() {
-		return bed;
-	}
-
-	@Override
-	public void setTheme(Theme theme) {
-		this.theme = theme;
-	}
-
 	@Override
 	public void draw(Graphics2D g) {
 		theme.renderGhost(g, this);
+	}
+
+	public Bed bed() {
+		return bed;
 	}
 
 	public void assignBed(House house, int bedNumber) {
@@ -257,12 +250,12 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		}
 	}
 
-	public void setNextStateToEnter(Supplier<GhostState> fnSubsequentState) {
-		this.fnSubsequentState = fnSubsequentState;
+	public void setNextState(GhostState state) {
+		nextState = state;
 	}
 
-	public GhostState getNextStateToEnter() {
-		return fnSubsequentState.get();
+	public GhostState getNextState() {
+		return nextState;
 	}
 
 	public GhostPersonality getPersonality() {

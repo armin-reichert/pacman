@@ -43,7 +43,7 @@ class InkyChaseTestUI extends TestUI {
 		pacMan.init();
 		ghostsOnStage().forEach(ghost -> {
 			ghost.init();
-			ghost.setNextStateToEnter(() -> CHASING);
+			ghost.setNextState(CHASING);
 		});
 		view.turnRoutesOn();
 		view.showMessage(1, "Press SPACE to start", Color.WHITE);

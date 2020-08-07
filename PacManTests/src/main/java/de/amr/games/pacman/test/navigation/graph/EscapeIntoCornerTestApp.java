@@ -40,7 +40,7 @@ class EscapeIntoCornerTestUI extends TestUI {
 		blinky.setState(FRIGHTENED);
 
 		you(inky).when(FRIGHTENED).fleeToSafeTile().from(pacMan).ok();
-		inky.setNextStateToEnter(() -> FRIGHTENED);
+		inky.setNextState(FRIGHTENED);
 		inky.setState(GhostState.LEAVING_HOUSE);
 
 		you(pacMan).moveRandomly().ok();

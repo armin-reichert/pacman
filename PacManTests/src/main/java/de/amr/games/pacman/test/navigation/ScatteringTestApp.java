@@ -40,7 +40,7 @@ class ScatteringTestUI extends TestUI {
 		folks.ghosts().forEach(ghost -> {
 			world.include(ghost);
 			ghost.init();
-			ghost.setNextStateToEnter(() -> SCATTERING);
+			ghost.setNextState(SCATTERING);
 		});
 		view.turnRoutesOn();
 		view.turnGridOn();
