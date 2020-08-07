@@ -195,7 +195,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	@Override
 	public void draw(Graphics2D g) {
-		theme.renderGhost(g, this);
+		theme.ghostRenderer(this).render(g, this);
 	}
 
 	public Bed bed() {
