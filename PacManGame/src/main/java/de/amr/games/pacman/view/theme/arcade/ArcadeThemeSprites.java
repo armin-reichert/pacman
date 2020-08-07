@@ -176,7 +176,7 @@ public class ArcadeThemeSprites {
 		return Sprite.of(imagePacManWalking[index(dir)]).animate(BACK_AND_FORTH, 20);
 	}
 
-	public Sprite makeSprite_pacManDying() {
+	public Sprite makeSprite_pacManCollapsing() {
 		return Sprite.of(imagePacManDying).animate(LINEAR, 100);
 	}
 

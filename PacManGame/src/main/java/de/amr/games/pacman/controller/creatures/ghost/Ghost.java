@@ -26,7 +26,6 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
@@ -44,7 +43,8 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class Ghost extends Creature<Ghost, GhostState> {
 
-	private final GhostPersonality personality;
+	private GhostPersonality personality;
+	private PacMan pacMan;
 	private House house;
 	private Bed bed;
 	private Supplier<GhostState> fnSubsequentState;
@@ -54,8 +54,8 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private boolean flashing;
 	private Game game;
 
-	public Ghost(World world, PacMan pacMan, String name, GhostPersonality personality) {
-		super(GhostState.class, world, name);
+	public Ghost(String name, GhostPersonality personality) {
+		super(GhostState.class, name);
 		this.personality = personality;
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		/*@formatter:off*/
@@ -188,9 +188,11 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		return Stream.concat(super.machines(), Stream.of(madnessController));
 	}
 
-	@Override
-	public World world() {
-		return world;
+	public void setPacMan(PacMan pacMan) {
+		this.pacMan = pacMan;
+		if (personality == GhostPersonality.BASHFUL) {
+			madnessController = new GhostMadnessController(this, pacMan);
+		}
 	}
 
 	public Bed bed() {
@@ -219,10 +221,6 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	public GhostMadnessController getMadnessController() {
 		return madnessController;
-	}
-
-	public void becomesMad(PacMan pacMan) {
-		this.madnessController = new GhostMadnessController(this, pacMan);
 	}
 
 	@Override

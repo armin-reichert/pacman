@@ -27,6 +27,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.view.api.PacManGameView;
+import de.amr.games.pacman.view.theme.Themes;
 import de.amr.games.pacman.view.theme.api.Theme;
 import net.miginfocom.swing.MigLayout;
 
@@ -61,7 +62,8 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		add(lblSelectTheme, "cell 0 0,alignx trailing");
 
 		comboSelectTheme = new JComboBox<>();
-		comboSelectTheme.setModel(new DefaultComboBoxModel<String>(new String[] { "ARCADE", "LETTERS", "BLOCKS" }));
+		String[] themeNames = Themes.all().map(Theme::name).toArray(String[]::new);
+		comboSelectTheme.setModel(new DefaultComboBoxModel<String>(themeNames));
 		add(comboSelectTheme, "cell 1 0,alignx left");
 
 		JPanel panelPreview = new JPanel();

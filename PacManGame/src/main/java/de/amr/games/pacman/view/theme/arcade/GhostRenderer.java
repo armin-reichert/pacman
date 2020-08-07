@@ -9,6 +9,11 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.view.theme.api.IGhostRenderer;
 
+/**
+ * Renders a ghost using animated sprites.
+ * 
+ * @author Armin Reichert
+ */
 public class GhostRenderer extends SpriteRenderer implements IGhostRenderer {
 
 	private static String keyColor(GhostPersonality personality, Direction dir) {
@@ -41,11 +46,11 @@ public class GhostRenderer extends SpriteRenderer implements IGhostRenderer {
 	@Override
 	public void render(Graphics2D g, Ghost ghost) {
 		selectSprite(ghost);
-		sprites.current().get().enableAnimation(ghost.isEnabled() || ghost.alwaysEnabled);
-		drawEntity(g, ghost.entity, 2);
+		sprites.current().get().enableAnimation(ghost.isEnabled());
+		drawEntitySprite(g, ghost.entity, 2);
 	}
 
-	public void selectSprite(Ghost ghost) {
+	private void selectSprite(Ghost ghost) {
 		GhostState state = ghost.getState();
 		GhostPersonality personality = ghost.getPersonality();
 		Direction dir = ghost.moveDir();
@@ -53,13 +58,14 @@ public class GhostRenderer extends SpriteRenderer implements IGhostRenderer {
 			selectSprite(keyColor(personality, dir));
 		} else {
 			switch (state) {
+			case LOCKED:
+			case LEAVING_HOUSE:
 			case CHASING:
 			case SCATTERING:
-			case LEAVING_HOUSE:
 				selectSprite(keyColor(personality, dir));
 				break;
-			case LOCKED:
-				selectSprite(keyColor(personality, dir));
+			case ENTERING_HOUSE:
+				selectSprite(keyEyes(dir));
 				break;
 			case FRIGHTENED:
 				selectSprite(ghost.isFlashing() ? "flashing" : "frightened");
@@ -67,10 +73,8 @@ public class GhostRenderer extends SpriteRenderer implements IGhostRenderer {
 			case DEAD:
 				selectSprite(ghost.getBounty() == 0 ? keyEyes(dir) : keyPoints(ghost.getBounty()));
 				break;
-			case ENTERING_HOUSE:
-				selectSprite(keyEyes(dir));
-				break;
 			default:
+				break;
 			}
 		}
 	}

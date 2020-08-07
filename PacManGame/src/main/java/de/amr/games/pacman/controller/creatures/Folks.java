@@ -31,43 +31,31 @@ import de.amr.games.pacman.model.world.components.House;
  */
 public class Folks {
 
-	public final World world;
-	public final House ghostHouse;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
 	public Folks(World world, House ghostHouse) {
-		this.world = world;
-		this.ghostHouse = ghostHouse;
+		pacMan = new PacMan();
+		blinky = new Ghost("Blinky", GhostPersonality.SHADOW);
+		inky = new Ghost("Inky", GhostPersonality.BASHFUL);
+		pinky = new Ghost("Pinky", GhostPersonality.SPEEDY);
+		clyde = new Ghost("Clyde", GhostPersonality.POKEY);
 
-		pacMan = new PacMan(world);
+		all().forEach(guy -> guy.setWorld(world));
+		ghosts().forEach(ghost -> ghost.setPacMan(pacMan));
 
-		blinky = new Ghost(world, pacMan, "Blinky", GhostPersonality.SHADOW);
-		blinky.becomesMad(pacMan);
 		blinky.assignBed(ghostHouse, 0);
-
-		inky = new Ghost(world, pacMan, "Inky", GhostPersonality.BASHFUL);
 		inky.assignBed(ghostHouse, 1);
-
-		pinky = new Ghost(world, pacMan, "Pinky", GhostPersonality.SPEEDY);
 		pinky.assignBed(ghostHouse, 2);
-
-		clyde = new Ghost(world, pacMan, "Clyde", GhostPersonality.POKEY);
 		clyde.assignBed(ghostHouse, 3);
 
-		tellEmWhatToDo();
-	}
-
-	public void getReadyToRumble(Game game) {
-		all().forEach(creature -> creature.getReadyToRumble(game));
-	}
-
-	private void tellEmWhatToDo() {
+		// define behavior
+		
 		you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
 
 		Door door = ghostHouse.door(0);
 		Tile houseEntry = world.neighbor(door.tiles().findFirst().get(), door.intoHouse.opposite());
-
+		
 		ghosts().forEach(ghost -> {
 			you(ghost).when(LOCKED).bounceOnBed().ok();
 			you(ghost).when(ENTERING_HOUSE).enterDoorAndGoToBed().door(door).ok();
@@ -94,12 +82,16 @@ public class Folks {
 				.tile(() -> clyde.distance(pacMan) > 8 ? pacMan.tileLocation() : Tile.at(0, world.height() - 1)).ok();
 	}
 
+	public void getReadyToRumble(Game game) {
+		all().forEach(guy -> guy.getReadyToRumble(game));
+	}
+
 	public Stream<Ghost> ghosts() {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
 	public Stream<Ghost> ghostsInWorld() {
-		return ghosts().filter(world::contains);
+		return ghosts().filter(ghost -> ghost.world().contains(ghost));
 	}
 
 	public Stream<Creature<?, ?>> all() {
@@ -107,6 +99,6 @@ public class Folks {
 	}
 
 	public Stream<Creature<?, ?>> allInWorld() {
-		return all().filter(world::contains);
+		return all().filter(guy -> guy.world.contains(guy));
 	}
 }

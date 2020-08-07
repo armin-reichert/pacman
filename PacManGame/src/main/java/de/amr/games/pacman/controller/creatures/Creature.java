@@ -27,8 +27,8 @@ import de.amr.games.pacman.view.theme.api.Themeable;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * A creature can move through the world and has "intelligence", i.e. it can make decisions changing
- * its behavior.
+ * A creature is a named entity that can move through the world and has "intelligence", i.e. it can
+ * make decisions changing its behavior.
  * <p>
  * The physical size is one tile, however the visual appearance may be larger.
  * 
@@ -40,22 +40,21 @@ import de.amr.statemachine.core.StateMachine;
 public abstract class Creature<M extends MobileLifeform, S> extends StateMachine<S, PacManGameEvent>
 		implements MobileLifeform, Themeable, View {
 
-	public final String name;
 	public final Entity entity;
+	public final String name;
+
 	protected boolean enabled;
-	public boolean alwaysEnabled;
-	protected final World world;
-	protected final Map<S, Steering<M>> steeringsByState;
+	protected World world;
+	protected Map<S, Steering<M>> steeringsByState;
 	protected Supplier<Float> fnSpeed = () -> GameController.BASE_SPEED;
-	protected final Movement movement;
+	protected Movement movement;
 	protected Direction moveDir;
 	protected Direction wishDir;
 	protected Theme theme;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Creature(Class<S> stateClass, World world, String name) {
+	public Creature(Class<S> stateClass, String name) {
 		super(stateClass);
-		this.world = world;
 		this.name = name;
 		enabled = true;
 		entity = new Entity();
@@ -67,6 +66,10 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	@Override
 	public World world() {
 		return world;
+	}
+
+	public void setWorld(World world) {
+		this.world = world;
 	}
 
 	public void setEnabled(boolean enabled) {

@@ -14,8 +14,8 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
-import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.BonusFood;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -46,10 +46,10 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering<
 	private Tile target;
 
 	public SearchingForFoodAndAvoidingGhosts(Folks folks) {
-		this.folks = folks;
-		world = folks.world;
 		me = folks.pacMan;
-		graph = new WorldGraph(folks.world);
+		this.folks = folks;
+		this.world = folks.pacMan.world();
+		graph = new WorldGraph(world);
 		graph.setPathFinder(PathFinder.ASTAR);
 	}
 
