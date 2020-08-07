@@ -209,11 +209,11 @@ public class Ghost extends Creature<Ghost, GhostState> {
 			if (tunnel) {
 				return speed(level.ghostTunnelSpeed);
 			}
-			GhostMentalState madness = getMentalState();
-			if (madness == GhostMentalState.ELROY1) {
+			GhostMentalState mentalState = getMentalState();
+			if (mentalState == GhostMentalState.ELROY1) {
 				return speed(level.elroy1Speed);
 			}
-			if (madness == GhostMentalState.ELROY2) {
+			if (mentalState == GhostMentalState.ELROY2) {
 				return speed(level.elroy2Speed);
 			}
 			return speed(level.ghostSpeed);
@@ -344,7 +344,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 			madnessController.update();
 		}
 	}
-
+	
 	public boolean isAtHouseEntry() {
 		return house.isEntry(tileLocation()) && (tileOffsetX() - Tile.SIZE / 2) <= 1;
 	}
