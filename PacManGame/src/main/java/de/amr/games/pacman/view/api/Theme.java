@@ -15,11 +15,11 @@ public interface Theme extends ThemeParameters {
 
 	IGhostRenderer ghostRenderer(Ghost ghost);
 
-	IGameRenderer levelCounterRenderer();
+	IGameScoreRenderer levelCounterRenderer();
 
-	IGameRenderer livesCounterRenderer();
+	IGameScoreRenderer livesCounterRenderer();
 
-	IGameRenderer scoreRenderer();
+	IGameScoreRenderer pointsCounterRenderer();
 
 	MessagesRenderer messagesRenderer();
 

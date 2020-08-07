@@ -8,25 +8,13 @@ import java.awt.RenderingHints;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.view.api.IGameRenderer;
+import de.amr.games.pacman.view.api.IGameScoreRenderer;
 
-public class ScoreRenderer implements IGameRenderer {
+public class PointsCounterRenderer implements IGameScoreRenderer {
 
 	private Font font = new Font(Font.MONOSPACED, Font.PLAIN, Tile.SIZE);
 	private int topMargin = 1;
 	private int baselineOffset = Tile.SIZE;
-
-	public void setFont(Font font) {
-		this.font = font;
-	}
-
-	public void setBaselineOffset(int baselineOffset) {
-		this.baselineOffset = baselineOffset;
-	}
-
-	public void setTopMargin(int topMargin) {
-		this.topMargin = topMargin;
-	}
 
 	@Override
 	public void render(Graphics2D g, Game game) {
@@ -38,17 +26,17 @@ public class ScoreRenderer implements IGameRenderer {
 			pen.down(baselineOffset);
 			pen.font(font);
 			pen.turnSmoothRenderingOn();
-
+	
 			// Game score
 			col = 1;
 			pen.color(hilight);
 			pen.drawAtGridPosition("Score".toUpperCase(), col, 0);
-
+	
 			pen.color(Color.WHITE);
 			pen.down(interlineSpacing);
 			pen.drawAtGridPosition(String.format("%7d", game.score), col, 1);
 			pen.up(interlineSpacing);
-
+	
 			// Highscore
 			col = 9;
 			pen.color(hilight);
@@ -59,7 +47,7 @@ public class ScoreRenderer implements IGameRenderer {
 			pen.color(Color.LIGHT_GRAY);
 			pen.drawAtGridPosition(String.format("L%02d", game.hiscore.level), col + 7, 1);
 			pen.up(interlineSpacing);
-
+	
 			col = 21;
 			pen.color(hilight);
 			pen.drawAtGridPosition(String.format("Level".toUpperCase()), col, 0);
@@ -68,7 +56,7 @@ public class ScoreRenderer implements IGameRenderer {
 			pen.down(interlineSpacing);
 			pen.drawAtGridPosition(String.format("%02d", game.level.number), col, 1);
 			pen.up(interlineSpacing);
-
+	
 			// Number of remaining pellets
 			// dot image
 			int size = 4;
@@ -78,12 +66,24 @@ public class ScoreRenderer implements IGameRenderer {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.fillOval(dotX, dotY, size, size);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-
+	
 			pen.color(Color.WHITE);
 			pen.down(interlineSpacing);
 			pen.drawAtGridPosition(String.format("%03d", game.level.remainingFoodCount()), col + 3, 1);
 			pen.up(interlineSpacing);
 		}
 		g.translate(0, -topMargin);
+	}
+
+	public void setFont(Font font) {
+		this.font = font;
+	}
+
+	public void setBaselineOffset(int baselineOffset) {
+		this.baselineOffset = baselineOffset;
+	}
+
+	public void setTopMargin(int topMargin) {
+		this.topMargin = topMargin;
 	}
 }

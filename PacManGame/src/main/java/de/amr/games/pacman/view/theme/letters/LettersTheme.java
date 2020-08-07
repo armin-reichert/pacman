@@ -14,7 +14,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
-import de.amr.games.pacman.view.api.IGameRenderer;
+import de.amr.games.pacman.view.api.IGameScoreRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
@@ -102,7 +102,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IGameRenderer levelCounterRenderer() {
+	public IGameScoreRenderer levelCounterRenderer() {
 		return (g, game) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -114,7 +114,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IGameRenderer livesCounterRenderer() {
+	public IGameScoreRenderer livesCounterRenderer() {
 		return (g, game) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -125,7 +125,7 @@ public class LettersTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IGameRenderer scoreRenderer() {
+	public IGameScoreRenderer pointsCounterRenderer() {
 		return (g, game) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");

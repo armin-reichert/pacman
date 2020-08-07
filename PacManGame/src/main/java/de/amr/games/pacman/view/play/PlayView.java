@@ -166,7 +166,7 @@ public class PlayView implements PacManGameView {
 
 	protected void drawScores(Graphics2D g) {
 		if (showingScores) {
-			theme.scoreRenderer().render(g, game);
+			theme.pointsCounterRenderer().render(g, game);
 		}
 	}
 

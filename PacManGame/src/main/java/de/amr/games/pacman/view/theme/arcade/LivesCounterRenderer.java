@@ -7,9 +7,9 @@ import java.awt.Image;
 
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.view.api.IGameRenderer;
+import de.amr.games.pacman.view.api.IGameScoreRenderer;
 
-public class LivesCounterRenderer implements IGameRenderer {
+public class LivesCounterRenderer implements IGameScoreRenderer {
 
 	private final Image pacManLookingLeft;
 

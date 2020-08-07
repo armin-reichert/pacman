@@ -9,13 +9,13 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.api.IGameRenderer;
+import de.amr.games.pacman.view.api.IGameScoreRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.common.MessagesRenderer;
-import de.amr.games.pacman.view.common.ScoreRenderer;
+import de.amr.games.pacman.view.common.PointsCounterRenderer;
 import de.amr.games.pacman.view.core.AbstractTheme;
 import de.amr.games.pacman.view.theme.arcade.LivesCounterRenderer;
 import de.amr.games.pacman.view.theme.arcade.sounds.ArcadeSounds;
@@ -76,7 +76,7 @@ public class BlocksTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IGameRenderer levelCounterRenderer() {
+	public IGameScoreRenderer levelCounterRenderer() {
 		return new LevelCounterRenderer();
 	}
 
@@ -101,14 +101,14 @@ public class BlocksTheme extends AbstractTheme {
 	}
 
 	@Override
-	public IGameRenderer scoreRenderer() {
-		ScoreRenderer renderer = new ScoreRenderer();
+	public IGameScoreRenderer pointsCounterRenderer() {
+		PointsCounterRenderer renderer = new PointsCounterRenderer();
 		renderer.setFont($font("font"));
 		return renderer;
 	}
 
 	@Override
-	public IGameRenderer livesCounterRenderer() {
+	public IGameScoreRenderer livesCounterRenderer() {
 		return new LivesCounterRenderer();
 	}
 
