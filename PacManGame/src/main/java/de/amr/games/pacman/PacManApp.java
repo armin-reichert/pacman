@@ -8,8 +8,8 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.view.Localized;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.theme.Themes;
-import de.amr.games.pacman.view.theme.api.Theme;
 
 /**
  * The Pac-Man game application.

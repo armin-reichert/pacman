@@ -9,7 +9,7 @@ import java.awt.geom.Rectangle2D;
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.view.theme.api.IGhostRenderer;
+import de.amr.games.pacman.view.api.IGhostRenderer;
 
 class GhostRenderer implements IGhostRenderer {
 

@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.SoundClip;
-import de.amr.games.pacman.view.theme.api.PacManSounds;
+import de.amr.games.pacman.view.api.PacManSounds;
 
 /**
  * Clips and music.

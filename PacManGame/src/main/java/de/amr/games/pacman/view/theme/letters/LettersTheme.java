@@ -14,15 +14,15 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
+import de.amr.games.pacman.view.api.IGameRenderer;
+import de.amr.games.pacman.view.api.IGhostRenderer;
+import de.amr.games.pacman.view.api.IPacManRenderer;
+import de.amr.games.pacman.view.api.IWorldRenderer;
+import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.Rendering;
-import de.amr.games.pacman.view.theme.api.IGameRenderer;
-import de.amr.games.pacman.view.theme.api.IGhostRenderer;
-import de.amr.games.pacman.view.theme.api.IPacManRenderer;
-import de.amr.games.pacman.view.theme.api.IWorldRenderer;
-import de.amr.games.pacman.view.theme.api.PacManSounds;
+import de.amr.games.pacman.view.core.AbstractTheme;
 import de.amr.games.pacman.view.theme.arcade.sounds.ArcadeSounds;
-import de.amr.games.pacman.view.theme.core.AbstractTheme;
 
 /**
  * Theme using letters only.

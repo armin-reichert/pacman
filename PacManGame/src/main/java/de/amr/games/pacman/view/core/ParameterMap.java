@@ -1,10 +1,10 @@
-package de.amr.games.pacman.view.theme.core;
+package de.amr.games.pacman.view.core;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.util.HashMap;
 
-import de.amr.games.pacman.view.theme.api.ThemeParameters;
+import de.amr.games.pacman.view.api.ThemeParameters;
 
 public class ParameterMap extends HashMap<String, Object> implements ThemeParameters {
 

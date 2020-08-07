@@ -11,8 +11,8 @@ import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.view.theme.api.Theme;
-import de.amr.games.pacman.view.theme.api.Themeable;
+import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.view.api.Themeable;
 
 public class ChaseGhostsAnimation extends GameObject implements Themeable {
 

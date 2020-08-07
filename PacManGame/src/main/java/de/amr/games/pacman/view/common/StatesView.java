@@ -27,7 +27,7 @@ import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.theme.api.IRenderer;
+import de.amr.games.pacman.view.api.IRenderer;
 
 public class StatesView implements View, IRenderer {
 

@@ -61,11 +61,11 @@ import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.api.PacManGameView;
+import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.view.api.Themeable;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.MusicLoadingView;
 import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.api.Theme;
-import de.amr.games.pacman.view.theme.api.Themeable;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 

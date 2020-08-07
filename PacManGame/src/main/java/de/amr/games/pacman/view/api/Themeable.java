@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.api;
+package de.amr.games.pacman.view.api;
 
 public interface Themeable {
 

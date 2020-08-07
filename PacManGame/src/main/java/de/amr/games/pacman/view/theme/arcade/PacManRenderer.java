@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.view.theme.api.IPacManRenderer;
+import de.amr.games.pacman.view.api.IPacManRenderer;
 
 /**
  * Renders Pac-Man using animated sprites.

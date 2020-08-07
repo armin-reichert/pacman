@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.api;
+package de.amr.games.pacman.view.api;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;

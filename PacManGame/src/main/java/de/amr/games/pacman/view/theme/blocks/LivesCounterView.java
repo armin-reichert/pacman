@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.view.theme.api.IRenderer;
+import de.amr.games.pacman.view.api.IRenderer;
 
 class LivesCounterView implements View, IRenderer {
 

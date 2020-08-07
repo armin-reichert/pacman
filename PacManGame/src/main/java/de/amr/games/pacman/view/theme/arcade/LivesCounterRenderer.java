@@ -7,7 +7,7 @@ import java.awt.Image;
 
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.view.theme.api.IGameRenderer;
+import de.amr.games.pacman.view.api.IGameRenderer;
 
 public class LivesCounterRenderer implements IGameRenderer {
 

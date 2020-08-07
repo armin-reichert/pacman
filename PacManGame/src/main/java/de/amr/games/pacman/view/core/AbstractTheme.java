@@ -1,6 +1,6 @@
-package de.amr.games.pacman.view.theme.core;
+package de.amr.games.pacman.view.core;
 
-import de.amr.games.pacman.view.theme.api.Theme;
+import de.amr.games.pacman.view.api.Theme;
 
 public abstract class AbstractTheme extends ParameterMap implements Theme {
 

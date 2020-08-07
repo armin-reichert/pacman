@@ -11,11 +11,11 @@ import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.view.api.IWorldRenderer;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.common.RoutesView;
 import de.amr.games.pacman.view.common.StatesView;
-import de.amr.games.pacman.view.theme.api.IWorldRenderer;
-import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.games.pacman.view.theme.arcade.GridView;
 
 /**

@@ -16,8 +16,8 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.api.PacManGameView;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
-import de.amr.games.pacman.view.theme.api.Theme;
 
 /**
  * View displayed while the music files are loaded.

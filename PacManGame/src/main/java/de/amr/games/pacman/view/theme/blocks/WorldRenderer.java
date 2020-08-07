@@ -14,8 +14,8 @@ import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
+import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.model.world.components.House;
-import de.amr.games.pacman.view.theme.api.IWorldRenderer;
 
 class WorldRenderer implements IWorldRenderer {
 

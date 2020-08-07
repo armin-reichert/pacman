@@ -4,12 +4,12 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.ui.AppShell;
 import de.amr.easy.game.ui.f2dialog.F2Dialog;
 import de.amr.games.pacman.controller.game.EnhancedGameController;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.dashboard.fsm.FsmView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
 import de.amr.games.pacman.view.dashboard.theme.ThemeSelectionView;
 import de.amr.games.pacman.view.theme.Themes;
-import de.amr.games.pacman.view.theme.api.Theme;
 
 /**
  * The Pac-Man game application with inspection views and lots of bells and whistles.

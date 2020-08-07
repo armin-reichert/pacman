@@ -8,7 +8,7 @@ import java.util.Map;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.Symbol;
-import de.amr.games.pacman.view.theme.api.IGameRenderer;
+import de.amr.games.pacman.view.api.IGameRenderer;
 
 public class LevelCounterRenderer implements IGameRenderer {
 
