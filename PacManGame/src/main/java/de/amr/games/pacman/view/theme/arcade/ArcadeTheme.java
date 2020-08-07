@@ -16,7 +16,6 @@ import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.PointsCounterRenderer;
 import de.amr.games.pacman.view.core.AbstractTheme;
-import de.amr.games.pacman.view.theme.arcade.sounds.ArcadeSounds;
 
 public class ArcadeTheme extends AbstractTheme {
 

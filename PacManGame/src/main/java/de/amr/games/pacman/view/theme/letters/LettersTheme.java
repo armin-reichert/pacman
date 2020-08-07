@@ -22,7 +22,7 @@ import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.core.AbstractTheme;
-import de.amr.games.pacman.view.theme.arcade.sounds.ArcadeSounds;
+import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
 
 /**
  * Theme using letters only.
