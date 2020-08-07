@@ -96,6 +96,9 @@ public class ChaseGhostsAnimation extends GameObject implements Themeable {
 
 	@Override
 	public void draw(Graphics2D g) {
-		folks.all().forEach(creature -> creature.draw(g));
+		theme.pacManRenderer(folks.pacMan).render(g, folks.pacMan);
+		folks.ghosts().forEach(ghost -> {
+			theme.ghostRenderer(ghost).render(g, ghost);
+		});
 	}
 }

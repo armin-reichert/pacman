@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.model.game.Game;
@@ -149,10 +150,18 @@ public class PlayView implements PacManGameView {
 		}
 	}
 
+	protected void drawPacMan(Graphics2D g, PacMan pacMan) {
+		theme.pacManRenderer(pacMan).render(g, pacMan);
+	}
+
+	protected void drawGhost(Graphics2D g, Ghost ghost) {
+		theme.ghostRenderer(ghost).render(g, ghost);
+	}
+
 	protected void drawActors(Graphics2D g) {
-		folks.pacMan.draw(g);
-		ghostsInsideWorld().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.draw(g));
-		ghostsInsideWorld().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.draw(g));
+		drawPacMan(g, folks.pacMan);
+		ghostsInsideWorld().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
+		ghostsInsideWorld().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
 	}
 
 	protected void drawScores(Graphics2D g) {

@@ -11,7 +11,6 @@ import static de.amr.games.pacman.model.game.Game.sec;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
-import java.awt.Graphics2D;
 import java.util.Optional;
 
 import de.amr.games.pacman.PacManApp;
@@ -120,11 +119,6 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	public void behavior(Steering<PacMan> steering) {
 		behavior(AWAKE, steering);
 		behavior(POWERFUL, steering);
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		theme.pacManRenderer(this).render(g, this);
 	}
 
 	private void setPowerTimer(PacManGameEvent e) {

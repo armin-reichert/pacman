@@ -9,7 +9,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.game.Game.sec;
 
-import java.awt.Graphics2D;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -191,11 +190,6 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		if (personality == GhostPersonality.SHADOW) {
 			madnessController = new GhostMadnessController(this, pacMan);
 		}
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		theme.ghostRenderer(this).render(g, this);
 	}
 
 	public Bed bed() {

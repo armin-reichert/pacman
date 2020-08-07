@@ -122,7 +122,10 @@ public class ChasePacManAnimation extends GameObject implements Themeable {
 
 	@Override
 	public void draw(Graphics2D g) {
-		folks.all().forEach(creature -> creature.draw(g));
+		theme.pacManRenderer(folks.pacMan).render(g, folks.pacMan);
+		folks.ghosts().forEach(ghost -> {
+			theme.ghostRenderer(ghost).render(g, ghost);
+		});
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		int x = (int) folks.pacMan.entity.tf.x - Tile.SIZE;
 		int y = (int) folks.pacMan.entity.tf.y;

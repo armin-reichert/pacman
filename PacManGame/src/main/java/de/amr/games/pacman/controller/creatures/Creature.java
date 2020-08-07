@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.entity.Transform;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
@@ -38,7 +37,7 @@ import de.amr.statemachine.core.StateMachine;
  * @author Armin Reichert
  */
 public abstract class Creature<M extends MobileLifeform, S> extends StateMachine<S, PacManGameEvent>
-		implements MobileLifeform, Themeable, View {
+		implements MobileLifeform, Themeable {
 
 	public final Entity entity;
 	public final String name;

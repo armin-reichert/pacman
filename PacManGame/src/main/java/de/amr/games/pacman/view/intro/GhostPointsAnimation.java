@@ -60,7 +60,10 @@ public class GhostPointsAnimation extends GameObject implements Themeable {
 
 	@Override
 	public void draw(Graphics2D g) {
-		folks.all().forEach(creature -> creature.draw(g));
+		theme.pacManRenderer(folks.pacMan).render(g, folks.pacMan);
+		folks.ghosts().forEach(ghost -> {
+			theme.ghostRenderer(ghost).render(g, ghost);
+		});
 		g.translate(tf.x + dx, tf.y);
 		renderPellet(g);
 		g.translate(-(tf.x + dx), -tf.y);
