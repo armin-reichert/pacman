@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller.creatures.ghost;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.ELROY1;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.ELROY2;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.HEALTHY;
-import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.SUSPENDED;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.TRANQUILIZED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
@@ -75,7 +75,7 @@ public class GhostMadnessController extends StateMachine<GhostMentalState, Byte>
 					
 				.state(ELROY2).onEntry(this::targetPacMan)
 					
-				.state(SUSPENDED).onEntry(this::targetCorner)
+				.state(TRANQUILIZED).onEntry(this::targetCorner)
 			
 			.transitions()
 			
@@ -87,12 +87,12 @@ public class GhostMadnessController extends StateMachine<GhostMentalState, Byte>
 					.condition(this::reachedElroy1Score)
 					.annotation(() -> String.format("Pellets left <= %d", game.level.elroy1DotsLeft))
 
-				.when(SUSPENDED).then(ELROY2)
+				.when(TRANQUILIZED).then(ELROY2)
 					.on(CLYDE_EXITS_HOUSE)
 					.condition(this::reachedElroy2Score)
 					.annotation("Become Elroy again when Clyde exits house")
 					
-				.when(SUSPENDED).then(ELROY1)
+				.when(TRANQUILIZED).then(ELROY1)
 					.on(CLYDE_EXITS_HOUSE)
 					.condition(this::reachedElroy1Score)
 					.annotation("Become Elroy again when Clyde exits house")
@@ -101,10 +101,10 @@ public class GhostMadnessController extends StateMachine<GhostMentalState, Byte>
 					.condition(this::reachedElroy2Score)
 					.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
 
-				.when(ELROY1).then(SUSPENDED).on(PACMAN_DIES)
+				.when(ELROY1).then(TRANQUILIZED).on(PACMAN_DIES)
 					.annotation("Suspend Elroy when Pac-Man dies")
 				
-				.when(ELROY2).then(SUSPENDED).on(PACMAN_DIES)
+				.when(ELROY2).then(TRANQUILIZED).on(PACMAN_DIES)
 					.annotation("Suspend Elroy when Pac-Man dies")
 					
 		.endStateMachine();
