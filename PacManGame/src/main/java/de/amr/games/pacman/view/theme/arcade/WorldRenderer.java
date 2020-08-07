@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
@@ -26,10 +25,8 @@ public class WorldRenderer implements IWorldRenderer {
 	private final Map<Integer, Image> pointsImages = new HashMap<>();
 	private final SpriteMap mazeSprites;
 	private final SpriteAnimation energizerAnimation;
-	private Function<Tile, Color> fnEatenFoodColor;
 
 	public WorldRenderer() {
-		fnEatenFoodColor = tile -> Color.BLACK;
 		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		for (Symbol symbol : Symbol.values()) {
 			symbolImages.put(symbol.name(), arcadeSprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
@@ -44,11 +41,6 @@ public class WorldRenderer implements IWorldRenderer {
 		energizerAnimation = new CyclicAnimation(2);
 		energizerAnimation.setFrameDuration(150);
 		energizerAnimation.setEnabled(false);
-	}
-
-	@Override
-	public void setEatenFoodColor(Function<Tile, Color> fnEatenFoodColor) {
-		this.fnEatenFoodColor = fnEatenFoodColor;
 	}
 
 	@Override
@@ -79,14 +71,15 @@ public class WorldRenderer implements IWorldRenderer {
 
 	private void drawContent(Graphics2D g, World world) {
 		// hide eaten food
+		Color eatenFoodColor = Color.BLACK; // TODO handle grid pattern
 		world.tiles().filter(world::hasEatenFood).forEach(tile -> {
-			g.setColor(fnEatenFoodColor.apply(tile));
+			g.setColor(eatenFoodColor);
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
 		// simulate energizer blinking animation
 		if (energizerAnimation.isEnabled() && energizerAnimation.currentFrameIndex() == 1) {
 			world.tiles().filter(tile -> world.hasFood(Pellet.ENERGIZER, tile)).forEach(tile -> {
-				g.setColor(fnEatenFoodColor.apply(tile));
+				g.setColor(eatenFoodColor);
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 		}

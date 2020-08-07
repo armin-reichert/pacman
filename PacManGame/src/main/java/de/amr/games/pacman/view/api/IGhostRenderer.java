@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 
-public interface IGhostRenderer extends IRenderer {
+public interface IGhostRenderer {
 
 	void render(Graphics2D g, Ghost ghost);
 }

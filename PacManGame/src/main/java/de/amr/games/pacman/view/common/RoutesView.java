@@ -23,14 +23,13 @@ import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.api.IRenderer;
 
 /**
  * Renderes the routes of the creatures towards their current target tiles.
  * 
  * @author Armin Reichert
  */
-public class RoutesView implements View, IRenderer {
+public class RoutesView implements View {
 
 	private final World world;
 	private final Folks folks;

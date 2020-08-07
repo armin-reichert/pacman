@@ -4,7 +4,6 @@ import static de.amr.easy.game.Application.app;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.function.Function;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
@@ -14,15 +13,11 @@ import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
+import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.common.Rendering;
-import de.amr.games.pacman.model.world.components.House;
 
 class WorldRenderer implements IWorldRenderer {
-
-	@Override
-	public void setEatenFoodColor(Function<Tile, Color> fnEatenFoodColor) {
-	}
 
 	@Override
 	public void render(Graphics2D g, World world) {

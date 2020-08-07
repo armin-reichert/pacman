@@ -11,7 +11,6 @@ import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.common.RoutesView;
@@ -118,10 +117,14 @@ public class EnhancedPlayView extends PlayView {
 
 	@Override
 	protected void drawWorld(Graphics2D g) {
-		IWorldRenderer renderer = theme.worldRenderer(world);
-		//TODO this is dubious
-		renderer.setEatenFoodColor(showingGrid ? Rendering::patternColor : tile -> Color.BLACK);
-		renderer.render(g, world);
+		theme.worldRenderer(world).render(g, world);
+		if (showingGrid) {
+			world.tiles().filter(world::hasEatenFood).forEach(tile -> {
+				Color color = Rendering.patternColor(tile);
+				g.setColor(color);
+				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+			});
+		}
 	}
 
 	protected void drawGrid(Graphics2D g) {

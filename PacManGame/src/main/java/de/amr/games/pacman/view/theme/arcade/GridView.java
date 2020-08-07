@@ -16,10 +16,9 @@ import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.view.api.IRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
-public class GridView implements View, IRenderer {
+public class GridView implements View {
 
 	private final World world;
 	private final Image gridImage;
