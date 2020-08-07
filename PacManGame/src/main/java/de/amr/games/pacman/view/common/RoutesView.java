@@ -81,7 +81,7 @@ public class RoutesView implements View, IRenderer {
 			return;
 		}
 		g = (Graphics2D) g.create();
-		smoothOn(g);
+		Rendering.smoothOn(g);
 
 		// draw dashed line from ghost position to target tile
 		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
@@ -104,7 +104,7 @@ public class RoutesView implements View, IRenderer {
 			return;
 		}
 		g = (Graphics2D) g.create();
-		smoothOn(g);
+		Rendering.smoothOn(g);
 		g.setStroke(new BasicStroke(0.5f));
 		g.setColor(alpha(ghostColor, 200));
 		Tile[] tiles = path.toArray(Tile[]::new);

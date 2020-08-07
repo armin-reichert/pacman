@@ -10,6 +10,7 @@ import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.view.api.IGhostRenderer;
+import de.amr.games.pacman.view.common.Rendering;
 
 class GhostRenderer implements IGhostRenderer {
 
@@ -22,7 +23,7 @@ class GhostRenderer implements IGhostRenderer {
 		if (state == null) {
 			state = GhostState.CHASING;
 		}
-		smoothOn(g);
+		Rendering.smoothOn(g);
 		int width = 2 * ghost.entity.tf.width - 4, height = 2 * ghost.entity.tf.height - 2;
 		switch (state) {
 		case CHASING:
@@ -49,7 +50,7 @@ class GhostRenderer implements IGhostRenderer {
 		default:
 			break;
 		}
-		smoothOff(g);
+		Rendering.smoothOff(g);
 	}
 
 	private void drawEyes(Graphics2D g, Ghost ghost, int width, int height) {

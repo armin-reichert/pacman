@@ -7,6 +7,7 @@ import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.view.api.IRenderer;
+import de.amr.games.pacman.view.common.Rendering;
 
 class LivesCounterView implements View, IRenderer {
 
@@ -18,11 +19,11 @@ class LivesCounterView implements View, IRenderer {
 
 	@Override
 	public void draw(Graphics2D g) {
-		smoothOn(g);
+		Rendering.smoothOn(g);
 		g.setColor(Color.YELLOW);
 		for (int i = 0, x = 0; i < game.lives; ++i, x += 2 * Tile.SIZE) {
 			g.fillOval(x, 0, Tile.SIZE, Tile.SIZE);
 		}
-		smoothOff(g);
+		Rendering.smoothOff(g);
 	}
 }

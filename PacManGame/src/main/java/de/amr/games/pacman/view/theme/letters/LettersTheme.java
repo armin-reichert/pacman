@@ -167,11 +167,12 @@ public class LettersTheme extends AbstractTheme {
 					int col = tile.col;
 					if (bonus.isPresent()) {
 						text = "WIN " + bonus.value();
+						col -= 1;
 					} else if (bonus.isConsumed()) {
 						text = "WON " + bonus.value() + " POINTS!";
-						col -= 3;
+						col -= 2;
 					}
-					g.drawString(text, (col - 3) * Tile.SIZE, tile.row * Tile.SIZE + offset_baseline - 1);
+					g.drawString(text, col * Tile.SIZE, tile.row * Tile.SIZE + offset_baseline - 1);
 				});
 			}
 			world.houses().flatMap(House::doors).forEach(door -> {

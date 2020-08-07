@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.RenderingHints;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -16,9 +17,20 @@ import de.amr.games.pacman.model.world.api.Tile;
 public class Rendering {
 
 	public static final String INFTY = Character.toString('\u221E');
+
 	public static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };
 
 	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
+
+	public static void smoothOn(Graphics2D g) {
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+	}
+
+	public static void smoothOff(Graphics2D g) {
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+	}
 
 	public static void drawCircleWithText(Graphics2D g, Vector2f center, int radius, Color color, String text) {
 		g.translate(center.x, center.y);
@@ -70,5 +82,4 @@ public class Rendering {
 		}
 		g.dispose();
 	}
-
 }

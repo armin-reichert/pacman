@@ -8,6 +8,7 @@ import java.awt.Stroke;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.view.api.IPacManRenderer;
+import de.amr.games.pacman.view.common.Rendering;
 
 class PacManRenderer implements IPacManRenderer {
 
@@ -16,7 +17,7 @@ class PacManRenderer implements IPacManRenderer {
 		if (!pacMan.isVisible()) {
 			return;
 		}
-		smoothOn(g);
+		Rendering.smoothOn(g);
 		PacManState state = pacMan.getState();
 		int size = 2 * pacMan.entity.tf.width;
 		switch (state) {
@@ -35,7 +36,7 @@ class PacManRenderer implements IPacManRenderer {
 		default:
 			throw new IllegalArgumentException("Unknown Pac-Man state" + state);
 		}
-		smoothOff(g);
+		Rendering.smoothOff(g);
 	}
 
 	private void drawFull(Graphics2D g, PacMan pacMan, int size) {

@@ -31,24 +31,24 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 	private void selectSprite(PacMan pacMan) {
 		PacManState state = pacMan.getState();
 		if (state == null) {
-			selectSprite("full");
+			sprites.select("full");
 		} else {
 			switch (state) {
 			case AWAKE:
 			case POWERFUL:
-				selectSprite("walking-" + pacMan.moveDir());
+				sprites.select("walking-" + pacMan.moveDir());
 				break;
 			case IN_BED:
 			case SLEEPING:
-				selectSprite("full");
+				sprites.select("full");
 			case DEAD:
-				selectSprite("full");
+				sprites.select("full");
 				break;
 			case COLLAPSING:
 				// TODO this is somewhat dubios
 				if (!"collapsing".equals(sprites.selectedKey())) {
 					sprites.get("collapsing").resetAnimation();
-					selectSprite("collapsing");
+					sprites.select("collapsing");
 				}
 				break;
 			default:

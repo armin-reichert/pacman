@@ -55,23 +55,23 @@ public class GhostRenderer extends SpriteRenderer implements IGhostRenderer {
 		GhostPersonality personality = ghost.getPersonality();
 		Direction dir = ghost.moveDir();
 		if (state == null) {
-			selectSprite(keyColor(personality, dir));
+			sprites.select(keyColor(personality, dir));
 		} else {
 			switch (state) {
 			case LOCKED:
 			case LEAVING_HOUSE:
 			case CHASING:
 			case SCATTERING:
-				selectSprite(keyColor(personality, dir));
+				sprites.select(keyColor(personality, dir));
 				break;
 			case ENTERING_HOUSE:
-				selectSprite(keyEyes(dir));
+				sprites.select(keyEyes(dir));
 				break;
 			case FRIGHTENED:
-				selectSprite(ghost.isFlashing() ? "flashing" : "frightened");
+				sprites.select(ghost.isFlashing() ? "flashing" : "frightened");
 				break;
 			case DEAD:
-				selectSprite(ghost.getBounty() == 0 ? keyEyes(dir) : keyPoints(ghost.getBounty()));
+				sprites.select(ghost.getBounty() == 0 ? keyEyes(dir) : keyPoints(ghost.getBounty()));
 				break;
 			default:
 				break;

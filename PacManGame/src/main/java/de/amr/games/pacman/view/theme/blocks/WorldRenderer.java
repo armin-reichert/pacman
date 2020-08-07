@@ -15,6 +15,7 @@ import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.view.api.IWorldRenderer;
+import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.model.world.components.House;
 
 class WorldRenderer implements IWorldRenderer {
@@ -37,7 +38,7 @@ class WorldRenderer implements IWorldRenderer {
 	}
 
 	private void drawFood(Graphics2D g, World world) {
-		smoothOn(g);
+		Rendering.smoothOn(g);
 		world.tiles().forEach(location -> {
 			if (world.hasFood(Pellet.ENERGIZER, location)) {
 				drawEnergizer(g, world, location);
@@ -53,7 +54,7 @@ class WorldRenderer implements IWorldRenderer {
 				drawConsumedBonus(g, center, bonus.value());
 			}
 		});
-		smoothOff(g);
+		Rendering.smoothOff(g);
 	}
 
 	private void drawActiveBonus(Graphics2D g, Vector2f center, Symbol symbol) {
