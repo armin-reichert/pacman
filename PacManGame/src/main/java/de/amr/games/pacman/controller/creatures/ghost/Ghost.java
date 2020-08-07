@@ -190,7 +190,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	public void setPacMan(PacMan pacMan) {
 		this.pacMan = pacMan;
-		if (personality == GhostPersonality.BASHFUL) {
+		if (personality == GhostPersonality.SHADOW) {
 			madnessController = new GhostMadnessController(this, pacMan);
 		}
 	}
@@ -206,7 +206,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 
 	@Override
 	public void draw(Graphics2D g) {
-		theme.ghostRenderer(this).render(g, this);
+		theme.renderGhost(g, this);
 	}
 
 	public void assignBed(House house, int bedNumber) {

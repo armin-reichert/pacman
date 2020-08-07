@@ -119,6 +119,7 @@ public class EnhancedPlayView extends PlayView {
 	@Override
 	protected void drawWorld(Graphics2D g) {
 		IWorldRenderer renderer = theme.worldRenderer(world);
+		//TODO this is dubious
 		renderer.setEatenFoodColor(showingGrid ? Rendering::patternColor : tile -> Color.BLACK);
 		renderer.render(g, world);
 	}

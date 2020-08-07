@@ -136,7 +136,7 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawWorld(Graphics2D g) {
-		theme.worldRenderer(world).render(g, world);
+		theme.renderWorld(g, world);
 	}
 
 	protected void drawMessages(Graphics2D g) {

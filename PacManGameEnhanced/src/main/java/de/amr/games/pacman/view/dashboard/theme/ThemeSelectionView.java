@@ -204,7 +204,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
 		g.translate((THUMBNAIL_SIZE - ENTITY_SIZE) / 2, (THUMBNAIL_SIZE - ENTITY_SIZE) / 2);
-		theme.pacManRenderer(pacMan).render(g, pacMan);
+		theme.renderPacMan(g, pacMan);
 		return new ImageIcon(img);
 	}
 
@@ -215,7 +215,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
 		g.translate((THUMBNAIL_SIZE - ENTITY_SIZE) / 2, (THUMBNAIL_SIZE - ENTITY_SIZE) / 2);
-		theme.ghostRenderer(ghost).render(g, ghost);
+		theme.renderGhost(g, ghost);
 		return new ImageIcon(img);
 	}
 
