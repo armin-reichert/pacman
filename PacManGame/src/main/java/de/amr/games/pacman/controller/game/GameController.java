@@ -22,7 +22,6 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -35,9 +34,7 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.ghost.GhostMentalState;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -51,7 +48,6 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.game.GameLevel;
 import de.amr.games.pacman.model.world.api.BonusFoodState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -85,77 +81,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 * level 5. Therefore I use 1.25 pixel/frame for 100% speed.
 	 */
 	public static final float BASE_SPEED = 1.25f;
-
-	/**
-	 * Pac-Man move speed at given game level.
-	 * 
-	 * @param pacMan Pac-Man
-	 * @param level  game level
-	 * @return speed in pixels per tick
-	 */
-	public static float pacManSpeed(PacMan pacMan, GameLevel level) {
-		Objects.requireNonNull(pacMan);
-		Objects.requireNonNull(level);
-		if (pacMan.getState() == null) {
-			throw new IllegalStateException("Pac-Man is not initialized.");
-		}
-		switch (pacMan.getState()) {
-		case IN_BED:
-		case SLEEPING:
-		case DEAD:
-		case COLLAPSING:
-			return 0;
-		case POWERFUL:
-			return speed(pacMan.mustDigest() ? level.pacManPowerDotsSpeed : level.pacManPowerSpeed);
-		case AWAKE:
-			return speed(pacMan.mustDigest() ? level.pacManDotsSpeed : level.pacManSpeed);
-		default:
-			throw new IllegalStateException("Illegal Pac-Man state: " + pacMan.getState());
-		}
-	}
-
-	/**
-	 * Ghost move speed at given game level.
-	 * 
-	 * @param ghost ghost
-	 * @param level game level
-	 * @return speed in pixels per tick
-	 */
-	public static float ghostSpeed(Ghost ghost, GameLevel level) {
-		Objects.requireNonNull(ghost);
-		Objects.requireNonNull(level);
-		if (ghost.getState() == null) {
-			throw new IllegalStateException(String.format("Ghost %s is not initialized.", ghost.name));
-		}
-		boolean tunnel = ghost.world().isTunnel(ghost.tileLocation());
-		switch (ghost.getState()) {
-		case LOCKED:
-			return speed(ghost.isInsideHouse() ? level.ghostSpeed / 2 : 0);
-		case LEAVING_HOUSE:
-			return speed(level.ghostSpeed / 2);
-		case ENTERING_HOUSE:
-			return speed(level.ghostSpeed);
-		case CHASING:
-		case SCATTERING:
-			if (tunnel) {
-				return speed(level.ghostTunnelSpeed);
-			}
-			GhostMentalState madness = ghost.getMentalState();
-			if (madness == GhostMentalState.ELROY1) {
-				return speed(level.elroy1Speed);
-			}
-			if (madness == GhostMentalState.ELROY2) {
-				return speed(level.elroy2Speed);
-			}
-			return speed(level.ghostSpeed);
-		case FRIGHTENED:
-			return speed(tunnel ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
-		case DEAD:
-			return speed(2 * level.ghostSpeed);
-		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s", ghost.getState()));
-		}
-	}
 
 	/**
 	 * @param fraction fraction of base speed

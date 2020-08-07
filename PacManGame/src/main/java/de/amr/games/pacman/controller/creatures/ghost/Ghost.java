@@ -7,6 +7,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTEN
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.game.GameController.speed;
 import static de.amr.games.pacman.model.game.Game.sec;
 
 import java.util.Optional;
@@ -19,9 +20,9 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
-import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.GameLevel;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -101,6 +102,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 					})
 				
 				.state(FRIGHTENED)
+					.timeoutAfter(this::getFrightenedTicks)
 					.onEntry(() -> steering().init())
 					.onTick((state, consumed, remaining) -> {
 						maybeMeetPacMan(pacMan);
@@ -109,6 +111,8 @@ public class Ghost extends Creature<Ghost, GhostState> {
 					})
 				
 				.state(DEAD)
+					.timeoutAfter(sec(1))
+					.onEntry(this::computeBounty)
 					.onTick((s, consumed, remaining) -> {
 						if (remaining == 0) {
 							bounty = 0;
@@ -185,6 +189,45 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	}
 
 	@Override
+	public float getSpeed() {
+		if (game == null) {
+			return 0;
+		}
+		GameLevel level = game.level;
+		if (getState() == null) {
+			throw new IllegalStateException(String.format("Ghost %s is not initialized.", name));
+		}
+		boolean tunnel = world().isTunnel(tileLocation());
+		switch (getState()) {
+		case LOCKED:
+			return speed(isInsideHouse() ? level.ghostSpeed / 2 : 0);
+		case LEAVING_HOUSE:
+			return speed(level.ghostSpeed / 2);
+		case ENTERING_HOUSE:
+			return speed(level.ghostSpeed);
+		case CHASING:
+		case SCATTERING:
+			if (tunnel) {
+				return speed(level.ghostTunnelSpeed);
+			}
+			GhostMentalState madness = getMentalState();
+			if (madness == GhostMentalState.ELROY1) {
+				return speed(level.elroy1Speed);
+			}
+			if (madness == GhostMentalState.ELROY2) {
+				return speed(level.elroy2Speed);
+			}
+			return speed(level.ghostSpeed);
+		case FRIGHTENED:
+			return speed(tunnel ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
+		case DEAD:
+			return speed(2 * level.ghostSpeed);
+		default:
+			throw new IllegalStateException(String.format("Illegal ghost state %s", getState()));
+		}
+	}
+
+	@Override
 	public Stream<StateMachine<?, ?>> machines() {
 		return Stream.concat(super.machines(), Stream.of(madnessController));
 	}
@@ -218,24 +261,18 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	@Override
 	public void getReadyToRumble(Game game) {
 		this.game = game;
-
-		// speed is defined by game level
-		setSpeed(() -> GameController.ghostSpeed(this, game.level));
-
-		// frighened time too
-		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
-
-		// when killed, ghost is displayed for one second as a number (its "bounty"), then returns to
-		// ghosthouse
-		state(DEAD).setTimer(sec(1));
-		state(DEAD).entryAction = () -> bounty = game.killedGhostPoints();
-
-		// Blinky gets mad depending on game score
 		if (madnessController != null) {
 			madnessController.setGame(game);
 		}
-
 		init();
+	}
+
+	private void computeBounty() {
+		bounty = game != null ? game.killedGhostPoints() : 0;
+	}
+
+	private long getFrightenedTicks() {
+		return game != null ? sec(game.level.pacManPowerSeconds) : sec(5);
 	}
 
 	private long getFlashTimeTicks() {

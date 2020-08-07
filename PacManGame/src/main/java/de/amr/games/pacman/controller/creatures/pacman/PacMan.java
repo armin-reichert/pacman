@@ -7,6 +7,7 @@ import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.IN_BED;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
+import static de.amr.games.pacman.controller.game.GameController.speed;
 import static de.amr.games.pacman.model.game.Game.sec;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
@@ -23,9 +24,9 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
-import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.GameLevel;
 import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -39,6 +40,7 @@ import de.amr.games.pacman.model.world.components.Bed;
  */
 public class PacMan extends Creature<PacMan, PacManState> {
 
+	private Game game;
 	private int foodWeight;
 
 	public PacMan(World world) {
@@ -106,8 +108,32 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	}
 
 	@Override
+	public float getSpeed() {
+		if (game == null) {
+			return 0;
+		}
+		GameLevel level = game.level;
+		if (getState() == null) {
+			throw new IllegalStateException("Pac-Man is not initialized.");
+		}
+		switch (getState()) {
+		case IN_BED:
+		case SLEEPING:
+		case DEAD:
+		case COLLAPSING:
+			return 0;
+		case POWERFUL:
+			return speed(mustDigest() ? level.pacManPowerDotsSpeed : level.pacManPowerSpeed);
+		case AWAKE:
+			return speed(mustDigest() ? level.pacManDotsSpeed : level.pacManSpeed);
+		default:
+			throw new IllegalStateException("Illegal Pac-Man state: " + getState());
+		}
+	}
+
+	@Override
 	public void getReadyToRumble(Game game) {
-		setSpeed(() -> GameController.pacManSpeed(this, game.level));
+		this.game = game;
 		init();
 	}
 

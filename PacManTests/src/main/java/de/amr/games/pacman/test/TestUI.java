@@ -11,7 +11,6 @@ import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.api.Theme;
@@ -51,24 +50,15 @@ public class TestUI implements Lifecycle, VisualController {
 	public TestUI() {
 		world = new ArcadeWorld();
 		world.clearFood();
-
+		game = new Game(1, world.totalFoodCount());
 		folks = new Folks(world, world.house(0));
+		folks.all().forEach(guy -> guy.getReadyToRumble(game));
 		pacMan = folks.pacMan;
 		blinky = folks.blinky;
 		pinky = folks.pinky;
 		inky = folks.inky;
 		clyde = folks.clyde;
-
-		folks.all().forEach(world::exclude);
-
 		sounds = new ArcadeSounds();
-
-		game = new Game(1, world.totalFoodCount());
-
-		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
-		folks.ghosts().forEach(ghost -> ghost.setSpeed(() -> GameController.ghostSpeed(ghost, game.level)));
-		pacMan.setSpeed(() -> GameController.pacManSpeed(pacMan, game.level));
-
 		view = new EnhancedPlayView(world, theme(), folks, game, null, null);
 		view.turnScoresOff();
 		view.init();
@@ -77,7 +67,7 @@ public class TestUI implements Lifecycle, VisualController {
 	@Override
 	public void init() {
 		folks.all().forEach(Creature::init);
-		folks.all().forEach(creature -> world.exclude(creature));
+		folks.all().forEach(guy -> world.exclude(guy));
 	}
 
 	@Override

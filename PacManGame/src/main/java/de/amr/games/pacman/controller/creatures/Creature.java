@@ -5,13 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.api.TargetTileSteering;
 import de.amr.games.pacman.controller.steering.common.Movement;
@@ -44,7 +42,6 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	protected final World world;
 	protected boolean enabled;
 	protected Map<S, Steering<M>> steeringsByState;
-	protected Supplier<Float> fnSpeed = () -> GameController.BASE_SPEED;
 	protected Movement movement;
 	protected Direction moveDir;
 	protected Direction wishDir;
@@ -76,6 +73,14 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	}
 
 	/**
+	 * @return this creatures' current speed (pixels per tick)
+	 */
+	@Override
+	public float getSpeed() {
+		return 0;
+	}
+
+	/**
 	 * Must be called before this creature can take part in a game.
 	 * 
 	 * @param game the game this creature takes part in
@@ -104,21 +109,6 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
-	}
-
-	/**
-	 * @return this creatures' current speed (pixels per tick)
-	 */
-	@Override
-	public float getSpeed() {
-		return fnSpeed.get();
-	}
-
-	/**
-	 * @param fnSpeed function providing the speed in pixels per tick
-	 */
-	public void setSpeed(Supplier<Float> fnSpeed) {
-		this.fnSpeed = fnSpeed;
 	}
 
 	public Steering<M> steering() {

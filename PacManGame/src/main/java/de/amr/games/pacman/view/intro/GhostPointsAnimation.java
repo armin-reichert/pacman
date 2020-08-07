@@ -95,10 +95,8 @@ public class GhostPointsAnimation extends GameObject implements Themeable {
 
 		folks.pacMan.setMoveDir(Direction.RIGHT);
 		folks.pacMan.setState(PacManState.AWAKE);
-		folks.pacMan.setSpeed(() -> 0f);
 
 		folks.ghosts().forEach(ghost -> {
-			ghost.setSpeed(() -> 0f);
 			ghost.setState(GhostState.FRIGHTENED);
 			ghost.state().removeTimer();
 		});
