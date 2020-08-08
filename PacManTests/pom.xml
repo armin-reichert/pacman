@@ -28,31 +28,16 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
+			<groupId>de.amr.games.pacman</groupId>
+			<artifactId>PacManGameEnhanced</artifactId>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>de.amr.graph</groupId>
 			<artifactId>graph-viz</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>de.amr.games.pacman</groupId>
-			<artifactId>PacManGameEnhanced</artifactId>
-			<version>1.0</version>
-		</dependency>
 	</dependencies>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>de.amr.graph.viz</groupId>
-				<artifactId>graph-viz</artifactId>
-				<version>1.0</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<parent>
 		<groupId>de.amr.games.pacman</groupId>
 		<artifactId>pacman</artifactId>

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.world.core;
+package de.amr.games.pacman.model.world.graph;
 
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.PacManApp.settings;

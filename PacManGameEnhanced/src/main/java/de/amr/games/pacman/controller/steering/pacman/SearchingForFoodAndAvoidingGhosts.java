@@ -20,8 +20,8 @@ import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
-import de.amr.games.pacman.model.world.core.WorldGraph;
-import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
+import de.amr.games.pacman.model.world.graph.WorldGraph;
+import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 
 /**
  * Steering used by PacMan in demo mode.

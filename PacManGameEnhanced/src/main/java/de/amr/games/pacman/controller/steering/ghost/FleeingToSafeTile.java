@@ -10,8 +10,8 @@ import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.WorldGraph;
-import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
+import de.amr.games.pacman.model.world.graph.WorldGraph;
+import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 
 /**
  * Lets a refugee escape to the "safest" of some dedicated maze tiles depending on the attackers'

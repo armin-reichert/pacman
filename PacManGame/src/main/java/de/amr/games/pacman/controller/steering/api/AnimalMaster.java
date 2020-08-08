@@ -11,9 +11,7 @@ import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.steering.ghost.BouncingOnBed;
 import de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoingToBed;
-import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.controller.steering.ghost.LeavingHouse;
-import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.Door;
@@ -30,23 +28,23 @@ import de.amr.games.pacman.model.world.components.House;
  */
 public class AnimalMaster {
 
-	private Ghost ghost;
-	private PacMan pacMan;
-	private GhostState ghostState;
+	protected Ghost ghost;
+	protected PacMan pacMan;
+	protected GhostState ghostState;
 
-	private void ensureGhost() {
+	protected void ensureGhost() {
 		if (ghost == null) {
 			throw new IllegalStateException("Who do you mean?");
 		}
 	}
 
-	private void ensureGhostState() {
+	protected void ensureGhostState() {
 		if (ghostState == null) {
 			throw new IllegalStateException("When should I do that?");
 		}
 	}
 
-	private void ensureAny() {
+	protected void ensureAny() {
 		if (pacMan == null && ghost == null) {
 			throw new IllegalStateException("Who do you mean?");
 		}
@@ -93,11 +91,6 @@ public class AnimalMaster {
 	public MovesRandomlyBuilder moveRandomly() {
 		ensureAny();
 		return new MovesRandomlyBuilder();
-	}
-
-	public FleeToSafeTileBuilder fleeToSafeTile() {
-		ensureGhost();
-		return new FleeToSafeTileBuilder();
 	}
 
 	public FollowsKeysBuilder followTheKeys() {
@@ -212,23 +205,6 @@ public class AnimalMaster {
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
-		}
-	}
-
-	public class FleeToSafeTileBuilder {
-
-		private MobileLifeform attacker;
-
-		public FleeToSafeTileBuilder from(MobileLifeform attacker) {
-			this.attacker = Objects.requireNonNull(attacker);
-			return this;
-		}
-
-		public Steering<Ghost> ok() {
-			ensureGhost();
-			ensureGhostState();
-			ghost.behavior(ghostState, new FleeingToSafeTile(ghost, attacker));
-			return ghost.steering();
 		}
 	}
 

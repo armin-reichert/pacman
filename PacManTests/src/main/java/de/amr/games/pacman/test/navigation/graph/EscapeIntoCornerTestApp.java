@@ -6,6 +6,7 @@ import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.test.TestUI;
 
@@ -36,12 +37,11 @@ class EscapeIntoCornerTestUI extends TestUI {
 		super.init();
 		include(pacMan, blinky, inky);
 
-		you(blinky).when(FRIGHTENED).fleeToSafeTile().from(pacMan).ok();
 		blinky.setState(FRIGHTENED);
-
-		you(inky).when(FRIGHTENED).fleeToSafeTile().from(pacMan).ok();
 		inky.setNextState(FRIGHTENED);
 		inky.setState(GhostState.LEAVING_HOUSE);
+
+		folks.ghostsInWorld().forEach(ghost -> ghost.behavior(FRIGHTENED, new FleeingToSafeTile(ghost, pacMan)));
 
 		you(pacMan).moveRandomly().ok();
 		pacMan.wakeUp();

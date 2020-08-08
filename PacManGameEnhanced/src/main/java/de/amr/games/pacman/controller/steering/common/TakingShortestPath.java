@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.core.WorldGraph;
+import de.amr.games.pacman.model.world.graph.WorldGraph;
 
 /**
  * Lets a lifeform follow the shortest path (using graph path finding) to the target tile.

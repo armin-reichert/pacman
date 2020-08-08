@@ -36,26 +36,6 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>de.amr.graph</groupId>
-			<artifactId>graph-core</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>de.amr.graph</groupId>
-			<artifactId>graph-grid</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>de.amr.graph</groupId>
-			<artifactId>graph-search</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>de.amr.statemachine</groupId>
-			<artifactId>StateMachine</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
 			<groupId>de.amr.easy.game</groupId>
 			<artifactId>easy-game-framework</artifactId>
 			<version>1.0</version>

@@ -12,12 +12,7 @@ import static de.amr.games.pacman.controller.game.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.game.PacManGameState.LOADING_MUSIC;
 import static de.amr.games.pacman.controller.game.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
-import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 import static de.amr.games.pacman.model.game.Game.sec;
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
-import static java.awt.event.KeyEvent.VK_UP;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -46,7 +41,6 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
-import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.BonusFoodState;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -330,7 +324,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onEntry() {
-			setDemoMode(settings.demoMode);
 			theme.sounds().musicGameRunning().ifPresent(music -> {
 				music.setVolume(0.4f);
 				music.loop();
@@ -652,15 +645,4 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	protected void setDemoMode(boolean demoMode) {
-		if (demoMode) {
-			settings.pacManImmortable = true;
-			folks.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(folks));
-			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
-		} else {
-			settings.pacManImmortable = false;
-			you(folks.pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
-			playView.clearMessage(1);
-		}
-	}
 }

@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.arcade.Pellet;
-import de.amr.games.pacman.model.world.core.WorldGraph;
+import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
 import de.amr.graph.grid.ui.rendering.GridRenderer;
