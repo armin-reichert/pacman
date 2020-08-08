@@ -120,10 +120,6 @@ public class PlayView implements PacManGameView {
 		messages[number - 1].text = null;
 	}
 
-	public void enableGhostAnimations(boolean enabled) {
-		folks.ghosts().forEach(ghost -> ghost.setEnabled(enabled));
-	}
-
 	public void turnScoresOn() {
 		this.showingScores = true;
 	}

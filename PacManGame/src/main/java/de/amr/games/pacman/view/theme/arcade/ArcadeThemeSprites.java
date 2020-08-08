@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.theme.arcade;
 
-import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
+import static de.amr.easy.game.ui.sprites.AnimationType.FORWARD_BACKWARDS;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
 
@@ -161,7 +161,7 @@ public class ArcadeThemeSprites {
 	}
 
 	public Sprite makeSprite_flashingMaze() {
-		return Sprite.of(imageMazeEmptyWhite, imageMazeEmpty).animate(BACK_AND_FORTH, 200);
+		return Sprite.of(imageMazeEmptyWhite, imageMazeEmpty).animate(FORWARD_BACKWARDS, 200);
 	}
 
 	public Sprite makeSprite_bonusSymbol(String symbol) {
@@ -173,7 +173,7 @@ public class ArcadeThemeSprites {
 	}
 
 	public Sprite makeSprite_pacManWalking(Direction dir) {
-		return Sprite.of(imagePacManWalking[index(dir)]).animate(BACK_AND_FORTH, 20);
+		return Sprite.of(imagePacManWalking[index(dir)]).animate(FORWARD_BACKWARDS, 20);
 	}
 
 	public Sprite makeSprite_pacManCollapsing() {
@@ -183,7 +183,7 @@ public class ArcadeThemeSprites {
 	public Sprite makeSprite_ghostColored(GhostPersonality personality, Direction dir) {
 		BufferedImage[] frames = Arrays.copyOfRange(imageGhostColored[index(personality)], 2 * index(dir),
 				2 * (index(dir) + 1));
-		return Sprite.of(frames).animate(BACK_AND_FORTH, 300);
+		return Sprite.of(frames).animate(FORWARD_BACKWARDS, 300);
 	}
 
 	public Sprite makeSprite_ghostFrightened() {

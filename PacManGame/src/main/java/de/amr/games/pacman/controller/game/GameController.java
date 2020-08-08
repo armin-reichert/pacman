@@ -246,7 +246,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.on(LevelCompletedEvent.class)
 					
 				.when(CHANGING_LEVEL).then(PLAYING)
-					.onTimeout()
+					.condition(() -> state_CHANGING_LEVEL().isComplete())
 					.act(state_PLAYING()::resumePlaying)
 					.annotation("Level change complete")
 					
@@ -361,7 +361,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			bonusControl.init();
 			ghostCommand.init();
 			folks.allInWorld().forEach(Creature::init);
-			playView.enableGhostAnimations(true);
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
@@ -436,8 +435,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public class ChangingLevelState extends State<PacManGameState> {
 
-		public ChangingLevelState() {
-			setTimer(() -> sec(4 + game.level.numFlashes * theme.$float("maze-flash-sec")));
+		private boolean complete;
+		private long flashDuration;
+		private long waitTime = sec(2);
+
+		public boolean isComplete() {
+			return complete;
 		}
 
 		@Override
@@ -445,36 +448,40 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
 			folks.pacMan.fallAsleep();
 			doorMan.onLevelChange();
-			playView.enableGhostAnimations(false);
+			folks.ghosts().forEach(ghost -> ghost.setEnabled(false));
 			theme.sounds().clips().forEach(SoundClip::stop);
+			flashDuration = game.level.numFlashes * sec(theme.$float("maze-flash-sec"));
+			complete = false;
 		}
 
 		@Override
 		public void onTick(State<PacManGameState> state, long passed, long ticksRemaining) {
-			float flashingSeconds = game.level.numFlashes * theme.$float("maze-flash-sec");
 
 			// During first two seconds, do nothing.
 
 			// After 2 seconds, hide ghosts and start flashing.
-			if (passed == sec(2)) {
+			if (passed == waitTime) {
 				world.setChanging(true);
-				folks.ghostsInWorld().forEach(ghost -> ghost.setVisible(false));
+				folks.ghosts().forEach(ghost -> ghost.setVisible(false));
 			}
 
 			// After flashing has finished, enter next level
-			if (passed == sec(2 + flashingSeconds)) {
+			if (passed == waitTime + flashDuration) {
 				world.setChanging(false);
 				world.fillFood();
 				game.enterLevel(game.level.number + 1);
-				folks.allInWorld().forEach(Creature::init);
+				folks.all().forEach(Creature::init);
 				folks.blinky.getMadnessController().init();
 				playView.init();
-				playView.enableGhostAnimations(true);
 			}
 
 			// One second later, let ghosts jump again inside the house
-			if (passed >= sec(3 + flashingSeconds)) {
+			if (passed >= waitTime + flashDuration + sec(1)) {
 				folks.allInWorld().forEach(Creature::update);
+			}
+
+			if (passed >= waitTime + flashDuration + sec(3)) {
+				complete = true;
 			}
 		}
 	}
@@ -587,6 +594,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 */
 	protected PlayingState state_PLAYING() {
 		return state(PLAYING);
+	}
+
+	protected ChangingLevelState state_CHANGING_LEVEL() {
+		return state(CHANGING_LEVEL);
 	}
 
 	public Folks folks() {
