@@ -337,14 +337,17 @@ public class Ghost extends Creature<Ghost, GhostState> {
 			currentSteering.force();
 			previousSteering = currentSteering;
 		}
-		currentSteering.steer(this);
+		// TODO check why ghosts get lost in tunnel/portal
+		if (!world.isTunnel(tileLocation())) {
+			currentSteering.steer(this);
+		}
 		movement.update();
-		setEnabled(entity.tf.vx != 0 || entity.tf.vy != 0);
 		if (madnessController != null) {
 			madnessController.update();
 		}
+		setEnabled(entity.tf.vx != 0 || entity.tf.vy != 0);
 	}
-	
+
 	public boolean isAtHouseEntry() {
 		return house.isEntry(tileLocation()) && (tileOffsetX() - Tile.SIZE / 2) <= 1;
 	}
