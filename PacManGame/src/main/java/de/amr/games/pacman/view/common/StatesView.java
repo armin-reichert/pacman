@@ -99,6 +99,8 @@ public class StatesView implements View {
 			if (ghost.state().hasTimer()) {
 				text.append(String.format("(%s,%d|%d)", ghost.getState(), ghost.state().getTicksRemaining(),
 						ghost.state().getDuration()));
+			} else {
+				text.append(ghost.getState());
 			}
 		}
 		drawEntityState(g, ghost.entity, text.toString(), ghostColor(ghost));
