@@ -11,11 +11,11 @@ import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.api.Symbol;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.Pellet;
-import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 

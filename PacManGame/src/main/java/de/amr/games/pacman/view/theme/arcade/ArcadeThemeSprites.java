@@ -16,7 +16,7 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.arcade.Symbol;
+import de.amr.games.pacman.model.world.api.Symbol;
 
 /**
  * Resources for Arcade theme.

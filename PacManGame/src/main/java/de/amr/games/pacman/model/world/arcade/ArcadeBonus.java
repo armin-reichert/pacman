@@ -2,6 +2,7 @@ package de.amr.games.pacman.model.world.arcade;
 
 import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.BonusFoodState;
+import de.amr.games.pacman.model.world.api.Symbol;
 import de.amr.games.pacman.model.world.api.Tile;
 
 public class ArcadeBonus implements BonusFood {

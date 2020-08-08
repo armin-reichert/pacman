@@ -5,7 +5,7 @@ import static de.amr.easy.game.Application.loginfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.model.world.arcade.Symbol;
+import de.amr.games.pacman.model.world.api.Symbol;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.

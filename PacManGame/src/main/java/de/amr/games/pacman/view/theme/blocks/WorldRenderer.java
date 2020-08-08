@@ -7,11 +7,11 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
+import de.amr.games.pacman.model.world.api.Symbol;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.Pellet;
-import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.api.IWorldRenderer;
