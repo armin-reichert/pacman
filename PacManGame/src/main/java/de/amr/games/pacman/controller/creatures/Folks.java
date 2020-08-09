@@ -98,6 +98,6 @@ public class Folks {
 	}
 
 	public Stream<Creature<?, ?>> allInWorld() {
-		return all().filter(guy -> guy.world.contains(guy));
+		return all().filter(guy -> guy.world().contains(guy));
 	}
 }
