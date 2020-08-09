@@ -8,30 +8,30 @@ import de.amr.games.pacman.model.world.api.Direction;
 
 class GhostSpriteMap extends SpriteMap {
 
-	static String keyColor(GhostPersonality personality, Direction dir) {
-		return String.format("color-%s-%s", personality, dir);
+	public static String keyColor(GhostPersonality personality, Direction dir) {
+		return String.format("colored-%s-%s", personality, dir);
 	}
 
-	static String keyEyes(Direction dir) {
+	public static String keyEyes(Direction dir) {
 		return String.format("eyes-%s", dir);
 	}
 
-	static String keyPoints(int points) {
+	public static String keyPoints(int points) {
 		return String.format("points-%d", points);
 	}
 
-	GhostSpriteMap(Ghost ghost) {
-		ArcadeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
+	public GhostSpriteMap(Ghost ghost) {
+		ArcadeSprites sprites = ArcadeTheme.THEME.$value("sprites");
 		for (Direction dir : Direction.values()) {
 			for (GhostPersonality personality : GhostPersonality.values()) {
-				set(keyColor(personality, dir), arcadeSprites.makeSprite_ghostColored(personality, dir));
+				set(keyColor(personality, dir), sprites.makeSprite_ghostColored(personality, dir));
 			}
-			set(keyEyes(dir), arcadeSprites.makeSprite_ghostEyes(dir));
+			set(keyEyes(dir), sprites.makeSprite_ghostEyes(dir));
 		}
-		set("frightened", arcadeSprites.makeSprite_ghostFrightened());
-		set("flashing", arcadeSprites.makeSprite_ghostFlashing());
+		set("frightened", sprites.makeSprite_ghostFrightened());
+		set("flashing", sprites.makeSprite_ghostFlashing());
 		for (int bounty : Game.GHOST_BOUNTIES) {
-			set(keyPoints(bounty), arcadeSprites.makeSprite_number(bounty));
+			set(keyPoints(bounty), sprites.makeSprite_number(bounty));
 		}
 	}
 }
