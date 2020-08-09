@@ -15,10 +15,10 @@ import de.amr.games.pacman.view.api.IPacManRenderer;
 public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
 	public PacManRenderer() {
-		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
-		Direction.dirs().forEach(dir -> spriteMap.set("walking-" + dir, arcadeSprites.makeSprite_pacManWalking(dir)));
-		spriteMap.set("collapsing", arcadeSprites.makeSprite_pacManCollapsing());
-		spriteMap.set("full", arcadeSprites.makeSprite_pacManFull());
+		ArcadeThemeSprites sprites = ArcadeTheme.THEME.$value("sprites");
+		Direction.dirs().forEach(dir -> spriteMap.set("walking-" + dir, sprites.makeSprite_pacManWalking(dir)));
+		spriteMap.set("collapsing", sprites.makeSprite_pacManCollapsing());
+		spriteMap.set("full", sprites.makeSprite_pacManFull());
 	}
 
 	@Override
@@ -41,11 +41,8 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 			case IN_BED:
 			case SLEEPING:
 				spriteMap.select("full");
-			case DEAD:
-				spriteMap.select("full");
 				break;
 			case COLLAPSING:
-				// TODO this is somewhat dubios
 				if (!"collapsing".equals(spriteMap.selectedKey())) {
 					spriteMap.get("collapsing").resetAnimation();
 					spriteMap.select("collapsing");
