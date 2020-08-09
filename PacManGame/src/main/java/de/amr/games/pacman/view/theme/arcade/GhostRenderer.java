@@ -8,6 +8,7 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.view.api.IGhostRenderer;
+import de.amr.games.pacman.view.common.SpriteRenderer;
 
 /**
  * Renders a ghost using animated sprites.

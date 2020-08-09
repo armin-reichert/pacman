@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.arcade;
+package de.amr.games.pacman.view.common;
 
 import java.awt.Graphics2D;
 
