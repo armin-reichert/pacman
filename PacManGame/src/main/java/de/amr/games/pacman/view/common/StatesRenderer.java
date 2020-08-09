@@ -18,7 +18,6 @@ import java.awt.Stroke;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.view.Pen;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -26,30 +25,18 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
 
-public class StatesView implements View {
+public class StatesRenderer {
 
 	private static final Font SMALL_FONT = new Font("Arial", Font.PLAIN, 6);
 
-	private final World world;
-	private final Folks folks;
-	private final GhostCommand ghostCommand;
-
-	public StatesView(World world, Folks folks, GhostCommand ghostCommand) {
-		this.world = world;
-		this.folks = folks;
-		this.ghostCommand = ghostCommand;
+	public void renderStates(Graphics2D g, Folks folks, GhostCommand ghostCommand) {
+		drawActorStates(g, folks, ghostCommand);
+		drawActorsOffTrack(g, folks);
 	}
 
-	@Override
-	public void draw(Graphics2D g) {
-		drawActorStates(g);
-		drawActorsOffTrack(g);
-	}
-
-	private void drawActorStates(Graphics2D g) {
-		folks.ghosts().filter(world::contains).forEach(ghost -> drawGhostState(g, ghost, ghostCommand));
+	private void drawActorStates(Graphics2D g, Folks folks, GhostCommand ghostCommand) {
+		folks.ghostsInWorld().forEach(ghost -> drawGhostState(g, ghost, ghostCommand));
 		drawPacManState(g, folks.pacMan);
 	}
 
@@ -119,9 +106,9 @@ public class StatesView implements View {
 		return ">100_000";
 	}
 
-	private void drawActorsOffTrack(Graphics2D g) {
+	private void drawActorsOffTrack(Graphics2D g, Folks folks) {
 		drawActorOffTrack(g, folks.pacMan);
-		folks.ghosts().forEach(ghost -> drawActorOffTrack(g, ghost));
+		folks.ghostsInWorld().forEach(ghost -> drawActorOffTrack(g, ghost));
 	}
 
 	private void drawActorOffTrack(Graphics2D g, Creature<?, ?> creature) {

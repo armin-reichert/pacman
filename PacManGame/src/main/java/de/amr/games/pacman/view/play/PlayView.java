@@ -10,8 +10,6 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.controller.game.GhostCommand;
-import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -50,7 +48,7 @@ public class PlayView implements PacManGameView {
 
 	protected boolean showingScores = true;
 
-	public PlayView(World world, Theme theme, Folks folks, Game game, GhostCommand ghostCommand, DoorMan doorMan) {
+	public PlayView(World world, Theme theme, Folks folks, Game game) {
 		this.world = world;
 		this.folks = folks;
 		this.game = game;

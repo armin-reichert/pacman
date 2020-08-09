@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.GhostCommand;
-import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -14,8 +13,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.GridRenderer;
 import de.amr.games.pacman.view.common.Rendering;
-import de.amr.games.pacman.view.common.RoutesView;
-import de.amr.games.pacman.view.common.StatesView;
+import de.amr.games.pacman.view.common.RoutesRenderer;
+import de.amr.games.pacman.view.common.StatesRenderer;
 
 /**
  * View where the action is.
@@ -25,22 +24,23 @@ import de.amr.games.pacman.view.common.StatesView;
 public class EnhancedPlayView extends PlayView {
 
 	protected final GridRenderer gridRenderer;
-	protected final RoutesView routesView;
-	protected final StatesView statesView;
-	protected final FrameRateWidget frameRateDisplay;
+	protected final RoutesRenderer routesRenderer;
+	protected final StatesRenderer statesRenderer;
+	protected final FrameRateWidget frameRateView;
+	protected final GhostCommand ghostCommand;
 
 	protected boolean showingFrameRate;
 	protected boolean showingGrid;
 	protected boolean showingRoutes;
 	protected boolean showingStates;
 
-	public EnhancedPlayView(World world, Theme theme, Folks folks, Game game, GhostCommand ghostCommand,
-			DoorMan doorMan) {
-		super(world, theme, folks, game, ghostCommand, doorMan);
+	public EnhancedPlayView(World world, Theme theme, Folks folks, Game game, GhostCommand ghostCommand) {
+		super(world, theme, folks, game);
+		this.ghostCommand = ghostCommand;
 		gridRenderer = new GridRenderer(world.width(), world.height());
-		routesView = new RoutesView(world, folks);
-		statesView = new StatesView(world, folks, ghostCommand);
-		frameRateDisplay = new FrameRateWidget();
+		routesRenderer = new RoutesRenderer();
+		statesRenderer = new StatesRenderer();
+		frameRateView = new FrameRateWidget();
 		setTheme(theme);
 	}
 
@@ -141,20 +141,20 @@ public class EnhancedPlayView extends PlayView {
 
 	protected void drawFrameRate(Graphics2D g) {
 		if (showingFrameRate) {
-			frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
-			frameRateDisplay.draw(g);
+			frameRateView.tf.setPosition(0, 18 * Tile.SIZE);
+			frameRateView.draw(g);
 		}
 	}
 
 	protected void drawStates(Graphics2D g) {
 		if (showingStates) {
-			statesView.draw(g);
+			statesRenderer.renderStates(g, folks, ghostCommand);
 		}
 	}
 
 	protected void drawRoutes(Graphics2D g) {
 		if (showingRoutes) {
-			routesView.draw(g);
+			routesRenderer.renderRoutes(g, folks);
 		}
 	}
 }

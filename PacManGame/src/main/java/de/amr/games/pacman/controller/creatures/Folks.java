@@ -31,10 +31,12 @@ import de.amr.games.pacman.model.world.components.House;
  */
 public class Folks {
 
+	public final World world;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
 	public Folks(World world, House ghostHouse) {
+		this.world = world;
 		pacMan = new PacMan(world);
 		blinky = new Ghost("Blinky", GhostPersonality.SHADOW, world);
 		inky = new Ghost("Inky", GhostPersonality.BASHFUL, world);

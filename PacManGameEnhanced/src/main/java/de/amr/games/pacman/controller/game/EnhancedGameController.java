@@ -54,7 +54,7 @@ public class EnhancedGameController extends GameController {
 
 	@Override
 	protected PlayView createPlayView() {
-		return new EnhancedPlayView(world, getTheme(), folks, game, ghostCommand, doorMan);
+		return new EnhancedPlayView(world, getTheme(), folks, game, ghostCommand);
 	}
 
 	protected EnhancedPlayView playView() {

@@ -15,42 +15,31 @@ import java.util.List;
 import java.util.Optional;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
 
 /**
  * Renderes the routes of the creatures towards their current target tiles.
  * 
  * @author Armin Reichert
  */
-public class RoutesView implements View {
+public class RoutesRenderer {
 
-	private final World world;
-	private final Folks folks;
-
-	public RoutesView(World world, Folks folks) {
-		this.world = world;
-		this.folks = folks;
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
+	public void renderRoutes(Graphics2D g, Folks folks) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		if (folks.pacMan.isVisible()) {
 			drawPacManRoute(g, folks.pacMan);
 		}
-		folks.ghosts().filter(world::contains).filter(Ghost::isVisible).forEach(ghost -> drawGhostRoute(g, ghost));
+		folks.ghostsInWorld().filter(Ghost::isVisible).forEach(ghost -> drawGhostRoute(g, ghost));
 		if (folks.inky.isInsideWorld() && folks.inky.isVisible()) {
-			drawInkyChasing(g, folks.inky);
+			drawInkyChasing(g, folks);
 		}
 		if (folks.clyde.isInsideWorld() && folks.clyde.isVisible()) {
-			drawClydeChasingArea(g, folks.clyde);
+			drawClydeChasingArea(g, folks);
 		}
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
@@ -122,10 +111,10 @@ public class RoutesView implements View {
 		g.dispose();
 	}
 
-	private void drawInkyChasing(Graphics2D g, Ghost inky) {
+	private void drawInkyChasing(Graphics2D g, Folks folks) {
 		PacMan pacMan = folks.pacMan;
-		Ghost blinky = folks.blinky;
-		if (!inky.is(CHASING) || inky.targetTile().isEmpty() || !world.contains(blinky)) {
+		Ghost inky = folks.inky, blinky = folks.blinky;
+		if (!inky.is(CHASING) || inky.targetTile().isEmpty() || !folks.world.contains(blinky)) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
@@ -140,8 +129,8 @@ public class RoutesView implements View {
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
 		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
-			Tile twoAhead = world.tileToDir(pacManTile, pacManDir, 2);
-			Tile twoLeft = world.tileToDir(twoAhead, Direction.LEFT, 2);
+			Tile twoAhead = folks.world.tileToDir(pacManTile, pacManDir, 2);
+			Tile twoLeft = folks.world.tileToDir(twoAhead, Direction.LEFT, 2);
 			x1 = pacManTile.centerX();
 			y1 = pacManTile.centerY();
 			x2 = twoAhead.centerX();
@@ -162,7 +151,8 @@ public class RoutesView implements View {
 		}
 	}
 
-	private void drawClydeChasingArea(Graphics2D g, Ghost clyde) {
+	private void drawClydeChasingArea(Graphics2D g, Folks folks) {
+		Ghost clyde = folks.clyde;
 		if (!clyde.is(CHASING)) {
 			return;
 		}

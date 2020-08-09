@@ -583,7 +583,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	protected PlayView createPlayView() {
-		return new PlayView(world, theme, folks, game, ghostCommand, doorMan);
+		return new PlayView(world, theme, folks, game);
 	}
 
 	/**

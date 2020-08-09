@@ -59,7 +59,7 @@ public class TestUI implements Lifecycle, VisualController {
 		inky = folks.inky;
 		clyde = folks.clyde;
 		sounds = new ArcadeSounds();
-		view = new EnhancedPlayView(world, theme(), folks, game, null, null);
+		view = new EnhancedPlayView(world, theme(), folks, game, null);
 		view.turnScoresOff();
 		view.init();
 	}
