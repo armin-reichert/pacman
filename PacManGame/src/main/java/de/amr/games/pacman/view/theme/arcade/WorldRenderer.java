@@ -49,9 +49,11 @@ public class WorldRenderer implements IWorldRenderer {
 			if (!mazeSprites.selectedKey().equals("maze-flashing")) {
 				mazeSprites.select("maze-flashing");
 				mazeSprites.current().get().resetAnimation();
+				mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
 			}
 		} else {
 			mazeSprites.select("maze-full");
+			mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
 			drawContent(g, world);
 			world.house(0).doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
 				g.setColor(Color.BLACK);
@@ -60,12 +62,11 @@ public class WorldRenderer implements IWorldRenderer {
 		}
 		energizerAnimation.setEnabled(!world.isFrozen());
 		energizerAnimation.update();
-		mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
 	}
 
 	private void drawContent(Graphics2D g, World world) {
 		// hide eaten food
-		Color eatenFoodColor = Color.BLACK; // TODO handle grid pattern
+		Color eatenFoodColor = Color.BLACK;
 		world.tiles().filter(world::hasEatenFood).forEach(tile -> {
 			g.setColor(eatenFoodColor);
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
