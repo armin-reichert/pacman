@@ -48,7 +48,6 @@ public class HeadingForTargetTile<M extends MobileLifeform> implements TargetTil
 		return fnTargetTile.get();
 	}
 
-	@Override
 	public void setTargetTile(Supplier<Tile> fnTargetTile) {
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}
