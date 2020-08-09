@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.view.api.IGameScoreRenderer;
 
-public class LivesCounterRenderer implements IGameScoreRenderer {
+class LivesCounterRenderer implements IGameScoreRenderer {
 
 	private final Image pacManLookingLeft;
 

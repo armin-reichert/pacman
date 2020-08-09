@@ -15,7 +15,7 @@ import de.amr.games.pacman.view.common.ISpriteRenderer;
  * 
  * @author Armin Reichert
  */
-public class GhostRenderer implements IGhostRenderer, ISpriteRenderer {
+class GhostRenderer implements IGhostRenderer, ISpriteRenderer {
 
 	private GhostSpriteMap spriteMap;
 

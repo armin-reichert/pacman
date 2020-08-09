@@ -14,7 +14,7 @@ import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 
-public class WorldRenderer implements IWorldRenderer {
+class WorldRenderer implements IWorldRenderer {
 
 	private WorldSpriteMap spriteMap;
 	private SpriteAnimation energizerAnimation;

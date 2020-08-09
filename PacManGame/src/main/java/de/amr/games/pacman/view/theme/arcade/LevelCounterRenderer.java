@@ -10,7 +10,7 @@ import de.amr.games.pacman.model.world.api.Symbol;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.view.api.IGameScoreRenderer;
 
-public class LevelCounterRenderer implements IGameScoreRenderer {
+class LevelCounterRenderer implements IGameScoreRenderer {
 
 	private final Map<Symbol, Image> bonusImages = new HashMap<Symbol, Image>();
 

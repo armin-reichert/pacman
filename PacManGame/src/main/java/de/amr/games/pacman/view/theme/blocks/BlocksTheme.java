@@ -19,13 +19,11 @@ import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.PointsCounterRenderer;
 import de.amr.games.pacman.view.core.ThemeParameters;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
-import de.amr.games.pacman.view.theme.arcade.LivesCounterRenderer;
 
 /**
  * A theme using simple geometric figures.
  * 
  * @author Armin Reichert
- *
  */
 public class BlocksTheme extends ThemeParameters implements Theme {
 
@@ -39,10 +37,10 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 		set("wall-color", new Color(139, 69, 19));
 		set("ghost-colors", Map.of(
 		//@formatter:off
-			GhostPersonality.SHADOW, Color.RED,
+			GhostPersonality.SHADOW,  Color.RED,
 			GhostPersonality.SPEEDY,  Color.PINK,
-			GhostPersonality.BASHFUL,   Color.CYAN,
-			GhostPersonality.POKEY,  Color.ORANGE
+			GhostPersonality.BASHFUL, Color.CYAN,
+			GhostPersonality.POKEY,   Color.ORANGE
 		//@formatter:on
 		));
 		set("symbol-colors", Map.of(
@@ -59,7 +57,7 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 		));
 		set("sounds", ArcadeSounds.SOUNDS);
 	}
-	
+
 	@Override
 	public String name() {
 		return "BLOCKS";

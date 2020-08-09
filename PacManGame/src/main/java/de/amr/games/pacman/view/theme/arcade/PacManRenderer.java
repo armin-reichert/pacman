@@ -21,7 +21,7 @@ import de.amr.games.pacman.view.theme.PacManSpriteMap;
  * 
  * @author Armin Reichert
  */
-public class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
+class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
 
 	private PacManSpriteMap spriteMap;
 
