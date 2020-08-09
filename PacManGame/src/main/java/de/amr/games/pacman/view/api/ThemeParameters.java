@@ -2,6 +2,7 @@ package de.amr.games.pacman.view.api;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 
 public interface ThemeParameters {
 
@@ -12,6 +13,8 @@ public interface ThemeParameters {
 	Font $font(String key);
 
 	Color $color(String key);
+	
+	Image $image(String key);
 
 	<T> T $value(String key);
 }

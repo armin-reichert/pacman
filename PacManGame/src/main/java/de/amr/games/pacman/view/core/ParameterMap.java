@@ -2,6 +2,7 @@ package de.amr.games.pacman.view.core;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.util.HashMap;
 
 import de.amr.games.pacman.view.api.ThemeParameters;
@@ -34,5 +35,10 @@ public class ParameterMap extends HashMap<String, Object> implements ThemeParame
 	@Override
 	public Font $font(String key) {
 		return (Font) getOrDefault(key, DEFAULT_FONT);
+	}
+
+	@Override
+	public Image $image(String key) {
+		return (Image) get(key);
 	}
 }

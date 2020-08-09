@@ -7,6 +7,8 @@ import java.util.Map;
 import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.api.Symbol;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.api.IGameScoreRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
@@ -28,9 +30,16 @@ public class ArcadeTheme extends AbstractTheme {
 
 	private ArcadeTheme() {
 		super("ARCADE");
+		ArcadeThemeSprites sprites = new ArcadeThemeSprites();
 		put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		put("maze-flash-sec", 0.4f);
-		put("sprites", new ArcadeThemeSprites());
+		put("sprites", sprites);
+		for (Symbol symbol : Symbol.values()) {
+			put("symbol-" + symbol.name(), sprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
+		}
+		for (int points : Game.POINTS_BONUS) {
+			put("points-" + points, sprites.makeSprite_number(points).frame(0));
+		}
 		put("sounds", ArcadeSounds.SOUNDS);
 	}
 
