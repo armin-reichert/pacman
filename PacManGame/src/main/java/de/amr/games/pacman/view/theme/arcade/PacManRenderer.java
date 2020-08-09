@@ -10,12 +10,11 @@ import java.awt.Graphics2D;
 import java.util.Optional;
 
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
-import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.common.ISpriteRenderer;
+import de.amr.games.pacman.view.theme.PacManSpriteMap;
 
 /**
  * Renders Pac-Man using animated sprites.
@@ -24,13 +23,10 @@ import de.amr.games.pacman.view.common.ISpriteRenderer;
  */
 public class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
 
-	private SpriteMap spriteMap = new SpriteMap();
+	private PacManSpriteMap spriteMap;
 
-	public PacManRenderer() {
-		ArcadeSprites sprites = ArcadeTheme.THEME.$value("sprites");
-		Direction.dirs().forEach(dir -> spriteMap.set("walking-" + dir, sprites.makeSprite_pacManWalking(dir)));
-		spriteMap.set("collapsing", sprites.makeSprite_pacManCollapsing());
-		spriteMap.set("full", sprites.makeSprite_pacManFull());
+	public PacManRenderer(PacManSpriteMap spriteMap) {
+		this.spriteMap = spriteMap;
 	}
 
 	@Override

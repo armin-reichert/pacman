@@ -6,7 +6,6 @@ import java.awt.Image;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
-import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -17,13 +16,11 @@ import de.amr.games.pacman.view.api.IWorldRenderer;
 
 public class WorldRenderer implements IWorldRenderer {
 
-	private Sprite spriteMazeFull, spriteMazeFlashing, selectedMazeSprite;
+	private WorldSpriteMap spriteMap;
 	private SpriteAnimation energizerAnimation;
 
-	public WorldRenderer() {
-		ArcadeSprites sprites = ArcadeTheme.THEME.$value("sprites");
-		spriteMazeFull = sprites.makeSprite_fullMaze();
-		spriteMazeFlashing = sprites.makeSprite_flashingMaze();
+	public WorldRenderer(WorldSpriteMap spriteMap) {
+		this.spriteMap = spriteMap;
 		energizerAnimation = new CyclicAnimation(2);
 		energizerAnimation.setFrameDuration(150);
 		energizerAnimation.setEnabled(false);
@@ -32,14 +29,16 @@ public class WorldRenderer implements IWorldRenderer {
 	@Override
 	public void render(Graphics2D g, World world) {
 		if (world.isChanging()) {
-			if (selectedMazeSprite != spriteMazeFlashing) {
-				selectedMazeSprite = spriteMazeFlashing;
-				selectedMazeSprite.resetAnimation();
+			String selectedKey = spriteMap.selectedKey();
+			if (!"maze-flashing".equals(selectedKey)) {
+				spriteMap.select("maze-flashing");
+				spriteMap.current().get().resetAnimation();
+				spriteMap.current().get().enableAnimation(true);
 			}
-			selectedMazeSprite.draw(g, 0, 3 * Tile.SIZE);
+			spriteMap.current().get().draw(g, 0, 3 * Tile.SIZE);
 		} else {
-			selectedMazeSprite = spriteMazeFull;
-			selectedMazeSprite.draw(g, 0, 3 * Tile.SIZE);
+			spriteMap.select("maze-full");
+			spriteMap.current().get().draw(g, 0, 3 * Tile.SIZE);
 			drawContent(g, world);
 			world.house(0).doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
 				g.setColor(Color.BLACK);

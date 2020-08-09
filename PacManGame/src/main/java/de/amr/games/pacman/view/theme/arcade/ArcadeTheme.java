@@ -18,19 +18,20 @@ import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.PointsCounterRenderer;
 import de.amr.games.pacman.view.core.AbstractTheme;
+import de.amr.games.pacman.view.theme.PacManSpriteMap;
 
 public class ArcadeTheme extends AbstractTheme {
 
 	public static final ArcadeTheme THEME = new ArcadeTheme();
 
-	private Map<World, WorldRenderer> worldRenderers = new HashMap<>();
-	private Map<PacMan, PacManRenderer> pacManRenderers = new HashMap<>();
+	private ArcadeSprites sprites = new ArcadeSprites();
+	private Map<World, WorldSpriteMap> worldSprites = new HashMap<>();
+	private Map<PacMan, PacManSpriteMap> pacManSprites = new HashMap<>();
 	private Map<Ghost, GhostSpriteMap> ghostSprites = new HashMap<>();
 	private MessagesRenderer messagesRenderer;
 
 	private ArcadeTheme() {
 		super("ARCADE");
-		ArcadeSprites sprites = new ArcadeSprites();
 		put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		put("maze-flash-sec", 0.4f);
 		put("sprites", sprites);
@@ -45,22 +46,22 @@ public class ArcadeTheme extends AbstractTheme {
 
 	@Override
 	public IWorldRenderer worldRenderer(World world) {
-		WorldRenderer renderer = worldRenderers.get(world);
-		if (renderer == null) {
-			renderer = new WorldRenderer();
-			worldRenderers.put(world, renderer);
+		WorldSpriteMap spriteMap = worldSprites.get(world);
+		if (spriteMap == null) {
+			spriteMap = new WorldSpriteMap(world);
+			worldSprites.put(world, spriteMap);
 		}
-		return renderer;
+		return new WorldRenderer(spriteMap);
 	}
 
 	@Override
 	public IPacManRenderer pacManRenderer(PacMan pacMan) {
-		PacManRenderer renderer = pacManRenderers.get(pacMan);
-		if (renderer == null) {
-			renderer = new PacManRenderer();
-			pacManRenderers.put(pacMan, renderer);
+		PacManSpriteMap spriteMap = pacManSprites.get(pacMan);
+		if (spriteMap == null) {
+			spriteMap = new PacManSpriteMap();
+			pacManSprites.put(pacMan, spriteMap);
 		}
-		return renderer;
+		return new PacManRenderer(spriteMap);
 	}
 
 	@Override
