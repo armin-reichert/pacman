@@ -8,15 +8,15 @@ import de.amr.games.pacman.model.world.api.Direction;
 
 class GhostSpriteMap extends SpriteMap {
 
-	public static String keyColor(GhostPersonality personality, Direction dir) {
+	public String keyColor(GhostPersonality personality, Direction dir) {
 		return String.format("colored-%s-%s", personality, dir);
 	}
 
-	public static String keyEyes(Direction dir) {
+	public String keyEyes(Direction dir) {
 		return String.format("eyes-%s", dir);
 	}
 
-	public static String keyPoints(int points) {
+	public String keyPoints(int points) {
 		return String.format("points-%d", points);
 	}
 

@@ -8,8 +8,7 @@ import java.util.Map;
 
 public class ThemeParameters {
 
-	private static final Map<String, Object> parameters = new HashMap<>();
-	private static final Font DEFAULT_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 8);
+	protected final Map<String, Object> parameters = new HashMap<>();
 
 	public void set(String key, Object value) {
 		parameters.put(key, value);
@@ -33,7 +32,7 @@ public class ThemeParameters {
 	}
 
 	public Font $font(String key) {
-		return (Font) parameters.getOrDefault(key, DEFAULT_FONT);
+		return (Font) parameters.get(key);
 	}
 
 	public Image $image(String key) {
