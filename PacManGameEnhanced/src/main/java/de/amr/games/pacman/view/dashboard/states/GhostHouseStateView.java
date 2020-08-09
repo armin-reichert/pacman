@@ -23,7 +23,7 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
-import de.amr.games.pacman.view.theme.arcade.ArcadeThemeSprites;
+import de.amr.games.pacman.view.theme.arcade.ArcadeSprites;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -128,7 +128,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
-		ArcadeThemeSprites sprites = ArcadeTheme.THEME.$value("sprites");
+		ArcadeSprites sprites = ArcadeTheme.THEME.$value("sprites");
 		Image pinkyImage = sprites.makeSprite_ghostColored(GhostPersonality.SPEEDY, RIGHT).frame(0);
 		Image inkyImage = sprites.makeSprite_ghostColored(GhostPersonality.BASHFUL, RIGHT).frame(0);
 		Image clydeImage = sprites.makeSprite_ghostColored(GhostPersonality.POKEY, RIGHT).frame(0);

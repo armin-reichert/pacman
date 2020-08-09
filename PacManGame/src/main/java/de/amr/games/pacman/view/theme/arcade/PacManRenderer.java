@@ -23,7 +23,7 @@ import de.amr.games.pacman.view.api.IPacManRenderer;
 public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
 	public PacManRenderer() {
-		ArcadeThemeSprites sprites = ArcadeTheme.THEME.$value("sprites");
+		ArcadeSprites sprites = ArcadeTheme.THEME.$value("sprites");
 		Direction.dirs().forEach(dir -> spriteMap.set("walking-" + dir, sprites.makeSprite_pacManWalking(dir)));
 		spriteMap.set("collapsing", sprites.makeSprite_pacManCollapsing());
 		spriteMap.set("full", sprites.makeSprite_pacManFull());

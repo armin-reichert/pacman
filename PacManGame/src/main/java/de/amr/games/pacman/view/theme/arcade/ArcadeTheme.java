@@ -30,7 +30,7 @@ public class ArcadeTheme extends AbstractTheme {
 
 	private ArcadeTheme() {
 		super("ARCADE");
-		ArcadeThemeSprites sprites = new ArcadeThemeSprites();
+		ArcadeSprites sprites = new ArcadeSprites();
 		put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		put("maze-flash-sec", 0.4f);
 		put("sprites", sprites);

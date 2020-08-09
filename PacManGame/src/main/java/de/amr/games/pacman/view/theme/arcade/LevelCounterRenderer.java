@@ -15,7 +15,7 @@ public class LevelCounterRenderer implements IGameScoreRenderer {
 	private final Map<Symbol, Image> bonusImages = new HashMap<Symbol, Image>();
 
 	public LevelCounterRenderer() {
-		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
+		ArcadeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		for (Symbol symbol : Symbol.values()) {
 			bonusImages.put(symbol, arcadeSprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
 		}

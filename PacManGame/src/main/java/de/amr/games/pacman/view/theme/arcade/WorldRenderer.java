@@ -21,7 +21,7 @@ public class WorldRenderer implements IWorldRenderer {
 	private SpriteAnimation energizerAnimation;
 
 	public WorldRenderer() {
-		ArcadeThemeSprites sprites = ArcadeTheme.THEME.$value("sprites");
+		ArcadeSprites sprites = ArcadeTheme.THEME.$value("sprites");
 		spriteMazeFull = sprites.makeSprite_fullMaze();
 		spriteMazeFlashing = sprites.makeSprite_flashingMaze();
 		energizerAnimation = new CyclicAnimation(2);

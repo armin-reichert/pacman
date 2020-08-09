@@ -29,7 +29,7 @@ public class GhostRenderer extends SpriteRenderer implements IGhostRenderer {
 	}
 
 	public GhostRenderer() {
-		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
+		ArcadeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		for (Direction dir : Direction.values()) {
 			for (GhostPersonality personality : GhostPersonality.values()) {
 				spriteMap.set(keyColor(personality, dir), arcadeSprites.makeSprite_ghostColored(personality, dir));

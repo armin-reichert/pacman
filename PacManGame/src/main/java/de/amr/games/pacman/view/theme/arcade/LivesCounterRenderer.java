@@ -14,7 +14,7 @@ public class LivesCounterRenderer implements IGameScoreRenderer {
 	private final Image pacManLookingLeft;
 
 	public LivesCounterRenderer() {
-		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
+		ArcadeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		pacManLookingLeft = arcadeSprites.makeSprite_pacManWalking(LEFT).frame(1);
 	}
 

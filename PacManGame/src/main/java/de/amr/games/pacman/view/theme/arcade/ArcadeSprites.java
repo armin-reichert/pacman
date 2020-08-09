@@ -23,7 +23,7 @@ import de.amr.games.pacman.model.world.api.Symbol;
  * 
  * @author Armin Reichert
  */
-public class ArcadeThemeSprites {
+public class ArcadeSprites {
 
 	private static final int TILE_SIZE = 16;
 
@@ -91,7 +91,7 @@ public class ArcadeThemeSprites {
 		return copy;
 	}
 
-	ArcadeThemeSprites() {
+	ArcadeSprites() {
 
 		// debugger told me RGB value of blue color in maze image
 		imageMazeEmptyWhite = exchangeColor(imageMazeEmpty, -14605825, Color.WHITE.getRGB());
