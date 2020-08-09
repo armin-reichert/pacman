@@ -157,7 +157,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 				
 				.state(PACMAN_DYING)
-					.timeoutAfter(sec(4))
+					.timeoutAfter(sec(5))
 					.onEntry(() -> {
 						if (!settings.pacManImmortable) {
 							game.lives -= 1;
@@ -168,11 +168,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						theme.sounds().clips().forEach(SoundClip::stop);
 					})
 					.onTick((state, passed, remaining) -> {
-						if (passed == sec(1)) {
+						if (passed == sec(2)) {
 							bonusControl.setState(BonusFoodState.ABSENT);
 							folks.ghostsInWorld().forEach(ghost -> ghost.setVisible(false));
 						}
-						else if (passed == sec(1.5f)) {
+						else if (passed == sec(2.5f)) {
 							sound.pacManDied = true;
 						}
 						folks.pacMan.update();

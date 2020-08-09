@@ -1,7 +1,15 @@
 package de.amr.games.pacman.view.theme.arcade;
 
-import java.awt.Graphics2D;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.AWAKE;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.IN_BED;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
 
+import java.awt.Graphics2D;
+import java.util.Optional;
+
+import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -23,34 +31,23 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
 	@Override
 	public void render(Graphics2D g, PacMan pacMan) {
-		selectSprite(pacMan);
-		spriteMap.current().get().enableAnimation(pacMan.isEnabled());
-		drawEntitySprite(g, pacMan.entity, 2);
+		selectSprite(pacMan).ifPresent(sprite -> {
+			sprite.enableAnimation(pacMan.isEnabled());
+			drawEntitySprite(g, pacMan.entity, 2);
+		});
 	}
 
-	private void selectSprite(PacMan pacMan) {
-		PacManState state = pacMan.getState();
-		if (state == null) {
-			spriteMap.select("full");
-		} else {
-			switch (state) {
-			case AWAKE:
-			case POWERFUL:
-				spriteMap.select("walking-" + pacMan.moveDir());
-				break;
-			case IN_BED:
-			case SLEEPING:
-				spriteMap.select("full");
-				break;
-			case COLLAPSING:
-				if (!"collapsing".equals(spriteMap.selectedKey())) {
-					spriteMap.get("collapsing").resetAnimation();
-					spriteMap.select("collapsing");
-				}
-				break;
-			default:
-				break;
-			}
+	private Optional<Sprite> selectSprite(PacMan pacMan) {
+		if (pacMan.getState() == null || pacMan.is(IN_BED, SLEEPING)) {
+			return spriteMap.select("full");
+		} else if (pacMan.is(AWAKE, POWERFUL)) {
+			return spriteMap.select("walking-" + pacMan.moveDir());
+		} else if (pacMan.is(DEAD)) {
+			spriteMap.get("collapsing").resetAnimation();
+			return spriteMap.select("full");
+		} else if (pacMan.is(PacManState.COLLAPSING)) {
+			return spriteMap.select("collapsing");
 		}
+		throw new IllegalStateException();
 	}
 }
