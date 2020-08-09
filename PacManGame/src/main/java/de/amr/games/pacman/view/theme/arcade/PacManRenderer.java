@@ -16,39 +16,39 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
 	public PacManRenderer() {
 		ArcadeThemeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
-		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, arcadeSprites.makeSprite_pacManWalking(dir)));
-		sprites.set("collapsing", arcadeSprites.makeSprite_pacManCollapsing());
-		sprites.set("full", arcadeSprites.makeSprite_pacManFull());
+		Direction.dirs().forEach(dir -> spriteMap.set("walking-" + dir, arcadeSprites.makeSprite_pacManWalking(dir)));
+		spriteMap.set("collapsing", arcadeSprites.makeSprite_pacManCollapsing());
+		spriteMap.set("full", arcadeSprites.makeSprite_pacManFull());
 	}
 
 	@Override
 	public void render(Graphics2D g, PacMan pacMan) {
 		selectSprite(pacMan);
-		sprites.current().get().enableAnimation(pacMan.isEnabled());
+		spriteMap.current().get().enableAnimation(pacMan.isEnabled());
 		drawEntitySprite(g, pacMan.entity, 2);
 	}
 
 	private void selectSprite(PacMan pacMan) {
 		PacManState state = pacMan.getState();
 		if (state == null) {
-			sprites.select("full");
+			spriteMap.select("full");
 		} else {
 			switch (state) {
 			case AWAKE:
 			case POWERFUL:
-				sprites.select("walking-" + pacMan.moveDir());
+				spriteMap.select("walking-" + pacMan.moveDir());
 				break;
 			case IN_BED:
 			case SLEEPING:
-				sprites.select("full");
+				spriteMap.select("full");
 			case DEAD:
-				sprites.select("full");
+				spriteMap.select("full");
 				break;
 			case COLLAPSING:
 				// TODO this is somewhat dubios
-				if (!"collapsing".equals(sprites.selectedKey())) {
-					sprites.get("collapsing").resetAnimation();
-					sprites.select("collapsing");
+				if (!"collapsing".equals(spriteMap.selectedKey())) {
+					spriteMap.get("collapsing").resetAnimation();
+					spriteMap.select("collapsing");
 				}
 				break;
 			default:

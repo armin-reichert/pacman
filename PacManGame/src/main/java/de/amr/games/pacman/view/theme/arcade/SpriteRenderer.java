@@ -7,7 +7,7 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 
 public abstract class SpriteRenderer {
 
-	protected final SpriteMap sprites = new SpriteMap();
+	protected final SpriteMap spriteMap = new SpriteMap();
 
 	/**
 	 * Draws the selected sprite centered over the collision box of the entity.
@@ -18,7 +18,7 @@ public abstract class SpriteRenderer {
 	 */
 	protected void drawEntitySprite(Graphics2D g, Entity entity, int scaling) {
 		if (entity.visible) {
-			sprites.current().ifPresent(sprite -> {
+			spriteMap.current().ifPresent(sprite -> {
 				Graphics2D g2 = (Graphics2D) g.create();
 				int w = entity.tf.width, h = entity.tf.height;
 				if (sprite.getWidth() != scaling * w || sprite.getHeight() != scaling * h) {
