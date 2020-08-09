@@ -174,7 +174,7 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 
 	@Override
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
-		movement.moveToTile(tile, xOffset, yOffset);
+		movement.placeAt(tile, xOffset, yOffset);
 	}
 
 	public boolean isTeleporting() {

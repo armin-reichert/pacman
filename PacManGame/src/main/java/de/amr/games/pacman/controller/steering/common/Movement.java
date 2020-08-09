@@ -67,7 +67,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 		activePortal = null;
 	}
 
-	public void moveToTile(Tile tile, float xOffset, float yOffset) {
+	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		Tile oldLocation = mover.tileLocation();
 		mover.tf().setPosition(tile.x() + xOffset, tile.y() + yOffset);
 		enteredNewTile = !mover.tileLocation().equals(oldLocation);
@@ -123,7 +123,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 			if (pixelsWishDir > 0) {
 				if (wishDir == mover.moveDir().left() || wishDir == mover.moveDir().right()) {
 					if (mover.requiresAlignment()) {
-						moveToTile(tileBeforeMove, 0, 0);
+						placeAt(tileBeforeMove, 0, 0);
 					}
 				}
 				mover.setMoveDir(wishDir);
