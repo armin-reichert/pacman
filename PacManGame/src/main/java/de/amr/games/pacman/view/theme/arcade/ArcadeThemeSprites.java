@@ -161,7 +161,7 @@ public class ArcadeThemeSprites {
 	}
 
 	public Sprite makeSprite_flashingMaze() {
-		return Sprite.of(imageMazeEmptyWhite, imageMazeEmpty).animate(FORWARD_BACKWARDS, 200);
+		return Sprite.of(imageMazeEmpty, imageMazeEmptyWhite).animate(CYCLIC, 200);
 	}
 
 	public Sprite makeSprite_bonusSymbol(String symbol) {

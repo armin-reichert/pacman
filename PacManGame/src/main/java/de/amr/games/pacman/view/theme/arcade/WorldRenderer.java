@@ -46,27 +46,21 @@ public class WorldRenderer implements IWorldRenderer {
 	@Override
 	public void render(Graphics2D g, World world) {
 		if (world.isChanging()) {
-			mazeSprites.select("maze-flashing");
-			mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
+			if (!mazeSprites.selectedKey().equals("maze-flashing")) {
+				mazeSprites.select("maze-flashing");
+				mazeSprites.current().get().resetAnimation();
+			}
 		} else {
 			mazeSprites.select("maze-full");
-			mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
 			drawContent(g, world);
-			// draw doors depending on their state
 			world.house(0).doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
 				g.setColor(Color.BLACK);
 				door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
 			});
-			// draw portals not in original maze
-//			world.portals().forEach(portal -> {
-//				g.setColor(Rendering.patternColor(portal.either));
-//				g.fillRect(portal.either.x(), portal.either.y(), Tile.SIZE, Tile.SIZE);
-//				g.setColor(Rendering.patternColor(portal.other));
-//				g.fillRect(portal.other.x(), portal.other.y(), Tile.SIZE, Tile.SIZE);
-//			});
 		}
 		energizerAnimation.setEnabled(!world.isFrozen());
 		energizerAnimation.update();
+		mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
 	}
 
 	private void drawContent(Graphics2D g, World world) {
