@@ -1,6 +1,4 @@
-package de.amr.games.pacman.view.theme.arcade;
-
-import static de.amr.games.pacman.view.common.Rendering.drawDirectionIndicator;
+package de.amr.games.pacman.view.common;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,26 +10,21 @@ import java.awt.image.BufferedImage;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.Pen;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.view.common.Rendering;
 
-public class GridView implements View {
+public class GridRenderer {
 
-	private final World world;
-	private final Image gridImage;
+	private Image gridImage;
 
-	public GridView(World world) {
-		this.world = world;
-		gridImage = createGridPatternImage(world.width(), world.height());
+	public GridRenderer(int width, int height) {
+		gridImage = createGridPatternImage(width, height);
 	}
 
-	@Override
-	public void draw(Graphics2D g) {
+	public void renderGrid(Graphics2D g, World world) {
 		g.drawImage(gridImage, 0, 0, null);
-		drawBeds(g);
+		drawBeds(g, world);
 	}
 
 	private BufferedImage createGridPatternImage(int cols, int rows) {
@@ -53,13 +46,13 @@ public class GridView implements View {
 		return img;
 	}
 
-	public void drawOneWayTiles(Graphics2D g) {
+	public void drawOneWayTiles(Graphics2D g, World world) {
 		world.oneWayTiles().forEach(oneWay -> {
-			drawDirectionIndicator(g, Color.WHITE, false, oneWay.dir, oneWay.tile.centerX(), oneWay.tile.y());
+			Rendering.drawDirectionIndicator(g, Color.WHITE, false, oneWay.dir, oneWay.tile.centerX(), oneWay.tile.y());
 		});
 	}
 
-	public void drawBeds(Graphics2D g) {
+	public void drawBeds(Graphics2D g, World world) {
 		Color[] colors = { Color.RED, Color.CYAN, Color.PINK, Color.ORANGE };
 		for (int i = 0; i < 4; ++i) {
 			drawBed(g, world.house(0).bed(i), i + "", colors[i]);

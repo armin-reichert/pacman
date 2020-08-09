@@ -12,10 +12,10 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.view.common.GridRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.common.RoutesView;
 import de.amr.games.pacman.view.common.StatesView;
-import de.amr.games.pacman.view.theme.arcade.GridView;
 
 /**
  * View where the action is.
@@ -24,7 +24,7 @@ import de.amr.games.pacman.view.theme.arcade.GridView;
  */
 public class EnhancedPlayView extends PlayView {
 
-	protected final GridView gridView;
+	protected final GridRenderer gridRenderer;
 	protected final RoutesView routesView;
 	protected final StatesView statesView;
 	protected final FrameRateWidget frameRateDisplay;
@@ -37,7 +37,7 @@ public class EnhancedPlayView extends PlayView {
 	public EnhancedPlayView(World world, Theme theme, Folks folks, Game game, GhostCommand ghostCommand,
 			DoorMan doorMan) {
 		super(world, theme, folks, game, ghostCommand, doorMan);
-		gridView = new GridView(world);
+		gridRenderer = new GridRenderer(world.width(), world.height());
 		routesView = new RoutesView(world, folks);
 		statesView = new StatesView(world, folks, ghostCommand);
 		frameRateDisplay = new FrameRateWidget();
@@ -129,13 +129,13 @@ public class EnhancedPlayView extends PlayView {
 
 	protected void drawGrid(Graphics2D g) {
 		if (showingGrid) {
-			gridView.draw(g);
+			gridRenderer.renderGrid(g, world);
 		}
 	}
 
 	protected void drawOneWayTiles(Graphics2D g) {
 		if (showingGrid) {
-			gridView.drawOneWayTiles(g);
+			gridRenderer.drawOneWayTiles(g, world);
 		}
 	}
 
