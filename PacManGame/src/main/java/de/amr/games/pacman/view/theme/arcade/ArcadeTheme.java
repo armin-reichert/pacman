@@ -18,10 +18,15 @@ import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.PointsCounterRenderer;
-import de.amr.games.pacman.view.core.ParameterMap;
+import de.amr.games.pacman.view.core.ThemeParameters;
 import de.amr.games.pacman.view.theme.PacManSpriteMap;
 
-public class ArcadeTheme extends ParameterMap implements Theme {
+/**
+ * This theme mimics the original Arcade version.
+ * 
+ * @author Armin Reichert
+ */
+public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	public static final ArcadeTheme THEME = new ArcadeTheme();
 
@@ -32,18 +37,18 @@ public class ArcadeTheme extends ParameterMap implements Theme {
 	private MessagesRenderer messagesRenderer;
 
 	private ArcadeTheme() {
-		put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
-		put("maze-flash-sec", 0.4f);
-		put("sprites", sprites);
+		set("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
+		set("maze-flash-sec", 0.4f);
+		set("sprites", sprites);
 		for (Symbol symbol : Symbol.values()) {
-			put("symbol-" + symbol.name(), sprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
+			set("symbol-" + symbol.name(), sprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
 		}
 		for (int points : Game.POINTS_BONUS) {
-			put("points-" + points, sprites.makeSprite_number(points).frame(0));
+			set("points-" + points, sprites.makeSprite_number(points).frame(0));
 		}
-		put("sounds", ArcadeSounds.SOUNDS);
+		set("sounds", ArcadeSounds.SOUNDS);
 	}
-	
+
 	@Override
 	public String name() {
 		return "ARCADE";

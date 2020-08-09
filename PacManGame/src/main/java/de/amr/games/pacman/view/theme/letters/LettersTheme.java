@@ -22,24 +22,24 @@ import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.Rendering;
-import de.amr.games.pacman.view.core.ParameterMap;
+import de.amr.games.pacman.view.core.ThemeParameters;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
 
 /**
- * Theme using letters only.
+ * Theme using letters and other non-graphic characters.
  * 
  * @author Armin Reichert
  */
-public class LettersTheme extends ParameterMap implements Theme {
+public class LettersTheme extends ThemeParameters implements Theme {
 
 	public static final LettersTheme THEME = new LettersTheme();
 
 	private MessagesRenderer messagesRenderer;
 
 	private LettersTheme() {
-		put("font", new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
-		put("offset-baseline", Tile.SIZE - 1);
-		put("ghost-colors", Map.of(
+		set("font", new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
+		set("offset-baseline", Tile.SIZE - 1);
+		set("ghost-colors", Map.of(
 		//@formatter:off
 			GhostPersonality.SHADOW, Color.RED,
 			GhostPersonality.SPEEDY,  Color.PINK,
@@ -47,7 +47,7 @@ public class LettersTheme extends ParameterMap implements Theme {
 			GhostPersonality.POKEY,  Color.ORANGE
 		//@formatter:on
 		));
-		put("sounds", ArcadeSounds.SOUNDS);
+		set("sounds", ArcadeSounds.SOUNDS);
 	}
 
 	@Override

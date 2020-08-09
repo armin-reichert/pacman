@@ -17,7 +17,7 @@ import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.PointsCounterRenderer;
-import de.amr.games.pacman.view.core.ParameterMap;
+import de.amr.games.pacman.view.core.ThemeParameters;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
 import de.amr.games.pacman.view.theme.arcade.LivesCounterRenderer;
 
@@ -27,17 +27,17 @@ import de.amr.games.pacman.view.theme.arcade.LivesCounterRenderer;
  * @author Armin Reichert
  *
  */
-public class BlocksTheme extends ParameterMap implements Theme {
+public class BlocksTheme extends ThemeParameters implements Theme {
 
 	public static final BlocksTheme THEME = new BlocksTheme();
 
 	private MessagesRenderer messagesRenderer;
 
 	private BlocksTheme() {
-		put("font", Assets.storeTrueTypeFont("ConcertOne", "themes/blocks/ConcertOne-Regular.ttf", Font.PLAIN, 10));
-		put("maze-flash-sec", 0.5f);
-		put("wall-color", new Color(139, 69, 19));
-		put("ghost-colors", Map.of(
+		set("font", Assets.storeTrueTypeFont("ConcertOne", "themes/blocks/ConcertOne-Regular.ttf", Font.PLAIN, 10));
+		set("maze-flash-sec", 0.5f);
+		set("wall-color", new Color(139, 69, 19));
+		set("ghost-colors", Map.of(
 		//@formatter:off
 			GhostPersonality.SHADOW, Color.RED,
 			GhostPersonality.SPEEDY,  Color.PINK,
@@ -45,7 +45,7 @@ public class BlocksTheme extends ParameterMap implements Theme {
 			GhostPersonality.POKEY,  Color.ORANGE
 		//@formatter:on
 		));
-		put("symbol-colors", Map.of(
+		set("symbol-colors", Map.of(
 		//@formatter:off
 			"APPLE",      Color.RED,		
 			"BELL",       Color.YELLOW,
@@ -57,7 +57,7 @@ public class BlocksTheme extends ParameterMap implements Theme {
 			"STRAWBERRY", Color.RED
 		//@formatter:on
 		));
-		put("sounds", ArcadeSounds.SOUNDS);
+		set("sounds", ArcadeSounds.SOUNDS);
 	}
 	
 	@Override
