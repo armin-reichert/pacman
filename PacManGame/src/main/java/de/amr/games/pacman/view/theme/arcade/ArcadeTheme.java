@@ -5,9 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.amr.easy.game.assets.Assets;
+import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Symbol;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.api.IGameScoreRenderer;
@@ -23,9 +26,27 @@ public class ArcadeTheme extends AbstractTheme {
 
 	public static final ArcadeTheme THEME = new ArcadeTheme();
 
+	private SpriteMap createSpriteMap(Ghost ghost) {
+		SpriteMap spriteMap = new SpriteMap();
+		ArcadeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
+		for (Direction dir : Direction.values()) {
+			for (GhostPersonality personality : GhostPersonality.values()) {
+				spriteMap.set(GhostRenderer.keyColor(personality, dir),
+						arcadeSprites.makeSprite_ghostColored(personality, dir));
+			}
+			spriteMap.set(GhostRenderer.keyEyes(dir), arcadeSprites.makeSprite_ghostEyes(dir));
+		}
+		spriteMap.set("frightened", arcadeSprites.makeSprite_ghostFrightened());
+		spriteMap.set("flashing", arcadeSprites.makeSprite_ghostFlashing());
+		for (int bounty : Game.GHOST_BOUNTIES) {
+			spriteMap.set(GhostRenderer.keyPoints(bounty), arcadeSprites.makeSprite_number(bounty));
+		}
+		return spriteMap;
+	}
+
 	private Map<World, WorldRenderer> worldRenderers = new HashMap<>();
 	private Map<PacMan, PacManRenderer> pacManRenderers = new HashMap<>();
-	private Map<Ghost, GhostRenderer> ghostRenderers = new HashMap<>();
+	private Map<Ghost, SpriteMap> ghostSprites = new HashMap<>();
 	private MessagesRenderer messagesRenderer;
 
 	private ArcadeTheme() {
@@ -65,12 +86,12 @@ public class ArcadeTheme extends AbstractTheme {
 
 	@Override
 	public IGhostRenderer ghostRenderer(Ghost ghost) {
-		GhostRenderer renderer = ghostRenderers.get(ghost);
-		if (renderer == null) {
-			renderer = new GhostRenderer();
-			ghostRenderers.put(ghost, renderer);
+		SpriteMap spriteMap = ghostSprites.get(ghost);
+		if (spriteMap == null) {
+			spriteMap = createSpriteMap(ghost);
+			ghostSprites.put(ghost, spriteMap);
 		}
-		return renderer;
+		return new GhostRenderer(spriteMap);
 	}
 
 	@Override

@@ -10,18 +10,21 @@ import java.awt.Graphics2D;
 import java.util.Optional;
 
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.view.api.IPacManRenderer;
-import de.amr.games.pacman.view.common.SpriteRenderer;
+import de.amr.games.pacman.view.common.ISpriteRenderer;
 
 /**
  * Renders Pac-Man using animated sprites.
  * 
  * @author Armin Reichert
  */
-public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
+public class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
+
+	private SpriteMap spriteMap = new SpriteMap();
 
 	public PacManRenderer() {
 		ArcadeSprites sprites = ArcadeTheme.THEME.$value("sprites");
@@ -34,7 +37,7 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 	public void render(Graphics2D g, PacMan pacMan) {
 		selectSprite(pacMan).ifPresent(sprite -> {
 			sprite.enableAnimation(pacMan.isEnabled());
-			drawEntitySprite(g, pacMan.entity, 2);
+			drawEntitySprite(g, pacMan.entity, sprite, 2);
 		});
 	}
 

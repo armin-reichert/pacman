@@ -2,53 +2,46 @@ package de.amr.games.pacman.view.theme.arcade;
 
 import java.awt.Graphics2D;
 
+import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.view.api.IGhostRenderer;
-import de.amr.games.pacman.view.common.SpriteRenderer;
+import de.amr.games.pacman.view.common.ISpriteRenderer;
 
 /**
  * Renders a ghost using animated sprites.
  * 
  * @author Armin Reichert
  */
-public class GhostRenderer extends SpriteRenderer implements IGhostRenderer {
+public class GhostRenderer implements IGhostRenderer, ISpriteRenderer {
 
-	private static String keyColor(GhostPersonality personality, Direction dir) {
+	public static String keyColor(GhostPersonality personality, Direction dir) {
 		return String.format("color-%s-%s", personality, dir);
 	}
 
-	private static String keyEyes(Direction dir) {
+	public static String keyEyes(Direction dir) {
 		return String.format("eyes-%s", dir);
 	}
 
-	private static String keyPoints(int points) {
+	public static String keyPoints(int points) {
 		return String.format("points-%d", points);
 	}
 
-	public GhostRenderer() {
-		ArcadeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
-		for (Direction dir : Direction.values()) {
-			for (GhostPersonality personality : GhostPersonality.values()) {
-				spriteMap.set(keyColor(personality, dir), arcadeSprites.makeSprite_ghostColored(personality, dir));
-			}
-			spriteMap.set(keyEyes(dir), arcadeSprites.makeSprite_ghostEyes(dir));
-		}
-		spriteMap.set("frightened", arcadeSprites.makeSprite_ghostFrightened());
-		spriteMap.set("flashing", arcadeSprites.makeSprite_ghostFlashing());
-		for (int bounty : Game.GHOST_BOUNTIES) {
-			spriteMap.set(keyPoints(bounty), arcadeSprites.makeSprite_number(bounty));
-		}
+	private SpriteMap spriteMap;
+
+	public GhostRenderer(SpriteMap spriteMap) {
+		this.spriteMap = spriteMap;
 	}
 
 	@Override
 	public void render(Graphics2D g, Ghost ghost) {
 		selectSprite(ghost);
-		spriteMap.current().get().enableAnimation(ghost.isEnabled());
-		drawEntitySprite(g, ghost.entity, 2);
+		Sprite sprite = spriteMap.current().get();
+		sprite.enableAnimation(ghost.isEnabled());
+		drawEntitySprite(g, ghost.entity, sprite, 2);
 	}
 
 	private void selectSprite(Ghost ghost) {
