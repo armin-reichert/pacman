@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
-import de.amr.games.pacman.controller.steering.api.TargetTileSteering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -17,8 +16,7 @@ import de.amr.games.pacman.model.world.api.Tile;
  * 
  * @author Armin Reichert
  */
-public abstract class FollowingPath<M extends MobileLifeform>
-		implements TargetTileSteering<M>, PathProvidingSteering<M> {
+public abstract class FollowingPath<M extends MobileLifeform> implements PathProvidingSteering<M> {
 
 	protected final MobileLifeform mover;
 	protected List<Tile> path;
@@ -51,8 +49,8 @@ public abstract class FollowingPath<M extends MobileLifeform>
 	}
 
 	@Override
-	public Tile targetTile() {
-		return last(path);
+	public Optional<Tile> targetTile() {
+		return Optional.ofNullable(last(path));
 	}
 
 	public void setPath(List<Tile> path) {

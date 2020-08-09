@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
-import de.amr.games.pacman.controller.steering.api.TargetTileSteering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -28,7 +28,7 @@ import de.amr.games.pacman.model.world.api.Tile;
  * 
  * @author Armin Reichert
  */
-public class HeadingForTargetTile<M extends MobileLifeform> implements TargetTileSteering<M>, PathProvidingSteering<M> {
+public class HeadingForTargetTile<M extends MobileLifeform> implements PathProvidingSteering<M> {
 
 	private static final List<Direction> directionPriority = asList(UP, LEFT, DOWN, RIGHT);
 
@@ -44,8 +44,8 @@ public class HeadingForTargetTile<M extends MobileLifeform> implements TargetTil
 	}
 
 	@Override
-	public Tile targetTile() {
-		return fnTargetTile.get();
+	public Optional<Tile> targetTile() {
+		return Optional.ofNullable(fnTargetTile.get());
 	}
 
 	public void setTargetTile(Supplier<Tile> fnTargetTile) {
@@ -56,7 +56,7 @@ public class HeadingForTargetTile<M extends MobileLifeform> implements TargetTil
 	public void steer(MobileLifeform mover) {
 		if (mover.enteredNewTile() || forced) {
 			forced = false;
-			Tile targetTile = targetTile();
+			Tile targetTile = fnTargetTile.get();
 			if (targetTile != null) {
 				mover.setWishDir(bestDirTowardsTarget(mover, mover.moveDir(), mover.tileLocation(), targetTile));
 				if (pathComputed) {

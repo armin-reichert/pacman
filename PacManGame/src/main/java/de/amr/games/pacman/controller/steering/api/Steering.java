@@ -1,6 +1,9 @@
 package de.amr.games.pacman.controller.steering.api;
 
+import java.util.Optional;
+
 import de.amr.games.pacman.model.world.api.MobileLifeform;
+import de.amr.games.pacman.model.world.api.Tile;
 
 /**
  * Interface for steering of lifeforms through their world.
@@ -44,5 +47,14 @@ public interface Steering<M extends MobileLifeform> {
 	 */
 	default boolean requiresGridAlignment() {
 		return false;
+	}
+
+	/**
+	 * Steerings may have a dedicated target tile.
+	 * 
+	 * @return the optional target tile of this steering
+	 */
+	default Optional<Tile> targetTile() {
+		return Optional.empty();
 	}
 }

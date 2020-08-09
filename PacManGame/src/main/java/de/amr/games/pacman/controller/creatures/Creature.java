@@ -11,7 +11,6 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.controller.steering.api.TargetTileSteering;
 import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.Game;
@@ -125,12 +124,11 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 		});
 	}
 
+	/**
+	 * @return the optional target tile of this creature
+	 */
 	public Optional<Tile> targetTile() {
-		if (steering() instanceof TargetTileSteering) {
-			TargetTileSteering<M> steering = (TargetTileSteering<M>) steering();
-			return Optional.ofNullable(steering.targetTile());
-		}
-		return Optional.empty();
+		return steering().targetTile();
 	}
 
 	/**
