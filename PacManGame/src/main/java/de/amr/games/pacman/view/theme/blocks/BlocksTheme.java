@@ -14,9 +14,10 @@ import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.PacManSounds;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.PointsCounterRenderer;
-import de.amr.games.pacman.view.core.AbstractTheme;
+import de.amr.games.pacman.view.core.ParameterMap;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
 import de.amr.games.pacman.view.theme.arcade.LivesCounterRenderer;
 
@@ -26,14 +27,13 @@ import de.amr.games.pacman.view.theme.arcade.LivesCounterRenderer;
  * @author Armin Reichert
  *
  */
-public class BlocksTheme extends AbstractTheme {
+public class BlocksTheme extends ParameterMap implements Theme {
 
 	public static final BlocksTheme THEME = new BlocksTheme();
 
 	private MessagesRenderer messagesRenderer;
 
 	private BlocksTheme() {
-		super("BLOCKS");
 		put("font", Assets.storeTrueTypeFont("ConcertOne", "themes/blocks/ConcertOne-Regular.ttf", Font.PLAIN, 10));
 		put("maze-flash-sec", 0.5f);
 		put("wall-color", new Color(139, 69, 19));
@@ -58,6 +58,11 @@ public class BlocksTheme extends AbstractTheme {
 		//@formatter:on
 		));
 		put("sounds", ArcadeSounds.SOUNDS);
+	}
+	
+	@Override
+	public String name() {
+		return "BLOCKS";
 	}
 
 	Color ghostColor(Ghost ghost) {

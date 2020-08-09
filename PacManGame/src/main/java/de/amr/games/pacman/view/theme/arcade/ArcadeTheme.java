@@ -15,12 +15,13 @@ import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.PacManSounds;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.PointsCounterRenderer;
-import de.amr.games.pacman.view.core.AbstractTheme;
+import de.amr.games.pacman.view.core.ParameterMap;
 import de.amr.games.pacman.view.theme.PacManSpriteMap;
 
-public class ArcadeTheme extends AbstractTheme {
+public class ArcadeTheme extends ParameterMap implements Theme {
 
 	public static final ArcadeTheme THEME = new ArcadeTheme();
 
@@ -31,7 +32,6 @@ public class ArcadeTheme extends AbstractTheme {
 	private MessagesRenderer messagesRenderer;
 
 	private ArcadeTheme() {
-		super("ARCADE");
 		put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		put("maze-flash-sec", 0.4f);
 		put("sprites", sprites);
@@ -42,6 +42,11 @@ public class ArcadeTheme extends AbstractTheme {
 			put("points-" + points, sprites.makeSprite_number(points).frame(0));
 		}
 		put("sounds", ArcadeSounds.SOUNDS);
+	}
+	
+	@Override
+	public String name() {
+		return "ARCADE";
 	}
 
 	@Override

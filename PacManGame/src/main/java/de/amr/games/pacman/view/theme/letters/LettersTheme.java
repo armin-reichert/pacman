@@ -19,9 +19,10 @@ import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.PacManSounds;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.Rendering;
-import de.amr.games.pacman.view.core.AbstractTheme;
+import de.amr.games.pacman.view.core.ParameterMap;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
 
 /**
@@ -29,14 +30,13 @@ import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
  * 
  * @author Armin Reichert
  */
-public class LettersTheme extends AbstractTheme {
+public class LettersTheme extends ParameterMap implements Theme {
 
 	public static final LettersTheme THEME = new LettersTheme();
 
 	private MessagesRenderer messagesRenderer;
 
 	private LettersTheme() {
-		super("LETTERS");
 		put("font", new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
 		put("offset-baseline", Tile.SIZE - 1);
 		put("ghost-colors", Map.of(
@@ -48,6 +48,11 @@ public class LettersTheme extends AbstractTheme {
 		//@formatter:on
 		));
 		put("sounds", ArcadeSounds.SOUNDS);
+	}
+
+	@Override
+	public String name() {
+		return "LETTERS";
 	}
 
 	Color ghostColor(Ghost ghost) {
