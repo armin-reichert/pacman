@@ -33,7 +33,7 @@ import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Bed;
 
 /**
- * The one and only.
+ * Hunting ghosty girls, eating, sleeping - a Pac-Man's life.
  * 
  * @author Armin Reichert
  */
@@ -43,6 +43,9 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 	public PacMan(World world) {
 		super(PacManState.class, "Pac-Man", world);
+		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
+		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
+		doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
 		/*@formatter:off*/
 		beginStateMachine()
 
@@ -53,7 +56,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 			
 				.state(IN_BED)
 					.onEntry(() -> {
-						goToBed();
+						putIntoBed();
 						setVisible(true);
 						setEnabled(true);
 						fat = 0;
@@ -100,17 +103,45 @@ public class PacMan extends Creature<PacMan, PacManState> {
 
 		.endStateMachine();
 		/* @formatter:on */
-		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
-		doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
+	}
+
+	public void wakeUp() {
+		process(new PacManWakeUpEvent());
+	}
+
+	public void fallAsleep() {
+		process(new PacManFallAsleepEvent());
+	}
+
+	@Override
+	public boolean canMoveBetween(Tile tile, Tile neighbor) {
+		if (world.houses().anyMatch(house -> house.isDoor(neighbor))) {
+			return false;
+		}
+		return super.canMoveBetween(tile, neighbor);
+	}
+
+	/**
+	 * NOTE: Depending on the application setting {@link PacManApp.Settings#fixOverflowBug}, this method
+	 * simulates/fixes the overflow bug from the original Arcade game which causes, if Pac-Man points
+	 * upwards, the wrong calculation of the position ahead of Pac-Man (namely adding the same number of
+	 * tiles to the left).
+	 * 
+	 * @param nTiles number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move
+	 *         direction.
+	 */
+	public Tile tilesAhead(int nTiles) {
+		Tile tileAhead = world.tileToDir(tileLocation(), moveDir, nTiles);
+		if (moveDir == UP && !settings.fixOverflowBug) {
+			tileAhead = world.tileToDir(tileAhead, LEFT, nTiles);
+		}
+		return tileAhead;
 	}
 
 	@Override
 	public float getSpeed() {
-		if (getState() == null) {
-			throw new IllegalStateException("Pac-Man is not initialized.");
-		}
-		if (game == null) {
+		if (getState() == null || game == null) {
 			return 0;
 		}
 		if (is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {
@@ -132,6 +163,13 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	public void setWalkingBehavior(Steering<PacMan> steering) {
 		behavior(AWAKE, steering);
 		behavior(POWERFUL, steering);
+	}
+
+	private void putIntoBed() {
+		Bed bed = world.pacManBed();
+		placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+		setMoveDir(bed.exitDir);
+		setWishDir(bed.exitDir);
 	}
 
 	private void setPowerTimer(PacManGameEvent e) {
@@ -171,50 +209,5 @@ public class PacMan extends Creature<PacMan, PacManState> {
 			return Optional.of(new FoodFoundEvent(location));
 		}
 		return Optional.empty();
-	}
-
-	public void goToBed() {
-		Bed bed = world.pacManBed();
-		placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-		setMoveDir(bed.exitDir);
-		setWishDir(bed.exitDir);
-	}
-
-	public long getPowerTicks() {
-		return state(POWERFUL).getTicksRemaining();
-	}
-
-	public void wakeUp() {
-		process(new PacManWakeUpEvent());
-	}
-
-	public void fallAsleep() {
-		process(new PacManFallAsleepEvent());
-	}
-
-	@Override
-	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (world.houses().anyMatch(house -> house.isDoor(neighbor))) {
-			return false;
-		}
-		return super.canMoveBetween(tile, neighbor);
-	}
-
-	/**
-	 * NOTE: Depending on the application setting {@link PacManApp.Settings#fixOverflowBug}, this method
-	 * simulates/fixes the overflow bug from the original Arcade game which causes, if Pac-Man points
-	 * upwards, the wrong calculation of the position ahead of Pac-Man (namely adding the same number of
-	 * tiles to the left).
-	 * 
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move
-	 *         direction.
-	 */
-	public Tile tilesAhead(int numTiles) {
-		Tile tileAhead = world.tileToDir(tileLocation(), moveDir, numTiles);
-		if (moveDir == UP && !settings.fixOverflowBug) {
-			return world.tileToDir(tileAhead, LEFT, numTiles);
-		}
-		return tileAhead;
 	}
 }

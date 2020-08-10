@@ -46,7 +46,7 @@ public class StatesRenderer {
 		}
 		String text = pacMan.getState().name();
 		if (pacMan.is(POWERFUL)) {
-			text += String.format("(%d)", pacMan.getPowerTicks());
+			text += String.format("(%d)", pacMan.state(POWERFUL).getTicksRemaining());
 		}
 		if (pacMan.state().hasTimer()) {
 			text += String.format("(%d of %d)", pacMan.state().getTicksConsumed(), pacMan.state().getDuration());

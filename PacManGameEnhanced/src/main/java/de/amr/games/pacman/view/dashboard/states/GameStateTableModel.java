@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.dashboard.states;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.game.Game.sec;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -145,9 +144,9 @@ class GameStateTableModel extends AbstractTableModel {
 		r.wishDir = pacMan.wishDir();
 		if (pacMan.getState() != null) {
 			r.speed = pacMan.getSpeed() * app().clock().getTargetFramerate();
-			r.state = pacMan.getPowerTicks() == 0 ? pacMan.getState().name() : "POWER";
-			r.ticksRemaining = pacMan.getPowerTicks() == 0 ? pacMan.state().getTicksRemaining() : pacMan.getPowerTicks();
-			r.duration = pacMan.getPowerTicks() == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
+			r.state = pacMan.getState().name();
+			r.ticksRemaining = pacMan.state().getTicksRemaining();
+			r.duration = pacMan.state().getDuration();
 		}
 	}
 
