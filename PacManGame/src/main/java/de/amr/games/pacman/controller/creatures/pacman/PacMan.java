@@ -185,27 +185,25 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		if (enteredNewTile()) {
 			fat = Math.max(0, fat - 1);
 		}
-		if (isTeleporting()) {
-			return;
+		if (!isTeleporting()) {
+			searchForFood(tileLocation()).ifPresent(this::publish);
 		}
-		searchForFood().ifPresent(this::publish);
 	}
 
-	private Optional<PacManGameEvent> searchForFood() {
-		Tile location = tileLocation();
+	private Optional<PacManGameEvent> searchForFood(Tile location) {
 		if (world.bonusFood().isPresent()) {
 			BonusFood bonus = world.bonusFood().get();
 			if (bonus.isPresent() && bonus.location().equals(location)) {
-				fat += Game.BIG_MEAL_WEIGHT;
+				fat += Game.BIG_MEAL_FAT;
 				return Optional.of(new BonusFoundEvent(bonus));
 			}
 		}
 		if (world.hasFood(Pellet.ENERGIZER, location)) {
-			fat += Game.BIG_MEAL_WEIGHT;
+			fat += Game.BIG_MEAL_FAT;
 			return Optional.of(new FoodFoundEvent(location));
 		}
 		if (world.hasFood(Pellet.SNACK, location)) {
-			fat += Game.SNACK_WEIGHT;
+			fat += Game.SNACK_FAT;
 			return Optional.of(new FoodFoundEvent(location));
 		}
 		return Optional.empty();
