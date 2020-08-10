@@ -5,8 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.game.ui.sprites.CyclicAnimation;
-import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
@@ -17,13 +15,9 @@ import de.amr.games.pacman.view.api.IWorldRenderer;
 class WorldRenderer implements IWorldRenderer {
 
 	private WorldSpriteMap spriteMap;
-	private SpriteAnimation energizerAnimation;
 
 	public WorldRenderer(WorldSpriteMap spriteMap) {
 		this.spriteMap = spriteMap;
-		energizerAnimation = new CyclicAnimation(2);
-		energizerAnimation.setFrameDuration(150);
-		energizerAnimation.setEnabled(false);
 	}
 
 	@Override
@@ -45,8 +39,8 @@ class WorldRenderer implements IWorldRenderer {
 				door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
 			});
 		}
-		energizerAnimation.setEnabled(!world.isFrozen());
-		energizerAnimation.update();
+		spriteMap.getEnergizerAnimation().setEnabled(!world.isFrozen());
+		spriteMap.getEnergizerAnimation().update();
 	}
 
 	private void drawContent(Graphics2D g, World world) {
@@ -57,7 +51,7 @@ class WorldRenderer implements IWorldRenderer {
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
 		// simulate energizer blinking animation
-		if (energizerAnimation.isEnabled() && energizerAnimation.currentFrameIndex() == 1) {
+		if (spriteMap.getEnergizerAnimation().isEnabled() && spriteMap.getEnergizerAnimation().currentFrameIndex() == 1) {
 			world.tiles().filter(tile -> world.hasFood(Pellet.ENERGIZER, tile)).forEach(tile -> {
 				g.setColor(eatenFoodColor);
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);

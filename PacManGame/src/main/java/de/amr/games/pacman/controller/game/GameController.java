@@ -445,6 +445,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onEntry() {
 			loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
+			world.setFrozen(true);
 			folks.pacMan.fallAsleep();
 			doorMan.onLevelChange();
 			folks.ghosts().forEach(ghost -> ghost.setEnabled(false));
@@ -479,6 +480,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			if (passed == flashingEnd + sec(4)) {
+				world.setFrozen(false);
 				complete = true;
 			}
 		}
