@@ -39,7 +39,7 @@ import de.amr.games.pacman.model.world.components.Bed;
  */
 public class PacMan extends Creature<PacMan, PacManState> {
 
-	private int foodWeight;
+	private int fat;
 
 	public PacMan(World world) {
 		super(PacManState.class, "Pac-Man", world);
@@ -56,7 +56,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 						goToBed();
 						setVisible(true);
 						setEnabled(true);
-						foodWeight = 0;
+						fat = 0;
 					})
 
 				.state(SLEEPING)
@@ -113,19 +113,14 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		if (game == null) {
 			return 0;
 		}
-		switch (getState()) {
-		case IN_BED:
-		case SLEEPING:
-		case DEAD:
-		case COLLAPSING:
+		if (is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {
 			return 0;
-		case POWERFUL:
-			return speed(mustDigest() ? game.level.pacManPowerDotsSpeed : game.level.pacManPowerSpeed);
-		case AWAKE:
-			return speed(mustDigest() ? game.level.pacManDotsSpeed : game.level.pacManSpeed);
-		default:
-			throw new IllegalStateException("Illegal Pac-Man state: " + getState());
+		} else if (is(POWERFUL)) {
+			return speed(fat > 0 ? game.level.pacManPowerDotsSpeed : game.level.pacManPowerSpeed);
+		} else if (is(AWAKE)) {
+			return speed(fat > 0 ? game.level.pacManDotsSpeed : game.level.pacManSpeed);
 		}
+		throw new IllegalStateException("Illegal Pac-Man state: " + getState());
 	}
 
 	/**
@@ -134,7 +129,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	 * 
 	 * @param steering steering to use
 	 */
-	public void behavior(Steering<PacMan> steering) {
+	public void setWalkingBehavior(Steering<PacMan> steering) {
 		behavior(AWAKE, steering);
 		behavior(POWERFUL, steering);
 	}
@@ -150,7 +145,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		movement.update();
 		setEnabled(entity.tf.vx != 0 || entity.tf.vy != 0);
 		if (enteredNewTile()) {
-			foodWeight = Math.max(0, foodWeight - 1);
+			fat = Math.max(0, fat - 1);
 		}
 		if (isTeleporting()) {
 			return;
@@ -163,16 +158,16 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		if (world.bonusFood().isPresent()) {
 			BonusFood bonus = world.bonusFood().get();
 			if (bonus.isPresent() && bonus.location().equals(location)) {
-				foodWeight += Game.BIG_MEAL_WEIGHT;
+				fat += Game.BIG_MEAL_WEIGHT;
 				return Optional.of(new BonusFoundEvent(bonus));
 			}
 		}
 		if (world.hasFood(Pellet.ENERGIZER, location)) {
-			foodWeight += Game.BIG_MEAL_WEIGHT;
+			fat += Game.BIG_MEAL_WEIGHT;
 			return Optional.of(new FoodFoundEvent(location));
 		}
 		if (world.hasFood(Pellet.SNACK, location)) {
-			foodWeight += Game.SNACK_WEIGHT;
+			fat += Game.SNACK_WEIGHT;
 			return Optional.of(new FoodFoundEvent(location));
 		}
 		return Optional.empty();
@@ -183,10 +178,6 @@ public class PacMan extends Creature<PacMan, PacManState> {
 		placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		setMoveDir(bed.exitDir);
 		setWishDir(bed.exitDir);
-	}
-
-	public boolean mustDigest() {
-		return foodWeight > 0;
 	}
 
 	public long getPowerTicks() {

@@ -174,7 +174,7 @@ public class EnhancedGameController extends GameController {
 	protected void setDemoMode(boolean demoMode) {
 		if (demoMode) {
 			settings.pacManImmortable = true;
-			folks.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(folks));
+			folks.pacMan.setWalkingBehavior(new SearchingForFoodAndAvoidingGhosts(folks));
 			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 		} else {
 			settings.pacManImmortable = false;

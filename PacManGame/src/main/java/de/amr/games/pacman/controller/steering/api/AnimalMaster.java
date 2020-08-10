@@ -169,7 +169,7 @@ public class AnimalMaster {
 				ghost.behavior(ghostState, new HeadingForTargetTile<>(ghost, fnTargetTile));
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.behavior(new HeadingForTargetTile<>(pacMan, fnTargetTile));
+				pacMan.setWalkingBehavior(new HeadingForTargetTile<>(pacMan, fnTargetTile));
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
@@ -201,7 +201,7 @@ public class AnimalMaster {
 				ghost.behavior(ghostState, new RandomMovement<>());
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.behavior(new RandomMovement<>());
+				pacMan.setWalkingBehavior(new RandomMovement<>());
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
@@ -226,7 +226,7 @@ public class AnimalMaster {
 				ghost.behavior(ghostState, new FollowingKeys<>(up, right, down, left));
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.behavior(new FollowingKeys<>(up, right, down, left));
+				pacMan.setWalkingBehavior(new FollowingKeys<>(up, right, down, left));
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
