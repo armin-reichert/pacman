@@ -1,6 +1,12 @@
 package de.amr.games.pacman.view.theme.arcade;
 
-import static de.amr.games.pacman.controller.creatures.ghost.GhostState.*;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 
 import java.awt.Graphics2D;
 
@@ -30,7 +36,11 @@ class GhostRenderer implements IGhostRenderer, ISpriteRenderer {
 		selectSprite(ghost);
 		Sprite sprite = spriteMap.current().get();
 		sprite.enableAnimation(ghost.isEnabled());
-		drawEntitySprite(g, ghost.entity, sprite, 2);
+		int sw = 2 * ghost.entity.tf.width, sh = 2 * ghost.entity.tf.height;
+		if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
+			sprite.scale(sw, sh);
+		}
+		drawEntitySprite(g, ghost.entity, sprite);
 	}
 
 	private void selectSprite(Ghost ghost) {

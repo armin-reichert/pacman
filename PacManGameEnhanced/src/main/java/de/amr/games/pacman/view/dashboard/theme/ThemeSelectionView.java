@@ -185,16 +185,15 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 	private void updatePreviewLabels() {
 		Theme theme = gameController.getTheme();
 		lblPacMan.setIcon(createPacManIcon(theme, folks.pacMan));
-		lblBlinky.setIcon(createGhostIcon(theme, folks.blinky, GhostState.CHASING, Direction.random()));
-		lblPinky.setIcon(createGhostIcon(theme, folks.pinky, GhostState.CHASING, Direction.random()));
-		lblInky.setIcon(createGhostIcon(theme, folks.inky, GhostState.CHASING, Direction.random()));
-		lblClyde.setIcon(createGhostIcon(theme, folks.clyde, GhostState.CHASING, Direction.random()));
-		lblGhostFrightened.setIcon(createGhostIcon(theme, folks.blinky, GhostState.FRIGHTENED, Direction.random()));
-		lblGhostDead.setIcon(createGhostIcon(theme, folks.blinky, GhostState.DEAD, Direction.random()));
+		lblBlinky.setIcon(createGhostIcon(theme, folks.blinky, GhostState.CHASING, Direction.random(),0));
+		lblPinky.setIcon(createGhostIcon(theme, folks.pinky, GhostState.CHASING, Direction.random(),0));
+		lblInky.setIcon(createGhostIcon(theme, folks.inky, GhostState.CHASING, Direction.random(),0));
+		lblClyde.setIcon(createGhostIcon(theme, folks.clyde, GhostState.CHASING, Direction.random(),0));
+		lblGhostFrightened.setIcon(createGhostIcon(theme, folks.blinky, GhostState.FRIGHTENED, Direction.random(),0));
+		lblGhostDead.setIcon(createGhostIcon(theme, folks.blinky, GhostState.DEAD, Direction.random(),0));
 		int[] bounties = { 200, 400, 800, 1600 };
-		folks.blinky.setBounty(bounties[new Random().nextInt(4)]);
-		lblGhostDeadBounty.setIcon(createGhostIcon(theme, folks.blinky, GhostState.DEAD, Direction.random()));
-		folks.blinky.setBounty(0);
+		int bounty = bounties[new Random().nextInt(4)];
+		lblGhostDeadBounty.setIcon(createGhostIcon(theme, folks.blinky, GhostState.DEAD, Direction.random(),bounty));
 	}
 
 	private ImageIcon createPacManIcon(Theme theme, PacMan pacMan) {
@@ -208,9 +207,10 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		return new ImageIcon(img);
 	}
 
-	private ImageIcon createGhostIcon(Theme theme, Ghost ghost, GhostState state, Direction moveDir) {
+	private ImageIcon createGhostIcon(Theme theme, Ghost ghost, GhostState state, Direction moveDir, int bounty) {
 		ghost.setState(state);
 		ghost.setMoveDir(moveDir);
+		ghost.setBounty(bounty);
 		ghost.entity.tf.width = ghost.entity.tf.height = ENTITY_SIZE;
 		BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
