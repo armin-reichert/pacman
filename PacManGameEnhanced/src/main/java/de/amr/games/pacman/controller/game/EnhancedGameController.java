@@ -2,10 +2,14 @@ package de.amr.games.pacman.controller.game;
 
 import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
+import static de.amr.easy.game.controller.StateMachineRegistry.REGISTRY;
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.game.PacManGameState.GAME_OVER;
+import static de.amr.games.pacman.controller.game.PacManGameState.GETTING_READY;
+import static de.amr.games.pacman.controller.game.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 import static java.awt.event.KeyEvent.VK_DOWN;
@@ -17,7 +21,6 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.controller.StateMachineRegistry;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -29,7 +32,6 @@ import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.play.PlayView;
-import de.amr.statemachine.core.StateMachine;
 
 /**
  * Enhanced game controller with all the bells and whistles.
@@ -50,6 +52,22 @@ public class EnhancedGameController extends GameController {
 	 */
 	public EnhancedGameController(Theme... themes) {
 		super(themes);
+		addStateEntryListener(INTRO, state -> {
+			REGISTRY.register(currentView.machines());
+		});
+		addStateExitListener(INTRO, state -> {
+			REGISTRY.unregister(currentView.machines());
+		});
+		addStateEntryListener(GETTING_READY, state -> {
+			REGISTRY.register(currentView.machines());
+			folks.all().forEach(guy -> REGISTRY.register(guy.machines()));
+			REGISTRY.register(Stream.of(this, bonusControl, ghostCommand));
+		});
+		addStateEntryListener(GAME_OVER, state -> {
+			REGISTRY.unregister(currentView.machines());
+			folks.all().forEach(guy -> REGISTRY.unregister(guy.machines()));
+			REGISTRY.unregister(Stream.of(this, bonusControl, ghostCommand));
+		});
 	}
 
 	@Override
@@ -59,19 +77,6 @@ public class EnhancedGameController extends GameController {
 
 	protected EnhancedPlayView playView() {
 		return (EnhancedPlayView) playView;
-	}
-
-	protected Stream<StateMachine<?, ?>> machines() {
-		return Stream.of(this, bonusControl, ghostCommand);
-	}
-
-	@Override
-	protected void newGame() {
-		folks.all().forEach(creature -> StateMachineRegistry.REGISTRY.unregister(creature.machines()));
-		StateMachineRegistry.REGISTRY.unregister(machines());
-		super.newGame();
-		folks.all().forEach(creature -> StateMachineRegistry.REGISTRY.register(creature.machines()));
-		StateMachineRegistry.REGISTRY.register(machines());
 	}
 
 	@Override
@@ -92,7 +97,13 @@ public class EnhancedGameController extends GameController {
 		}
 
 		else if (Keyboard.keyPressedOnce("l")) {
-			StateMachineRegistry.REGISTRY.shutUp(!StateMachineRegistry.REGISTRY.isKeepingItsMouth());
+			if (!app().getLogger().isShutUp()) {
+				loginfo("Application Logging is OFF");
+			}
+			app().getLogger().shutUp(!app().getLogger().isShutUp());
+			if (!app().getLogger().isShutUp()) {
+				loginfo("Application Logging is ON");
+			}
 		}
 
 		if (currentView == playView) {

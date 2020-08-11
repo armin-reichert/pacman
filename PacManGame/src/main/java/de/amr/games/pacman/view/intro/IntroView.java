@@ -15,7 +15,6 @@ import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.controller.StateMachineRegistry;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
@@ -30,8 +29,8 @@ import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
-import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSprites;
+import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -115,6 +114,11 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	}
 
 	@Override
+	public Stream<StateMachine<?, ?>> machines() {
+		return Stream.of(this);
+	}
+
+	@Override
 	public void init() {
 		ArcadeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		pacManLogo = new ImageWidget(arcadeSprites.image_logo());
@@ -136,12 +140,10 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		gitHubLink.tf.y = (height - 16);
 		gitHubLink.tf.centerHorizontally(0, width);
 		super.init();
-		StateMachineRegistry.REGISTRY.register(Stream.of(this));
 	}
 
 	@Override
 	public void exit() {
-		StateMachineRegistry.REGISTRY.unregister(Stream.of(this));
 		theme.sounds().stopAll();
 	}
 
