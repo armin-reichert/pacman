@@ -63,9 +63,7 @@ public abstract class Creature<S> implements Lifecycle {
 	 * @param a    neighbor tile of the tile
 	 * @return {@code true} if this creature can move between the given tiles
 	 */
-	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		return entity.world.isAccessible(neighbor);
-	}
+	public abstract boolean canMoveBetween(Tile tile, Tile neighbor);
 
 	/**
 	 * @param dir a direction

@@ -33,6 +33,7 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.House;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -51,7 +52,6 @@ public class PacMan extends Creature<PacManState> {
 		StateMachine<PacManState, PacManGameEvent> fsm = StateMachine
 		/*@formatter:off*/
 		.beginStateMachine(PacManState.class, PacManGameEvent.class, TransitionMatchStrategy.BY_CLASS)
-
 			.description(name)
 			.initialState(IN_BED)
 
@@ -59,7 +59,7 @@ public class PacMan extends Creature<PacManState> {
 			
 				.state(IN_BED)
 					.onEntry(() -> {
-						putIntoBed();
+						putIntoBed(entity.world.pacManBed());
 						entity.visible = true;
 						enabled = true;
 						fat = 0;
@@ -131,10 +131,10 @@ public class PacMan extends Creature<PacManState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (entity.world.houses().anyMatch(house -> house.hasDoorAt(neighbor))) {
+		if (entity.world.houses().flatMap(House::doors).anyMatch(door -> door.includes(neighbor))) {
 			return false;
 		}
-		return super.canMoveBetween(tile, neighbor);
+		return entity.world.isAccessible(neighbor);
 	}
 
 	/**
@@ -181,11 +181,9 @@ public class PacMan extends Creature<PacManState> {
 		behavior(POWERFUL, steering);
 	}
 
-	private void putIntoBed() {
-		Bed bed = entity.world.pacManBed();
+	private void putIntoBed(Bed bed) {
 		entity.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-		entity.moveDir = bed.exitDir;
-		entity.wishDir = bed.exitDir;
+		entity.moveDir = entity.wishDir = bed.exitDir;
 	}
 
 	private void setPowerTimer(PacManGameEvent e) {
