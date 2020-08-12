@@ -33,7 +33,7 @@ class GhostRenderer implements IGhostRenderer {
 			drawColored(g, ghost, width, height, 0, 0);
 			break;
 		case FRIGHTENED:
-			if (ghost.isFlashing()) {
+			if (ghost.flashing) {
 				drawFlashing(g, ghost, width, height, 0, 0);
 			} else {
 				drawFrightened(g, ghost, width, height, 0, 0);
@@ -41,7 +41,7 @@ class GhostRenderer implements IGhostRenderer {
 			break;
 		case DEAD:
 		case ENTERING_HOUSE:
-			if (ghost.getBounty() > 0) {
+			if (ghost.bounty > 0) {
 				drawPoints(g, ghost);
 			} else {
 				drawEyes(g, ghost, ghost.entity.tf.width, ghost.entity.tf.width);
@@ -64,7 +64,7 @@ class GhostRenderer implements IGhostRenderer {
 		Font font = BlocksTheme.THEME.$font("font").deriveFont((float) ghost.entity.tf.height);
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
-		String text = String.valueOf(ghost.getBounty());
+		String text = String.valueOf(ghost.bounty);
 		Rectangle2D bounds = fm.getStringBounds(text, g);
 		int x = centerOffsetX(ghost, (int) bounds.getWidth());
 		int y = centerOffsetY(ghost, (int) bounds.getHeight()) + (int) bounds.getHeight();

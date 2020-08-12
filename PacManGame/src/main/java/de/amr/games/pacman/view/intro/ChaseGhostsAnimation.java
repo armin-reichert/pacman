@@ -79,7 +79,7 @@ public class ChaseGhostsAnimation extends GameObject {
 			.filter(ghost -> ghost.entity.tileLocation().equals(folks.pacMan.entity.tileLocation()))
 			.forEach(ghost -> {
 				ghost.ai.setState(GhostState.DEAD);
-				ghost.setBounty(points);
+				ghost.bounty = points;
 				points *= 2;
 				theme.sounds().clipEatGhost().play();
 			});

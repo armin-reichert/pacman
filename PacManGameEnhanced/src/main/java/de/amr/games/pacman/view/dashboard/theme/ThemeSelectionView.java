@@ -210,7 +210,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 	private ImageIcon createGhostIcon(Theme theme, Ghost ghost, GhostState state, Direction moveDir, int bounty) {
 		ghost.ai.setState(state);
 		ghost.entity.moveDir = moveDir;
-		ghost.setBounty(bounty);
+		ghost.bounty = bounty;
 		ghost.entity.tf.width = ghost.entity.tf.height = ENTITY_SIZE;
 		BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();

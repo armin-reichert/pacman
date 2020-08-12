@@ -41,15 +41,15 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Creature<GhostState> {
 
-	private GhostPersonality personality;
-	private PacMan pacMan;
-	private House house;
-	private Bed bed;
-	private GhostState nextState;
-	private GhostMadnessController madnessController;
-	private Steering previousSteering;
-	private int bounty;
-	private boolean flashing;
+	public GhostPersonality personality;
+	public PacMan pacMan;
+	public House house;
+	public Bed bed;
+	public GhostState nextState;
+	public GhostMadnessController madnessController;
+	public Steering previousSteering;
+	public int bounty;
+	public boolean flashing;
 
 	public Ghost(String name, GhostPersonality personality, World world) {
 		super(name, world, new EnumMap<>(GhostState.class));
@@ -224,18 +224,6 @@ public class Ghost extends Creature<GhostState> {
 				.orElse(GhostMentalState.HEALTHY);
 	}
 
-	public GhostMadnessController getMadnessController() {
-		return madnessController;
-	}
-
-//	public void setGame(Game game) {
-//		this.game = game;
-//		if (madnessController != null) {
-//			madnessController.setGame(game);
-//		}
-//		init();
-//	}
-
 	private void computeBounty() {
 		bounty = game != null ? game.killedGhostPoints() : 0;
 	}
@@ -253,30 +241,6 @@ public class Ghost extends Creature<GhostState> {
 				&& !pacMan.ai.is(PacManState.DEAD)) {
 			ai.publish(new PacManGhostCollisionEvent(this));
 		}
-	}
-
-	public void setNextState(GhostState state) {
-		nextState = state;
-	}
-
-	public GhostState getNextState() {
-		return nextState;
-	}
-
-	public GhostPersonality getPersonality() {
-		return personality;
-	}
-
-	public int getBounty() {
-		return bounty;
-	}
-
-	public void setBounty(int bounty) {
-		this.bounty = bounty;
-	}
-
-	public boolean isFlashing() {
-		return flashing;
 	}
 
 	public boolean justLeftGhostHouse() {

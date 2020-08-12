@@ -59,7 +59,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 
 	Color ghostColor(Ghost ghost) {
 		Map<Integer, Color> colorByPersonality = $value("ghost-colors");
-		return colorByPersonality.getOrDefault(ghost.getPersonality(), Color.WHITE);
+		return colorByPersonality.getOrDefault(ghost.personality, Color.WHITE);
 	}
 
 	String ghostLetter(Ghost ghost) {
@@ -85,8 +85,8 @@ public class LettersTheme extends ThemeParameters implements Theme {
 				int offset_baseline = $int("offset-baseline");
 				g.setFont(font.deriveFont((float) ghost.entity.tf.width));
 				g.setColor(ghostColor(ghost));
-				if (ghost.getBounty() > 0) {
-					g.drawString("" + ghost.getBounty(), ghost.entity.tf.x, ghost.entity.tf.y + offset_baseline);
+				if (ghost.bounty > 0) {
+					g.drawString("" + ghost.bounty, ghost.entity.tf.x, ghost.entity.tf.y + offset_baseline);
 				} else {
 					g.drawString(ghostLetter(ghost), ghost.entity.tf.x, ghost.entity.tf.y + offset_baseline);
 				}
@@ -177,7 +177,8 @@ public class LettersTheme extends ThemeParameters implements Theme {
 						col = tile.col - 1;
 					} else if (bonus.isConsumed()) {
 						text = "WON " + bonus.value() + " POINTS!";
-						col = tile.col - 3;;
+						col = tile.col - 3;
+						;
 					}
 					g.drawString(text, col * Tile.SIZE, tile.row * Tile.SIZE + offset_baseline - 1);
 				});

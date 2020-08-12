@@ -65,7 +65,7 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 
 	Color ghostColor(Ghost ghost) {
 		Map<Integer, Color> colorByPersonality = $value("ghost-colors");
-		return colorByPersonality.getOrDefault(ghost.getPersonality(), Color.WHITE);
+		return colorByPersonality.getOrDefault(ghost.personality, Color.WHITE);
 	}
 
 	Color symbolColor(String symbolName) {

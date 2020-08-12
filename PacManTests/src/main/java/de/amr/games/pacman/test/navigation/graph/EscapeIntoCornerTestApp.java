@@ -38,7 +38,7 @@ class EscapeIntoCornerTestUI extends TestUI {
 		include(pacMan, blinky, inky);
 
 		blinky.ai.setState(FRIGHTENED);
-		inky.setNextState(FRIGHTENED);
+		inky.nextState = FRIGHTENED;
 		inky.ai.setState(GhostState.LEAVING_HOUSE);
 
 		folks.ghostsInWorld().forEach(ghost -> ghost.behavior(FRIGHTENED, new FleeingToSafeTile(ghost, pacMan.entity)));

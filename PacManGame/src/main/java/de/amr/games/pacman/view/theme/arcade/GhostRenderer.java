@@ -12,7 +12,6 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.view.api.IGhostRenderer;
@@ -45,18 +44,17 @@ class GhostRenderer implements IGhostRenderer, ISpriteRenderer {
 
 	private void selectSprite(Ghost ghost) {
 		GhostState state = ghost.ai.getState();
-		GhostPersonality personality = ghost.getPersonality();
 		Direction dir = ghost.entity.moveDir;
 		if (state == null) {
-			spriteMap.select(spriteMap.keyColor(personality, dir));
+			spriteMap.select(spriteMap.keyColor(ghost.personality, dir));
 		} else if (ghost.ai.is(LOCKED, LEAVING_HOUSE, CHASING, SCATTERING)) {
-			spriteMap.select(spriteMap.keyColor(personality, dir));
+			spriteMap.select(spriteMap.keyColor(ghost.personality, dir));
 		} else if (ghost.ai.is(ENTERING_HOUSE)) {
 			spriteMap.select(spriteMap.keyEyes(dir));
 		} else if (ghost.ai.is(FRIGHTENED)) {
-			spriteMap.select(ghost.isFlashing() ? "flashing" : "frightened");
+			spriteMap.select(ghost.flashing ? "flashing" : "frightened");
 		} else if (ghost.ai.is(DEAD)) {
-			spriteMap.select(ghost.getBounty() == 0 ? spriteMap.keyEyes(dir) : spriteMap.keyPoints(ghost.getBounty()));
+			spriteMap.select(ghost.bounty == 0 ? spriteMap.keyEyes(dir) : spriteMap.keyPoints(ghost.bounty));
 		}
 	}
 }

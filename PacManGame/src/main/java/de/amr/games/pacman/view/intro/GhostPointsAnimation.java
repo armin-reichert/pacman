@@ -138,7 +138,7 @@ public class GhostPointsAnimation extends GameObject {
 				} else {
 					theme.sounds().clipEatGhost().play();
 					ghosts[ghostToKill].ai.setState(GhostState.DEAD);
-					ghosts[ghostToKill].setBounty(GHOST_BOUNTIES[ghostToKill]);
+					ghosts[ghostToKill].bounty = GHOST_BOUNTIES[ghostToKill];
 					killed.set(ghostToKill);
 					ghostToKill = ghostToKill + 1;
 					resetGhostTimer();
