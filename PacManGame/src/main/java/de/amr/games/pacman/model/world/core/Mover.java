@@ -76,13 +76,6 @@ public class Mover extends Entity {
 	}
 
 	/**
-	 * @return if this mover is currently inside its world
-	 */
-	public boolean isInsideWorld() {
-		return world.contains(this);
-	}
-
-	/**
 	 * The neighbor tile of this mover's current tile.
 	 * 
 	 * @param dir a direction

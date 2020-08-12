@@ -36,10 +36,10 @@ public class RoutesRenderer {
 			drawPacManRoute(g, folks.pacMan);
 		}
 		folks.ghostsInWorld().filter(ghost -> ghost.entity.visible).forEach(ghost -> drawGhostRoute(g, ghost));
-		if (folks.inky.entity.isInsideWorld() && folks.inky.entity.visible) {
+		if (folks.inky.entity.visible) {
 			drawInkyChasing(g, folks);
 		}
-		if (folks.clyde.entity.isInsideWorld() && folks.clyde.entity.visible) {
+		if (folks.clyde.entity.visible) {
 			drawClydeChasingArea(g, folks);
 		}
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
