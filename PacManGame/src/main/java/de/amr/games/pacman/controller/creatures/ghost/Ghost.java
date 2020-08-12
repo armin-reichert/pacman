@@ -49,7 +49,7 @@ public class Ghost extends Creature<GhostState> {
 	public GhostMadnessController madnessController;
 	public Steering previousSteering;
 	public int bounty;
-	public boolean flashing;
+	public boolean recovering;
 
 	public Ghost(String name, GhostPersonality personality, World world) {
 		super(name, world, new EnumMap<>(GhostState.class));
@@ -61,93 +61,106 @@ public class Ghost extends Creature<GhostState> {
 
 	@Override
 	protected StateMachine<GhostState, PacManGameEvent> buildAI() {
-
+		/*@formatter:off*/
 		StateMachine<GhostState, PacManGameEvent> fsm = StateMachine
-				.beginStateMachine(GhostState.class, PacManGameEvent.class, TransitionMatchStrategy.BY_CLASS)
+			.beginStateMachine(GhostState.class, PacManGameEvent.class, TransitionMatchStrategy.BY_CLASS)
 
-				.description("Ghost " + name + " AI").initialState(LOCKED)
+			.description("Ghost " + name + " AI").initialState(LOCKED)
 
-				.states()
+			.states()
 
-				.state(LOCKED).onEntry(() -> {
-					flashing = false;
-					bounty = 0;
-					nextState = LOCKED;
-					enabled = true;
-					entity.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-					entity.visible = true;
-					entity.moveDir = bed.exitDir;
-					entity.wishDir = bed.exitDir;
-				}).onTick(this::move)
-
-				.state(LEAVING_HOUSE).onTick(this::move).onExit(() -> forceMoving(Direction.LEFT))
-
-				.state(ENTERING_HOUSE).onEntry(() -> steering().init()).onTick(this::move)
-
-				.state(SCATTERING).onTick(() -> {
-					maybeMeetPacMan(pacMan);
-					move();
-				})
-
-				.state(CHASING).onTick(() -> {
-					maybeMeetPacMan(pacMan);
-					move();
-				})
-
-				.state(FRIGHTENED).timeoutAfter(this::getFrightenedTicks).onEntry(() -> steering().init())
-				.onTick((state, consumed, remaining) -> {
-					maybeMeetPacMan(pacMan);
-					move();
-					flashing = remaining < getFlashTimeTicks() * 0.5f; // one flashing takes 0.5 sec
-				})
-
-				.state(DEAD).timeoutAfter(sec(1)).onEntry(this::computeBounty).onTick((s, consumed, remaining) -> {
-					if (remaining == 0) {
+				.state(LOCKED)
+					.onEntry(() -> {
+						recovering = false;
 						bounty = 0;
+						nextState = LOCKED;
+						enabled = true;
+						entity.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+						entity.visible = true;
+						entity.moveDir = bed.exitDir;
+						entity.wishDir = bed.exitDir;
+					})
+					.onTick(this::move)
+	
+				.state(LEAVING_HOUSE)
+					.onTick(this::move)
+					.onExit(() -> forceMoving(Direction.LEFT))
+	
+				.state(ENTERING_HOUSE)
+					.onEntry(() -> steering().init())
+					.onTick(this::move)
+	
+				.state(SCATTERING)
+					.onTick(() -> {
+						maybeMeetPacMan(pacMan);
 						move();
-					}
-				})
+					})
+	
+				.state(CHASING)
+					.onTick(() -> {
+						maybeMeetPacMan(pacMan);
+						move();
+					})
+	
+				.state(FRIGHTENED)
+					.timeoutAfter(this::getFrightenedTicks)
+					.onEntry(() -> steering().init())
+					.onTick((state, consumed, remaining) -> {
+						maybeMeetPacMan(pacMan);
+						move();
+						recovering = remaining < getFlashTimeTicks() * 0.5f; // one flashing takes 0.5 sec
+					})
+	
+				.state(DEAD)
+					.timeoutAfter(sec(1))
+					.onEntry(this::computeBounty)
+					.onTick((s, consumed, remaining) -> {
+						if (remaining == 0) {
+							bounty = 0;
+							move();
+						}
+					})
 
-				.transitions()
+			.transitions()
 
 				.when(LOCKED).then(LEAVING_HOUSE).on(GhostUnlockedEvent.class)
-
+	
 				.when(LEAVING_HOUSE).then(SCATTERING).condition(() -> justLeftGhostHouse() && nextState == SCATTERING)
 				.annotation("Outside house")
-
+	
 				.when(LEAVING_HOUSE).then(CHASING).condition(() -> justLeftGhostHouse() && nextState == CHASING)
 				.annotation("Outside house")
-
+	
 				.when(LEAVING_HOUSE).then(FRIGHTENED).condition(() -> justLeftGhostHouse() && nextState == FRIGHTENED)
 				.annotation("Outside house")
-
+	
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE).condition(() -> steering().isComplete()).annotation("Reached bed")
-
+	
 				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class).act(() -> reverseDirection())
-
+	
 				.when(CHASING).then(DEAD).on(GhostKilledEvent.class)
-
+	
 				.when(CHASING).then(SCATTERING).condition(() -> nextState == SCATTERING).act(() -> reverseDirection())
 				.annotation("Got scattering command")
-
+	
 				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class).act(() -> reverseDirection())
-
+	
 				.when(SCATTERING).then(DEAD).on(GhostKilledEvent.class)
-
+	
 				.when(SCATTERING).then(CHASING).condition(() -> nextState == CHASING).act(() -> reverseDirection())
 				.annotation("Got chasing command")
-
+	
 				.stay(FRIGHTENED).on(PacManGainsPowerEvent.class).act(() -> ai.resetTimer(FRIGHTENED))
-
+	
 				.when(FRIGHTENED).then(DEAD).on(GhostKilledEvent.class)
-
+	
 				.when(FRIGHTENED).then(SCATTERING).onTimeout().condition(() -> nextState == SCATTERING)
-
+	
 				.when(FRIGHTENED).then(CHASING).onTimeout().condition(() -> nextState == CHASING)
-
+	
 				.when(DEAD).then(ENTERING_HOUSE).condition(this::isAtHouseEntry).annotation("Reached house entry")
 
-				.endStateMachine();
+			.endStateMachine();
 		/*@formatter:on*/
 		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		return fsm;

@@ -52,7 +52,7 @@ class GhostRenderer implements IGhostRenderer, ISpriteRenderer {
 		} else if (ghost.ai.is(ENTERING_HOUSE)) {
 			spriteMap.select(spriteMap.keyEyes(dir));
 		} else if (ghost.ai.is(FRIGHTENED)) {
-			spriteMap.select(ghost.flashing ? "flashing" : "frightened");
+			spriteMap.select(ghost.recovering ? "flashing" : "frightened");
 		} else if (ghost.ai.is(DEAD)) {
 			spriteMap.select(ghost.bounty == 0 ? spriteMap.keyEyes(dir) : spriteMap.keyPoints(ghost.bounty));
 		}

@@ -33,7 +33,7 @@ class GhostRenderer implements IGhostRenderer {
 			drawColored(g, ghost, width, height, 0, 0);
 			break;
 		case FRIGHTENED:
-			if (ghost.flashing) {
+			if (ghost.recovering) {
 				drawFlashing(g, ghost, width, height, 0, 0);
 			} else {
 				drawFrightened(g, ghost, width, height, 0, 0);
