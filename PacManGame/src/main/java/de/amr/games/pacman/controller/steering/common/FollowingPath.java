@@ -9,7 +9,7 @@ import java.util.Optional;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.core.MobileLifeform;
+import de.amr.games.pacman.model.world.core.Mover;
 
 /**
  * Lets a lifeform follow a path.
@@ -18,21 +18,21 @@ import de.amr.games.pacman.model.world.core.MobileLifeform;
  */
 public abstract class FollowingPath implements PathProvidingSteering {
 
-	protected final MobileLifeform mover;
+	protected final Mover mover;
 	protected List<Tile> path;
 	protected int pathIndex;
 
-	public FollowingPath(MobileLifeform mover) {
+	public FollowingPath(Mover mover) {
 		this(mover, Collections.emptyList());
 	}
 
-	public FollowingPath(MobileLifeform mover, List<Tile> initialPath) {
+	public FollowingPath(Mover mover, List<Tile> initialPath) {
 		this.mover = Objects.requireNonNull(mover);
 		setPath(initialPath);
 	}
 
 	@Override
-	public void steer(MobileLifeform mover) {
+	public void steer(Mover mover) {
 		if (mover.enteredNewTile || pathIndex == -1) {
 			++pathIndex;
 			dirAlongPath().ifPresent(dir -> {
@@ -59,7 +59,7 @@ public abstract class FollowingPath implements PathProvidingSteering {
 	}
 
 	@Override
-	public List<Tile> pathToTarget(MobileLifeform mover) {
+	public List<Tile> pathToTarget(Mover mover) {
 		return Collections.unmodifiableList(path);
 	}
 

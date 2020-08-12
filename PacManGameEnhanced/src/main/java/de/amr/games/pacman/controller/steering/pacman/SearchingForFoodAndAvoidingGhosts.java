@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
-import de.amr.games.pacman.model.world.core.MobileLifeform;
+import de.amr.games.pacman.model.world.core.Mover;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 
@@ -55,7 +55,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	@Override
-	public void steer(MobileLifeform pacMan) {
+	public void steer(Mover pacMan) {
 		if (!me.entity.enteredNewTile && me.canCrossBorderTo(me.entity.moveDir)
 				|| me.movement.is(MovementType.TELEPORTING)) {
 			return;
@@ -81,7 +81,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	@Override
-	public List<Tile> pathToTarget(MobileLifeform pacMan) {
+	public List<Tile> pathToTarget(Mover pacMan) {
 		return target != null ? graph.shortestPath(pacMan.tile(), target) : Collections.emptyList();
 	}
 
@@ -129,7 +129,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 		aheadThenRightThenLeft()
 			.filter(me::canCrossBorderTo)
 			.forEach(dir -> {
-				Tile neighbor = me.entity.neighbor(dir);
+				Tile neighbor = me.entity.neighborTile(dir);
 				preferredFoodLocationFrom(neighbor).ifPresent(foodLocation -> {
 					double d = neighbor.distance(foodLocation);
 					if (d < distance) {

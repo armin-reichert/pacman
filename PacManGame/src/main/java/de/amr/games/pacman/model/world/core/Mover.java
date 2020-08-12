@@ -1,7 +1,5 @@
 package de.amr.games.pacman.model.world.core;
 
-import java.util.Objects;
-
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -9,22 +7,25 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 
 /**
- * A lifeform inside its tile-based world.
+ * An entity that can move through a tile-based world.
  * 
  * @author Armin Reichert
  */
-public class Lifeform extends Entity {
+public class Mover extends Entity {
 
 	public final World world;
+	public Direction moveDir;
+	public Direction wishDir;
+	public boolean enteredNewTile;
 
-	public Lifeform(World world) {
+	public Mover(World world) {
 		this.world = world;
 	}
 
 	/**
 	 * The tile location is defined as the tile containing the center of the lifeforms body.
 	 * 
-	 * @return tile location of this lifeform
+	 * @return tile location of this mover
 	 */
 	public Tile tile() {
 		Vector2f center = tf.getCenter();
@@ -52,41 +53,42 @@ public class Lifeform extends Entity {
 	}
 
 	/**
-	 * Places this lifeform at the given tile location.
+	 * Places this mover at the given tile location.
 	 * 
 	 * @param tile tile location
 	 * @param dx   additional pixels in x-direction
 	 * @param dy   additional pixels in y-direction
 	 */
 	public void placeAt(Tile tile, float dx, float dy) {
+		Tile oldTile = tile();
 		tf.setPosition(tile.x() + dx, tile.y() + dy);
+		enteredNewTile = !tile().equals(oldTile);
 	}
 
 	/**
-	 * Euclidean distance (in tiles) between this and the other lifeform.
+	 * Euclidean distance (in tiles) between this and the other mover.
 	 * 
 	 * @param other other animal
 	 * @return Euclidean distance measured in tiles
 	 */
-	public double distance(Lifeform other) {
+	public double tileDistance(Mover other) {
 		return tile().distance(other.tile());
 	}
 
 	/**
-	 * @return if this lifeform is currently inside its world
+	 * @return if this mover is currently inside its world
 	 */
 	public boolean isInsideWorld() {
 		return world.contains(this);
 	}
 
 	/**
-	 * The neighbor tile of this lifeforms current tile.
+	 * The neighbor tile of this mover's current tile.
 	 * 
 	 * @param dir a direction
 	 * @return the neighbor tile towards the given direction
 	 */
-	public Tile neighbor(Direction dir) {
-		dir = Objects.requireNonNull(dir);
+	public Tile neighborTile(Direction dir) {
 		return world.tileToDir(tile(), dir, 1);
 	}
 }

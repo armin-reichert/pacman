@@ -14,7 +14,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.Door;
-import de.amr.games.pacman.model.world.core.MobileLifeform;
+import de.amr.games.pacman.model.world.core.Mover;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -85,7 +85,7 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 	}
 
 	@Override
-	public void steer(MobileLifeform entity) {
+	public void steer(Mover entity) {
 		update();
 	}
 

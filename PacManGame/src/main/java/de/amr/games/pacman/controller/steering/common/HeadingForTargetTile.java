@@ -19,7 +19,7 @@ import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.core.MobileLifeform;
+import de.amr.games.pacman.model.world.core.Mover;
 
 /**
  * Steers an actor towards a target tile.
@@ -54,7 +54,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	@Override
-	public void steer(MobileLifeform mover) {
+	public void steer(Mover mover) {
 		if (mover.enteredNewTile || forced) {
 			forced = false;
 			Tile targetTile = fnTargetTile.get();
@@ -85,7 +85,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * @param tile    current tile
 	 * @param target  target tile
 	 */
-	private Direction bestDirTowardsTarget(MobileLifeform mover, Direction moveDir, Tile tile, Tile target) {
+	private Direction bestDirTowardsTarget(Mover mover, Direction moveDir, Tile tile, Tile target) {
 		Function<Direction, Double> fnTargetDistance = dir -> mover.world.neighbor(tile, dir).distance(target);
 		Function<Direction, Integer> fnDirectionPriority = directionPriority::indexOf;
 		/*@formatter:off*/
@@ -137,7 +137,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	@Override
-	public List<Tile> pathToTarget(MobileLifeform mover) {
+	public List<Tile> pathToTarget(Mover mover) {
 		return new ArrayList<>(path);
 	}
 }

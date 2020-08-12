@@ -7,7 +7,7 @@ import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.model.world.core.Lifeform;
+import de.amr.games.pacman.model.world.core.Mover;
 
 public interface Territory extends RectangularArea {
 
@@ -35,36 +35,36 @@ public interface Territory extends RectangularArea {
 	boolean isIntersection(Tile tile);
 
 	/**
-	 * @param location some tile location
+	 * @param tile some tile location
 	 * @return if this location is accessible
 	 */
-	boolean isAccessible(Tile location);
+	boolean isAccessible(Tile tile);
 
 	/**
-	 * @param location some tile location
+	 * @param tile some tile location
 	 * @return if there is a tunnel at this location
 	 */
-	boolean isTunnel(Tile location);
+	boolean isTunnel(Tile tile);
 
 	/**
-	 * @param life a life
-	 * @return {@code true} if the life is currently included
+	 * @param mover a mover
+	 * @return {@code true} if the mover is currently included in this territory
 	 */
-	boolean contains(Lifeform life);
+	boolean contains(Mover mover);
 
 	/**
-	 * Includes the life into the territory.
+	 * Includes the mover into the territory.
 	 * 
-	 * @param life a life
+	 * @param mover a mover
 	 */
-	void include(Lifeform life);
+	void include(Mover mover);
 
 	/**
-	 * Excludes the life from the territory.
+	 * Excludes the mover from the territory.
 	 * 
-	 * @param life a life
+	 * @param mover a mover
 	 */
-	void exclude(Lifeform life);
+	void exclude(Mover mover);
 
 	/**
 	 * @return list of "capes" in order NW, NE, SE, SW
@@ -93,11 +93,11 @@ public interface Territory extends RectangularArea {
 	Stream<Portal> portals();
 
 	/**
-	 * @param location some tile location
+	 * @param tile some tile location
 	 * @return if there is some portal at this tile
 	 */
-	default boolean isPortal(Tile location) {
-		return portals().anyMatch(portal -> portal.includes(location));
+	default boolean isPortal(Tile tile) {
+		return portals().anyMatch(portal -> portal.includes(tile));
 	}
 
 	/**
@@ -106,11 +106,11 @@ public interface Territory extends RectangularArea {
 	Stream<OneWayTile> oneWayTiles();
 
 	/**
-	 * @param location some tile location
+	 * @param tile some tile location
 	 * @param dir      some direction
 	 * @return if this tile can only get traversed in the given direction
 	 */
-	default boolean isOneWay(Tile location, Direction dir) {
-		return oneWayTiles().anyMatch(oneWay -> oneWay.tile.equals(location) && oneWay.dir == dir);
+	default boolean isOneWay(Tile tile, Direction dir) {
+		return oneWayTiles().anyMatch(oneWay -> oneWay.tile.equals(tile) && oneWay.dir == dir);
 	}
 }

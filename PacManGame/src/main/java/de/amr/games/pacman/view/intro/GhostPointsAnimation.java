@@ -82,7 +82,7 @@ public class GhostPointsAnimation extends GameObject {
 		killed.clear();
 		ghostToKill = 0;
 		energizer = true;
-		folks.all().forEach(Creature::init);
+		folks.guys().forEach(Creature::init);
 		folks.pacMan.entity.moveDir = Direction.RIGHT;
 		folks.pacMan.ai.setState(PacManState.AWAKE);
 		folks.ghosts().forEach(ghost -> {

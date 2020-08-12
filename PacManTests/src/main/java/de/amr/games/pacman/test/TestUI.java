@@ -48,7 +48,7 @@ public class TestUI implements Lifecycle, VisualController {
 		world.clearFood();
 		game = new Game(1, world.totalFoodCount());
 		folks = new Folks(world, world.house(0));
-		folks.all().forEach(guy -> guy.game = game);
+		folks.guys().forEach(guy -> guy.game = game);
 		pacMan = folks.pacMan;
 		blinky = folks.blinky;
 		pinky = folks.pinky;
@@ -62,8 +62,8 @@ public class TestUI implements Lifecycle, VisualController {
 
 	@Override
 	public void init() {
-		folks.all().forEach(Creature::init);
-		folks.all().forEach(guy -> world.exclude(guy.entity));
+		folks.guys().forEach(Creature::init);
+		folks.guys().forEach(guy -> world.exclude(guy.entity));
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class TestUI implements Lifecycle, VisualController {
 				view.turnStatesOn();
 			}
 		}
-		folks.allInWorld().forEach(Creature::update);
+		folks.guysInWorld().forEach(Creature::update);
 		view.update();
 	}
 }

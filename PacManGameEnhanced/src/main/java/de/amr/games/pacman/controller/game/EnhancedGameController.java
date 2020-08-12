@@ -60,12 +60,12 @@ public class EnhancedGameController extends GameController {
 		});
 		addStateEntryListener(GETTING_READY, state -> {
 			REGISTRY.register(currentView.machines());
-			folks.all().forEach(guy -> REGISTRY.register(guy.machines()));
+			folks.guys().forEach(guy -> REGISTRY.register(guy.machines()));
 			REGISTRY.register(Stream.of(this, bonusControl, ghostCommand));
 		});
 		addStateEntryListener(GAME_OVER, state -> {
 			REGISTRY.unregister(currentView.machines());
-			folks.all().forEach(guy -> REGISTRY.unregister(guy.machines()));
+			folks.guys().forEach(guy -> REGISTRY.unregister(guy.machines()));
 			REGISTRY.unregister(Stream.of(this, bonusControl, ghostCommand));
 		});
 	}

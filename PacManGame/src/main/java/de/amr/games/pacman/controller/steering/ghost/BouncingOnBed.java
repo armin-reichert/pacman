@@ -6,7 +6,7 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.model.world.core.MobileLifeform;
+import de.amr.games.pacman.model.world.core.Mover;
 
 public class BouncingOnBed implements Steering {
 
@@ -17,7 +17,7 @@ public class BouncingOnBed implements Steering {
 	}
 
 	@Override
-	public void steer(MobileLifeform entity) {
+	public void steer(Mover entity) {
 		float dy = entity.tf.y + Tile.SIZE / 2 - bed.center().y;
 		if (dy < -4) {
 			entity.wishDir = DOWN;

@@ -81,8 +81,8 @@ public class Folks {
 		you(pinky).when(CHASING).headFor().tile(() -> pacMan.tilesAhead(4)).ok();
 
 		you(clyde).when(SCATTERING).headFor().tile(0, world.height() - 1).ok();
-		you(clyde).when(CHASING).headFor().tile(
-				() -> clyde.entity.distance(pacMan.entity) > 8 ? pacMan.entity.tile() : Tile.at(0, world.height() - 1))
+		you(clyde).when(CHASING).headFor()
+				.tile(() -> clyde.entity.tileDistance(pacMan.entity) > 8 ? pacMan.entity.tile() : Tile.at(0, world.height() - 1))
 				.ok();
 	}
 
@@ -94,11 +94,11 @@ public class Folks {
 		return ghosts().filter(ghost -> ghost.entity.world.contains(ghost.entity));
 	}
 
-	public Stream<Creature<?>> all() {
+	public Stream<Creature<?>> guys() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 
-	public Stream<Creature<?>> allInWorld() {
-		return all().filter(guy -> guy.entity.world.contains(guy.entity));
+	public Stream<Creature<?>> guysInWorld() {
+		return guys().filter(guy -> guy.entity.world.contains(guy.entity));
 	}
 }

@@ -9,7 +9,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.MobileLifeform;
+import de.amr.games.pacman.model.world.core.Mover;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 
@@ -23,7 +23,7 @@ import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
  */
 public class FleeingToSafeTile extends FollowingPath {
 
-	private final MobileLifeform attacker;
+	private final Mover attacker;
 	private final WorldGraph graph;
 	private final List<Tile> capes;
 	private final List<Tile> portalEntries;
@@ -31,7 +31,7 @@ public class FleeingToSafeTile extends FollowingPath {
 	private Tile safeTile;
 	private boolean passingPortal;
 
-	public FleeingToSafeTile(Ghost refugee, MobileLifeform attacker) {
+	public FleeingToSafeTile(Ghost refugee, Mover attacker) {
 		super(refugee.entity);
 		this.attacker = attacker;
 		World world = refugee.entity.world;
@@ -48,7 +48,7 @@ public class FleeingToSafeTile extends FollowingPath {
 	}
 
 	@Override
-	public void steer(MobileLifeform entity) {
+	public void steer(Mover entity) {
 		if (path.size() == 0 || isComplete()) {
 			safeTile = computeSafestCorner();
 			setPath(graph.shortestPath(entity.tile(), safeTile));

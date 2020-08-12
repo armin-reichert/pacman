@@ -7,7 +7,7 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.House;
-import de.amr.games.pacman.model.world.core.MobileLifeform;
+import de.amr.games.pacman.model.world.core.Mover;
 
 public class LeavingHouse implements Steering {
 
@@ -18,7 +18,7 @@ public class LeavingHouse implements Steering {
 	}
 
 	@Override
-	public void steer(MobileLifeform entity) {
+	public void steer(Mover entity) {
 		Tile exit = Tile.at(house.bed(0).col(), house.bed(0).row());
 		int targetX = exit.centerX(), targetY = exit.y();
 		if (entity.tf.y <= targetY) {

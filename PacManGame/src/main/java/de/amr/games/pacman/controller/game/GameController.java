@@ -307,7 +307,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (remaining == sec(1)) {
 				world.setFrozen(false);
 			}
-			folks.allInWorld().forEach(Creature::update);
+			folks.guysInWorld().forEach(Creature::update);
 		}
 
 		@Override
@@ -330,7 +330,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onTick(State<PacManGameState> state, long passed, long remaining) {
-			folks.allInWorld().forEach(Creature::update);
+			folks.guysInWorld().forEach(Creature::update);
 			if (passed == INITIAL_WAIT_TIME) {
 				folks.pacMan.wakeUp();
 			}
@@ -358,7 +358,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			world.setFrozen(false);
 			bonusControl.init();
 			ghostCommand.init();
-			folks.allInWorld().forEach(Creature::init);
+			folks.guysInWorld().forEach(Creature::init);
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
@@ -425,7 +425,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				enqueue(new LevelCompletedEvent());
 			} else if (energizer && game.level.pacManPowerSeconds > 0) {
 				ghostCommand.stopAttacking();
-				folks.allInWorld()
+				folks.guysInWorld()
 						.forEach(creature -> creature.ai.process(new PacManGainsPowerEvent(sec(game.level.pacManPowerSeconds))));
 			}
 		}
@@ -467,14 +467,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				world.setChanging(false);
 				world.fillFood();
 				game.enterLevel(game.level.number + 1);
-				folks.all().forEach(Creature::init);
+				folks.guys().forEach(Creature::init);
 				folks.blinky.madnessController.init();
 				playView.init();
 			}
 
 			// One second later, let ghosts jump again inside the house
 			if (passed >= flashingEnd + sec(2)) {
-				folks.allInWorld().forEach(Creature::update);
+				folks.guysInWorld().forEach(Creature::update);
 			}
 
 			if (passed == flashingEnd + sec(4)) {
@@ -490,7 +490,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		selectTheme(settings.theme);
 		world = new ArcadeWorld();
 		folks = new Folks(world, world.house(0));
-		folks.all().forEach(guy -> world.include(guy.entity));
+		folks.guys().forEach(guy -> world.include(guy.entity));
 		folks.pacMan.ai.addEventListener(this::process);
 		folks.ghosts().forEach(ghost -> ghost.ai.addEventListener(this::process));
 		super.init();
@@ -570,7 +570,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		ghostCommand = new GhostCommand(game, folks);
 		bonusControl = new BonusControl(game, world);
 		doorMan = new DoorMan(world, world.house(0), game, folks);
-		folks.all().forEach(guy -> {
+		folks.guys().forEach(guy -> {
 			world.include(guy.entity);
 			guy.game = game;
 			guy.init();

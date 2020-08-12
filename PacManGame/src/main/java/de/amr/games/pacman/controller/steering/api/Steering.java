@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller.steering.api;
 import java.util.Optional;
 
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.core.MobileLifeform;
+import de.amr.games.pacman.model.world.core.Mover;
 
 /**
  * Interface for steering of lifeforms through their world.
@@ -18,7 +18,7 @@ public interface Steering {
 	 * 
 	 * @param mover the steered lifeform
 	 */
-	void steer(MobileLifeform mover);
+	void steer(Mover mover);
 
 	/**
 	 * Some steerings needs an initial step.

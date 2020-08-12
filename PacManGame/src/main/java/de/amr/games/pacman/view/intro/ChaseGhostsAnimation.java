@@ -41,13 +41,13 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	@Override
 	public boolean isComplete() {
-		return folks.all().allMatch(creature -> creature.entity.tf.x > world.width() * Tile.SIZE);
+		return folks.guys().allMatch(creature -> creature.entity.tf.x > world.width() * Tile.SIZE);
 	}
 
 	@Override
 	public void init() {
 		points = 200;
-		folks.all().forEach(Creature::init);
+		folks.guys().forEach(Creature::init);
 
 		folks.pacMan.entity.moveDir = Direction.RIGHT;
 		folks.pacMan.entity.tf.vx = 0.8f;
@@ -83,7 +83,7 @@ public class ChaseGhostsAnimation extends GameObject {
 				theme.sounds().clipEatGhost().play();
 			});
 		//@formatter:on
-		folks.all().forEach(creature -> creature.entity.tf.move());
+		folks.guys().forEach(creature -> creature.entity.tf.move());
 	}
 
 	@Override

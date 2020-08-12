@@ -48,7 +48,7 @@ public class ChasePacManAnimation extends GameObject {
 		pelletTimer = Game.sec(6 * 0.5f);
 		pelletDisplay = PelletDisplay.SIMPLE;
 
-		folks.all().forEach(Creature::init);
+		folks.guys().forEach(Creature::init);
 
 		folks.pacMan.entity.tf.vx = -0.55f;
 		folks.pacMan.entity.moveDir = Direction.LEFT;
@@ -77,7 +77,7 @@ public class ChasePacManAnimation extends GameObject {
 
 	@Override
 	public void update() {
-		folks.all().forEach(c -> c.entity.tf.move());
+		folks.guys().forEach(c -> c.entity.tf.move());
 		if (pelletTimer > 0) {
 			if (pelletTimer % Game.sec(0.5f) == 0)
 				if (pelletDisplay == PelletDisplay.FIFTY) {
@@ -104,12 +104,12 @@ public class ChasePacManAnimation extends GameObject {
 	public void stop() {
 		theme.sounds().clipGhostChase().stop();
 		theme.sounds().clipCrunching().stop();
-		folks.all().forEach(creature -> creature.entity.tf.vx = 0);
+		folks.guys().forEach(creature -> creature.entity.tf.vx = 0);
 	}
 
 	@Override
 	public boolean isComplete() {
-		return folks.all().map(creature -> creature.entity.tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
+		return folks.guys().map(creature -> creature.entity.tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
 	}
 
 	@Override
