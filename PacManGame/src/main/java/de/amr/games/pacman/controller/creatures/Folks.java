@@ -42,12 +42,15 @@ public class Folks {
 		pinky = new Ghost("Pinky", GhostPersonality.SPEEDY, world);
 		clyde = new Ghost("Clyde", GhostPersonality.POKEY, world);
 
-		ghosts().forEach(ghost -> ghost.pacMan = pacMan);
+		ghosts().forEach(ghost -> {
+			ghost.house = ghostHouse;
+			ghost.pacMan = pacMan;
+		});
 
-		blinky.assignBed(ghostHouse, 0);
-		inky.assignBed(ghostHouse, 1);
-		pinky.assignBed(ghostHouse, 2);
-		clyde.assignBed(ghostHouse, 3);
+		blinky.bed = ghostHouse.bed(0);
+		inky.bed = ghostHouse.bed(1);
+		pinky.bed = ghostHouse.bed(2);
+		clyde.bed = ghostHouse.bed(3);
 
 		// define behavior
 

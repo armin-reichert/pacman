@@ -238,11 +238,6 @@ public class Ghost extends Creature<GhostState> {
 		return madnessController != null ? Stream.of(ai, movement, madnessController) : Stream.of(ai, movement);
 	}
 
-	public void assignBed(House house, int bedNumber) {
-		this.house = house;
-		this.bed = house.bed(bedNumber);
-	}
-
 	public GhostMentalState getMentalState() {
 		return Optional.ofNullable(madnessController).map(GhostMadnessController::getState)
 				.orElse(GhostMentalState.HEALTHY);
