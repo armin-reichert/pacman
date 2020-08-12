@@ -69,11 +69,11 @@ public class Folks {
 
 		you(blinky).when(ENTERING_HOUSE).enterDoorAndGoToBed().door(door).bed(pinky.bed).ok();
 		you(blinky).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
-		you(blinky).when(CHASING).headFor().tile(pacMan.entity::tileLocation).ok();
+		you(blinky).when(CHASING).headFor().tile(pacMan.entity::tile).ok();
 
 		you(inky).when(SCATTERING).headFor().tile(world.width() - 1, world.height() - 1).ok();
 		you(inky).when(CHASING).headFor().tile(() -> {
-			Tile b = blinky.entity.tileLocation(), p = pacMan.tilesAhead(2);
+			Tile b = blinky.entity.tile(), p = pacMan.tilesAhead(2);
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}).ok();
 
@@ -82,7 +82,7 @@ public class Folks {
 
 		you(clyde).when(SCATTERING).headFor().tile(0, world.height() - 1).ok();
 		you(clyde).when(CHASING).headFor().tile(
-				() -> clyde.entity.distance(pacMan.entity) > 8 ? pacMan.entity.tileLocation() : Tile.at(0, world.height() - 1))
+				() -> clyde.entity.distance(pacMan.entity) > 8 ? pacMan.entity.tile() : Tile.at(0, world.height() - 1))
 				.ok();
 	}
 

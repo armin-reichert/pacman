@@ -148,7 +148,7 @@ public class PacMan extends Creature<PacManState> {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int nTiles) {
-		Tile tileAhead = entity.world.tileToDir(entity.tileLocation(), entity.moveDir, nTiles);
+		Tile tileAhead = entity.world.tileToDir(entity.tile(), entity.moveDir, nTiles);
 		if (entity.moveDir == UP && !settings.fixOverflowBug) {
 			tileAhead = entity.world.tileToDir(tileAhead, LEFT, nTiles);
 		}
@@ -202,7 +202,7 @@ public class PacMan extends Creature<PacManState> {
 			fat = Math.max(0, fat - 1);
 		}
 		if (!movement.is(MovementType.TELEPORTING)) {
-			searchForFood(entity.tileLocation()).ifPresent(ai::publish);
+			searchForFood(entity.tile()).ifPresent(ai::publish);
 		}
 	}
 

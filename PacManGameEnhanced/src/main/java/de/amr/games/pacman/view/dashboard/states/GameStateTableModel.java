@@ -139,7 +139,7 @@ class GameStateTableModel extends AbstractTableModel {
 		r.creature = pacMan;
 		r.included = world.contains(pacMan.entity);
 		r.name = "Pac-Man";
-		r.tile = pacMan.entity.tileLocation();
+		r.tile = pacMan.entity.tile();
 		r.moveDir = pacMan.entity.moveDir;
 		r.wishDir = pacMan.entity.wishDir;
 		if (pacMan.ai.getState() != null) {
@@ -154,7 +154,7 @@ class GameStateTableModel extends AbstractTableModel {
 		r.creature = ghost;
 		r.included = world.contains(ghost.entity);
 		r.name = ghost.name;
-		r.tile = ghost.entity.tileLocation();
+		r.tile = ghost.entity.tile();
 		r.target = ghost.steering().targetTile().orElse(null);
 		r.moveDir = ghost.entity.moveDir;
 		r.wishDir = ghost.entity.wishDir;
@@ -167,7 +167,7 @@ class GameStateTableModel extends AbstractTableModel {
 					: ghost.ai.state().getDuration();
 		}
 		r.ghostSanity = ghost.getMentalState();
-		r.pacManCollision = ghost.entity.tileLocation().equals(pacMan.entity.tileLocation());
+		r.pacManCollision = ghost.entity.tile().equals(pacMan.entity.tile());
 	}
 
 	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {

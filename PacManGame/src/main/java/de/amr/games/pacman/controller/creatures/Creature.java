@@ -72,7 +72,7 @@ public abstract class Creature<S> implements Lifecycle {
 	 * @return {@code true} if this creature can cross the border to the given direction
 	 */
 	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = entity.tileLocation(), neighbor = entity.world.neighbor(currentTile, dir);
+		Tile currentTile = entity.tile(), neighbor = entity.world.neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
 

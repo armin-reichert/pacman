@@ -203,7 +203,7 @@ public class Ghost extends Creature<GhostState> {
 			return 0;
 		}
 		GameLevel level = game.level;
-		boolean tunnel = entity.world.isTunnel(entity.tileLocation());
+		boolean tunnel = entity.world.isTunnel(entity.tile());
 		switch (ai.getState()) {
 		case LOCKED:
 			return speed(isInsideHouse() ? level.ghostSpeed / 2 : 0);
@@ -239,8 +239,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public GhostMentalState getMentalState() {
-		return Optional.ofNullable(madnessController).map(GhostMadnessController::getState)
-				.orElse(GhostMentalState.HEALTHY);
+		return madnessController != null ? madnessController.getState() : GhostMentalState.HEALTHY;
 	}
 
 	private void computeBounty() {
@@ -256,15 +255,15 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private void maybeMeetPacMan(PacMan pacMan) {
-		if (entity.tileLocation().equals(pacMan.entity.tileLocation()) && entity.visible && pacMan.entity.visible
-				&& !pacMan.ai.is(PacManState.DEAD)) {
+		if (entity.visible && pacMan.entity.visible && entity.tile().equals(pacMan.entity.tile())
+				&& !pacMan.ai.is(PacManState.DEAD, PacManState.COLLAPSING)) {
 			ai.publish(new PacManGhostCollisionEvent(this));
 		}
 	}
 
 	public boolean justLeftGhostHouse() {
-		Tile location = entity.tileLocation();
-		return ai.getState() == LEAVING_HOUSE && house.isEntry(location) && entity.tf.y == location.row * Tile.SIZE;
+		Tile location = entity.tile();
+		return ai.is(LEAVING_HOUSE) && house.isEntry(location) && entity.tf.y == location.row * Tile.SIZE;
 	}
 
 	@Override
@@ -289,8 +288,7 @@ public class Ghost extends Creature<GhostState> {
 			currentSteering.force();
 			previousSteering = currentSteering;
 		}
-		// TODO check why ghosts get lost in tunnel/portal
-		if (!entity.world.isTunnel(entity.tileLocation())) {
+		if (!entity.world.isTunnel(entity.tile())) {
 			currentSteering.steer(entity);
 		}
 		movement.update();
@@ -301,10 +299,10 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public boolean isAtHouseEntry() {
-		return house.isEntry(entity.tileLocation()) && (entity.tileOffsetX() - Tile.SIZE / 2) <= 1;
+		return house.isEntry(entity.tile()) && (entity.tileOffsetX() - Tile.SIZE / 2) <= 1;
 	}
 
 	public boolean isInsideHouse() {
-		return house.isInsideOrDoor(entity.tileLocation());
+		return house.isInsideOrDoor(entity.tile());
 	}
 }

@@ -25,7 +25,7 @@ public class TakingShortestPath extends FollowingPath {
 	@Override
 	public void steer(MobileLifeform mover) {
 		if (path.size() == 0 || isComplete()) {
-			setPath(graph.shortestPath(mover.tileLocation(), fnTargetTile.get()));
+			setPath(graph.shortestPath(mover.tile(), fnTargetTile.get()));
 		}
 		super.steer(mover);
 	}

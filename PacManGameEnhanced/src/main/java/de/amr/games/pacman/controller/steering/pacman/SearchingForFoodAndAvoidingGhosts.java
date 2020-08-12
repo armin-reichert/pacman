@@ -82,7 +82,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 
 	@Override
 	public List<Tile> pathToTarget(MobileLifeform pacMan) {
-		return target != null ? graph.shortestPath(pacMan.tileLocation(), target) : Collections.emptyList();
+		return target != null ? graph.shortestPath(pacMan.tile(), target) : Collections.emptyList();
 	}
 
 	private boolean avoidTouchingGhostAhead() {
@@ -113,7 +113,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 			Optional<Direction> dir = frightenedGhost.flatMap(this::directionTowards);
 			if (dir.isPresent()) {
 				me.entity.wishDir = dir.get();
-				target = frightenedGhost.get().entity.tileLocation();
+				target = frightenedGhost.get().entity.tile();
 				return true;
 			}
 		}
@@ -200,7 +200,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	private boolean isGhostInRange(Ghost ghost, int numTiles) {
-		return shortestPathLength(ghost.entity.tileLocation(), me.entity.tileLocation()) <= numTiles;
+		return shortestPathLength(ghost.entity.tile(), me.entity.tile()) <= numTiles;
 	}
 
 	private Stream<Ghost> dangerousGhosts() {
@@ -212,7 +212,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	private double nearestDistanceToDangerousGhost(Tile here) {
-		return dangerousGhosts().map(ghost -> here.distance(ghost.entity.tileLocation())).min(Double::compareTo)
+		return dangerousGhosts().map(ghost -> here.distance(ghost.entity.tile())).min(Double::compareTo)
 				.orElse(Double.MAX_VALUE);
 	}
 
@@ -233,7 +233,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 		double minDist = Integer.MAX_VALUE;
 		for (Direction dir : Direction.values()) {
 			if (me.canCrossBorderTo(dir)) {
-				List<Tile> path = graph.shortestPath(me.entity.tileLocation(), enemy.entity.tileLocation());
+				List<Tile> path = graph.shortestPath(me.entity.tile(), enemy.entity.tile());
 				int dist = path.size();
 				if (dist < minDist && path.size() >= 2) {
 					minDist = dist;

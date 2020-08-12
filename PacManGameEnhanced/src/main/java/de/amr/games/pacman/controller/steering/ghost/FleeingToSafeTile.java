@@ -51,7 +51,7 @@ public class FleeingToSafeTile extends FollowingPath {
 	public void steer(MobileLifeform entity) {
 		if (path.size() == 0 || isComplete()) {
 			safeTile = computeSafestCorner();
-			setPath(graph.shortestPath(entity.tileLocation(), safeTile));
+			setPath(graph.shortestPath(entity.tile(), safeTile));
 		}
 		super.steer(entity);
 	}
@@ -64,12 +64,12 @@ public class FleeingToSafeTile extends FollowingPath {
 
 	@Override
 	public boolean isComplete() {
-		if (passingPortal && !mover.world.isTunnel(mover.tileLocation())) {
+		if (passingPortal && !mover.world.isTunnel(mover.tile())) {
 			// refugee passed portal and tunnel, now compute new safe tile
 			passingPortal = false;
 			return true;
 		}
-		if (mover.tileLocation().equals(safeTile)) {
+		if (mover.tile().equals(safeTile)) {
 			if (capes.contains(safeTile)) {
 				return true;
 			} else {
@@ -92,8 +92,8 @@ public class FleeingToSafeTile extends FollowingPath {
 
 	private Comparator<Tile> byTileSafety() {
 		return (t1, t2) -> {
-			Tile refugeeLocation = mover.tileLocation();
-			Tile attackerLocation = attacker.tileLocation();
+			Tile refugeeLocation = mover.tile();
+			Tile attackerLocation = attacker.tile();
 			double d1 = distanceFromPath(graph.shortestPath(refugeeLocation, t1), attackerLocation);
 			double d2 = distanceFromPath(graph.shortestPath(refugeeLocation, t2), attackerLocation);
 			return Double.compare(d2, d1); // larger distance comes first

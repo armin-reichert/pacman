@@ -118,13 +118,13 @@ public class RoutesRenderer {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
-		x1 = blinky.entity.tileLocation().centerX();
-		y1 = blinky.entity.tileLocation().centerY();
+		x1 = blinky.entity.tile().centerX();
+		y1 = blinky.entity.tile().centerY();
 		x2 = inky.steering().targetTile().get().centerX();
 		y2 = inky.steering().targetTile().get().centerY();
 		g.setColor(Color.GRAY);
 		g.drawLine(x1, y1, x2, y2);
-		Tile pacManTile = pacMan.entity.tileLocation();
+		Tile pacManTile = pacMan.entity.tile();
 		Direction pacManDir = pacMan.entity.moveDir;
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
@@ -157,7 +157,7 @@ public class RoutesRenderer {
 			return;
 		}
 		Color ghostColor = ghostColor(clyde);
-		int cx = clyde.entity.tileLocation().centerX(), cy = clyde.entity.tileLocation().centerY();
+		int cx = clyde.entity.tile().centerX(), cy = clyde.entity.tile().centerY();
 		int r = 8 * Tile.SIZE;
 		g.setColor(alpha(ghostColor, 200));
 		g.setStroke(new BasicStroke(0.2f));

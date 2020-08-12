@@ -77,13 +77,13 @@ public class Movement extends StateMachine<MovementType, Void> {
 		if (activePortal != null) {
 			return; // already entered portal before
 		}
-		Tile tile = guy.entity.tileLocation();
+		Tile tile = guy.entity.tile();
 		guy.entity.world.portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
-			if (portal.either.equals(tile) && (guy.entity.isMoving(LEFT) && guy.entity.tileOffsetX() <= 1)
-					|| (guy.entity.isMoving(UP) && guy.entity.tileOffsetY() <= 1)) {
+			if (portal.either.equals(tile) && (guy.entity.moveDir == LEFT && guy.entity.tileOffsetX() <= 1)
+					|| (guy.entity.moveDir == UP && guy.entity.tileOffsetY() <= 1)) {
 				setActivePortal(portal, tile);
-			} else if (portal.other.equals(tile) && (guy.entity.isMoving(RIGHT) && guy.entity.tileOffsetX() >= 7)
-					|| (guy.entity.isMoving(DOWN) && guy.entity.tileOffsetY() >= 7)) {
+			} else if (portal.other.equals(tile) && (guy.entity.moveDir == RIGHT && guy.entity.tileOffsetX() >= 7)
+					|| (guy.entity.moveDir == DOWN && guy.entity.tileOffsetY() >= 7)) {
 				setActivePortal(portal, tile);
 			}
 		});
@@ -101,11 +101,11 @@ public class Movement extends StateMachine<MovementType, Void> {
 		guy.entity.tf.setPosition(exit.x(), exit.y());
 		guy.entity.enteredNewTile = true;
 		activePortal = null;
-		loginfo("%s exits portal at %s", guy.name, guy.entity.tileLocation());
+		loginfo("%s exits portal at %s", guy.name, guy.entity.tile());
 	}
 
 	private void move(boolean aligned, float speed) {
-		final Tile tileBeforeMove = guy.entity.tileLocation();
+		final Tile tileBeforeMove = guy.entity.tile();
 
 		// how far can we move?
 		float pixels = possibleMoveDistance(guy.entity.moveDir, speed);
@@ -124,7 +124,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 		Vector2f velocity = guy.entity.moveDir.vector().times(pixels);
 		guy.entity.tf.setVelocity(velocity);
 		guy.entity.tf.move();
-		guy.entity.enteredNewTile = !tileBeforeMove.equals(guy.entity.tileLocation());
+		guy.entity.enteredNewTile = !tileBeforeMove.equals(guy.entity.tile());
 		checkIfJustEnteredPortal();
 	}
 

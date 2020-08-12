@@ -368,7 +368,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private void onPacManGhostCollision(PacManGameEvent event) {
 			PacManGhostCollisionEvent collision = (PacManGhostCollisionEvent) event;
 			Ghost ghost = collision.ghost;
-			loginfo("%s got killed at %s", ghost.name, ghost.entity.tileLocation());
+			loginfo("%s got killed at %s", ghost.name, ghost.entity.tile());
 
 			if (ghost.ai.is(FRIGHTENED)) {
 				int livesBefore = game.lives;
@@ -381,7 +381,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			else if (!settings.ghostsHarmless) {
-				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.entity.tileLocation());
+				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.entity.tile());
 				doorMan.onLifeLost();
 				sound.chasingGhosts = false;
 				sound.deadGhosts = false;

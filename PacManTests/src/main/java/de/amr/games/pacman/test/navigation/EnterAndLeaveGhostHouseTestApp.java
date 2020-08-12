@@ -67,7 +67,7 @@ class EnterGhostHouseTestUI extends TestUI {
 			you(inky).when(SCATTERING).headFor().tile(nextCapeToVisit).ok();
 		} else if (inky.ai.getState() == SCATTERING) {
 			// one round around the block, then killed at cape
-			if (capes.contains(inky.entity.tileLocation())) {
+			if (capes.contains(inky.entity.tile())) {
 				enteredCape = true;
 			} else {
 				if (enteredCape) {

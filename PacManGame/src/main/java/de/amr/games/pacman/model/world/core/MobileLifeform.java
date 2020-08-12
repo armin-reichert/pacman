@@ -1,7 +1,5 @@
 package de.amr.games.pacman.model.world.core;
 
-import java.util.stream.Stream;
-
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -22,18 +20,9 @@ public class MobileLifeform extends Lifeform {
 	}
 
 	@Override
-	public void placeAt(Tile tile, float xOffset, float yOffset) {
-		Tile oldLocation = tileLocation();
-		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
-		enteredNewTile = !tileLocation().equals(oldLocation);
-	}
-
-
-	/**
-	 * @param dirs directions
-	 * @return if the lifeform is moving to any of the given directions
-	 */
-	public boolean isMoving(Direction... dirs) {
-		return Stream.of(dirs).anyMatch(dir -> dir == moveDir);
+	public void placeAt(Tile tile, float dx, float dy) {
+		Tile oldTile = tile();
+		tf.setPosition(tile.x() + dx, tile.y() + dy);
+		enteredNewTile = !tile().equals(oldTile);
 	}
 }

@@ -57,7 +57,7 @@ class FollowTargetTilesTestUI extends TestUI {
 
 	@Override
 	public void update() {
-		if (blinky.entity.tileLocation().equals(targets.get(current))) {
+		if (blinky.entity.tile().equals(targets.get(current))) {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
