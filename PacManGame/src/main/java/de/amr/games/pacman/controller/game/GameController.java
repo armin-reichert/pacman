@@ -446,7 +446,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			world.setFrozen(true);
 			folks.pacMan.fallAsleep();
 			doorMan.onLevelChange();
-			folks.ghosts().forEach(ghost -> ghost.setEnabled(false));
+			folks.ghosts().forEach(ghost -> ghost.enabled = false);
 			theme.sounds().clips().forEach(SoundClip::stop);
 			flashingEnd = flashingStart + game.level.numFlashes * sec(theme.$float("maze-flash-sec"));
 			complete = false;
@@ -570,8 +570,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		ghostCommand = new GhostCommand(game, folks);
 		bonusControl = new BonusControl(game, world);
 		doorMan = new DoorMan(world, world.house(0), game, folks);
-		folks.all().forEach(guy -> world.include(guy.entity));
-		folks.getReadyToRumble(game);
+		folks.all().forEach(guy -> {
+			world.include(guy.entity);
+			guy.game = game;
+			guy.init();
+		});
+		folks.blinky.getMadnessController().init();
 	}
 
 	protected MusicLoadingView createMusicLoadingView() {

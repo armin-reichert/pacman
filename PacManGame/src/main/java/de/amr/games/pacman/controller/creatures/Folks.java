@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Door;
@@ -82,10 +81,6 @@ public class Folks {
 		you(clyde).when(CHASING).headFor().tile(
 				() -> clyde.entity.distance(pacMan.entity) > 8 ? pacMan.entity.tileLocation() : Tile.at(0, world.height() - 1))
 				.ok();
-	}
-
-	public void getReadyToRumble(Game game) {
-		all().forEach(guy -> guy.setGame(game));
 	}
 
 	public Stream<Ghost> ghosts() {

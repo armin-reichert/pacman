@@ -23,7 +23,6 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.game.GameLevel;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -74,7 +73,7 @@ public class Ghost extends Creature<GhostState> {
 					flashing = false;
 					bounty = 0;
 					nextState = LOCKED;
-					setEnabled(true);
+					enabled = true;
 					placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 					entity.visible = true;
 					entity.moveDir = bed.exitDir;
@@ -229,14 +228,13 @@ public class Ghost extends Creature<GhostState> {
 		return madnessController;
 	}
 
-	@Override
-	public void setGame(Game game) {
-		this.game = game;
-		if (madnessController != null) {
-			madnessController.setGame(game);
-		}
-		init();
-	}
+//	public void setGame(Game game) {
+//		this.game = game;
+//		if (madnessController != null) {
+//			madnessController.setGame(game);
+//		}
+//		init();
+//	}
 
 	private void computeBounty() {
 		bounty = game != null ? game.killedGhostPoints() : 0;
@@ -318,7 +316,7 @@ public class Ghost extends Creature<GhostState> {
 		if (madnessController != null) {
 			madnessController.update();
 		}
-		setEnabled(entity.tf.vx != 0 || entity.tf.vy != 0);
+		enabled = entity.tf.vx != 0 || entity.tf.vy != 0;
 	}
 
 	public boolean isAtHouseEntry() {

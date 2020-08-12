@@ -35,7 +35,7 @@ class GhostRenderer implements IGhostRenderer, ISpriteRenderer {
 	public void render(Graphics2D g, Ghost ghost) {
 		selectSprite(ghost);
 		Sprite sprite = spriteMap.current().get();
-		sprite.enableAnimation(ghost.isEnabled());
+		sprite.enableAnimation(ghost.enabled);
 		int sw = 2 * ghost.entity.tf.width, sh = 2 * ghost.entity.tf.height;
 		if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
 			sprite.scale(sw, sh);

@@ -60,7 +60,7 @@ public class PacMan extends Creature<PacManState> {
 					.onEntry(() -> {
 						putIntoBed();
 						entity.visible = true;
-						setEnabled(true);
+						enabled = true;
 						fat = 0;
 					})
 
@@ -196,7 +196,7 @@ public class PacMan extends Creature<PacManState> {
 	private void wander() {
 		steering().steer(entity);
 		movement.update();
-		setEnabled(entity.tf.vx != 0 || entity.tf.vy != 0);
+		enabled = entity.tf.vx != 0 || entity.tf.vy != 0;
 		if (entity.enteredNewTile) {
 			fat = Math.max(0, fat - 1);
 		}

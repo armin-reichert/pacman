@@ -32,23 +32,28 @@ public abstract class Creature<S> implements Lifecycle {
 	public final StateMachine<S, PacManGameEvent> ai;
 	public final MobileLifeform entity;
 	public final String name;
-	protected final Map<S, Steering> steeringsMap;
-	protected Game game;
-	protected boolean enabled;
-	protected Movement movement;
-	protected Theme theme;
+	public final Map<S, Steering> steeringsMap;
+	public Game game;
+	public boolean enabled;
+	public Movement movement;
+	public Theme theme;
 
 	public Creature(String name, World world, Map<S, Steering> steeringsMap) {
 		this.name = name;
+		this.steeringsMap = steeringsMap;
 		enabled = true;
 		entity = new MobileLifeform(world);
 		entity.tf.width = entity.tf.height = Tile.SIZE;
 		movement = new Movement(this);
-		this.steeringsMap = steeringsMap;
 		ai = buildAI();
 	}
 
 	protected abstract StateMachine<S, PacManGameEvent> buildAI();
+
+	/**
+	 * @return speed in pixels/ticks
+	 */
+	public abstract float getSpeed();
 
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
 		return entity.world.isAccessible(neighbor);
@@ -59,46 +64,12 @@ public abstract class Creature<S> implements Lifecycle {
 		return canMoveBetween(currentTile, neighbor);
 	}
 
-	/**
-	 * @param game the game this creature takes part in
-	 */
-	public void setGame(Game game) {
-		this.game = game;
-		init();
-	}
-
 	public Stream<StateMachine<?, ?>> machines() {
 		return Stream.of(ai, movement);
 	}
 
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	public void setTheme(Theme theme) {
-		this.theme = theme;
-	}
-
-	/**
-	 * @return this creatures' current speed (pixels per tick)
-	 */
-	public float getSpeed() {
-		return 0;
-	}
-
 	public Steering steering() {
-		return steering(entity);
-	}
-
-	/**
-	 * @return the current steering for this actor.
-	 */
-	public Steering steering(MobileLifeform mover) {
-		return steeringsMap.getOrDefault(ai.getState(), m -> {
+		return steeringsMap.getOrDefault(ai.getState(), mover -> {
 		});
 	}
 

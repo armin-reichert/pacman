@@ -9,7 +9,6 @@ import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
 
 import java.util.Objects;
 
-import de.amr.games.pacman.model.game.Game;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
 
@@ -54,7 +53,6 @@ public class GhostMadnessController extends StateMachine<GhostMentalState, Byte>
 	private static final byte CLYDE_EXITS_HOUSE = 1;
 
 	private final Ghost ghost;
-	private Game game;
 
 	public GhostMadnessController(Ghost ghost) {
 		super(GhostMentalState.class, TransitionMatchStrategy.BY_VALUE);
@@ -78,11 +76,11 @@ public class GhostMadnessController extends StateMachine<GhostMentalState, Byte>
 			
 				.when(HEALTHY).then(ELROY2)
 					.condition(this::reachedElroy2Score)
-					.annotation(() -> String.format("Pellets left <= %d", game.level.elroy2DotsLeft))
+					.annotation(() -> String.format("Pellets left <= %d", ghost.game.level.elroy2DotsLeft))
 			
 				.when(HEALTHY).then(ELROY1)
 					.condition(this::reachedElroy1Score)
-					.annotation(() -> String.format("Pellets left <= %d", game.level.elroy1DotsLeft))
+					.annotation(() -> String.format("Pellets left <= %d", ghost.game.level.elroy1DotsLeft))
 
 				.when(TRANQUILIZED).then(ELROY2)
 					.on(CLYDE_EXITS_HOUSE)
@@ -96,7 +94,7 @@ public class GhostMadnessController extends StateMachine<GhostMentalState, Byte>
 					
 				.when(ELROY1).then(ELROY2)
 					.condition(this::reachedElroy2Score)
-					.annotation(() -> String.format("Remaining pellets <= %d", game.level.elroy2DotsLeft))
+					.annotation(() -> String.format("Remaining pellets <= %d", ghost.game.level.elroy2DotsLeft))
 
 				.when(ELROY1).then(TRANQUILIZED).on(PACMAN_DIES)
 					.annotation("Suspend Elroy when Pac-Man dies")
@@ -109,17 +107,12 @@ public class GhostMadnessController extends StateMachine<GhostMentalState, Byte>
 		init();
 	}
 
-	public void setGame(Game game) {
-		this.game = game;
-		init();
-	}
-
 	private boolean reachedElroy1Score() {
-		return game.level.remainingFoodCount() <= game.level.elroy1DotsLeft;
+		return ghost.game.level.remainingFoodCount() <= ghost.game.level.elroy1DotsLeft;
 	}
 
 	private boolean reachedElroy2Score() {
-		return game.level.remainingFoodCount() <= game.level.elroy2DotsLeft;
+		return ghost.game.level.remainingFoodCount() <= ghost.game.level.elroy2DotsLeft;
 	}
 
 	private void targetCorner() {
