@@ -52,8 +52,8 @@ public class RoutesRenderer {
 	}
 
 	public void drawGhostRoute(Graphics2D g, Ghost ghost) {
-		if (ghost.steering() instanceof PathProvidingSteering && ghost.targetTile() != null) {
-			drawTargetTileRubberband(g, ghost, ghost.targetTile());
+		if (ghost.steering() instanceof PathProvidingSteering && ghost.steering().targetTile() != null) {
+			drawTargetTileRubberband(g, ghost, ghost.steering().targetTile());
 			PathProvidingSteering steering = (PathProvidingSteering) ghost.steering();
 			drawTargetTilePath(g, steering.pathToTarget(ghost.entity), Rendering.ghostColor(ghost));
 		} else if (ghost.entity.wishDir != null) {
@@ -114,14 +114,14 @@ public class RoutesRenderer {
 	private void drawInkyChasing(Graphics2D g, Folks folks) {
 		PacMan pacMan = folks.pacMan;
 		Ghost inky = folks.inky, blinky = folks.blinky;
-		if (!inky.ai.is(CHASING) || inky.targetTile().isEmpty() || !folks.world.contains(blinky.entity)) {
+		if (!inky.ai.is(CHASING) || inky.steering().targetTile().isEmpty() || !folks.world.contains(blinky.entity)) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
 		x1 = blinky.entity.tileLocation().centerX();
 		y1 = blinky.entity.tileLocation().centerY();
-		x2 = inky.targetTile().get().centerX();
-		y2 = inky.targetTile().get().centerY();
+		x2 = inky.steering().targetTile().get().centerX();
+		y2 = inky.steering().targetTile().get().centerY();
 		g.setColor(Color.GRAY);
 		g.drawLine(x1, y1, x2, y2);
 		Tile pacManTile = pacMan.entity.tileLocation();

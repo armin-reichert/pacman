@@ -1,7 +1,6 @@
 package de.amr.games.pacman.controller.creatures;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
@@ -74,13 +73,6 @@ public abstract class Creature<S> implements Lifecycle {
 	}
 
 	/**
-	 * @return the optional target tile of this creature
-	 */
-	public Optional<Tile> targetTile() {
-		return steering().targetTile();
-	}
-
-	/**
 	 * Returns the steering for the given state.
 	 * 
 	 * @param state state
@@ -101,10 +93,6 @@ public abstract class Creature<S> implements Lifecycle {
 	 */
 	public void behavior(S state, Steering steering) {
 		steeringsMap.put(state, steering);
-	}
-
-	public boolean requiresAlignment() {
-		return steering().requiresGridAlignment();
 	}
 
 	@Override
