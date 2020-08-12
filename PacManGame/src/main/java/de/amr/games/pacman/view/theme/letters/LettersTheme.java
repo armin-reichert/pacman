@@ -1,14 +1,16 @@
 package de.amr.games.pacman.view.theme.letters;
 
+import static de.amr.games.pacman.controller.creatures.pacman.PacManState.COLLAPSING;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Map;
 
 import de.amr.easy.game.Application;
+import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
@@ -96,12 +98,12 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	public IPacManRenderer pacManRenderer(PacMan pacMan_) {
 		return (g, pacMan) -> {
 			if (pacMan.isVisible()) {
+				Transform tf = pacMan.entity.tf;
 				int offset_baseline = $int("offset-baseline");
-				Font font = $font("font");
-				g.setFont(font.deriveFont((float) pacMan.entity.tf.width));
+				g.setFont($font("font").deriveFont((float) tf.width));
 				g.setColor(Color.YELLOW);
-				String letter = pacMan.is(PacManState.DEAD) ? "\u2668" : "O";
-				g.drawString(letter, pacMan.entity.tf.x, pacMan.entity.tf.y + offset_baseline);
+				String letter = pacMan.is(COLLAPSING) ? "\u2668" : "O";
+				g.drawString(letter, tf.x, tf.y + offset_baseline);
 			}
 		};
 	}
@@ -172,10 +174,10 @@ public class LettersTheme extends ThemeParameters implements Theme {
 					int col = tile.col;
 					if (bonus.isPresent()) {
 						text = "WIN " + bonus.value();
-						col -= 1;
+						col = tile.col - 1;
 					} else if (bonus.isConsumed()) {
 						text = "WON " + bonus.value() + " POINTS!";
-						col -= 2;
+						col = tile.col - 3;;
 					}
 					g.drawString(text, col * Tile.SIZE, tile.row * Tile.SIZE + offset_baseline - 1);
 				});
