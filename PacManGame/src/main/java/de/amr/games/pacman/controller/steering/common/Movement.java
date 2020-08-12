@@ -69,12 +69,6 @@ public class Movement extends StateMachine<MovementType, Void> {
 		activePortal = null;
 	}
 
-	public void placeAt(Tile tile, float xOffset, float yOffset) {
-		Tile oldLocation = guy.entity.tileLocation();
-		guy.entity.tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
-		guy.entity.enteredNewTile = !guy.entity.tileLocation().equals(oldLocation);
-	}
-
 	private boolean hasEnteredPortal() {
 		return activePortal != null;
 	}
@@ -120,7 +114,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 			if (pixelsWishDir > 0) {
 				if (guy.entity.wishDir == guy.entity.moveDir.left() || guy.entity.wishDir == guy.entity.moveDir.right()) {
 					if (aligned) {
-						placeAt(tileBeforeMove, 0, 0);
+						guy.entity.placeAt(tileBeforeMove, 0, 0);
 					}
 				}
 				guy.entity.moveDir = guy.entity.wishDir;

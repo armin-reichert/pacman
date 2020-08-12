@@ -182,7 +182,7 @@ public class PacMan extends Creature<PacManState> {
 
 	private void putIntoBed() {
 		Bed bed = entity.world.pacManBed();
-		placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+		entity.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		entity.moveDir = bed.exitDir;
 		entity.wishDir = bed.exitDir;
 	}

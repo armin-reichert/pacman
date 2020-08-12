@@ -74,7 +74,7 @@ public class Ghost extends Creature<GhostState> {
 					bounty = 0;
 					nextState = LOCKED;
 					enabled = true;
-					placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+					entity.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 					entity.visible = true;
 					entity.moveDir = bed.exitDir;
 					entity.wishDir = bed.exitDir;

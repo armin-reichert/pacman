@@ -3,6 +3,7 @@ package de.amr.games.pacman.model.world.core;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 
 /**
@@ -19,6 +20,14 @@ public class MobileLifeform extends Lifeform {
 	public MobileLifeform(World world) {
 		super(world);
 	}
+
+	@Override
+	public void placeAt(Tile tile, float xOffset, float yOffset) {
+		Tile oldLocation = tileLocation();
+		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
+		enteredNewTile = !tileLocation().equals(oldLocation);
+	}
+
 
 	/**
 	 * @param dirs directions

@@ -113,10 +113,6 @@ public abstract class Creature<S> implements Lifecycle {
 		ai.init();
 	}
 
-	public void placeAt(Tile tile, float xOffset, float yOffset) {
-		movement.placeAt(tile, xOffset, yOffset);
-	}
-
 	public boolean isTeleporting() {
 		return movement.is(MovementType.TELEPORTING);
 	}

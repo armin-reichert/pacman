@@ -184,7 +184,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						folks.ghostsInWorld().forEach(ghost -> {
 							Bed bed = world.house(0).bed(0);
 							ghost.init();
-							ghost.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+							ghost.entity.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 							ghost.entity.wishDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 							ghost.ai.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});

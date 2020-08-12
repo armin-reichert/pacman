@@ -52,7 +52,7 @@ class EnterGhostHouseTestUI extends TestUI {
 		include(inky);
 		inky.init();
 		Bed bed = world.house(0).bed(0);
-		inky.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+		inky.entity.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		inky.ai.setState(SCATTERING);
 		view.turnRoutesOn();
 		view.turnGridOn();
