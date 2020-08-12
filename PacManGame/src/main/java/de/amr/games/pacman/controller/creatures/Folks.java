@@ -67,11 +67,11 @@ public class Folks {
 
 		you(blinky).when(ENTERING_HOUSE).enterDoorAndGoToBed().door(door).bed(pinky.bed()).ok();
 		you(blinky).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
-		you(blinky).when(CHASING).headFor().tile(pacMan::tileLocation).ok();
+		you(blinky).when(CHASING).headFor().tile(pacMan.entity::tileLocation).ok();
 
 		you(inky).when(SCATTERING).headFor().tile(world.width() - 1, world.height() - 1).ok();
 		you(inky).when(CHASING).headFor().tile(() -> {
-			Tile b = blinky.tileLocation(), p = pacMan.tilesAhead(2);
+			Tile b = blinky.entity.tileLocation(), p = pacMan.tilesAhead(2);
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}).ok();
 
@@ -79,8 +79,9 @@ public class Folks {
 		you(pinky).when(CHASING).headFor().tile(() -> pacMan.tilesAhead(4)).ok();
 
 		you(clyde).when(SCATTERING).headFor().tile(0, world.height() - 1).ok();
-		you(clyde).when(CHASING).headFor()
-				.tile(() -> clyde.distance(pacMan) > 8 ? pacMan.tileLocation() : Tile.at(0, world.height() - 1)).ok();
+		you(clyde).when(CHASING).headFor().tile(
+				() -> clyde.entity.distance(pacMan.entity) > 8 ? pacMan.entity.tileLocation() : Tile.at(0, world.height() - 1))
+				.ok();
 	}
 
 	public void getReadyToRumble(Game game) {
@@ -92,14 +93,14 @@ public class Folks {
 	}
 
 	public Stream<Ghost> ghostsInWorld() {
-		return ghosts().filter(ghost -> ghost.world().contains(ghost));
+		return ghosts().filter(ghost -> ghost.entity.world.contains(ghost.entity));
 	}
 
-	public Stream<Creature<?, ?>> all() {
+	public Stream<Creature<?>> all() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 
-	public Stream<Creature<?, ?>> allInWorld() {
-		return all().filter(guy -> guy.world().contains(guy));
+	public Stream<Creature<?>> allInWorld() {
+		return all().filter(guy -> guy.entity.world.contains(guy.entity));
 	}
 }

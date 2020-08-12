@@ -3,12 +3,12 @@ package de.amr.games.pacman.controller.steering.ghost;
 import static de.amr.games.pacman.model.world.api.Direction.DOWN;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
-import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.core.MobileLifeform;
 
-public class BouncingOnBed implements Steering<Ghost> {
+public class BouncingOnBed implements Steering {
 
 	private final Bed bed;
 
@@ -17,12 +17,12 @@ public class BouncingOnBed implements Steering<Ghost> {
 	}
 
 	@Override
-	public void steer(Ghost ghost) {
-		float dy = ghost.tf().y + Tile.SIZE / 2 - bed.center().y;
+	public void steer(MobileLifeform entity) {
+		float dy = entity.tf.y + Tile.SIZE / 2 - bed.center().y;
 		if (dy < -4) {
-			ghost.setWishDir(DOWN);
+			entity.wishDir = DOWN;
 		} else if (dy > 5) {
-			ghost.setWishDir(UP);
+			entity.wishDir = UP;
 		}
 	}
 }

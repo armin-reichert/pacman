@@ -5,6 +5,7 @@ import static de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoing
 import static de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoingToBed.State.MOVING_LEFT;
 import static de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoingToBed.State.MOVING_RIGHT;
 
+import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.Steering;
@@ -13,6 +14,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.Door;
+import de.amr.games.pacman.model.world.core.MobileLifeform;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -20,7 +22,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> implements Steering<Ghost> {
+public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> implements Steering {
 
 	public enum State {
 		FALLING, MOVING_LEFT, MOVING_RIGHT, BED_REACHED
@@ -42,10 +44,11 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 				.state(FALLING)
 					.onEntry(() -> {
 						// place the ghost centered over the ghost house entry and start falling down
+						Transform tf = ghost.entity.tf;
 						Direction awayFromHouse = door.intoHouse.opposite();
 						Vector2f houseEntry = door.center().add(awayFromHouse.vector().times(Tile.SIZE));
-						ghost.tf().setPosition(houseEntry.x - ghost.tf().width / 2, houseEntry.y - ghost.tf().height / 2);
-						ghost.setWishDir(Direction.DOWN);					
+						tf.setPosition(houseEntry.x - tf.width / 2, houseEntry.y - tf.height / 2);
+						ghost.entity.wishDir = Direction.DOWN;					
 					})
 					
 				// list all states such that they appear in Graphviz file
@@ -57,12 +60,12 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 	
 				.when(FALLING).then(MOVING_LEFT)
 					.condition(() -> ghost.entity.tf.y >= targetY && ghost.entity.tf.x > targetX)
-					.act(() -> ghost.setWishDir(Direction.LEFT))
+					.act(() -> ghost.entity.wishDir = Direction.LEFT)
 					.annotation("Reached floor: move left")
 				
 				.when(FALLING).then(MOVING_RIGHT)
 					.condition(() -> ghost.entity.tf.y >= targetY && ghost.entity.tf.x < targetX)
-					.act(() -> ghost.setWishDir(Direction.RIGHT))
+					.act(() -> ghost.entity.wishDir = Direction.RIGHT)
 					.annotation("Reached floor: move right")
 	
 				.when(FALLING).then(BED_REACHED)
@@ -82,7 +85,7 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 	}
 
 	@Override
-	public void steer(Ghost ghost) {
+	public void steer(MobileLifeform entity) {
 		update();
 	}
 

@@ -64,7 +64,7 @@ public class MusicLoadingView implements PacManGameView {
 	public void init() {
 		ghostCount = 0;
 		ghostInc = 1;
-		ghosts.forEach(ghost -> ghost.setMoveDir(Direction.random()));
+		ghosts.forEach(ghost -> ghost.entity.moveDir = Direction.random());
 		pacMan.init();
 		pacMan.wakeUp();
 		theme.sounds().loadMusic();
@@ -74,13 +74,13 @@ public class MusicLoadingView implements PacManGameView {
 	public void update() {
 		float x = pacMan.entity.tf.getCenter().x;
 		if (x > 0.9f * width || x < 0.1 * width) {
-			pacMan.setMoveDir(pacMan.moveDir().opposite());
+			pacMan.entity.moveDir = pacMan.entity.moveDir.opposite();
 			ghostCount += ghostInc;
 			if (ghostCount == 9 || ghostCount == 0) {
 				ghostInc = -ghostInc;
 			}
 		}
-		pacMan.entity.tf.setVelocity(Vector2f.smul(2.5f, pacMan.moveDir().vector()));
+		pacMan.entity.tf.setVelocity(Vector2f.smul(2.5f, pacMan.entity.moveDir.vector()));
 		pacMan.entity.tf.move();
 
 		alpha += alphaInc;

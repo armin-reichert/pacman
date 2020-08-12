@@ -42,14 +42,14 @@ class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
 	}
 
 	private Optional<Sprite> selectSprite(PacMan pacMan) {
-		if (pacMan.getState() == null || pacMan.is(IN_BED, SLEEPING)) {
+		if (pacMan.ai.getState() == null || pacMan.ai.is(IN_BED, SLEEPING)) {
 			return spriteMap.select("full");
-		} else if (pacMan.is(AWAKE, POWERFUL)) {
-			return spriteMap.select("walking-" + pacMan.moveDir());
-		} else if (pacMan.is(DEAD)) {
+		} else if (pacMan.ai.is(AWAKE, POWERFUL)) {
+			return spriteMap.select("walking-" + pacMan.entity.moveDir);
+		} else if (pacMan.ai.is(DEAD)) {
 			spriteMap.get("collapsing").resetAnimation();
 			return spriteMap.select("full");
-		} else if (pacMan.is(PacManState.COLLAPSING)) {
+		} else if (pacMan.ai.is(PacManState.COLLAPSING)) {
 			return spriteMap.select("collapsing");
 		}
 		throw new IllegalStateException();

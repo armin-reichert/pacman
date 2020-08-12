@@ -103,9 +103,9 @@ class GameStateTableModel extends AbstractTableModel {
 		GameStateRecord r = records[row];
 		if (r.creature instanceof Ghost) {
 			if (r.included) {
-				world.include(r.creature);
+				world.include(r.creature.entity);
 			} else {
-				world.exclude(r.creature);
+				world.exclude(r.creature.entity);
 			}
 		}
 	}
@@ -137,36 +137,37 @@ class GameStateTableModel extends AbstractTableModel {
 
 	void fillPacManRecord(GameStateRecord r, Game game, PacMan pacMan) {
 		r.creature = pacMan;
-		r.included = world.contains(pacMan);
+		r.included = world.contains(pacMan.entity);
 		r.name = "Pac-Man";
-		r.tile = pacMan.tileLocation();
-		r.moveDir = pacMan.moveDir();
-		r.wishDir = pacMan.wishDir();
-		if (pacMan.getState() != null) {
+		r.tile = pacMan.entity.tileLocation();
+		r.moveDir = pacMan.entity.moveDir;
+		r.wishDir = pacMan.entity.wishDir;
+		if (pacMan.ai.getState() != null) {
 			r.speed = pacMan.getSpeed() * app().clock().getTargetFramerate();
-			r.state = pacMan.getState().name();
-			r.ticksRemaining = pacMan.state().getTicksRemaining();
-			r.duration = pacMan.state().getDuration();
+			r.state = pacMan.ai.getState().name();
+			r.ticksRemaining = pacMan.ai.state().getTicksRemaining();
+			r.duration = pacMan.ai.state().getDuration();
 		}
 	}
 
 	void fillGhostRecord(GameStateRecord r, Game game, GhostCommand ghostCommand, Ghost ghost, PacMan pacMan) {
 		r.creature = ghost;
-		r.included = world.contains(ghost);
+		r.included = world.contains(ghost.entity);
 		r.name = ghost.name;
-		r.tile = ghost.tileLocation();
+		r.tile = ghost.entity.tileLocation();
 		r.target = ghost.targetTile().orElse(null);
-		r.moveDir = ghost.moveDir();
-		r.wishDir = ghost.wishDir();
-		if (ghost.getState() != null) {
+		r.moveDir = ghost.entity.moveDir;
+		r.wishDir = ghost.entity.wishDir;
+		if (ghost.ai.getState() != null) {
 			r.speed = ghost.getSpeed() * app().clock().getTargetFramerate();
-			r.state = ghost.getState().name();
-			r.ticksRemaining = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
-					: ghost.state().getTicksRemaining();
-			r.duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
+			r.state = ghost.ai.getState().name();
+			r.ticksRemaining = ghost.ai.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
+					: ghost.ai.state().getTicksRemaining();
+			r.duration = ghost.ai.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration()
+					: ghost.ai.state().getDuration();
 		}
 		r.ghostSanity = ghost.getMentalState();
-		r.pacManCollision = ghost.tileLocation().equals(pacMan.tileLocation());
+		r.pacManCollision = ghost.entity.tileLocation().equals(pacMan.entity.tileLocation());
 	}
 
 	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {

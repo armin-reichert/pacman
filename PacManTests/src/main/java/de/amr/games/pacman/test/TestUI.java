@@ -35,12 +35,8 @@ public class TestUI implements Lifecycle, VisualController {
 		return Optional.of(view);
 	}
 
-	protected Stream<Ghost> ghostsOnStage() {
-		return folks.ghosts().filter(world::contains);
-	}
-
-	protected void include(Creature<?, ?>... creatures) {
-		Stream.of(creatures).forEach(world::include);
+	protected void include(Creature<?>... creatures) {
+		Stream.of(creatures).forEach(guy -> world.include(guy.entity));
 	}
 
 	protected Theme theme() {
@@ -67,7 +63,7 @@ public class TestUI implements Lifecycle, VisualController {
 	@Override
 	public void init() {
 		folks.all().forEach(Creature::init);
-		folks.all().forEach(guy -> world.exclude(guy));
+		folks.all().forEach(guy -> world.exclude(guy.entity));
 	}
 
 	@Override
@@ -97,7 +93,7 @@ public class TestUI implements Lifecycle, VisualController {
 				view.turnStatesOn();
 			}
 		}
-		folks.all().filter(world::contains).forEach(Creature::update);
+		folks.allInWorld().forEach(Creature::update);
 		view.update();
 	}
 }

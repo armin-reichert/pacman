@@ -4,12 +4,12 @@ import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
-import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.House;
+import de.amr.games.pacman.model.world.core.MobileLifeform;
 
-public class LeavingHouse implements Steering<Ghost> {
+public class LeavingHouse implements Steering {
 
 	private final House house;
 
@@ -18,18 +18,18 @@ public class LeavingHouse implements Steering<Ghost> {
 	}
 
 	@Override
-	public void steer(Ghost ghost) {
+	public void steer(MobileLifeform entity) {
 		Tile exit = Tile.at(house.bed(0).col(), house.bed(0).row());
 		int targetX = exit.centerX(), targetY = exit.y();
-		if (ghost.entity.tf.y <= targetY) {
-			ghost.entity.tf.y = targetY;
-		} else if (Math.round(ghost.entity.tf.x) == targetX) {
-			ghost.entity.tf.x = targetX;
-			ghost.setWishDir(UP);
-		} else if (ghost.entity.tf.x < targetX) {
-			ghost.setWishDir(RIGHT);
-		} else if (ghost.entity.tf.x > targetX) {
-			ghost.setWishDir(LEFT);
+		if (entity.tf.y <= targetY) {
+			entity.tf.y = targetY;
+		} else if (Math.round(entity.tf.x) == targetX) {
+			entity.tf.x = targetX;
+			entity.wishDir = UP;
+		} else if (entity.tf.x < targetX) {
+			entity.wishDir = RIGHT;
+		} else if (entity.tf.x > targetX) {
+			entity.wishDir = LEFT;
 		}
 	}
 }

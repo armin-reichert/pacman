@@ -7,9 +7,9 @@ import java.util.List;
 import de.amr.datastruct.StreamUtils;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
-import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.MobileLifeform;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 
@@ -21,7 +21,7 @@ import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
  * 
  * @author Armin Reichert
  */
-public class FleeingToSafeTile extends FollowingPath<Ghost> {
+public class FleeingToSafeTile extends FollowingPath {
 
 	private final MobileLifeform attacker;
 	private final WorldGraph graph;
@@ -32,9 +32,9 @@ public class FleeingToSafeTile extends FollowingPath<Ghost> {
 	private boolean passingPortal;
 
 	public FleeingToSafeTile(Ghost refugee, MobileLifeform attacker) {
-		super(refugee);
+		super(refugee.entity);
 		this.attacker = attacker;
-		World world = refugee.world();
+		World world = refugee.entity.world;
 		graph = new WorldGraph(world);
 		graph.setPathFinder(PathFinder.BEST_FIRST_SEARCH);
 		capes = world.capes();
@@ -48,12 +48,12 @@ public class FleeingToSafeTile extends FollowingPath<Ghost> {
 	}
 
 	@Override
-	public void steer(Ghost ghost) {
+	public void steer(MobileLifeform entity) {
 		if (path.size() == 0 || isComplete()) {
 			safeTile = computeSafestCorner();
-			setPath(graph.shortestPath(ghost.tileLocation(), safeTile));
+			setPath(graph.shortestPath(entity.tileLocation(), safeTile));
 		}
-		super.steer(ghost);
+		super.steer(entity);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class FleeingToSafeTile extends FollowingPath<Ghost> {
 
 	@Override
 	public boolean isComplete() {
-		if (passingPortal && !mover.world().isTunnel(mover.tileLocation())) {
+		if (passingPortal && !mover.world.isTunnel(mover.tileLocation())) {
 			// refugee passed portal and tunnel, now compute new safe tile
 			passingPortal = false;
 			return true;

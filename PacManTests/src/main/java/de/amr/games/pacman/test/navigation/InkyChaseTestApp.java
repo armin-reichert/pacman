@@ -41,7 +41,7 @@ class InkyChaseTestUI extends TestUI {
 		app().soundManager().muteAll();
 		include(pacMan, inky, blinky);
 		pacMan.init();
-		ghostsOnStage().forEach(ghost -> {
+		folks.ghostsInWorld().forEach(ghost -> {
 			ghost.init();
 			ghost.setNextState(CHASING);
 		});
@@ -52,7 +52,7 @@ class InkyChaseTestUI extends TestUI {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			folks.ghostsInWorld().forEach(ghost -> ghost.ai.process(new GhostUnlockedEvent()));
 			pacMan.wakeUp();
 			view.clearMessage(1);
 		}

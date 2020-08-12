@@ -38,7 +38,7 @@ class ScatteringTestUI extends TestUI {
 	public void init() {
 		super.init();
 		folks.ghosts().forEach(ghost -> {
-			world.include(ghost);
+			world.include(ghost.entity);
 			ghost.init();
 			ghost.setNextState(SCATTERING);
 		});
@@ -50,11 +50,11 @@ class ScatteringTestUI extends TestUI {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			folks.ghostsInWorld().forEach(ghost -> ghost.ai.process(new GhostUnlockedEvent()));
 			view.clearMessage(2);
 		}
 		if (Keyboard.keyPressedOnce("-")) {
-			ghostsOnStage().forEach(ghost -> ghost.reverseDirection());
+			folks.ghostsInWorld().forEach(ghost -> ghost.reverseDirection());
 		}
 		super.update();
 	}

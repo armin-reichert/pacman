@@ -31,23 +31,24 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
 import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.statemachine.api.TransitionMatchStrategy;
+import de.amr.statemachine.core.StateMachine;
+import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * Hunting ghosty girls, eating, sleeping - a Pac-Man's life.
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Creature<PacMan, PacManState> {
+public class PacMan extends Creature<PacManState> {
 
 	private int fat;
 
-	public PacMan(World world) {
-		super(PacManState.class, "Pac-Man", world);
-		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
-		doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
+	@Override
+	protected StateMachine<PacManState, PacManGameEvent> buildAI() {
+		StateMachine<PacManState, PacManGameEvent> fsm = StateMachine
 		/*@formatter:off*/
-		beginStateMachine()
+		.beginStateMachine(PacManState.class, PacManGameEvent.class, TransitionMatchStrategy.BY_CLASS)
 
 			.description(name)
 			.initialState(IN_BED)
@@ -57,7 +58,7 @@ public class PacMan extends Creature<PacMan, PacManState> {
 				.state(IN_BED)
 					.onEntry(() -> {
 						putIntoBed();
-						setVisible(true);
+						entity.visible = true;
 						setEnabled(true);
 						fat = 0;
 					})
@@ -96,26 +97,39 @@ public class PacMan extends Creature<PacMan, PacManState> {
 				
 				.when(POWERFUL).then(SLEEPING).on(PacManFallAsleepEvent.class)
 				
-				.when(POWERFUL).then(AWAKE).onTimeout().act(() -> publish(new PacManLostPowerEvent()))
+				.when(POWERFUL).then(AWAKE).onTimeout().act(() -> ai.publish(new PacManLostPowerEvent()))
 					.annotation("Lost power")
 					
 				.when(DEAD).then(COLLAPSING).onTimeout()	
 
 		.endStateMachine();
 		/* @formatter:on */
+		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
+		fsm.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
+		fsm.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
+		return fsm;
+	}
+
+	public PacMan(World world) {
+		super(PacManState.class, "Pac-Man", world);
+	}
+
+	@Override
+	public void update() {
+		ai.update();
 	}
 
 	public void wakeUp() {
-		process(new PacManWakeUpEvent());
+		ai.process(new PacManWakeUpEvent());
 	}
 
 	public void fallAsleep() {
-		process(new PacManFallAsleepEvent());
+		ai.process(new PacManFallAsleepEvent());
 	}
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (world.houses().anyMatch(house -> house.isDoor(neighbor))) {
+		if (entity.world.houses().anyMatch(house -> house.isDoor(neighbor))) {
 			return false;
 		}
 		return super.canMoveBetween(tile, neighbor);
@@ -132,26 +146,26 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int nTiles) {
-		Tile tileAhead = world.tileToDir(tileLocation(), moveDir, nTiles);
-		if (moveDir == UP && !settings.fixOverflowBug) {
-			tileAhead = world.tileToDir(tileAhead, LEFT, nTiles);
+		Tile tileAhead = entity.world.tileToDir(entity.tileLocation(), entity.moveDir, nTiles);
+		if (entity.moveDir == UP && !settings.fixOverflowBug) {
+			tileAhead = entity.world.tileToDir(tileAhead, LEFT, nTiles);
 		}
 		return tileAhead;
 	}
 
 	@Override
 	public float getSpeed() {
-		if (getState() == null || game == null) {
+		if (ai.getState() == null || game == null) {
 			return 0;
 		}
-		if (is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {
+		if (ai.is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {
 			return 0;
-		} else if (is(POWERFUL)) {
+		} else if (ai.is(POWERFUL)) {
 			return speed(fat > 0 ? game.level.pacManPowerDotsSpeed : game.level.pacManPowerSpeed);
-		} else if (is(AWAKE)) {
+		} else if (ai.is(AWAKE)) {
 			return speed(fat > 0 ? game.level.pacManDotsSpeed : game.level.pacManSpeed);
 		}
-		throw new IllegalStateException("Illegal Pac-Man state: " + getState());
+		throw new IllegalStateException("Illegal Pac-Man state: " + ai.getState());
 	}
 
 	/**
@@ -160,49 +174,49 @@ public class PacMan extends Creature<PacMan, PacManState> {
 	 * 
 	 * @param steering steering to use
 	 */
-	public void setWalkingBehavior(Steering<PacMan> steering) {
+	public void setWalkingBehavior(Steering steering) {
 		behavior(AWAKE, steering);
 		behavior(POWERFUL, steering);
 	}
 
 	private void putIntoBed() {
-		Bed bed = world.pacManBed();
+		Bed bed = entity.world.pacManBed();
 		placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-		setMoveDir(bed.exitDir);
-		setWishDir(bed.exitDir);
+		entity.moveDir = bed.exitDir;
+		entity.wishDir = bed.exitDir;
 	}
 
 	private void setPowerTimer(PacManGameEvent e) {
 		PacManGainsPowerEvent powerEvent = (PacManGainsPowerEvent) e;
-		state(POWERFUL).setTimer(powerEvent.duration);
-		state(POWERFUL).resetTimer();
+		ai.state(POWERFUL).setTimer(powerEvent.duration);
+		ai.state(POWERFUL).resetTimer();
 	}
 
 	private void wander() {
-		steering().steer(this);
+		steering().steer(entity);
 		movement.update();
 		setEnabled(entity.tf.vx != 0 || entity.tf.vy != 0);
-		if (enteredNewTile()) {
+		if (entity.enteredNewTile) {
 			fat = Math.max(0, fat - 1);
 		}
 		if (!isTeleporting()) {
-			searchForFood(tileLocation()).ifPresent(this::publish);
+			searchForFood(entity.tileLocation()).ifPresent(ai::publish);
 		}
 	}
 
 	private Optional<PacManGameEvent> searchForFood(Tile location) {
-		if (world.bonusFood().isPresent()) {
-			BonusFood bonus = world.bonusFood().get();
+		if (entity.world.bonusFood().isPresent()) {
+			BonusFood bonus = entity.world.bonusFood().get();
 			if (bonus.isPresent() && bonus.location().equals(location)) {
 				fat += Game.BIG_MEAL_FAT;
 				return Optional.of(new BonusFoundEvent(bonus));
 			}
 		}
-		if (world.hasFood(Pellet.ENERGIZER, location)) {
+		if (entity.world.hasFood(Pellet.ENERGIZER, location)) {
 			fat += Game.BIG_MEAL_FAT;
 			return Optional.of(new FoodFoundEvent(location));
 		}
-		if (world.hasFood(Pellet.SNACK, location)) {
+		if (entity.world.hasFood(Pellet.SNACK, location)) {
 			fat += Game.SNACK_FAT;
 			return Optional.of(new FoodFoundEvent(location));
 		}

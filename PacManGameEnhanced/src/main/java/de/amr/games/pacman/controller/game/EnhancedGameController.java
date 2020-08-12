@@ -247,10 +247,10 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void toggleGhostInWorld(Ghost ghost) {
-		if (world.contains(ghost)) {
-			world.exclude(ghost);
+		if (world.contains(ghost.entity)) {
+			world.exclude(ghost.entity);
 		} else {
-			world.include(ghost);
+			world.include(ghost.entity);
 			ghost.init();
 		}
 	}
@@ -267,7 +267,7 @@ public class EnhancedGameController extends GameController {
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;
-			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, new FleeingToSafeTile(ghost, folks.pacMan)));
+			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, new FleeingToSafeTile(ghost, folks.pacMan.entity)));
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}
@@ -317,9 +317,9 @@ public class EnhancedGameController extends GameController {
 			return;
 		}
 		game.level.ghostsKilledByEnergizer = 0;
-		folks.ghostsInWorld().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
+		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
 			game.scoreGhostKilled(ghost.name);
-			ghost.process(new GhostKilledEvent(ghost));
+			ghost.ai.process(new GhostKilledEvent(ghost));
 		});
 		loginfo("All ghosts have been killed");
 	}

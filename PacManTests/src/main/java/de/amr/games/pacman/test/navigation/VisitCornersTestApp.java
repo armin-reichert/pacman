@@ -49,7 +49,7 @@ class FollowTargetTilesTestUI extends TestUI {
 		blinky.init();
 		blinky.placeAt(targets.get(0), 0, 0);
 		you(blinky).when(CHASING).headFor().tile(() -> targets.get(current)).ok();
-		blinky.setState(CHASING);
+		blinky.ai.setState(CHASING);
 		blinky.steering().force();
 		view.turnRoutesOn();
 		view.turnGridOn();
@@ -57,7 +57,7 @@ class FollowTargetTilesTestUI extends TestUI {
 
 	@Override
 	public void update() {
-		if (blinky.tileLocation().equals(targets.get(current))) {
+		if (blinky.entity.tileLocation().equals(targets.get(current))) {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;

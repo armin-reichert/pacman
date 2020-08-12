@@ -16,10 +16,10 @@ class GhostRenderer implements IGhostRenderer {
 
 	@Override
 	public void render(Graphics2D g, Ghost ghost) {
-		if (!ghost.isVisible()) {
+		if (!ghost.entity.visible) {
 			return;
 		}
-		GhostState state = ghost.getState();
+		GhostState state = ghost.ai.getState();
 		if (state == null) {
 			state = GhostState.CHASING;
 		}

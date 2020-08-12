@@ -13,7 +13,6 @@ import java.util.List;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.controller.steering.common.TakingShortestPath;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -68,10 +67,10 @@ class TakeShortestPathTestUI extends TestUI {
 		//@formatter:on
 		targetIndex = 0;
 
-		FollowingPath<Ghost> visitNextTarget = new TakingShortestPath<>(blinky, () -> targets.get(targetIndex));
+		FollowingPath visitNextTarget = new TakingShortestPath(blinky.entity, () -> targets.get(targetIndex));
 		blinky.behavior(CHASING, visitNextTarget);
 		blinky.behavior(FRIGHTENED, visitNextTarget);
-		blinky.setState(CHASING);
+		blinky.ai.setState(CHASING);
 		include(blinky);
 
 		view.turnRoutesOn();
@@ -94,9 +93,9 @@ class TakeShortestPathTestUI extends TestUI {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			blinky.setState(blinky.getState() == CHASING ? FRIGHTENED : CHASING);
+			blinky.ai.setState(blinky.ai.getState() == CHASING ? FRIGHTENED : CHASING);
 		}
-		if (blinky.tileLocation().equals(currentTarget())) {
+		if (blinky.entity.tileLocation().equals(currentTarget())) {
 			selectNextTarget();
 		}
 		super.update();

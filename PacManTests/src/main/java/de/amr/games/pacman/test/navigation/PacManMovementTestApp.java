@@ -42,7 +42,7 @@ class PacManMovementTestUI extends TestUI {
 		include(pacMan);
 		pacMan.init();
 		world.fillFood();
-		pacMan.addEventListener(event -> {
+		pacMan.ai.addEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				world.clearFood(foodFound.location);

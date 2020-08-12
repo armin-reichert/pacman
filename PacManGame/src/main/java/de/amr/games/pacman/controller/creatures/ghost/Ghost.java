@@ -19,6 +19,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.Game;
@@ -29,18 +30,16 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
+import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
+import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * A ghost.
  * 
- * <p>
- * Ghosts are creatures with additional behaviors like entering and leaving the ghost house or
- * jumping up and down at some position.
- * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature<Ghost, GhostState> {
+public class Ghost extends Creature<GhostState> {
 
 	private GhostPersonality personality;
 	private PacMan pacMan;
@@ -48,7 +47,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	private Bed bed;
 	private GhostState nextState;
 	private GhostMadnessController madnessController;
-	private Steering<Ghost> previousSteering;
+	private Steering previousSteering;
 	private int bounty;
 	private boolean flashing;
 
@@ -58,133 +57,105 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		if (personality == GhostPersonality.SHADOW) {
 			madnessController = new GhostMadnessController(this);
 		}
-		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		/*@formatter:off*/
-		beginStateMachine()
-			 
-			.description("Ghost " + name + " AI")
-			.initialState(LOCKED)
-		
-			.states()
-	
-				.state(LOCKED)
-					.onEntry(() -> {
-						flashing = false;
+	}
+
+	@Override
+	protected StateMachine<GhostState, PacManGameEvent> buildAI() {
+
+		StateMachine<GhostState, PacManGameEvent> fsm = StateMachine
+				.beginStateMachine(GhostState.class, PacManGameEvent.class, TransitionMatchStrategy.BY_CLASS)
+
+				.description("Ghost " + name + " AI").initialState(LOCKED)
+
+				.states()
+
+				.state(LOCKED).onEntry(() -> {
+					flashing = false;
+					bounty = 0;
+					nextState = LOCKED;
+					setEnabled(true);
+					placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+					entity.visible = true;
+					entity.moveDir = bed.exitDir;
+					entity.wishDir = bed.exitDir;
+				}).onTick(this::move)
+
+				.state(LEAVING_HOUSE).onTick(this::move).onExit(() -> forceMoving(Direction.LEFT))
+
+				.state(ENTERING_HOUSE).onEntry(() -> steering().init()).onTick(this::move)
+
+				.state(SCATTERING).onTick(() -> {
+					maybeMeetPacMan(pacMan);
+					move();
+				})
+
+				.state(CHASING).onTick(() -> {
+					maybeMeetPacMan(pacMan);
+					move();
+				})
+
+				.state(FRIGHTENED).timeoutAfter(this::getFrightenedTicks).onEntry(() -> steering().init())
+				.onTick((state, consumed, remaining) -> {
+					maybeMeetPacMan(pacMan);
+					move();
+					flashing = remaining < getFlashTimeTicks() * 0.5f; // one flashing takes 0.5 sec
+				})
+
+				.state(DEAD).timeoutAfter(sec(1)).onEntry(this::computeBounty).onTick((s, consumed, remaining) -> {
+					if (remaining == 0) {
 						bounty = 0;
-						nextState = LOCKED;
-						setVisible(true);
-						setEnabled(true);
-						placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-						setMoveDir(bed.exitDir);
-						setWishDir(bed.exitDir);
-					})
-					.onTick(this::move)
-					
-				.state(LEAVING_HOUSE)
-					.onTick(this::move)
-					.onExit(() -> forceMoving(Direction.LEFT))
-				
-				.state(ENTERING_HOUSE)
-					.onEntry(() -> steering().init())
-					.onTick(this::move)
-				
-				.state(SCATTERING)
-					.onTick(() -> {
-						maybeMeetPacMan(pacMan);
 						move();
-					})
-			
-				.state(CHASING)
-					.onTick(() -> {
-						maybeMeetPacMan(pacMan);
-						move();
-					})
-				
-				.state(FRIGHTENED)
-					.timeoutAfter(this::getFrightenedTicks)
-					.onEntry(() -> steering().init())
-					.onTick((state, consumed, remaining) -> {
-						maybeMeetPacMan(pacMan);
-						move();
-						flashing = remaining < getFlashTimeTicks() * 0.5f; // one flashing takes 0.5 sec
-					})
-				
-				.state(DEAD)
-					.timeoutAfter(sec(1))
-					.onEntry(this::computeBounty)
-					.onTick((s, consumed, remaining) -> {
-						if (remaining == 0) {
-							bounty = 0;
-							move();
-						}
-					})
-				
-			.transitions()
-			
-				.when(LOCKED).then(LEAVING_HOUSE)
-					.on(GhostUnlockedEvent.class)
-			
-				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> justLeftGhostHouse() && nextState == SCATTERING)
-					.annotation("Outside house")
-		
-				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> justLeftGhostHouse() && nextState == CHASING)
-					.annotation("Outside house")
-				
-				.when(LEAVING_HOUSE).then(FRIGHTENED)
-					.condition(() -> justLeftGhostHouse() && nextState == FRIGHTENED)
-					.annotation("Outside house")
-					
-				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
-					.condition(() -> steering().isComplete())
-					.annotation("Reached bed")
-				
-				.when(CHASING).then(FRIGHTENED)
-					.on(PacManGainsPowerEvent.class)
-					.act(() -> reverseDirection())
-				
-				.when(CHASING).then(DEAD)
-					.on(GhostKilledEvent.class)
-				
-				.when(CHASING).then(SCATTERING)
-					.condition(() -> nextState == SCATTERING)
-					.act(() -> reverseDirection())
-					.annotation("Got scattering command")
-					
-				.when(SCATTERING).then(FRIGHTENED)
-					.on(PacManGainsPowerEvent.class)
-					.act(() -> reverseDirection())
-				
-				.when(SCATTERING).then(DEAD)
-					.on(GhostKilledEvent.class)
-				
-				.when(SCATTERING).then(CHASING)
-					.condition(() -> nextState == CHASING)
-					.act(() -> reverseDirection())
-					.annotation("Got chasing command")
-					
-				.stay(FRIGHTENED)
-					.on(PacManGainsPowerEvent.class)
-					.act(() -> resetTimer(FRIGHTENED))
-				
-				.when(FRIGHTENED).then(DEAD)
-					.on(GhostKilledEvent.class)
-				
-				.when(FRIGHTENED).then(SCATTERING)
-					.onTimeout()
-					.condition(() -> nextState == SCATTERING)
-					
-				.when(FRIGHTENED).then(CHASING)
-					.onTimeout()
-					.condition(() -> nextState == CHASING)
-					
-				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(this::isAtHouseEntry)
-					.annotation("Reached house entry")
-					
-		.endStateMachine();
+					}
+				})
+
+				.transitions()
+
+				.when(LOCKED).then(LEAVING_HOUSE).on(GhostUnlockedEvent.class)
+
+				.when(LEAVING_HOUSE).then(SCATTERING).condition(() -> justLeftGhostHouse() && nextState == SCATTERING)
+				.annotation("Outside house")
+
+				.when(LEAVING_HOUSE).then(CHASING).condition(() -> justLeftGhostHouse() && nextState == CHASING)
+				.annotation("Outside house")
+
+				.when(LEAVING_HOUSE).then(FRIGHTENED).condition(() -> justLeftGhostHouse() && nextState == FRIGHTENED)
+				.annotation("Outside house")
+
+				.when(ENTERING_HOUSE).then(LEAVING_HOUSE).condition(() -> steering().isComplete()).annotation("Reached bed")
+
+				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class).act(() -> reverseDirection())
+
+				.when(CHASING).then(DEAD).on(GhostKilledEvent.class)
+
+				.when(CHASING).then(SCATTERING).condition(() -> nextState == SCATTERING).act(() -> reverseDirection())
+				.annotation("Got scattering command")
+
+				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class).act(() -> reverseDirection())
+
+				.when(SCATTERING).then(DEAD).on(GhostKilledEvent.class)
+
+				.when(SCATTERING).then(CHASING).condition(() -> nextState == CHASING).act(() -> reverseDirection())
+				.annotation("Got chasing command")
+
+				.stay(FRIGHTENED).on(PacManGainsPowerEvent.class).act(() -> ai.resetTimer(FRIGHTENED))
+
+				.when(FRIGHTENED).then(DEAD).on(GhostKilledEvent.class)
+
+				.when(FRIGHTENED).then(SCATTERING).onTimeout().condition(() -> nextState == SCATTERING)
+
+				.when(FRIGHTENED).then(CHASING).onTimeout().condition(() -> nextState == CHASING)
+
+				.when(DEAD).then(ENTERING_HOUSE).condition(this::isAtHouseEntry).annotation("Reached house entry")
+
+				.endStateMachine();
 		/*@formatter:on*/
+		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
+		return fsm;
+	}
+
+	@Override
+	public void update() {
+		ai.update();
 	}
 
 	@Override
@@ -193,11 +164,11 @@ public class Ghost extends Creature<Ghost, GhostState> {
 			return 0;
 		}
 		GameLevel level = game.level;
-		if (getState() == null) {
+		if (ai.getState() == null) {
 			throw new IllegalStateException(String.format("Ghost %s is not initialized.", name));
 		}
-		boolean tunnel = world().isTunnel(tileLocation());
-		switch (getState()) {
+		boolean tunnel = entity.world.isTunnel(entity.tileLocation());
+		switch (ai.getState()) {
 		case LOCKED:
 			return speed(isInsideHouse() ? level.ghostSpeed / 2 : 0);
 		case LEAVING_HOUSE:
@@ -222,7 +193,7 @@ public class Ghost extends Creature<Ghost, GhostState> {
 		case DEAD:
 			return speed(2 * level.ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s", getState()));
+			throw new IllegalStateException(String.format("Illegal ghost state %s", ai.getState()));
 		}
 	}
 
@@ -279,9 +250,9 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	}
 
 	private void maybeMeetPacMan(PacMan pacMan) {
-		if (tileLocation().equals(pacMan.tileLocation()) && isVisible() && pacMan.isVisible()
-				&& !pacMan.is(PacManState.DEAD)) {
-			publish(new PacManGhostCollisionEvent(this));
+		if (entity.tileLocation().equals(pacMan.entity.tileLocation()) && entity.visible && pacMan.entity.visible
+				&& !pacMan.ai.is(PacManState.DEAD)) {
+			ai.publish(new PacManGhostCollisionEvent(this));
 		}
 	}
 
@@ -310,20 +281,21 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	}
 
 	public boolean justLeftGhostHouse() {
-		Tile location = tileLocation();
-		return getState() == LEAVING_HOUSE && house.isEntry(location) && entity.tf.y == location.row * Tile.SIZE;
+		Tile location = entity.tileLocation();
+		return ai.getState() == LEAVING_HOUSE && house.isEntry(location) && entity.tf.y == location.row * Tile.SIZE;
 	}
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
 		if (house.isDoor(neighbor)) {
-			return is(ENTERING_HOUSE, LEAVING_HOUSE);
+			return ai.is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		Optional<OneWayTile> maybeOneWay = world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst();
+		Optional<OneWayTile> maybeOneWay = entity.world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor))
+				.findFirst();
 		if (maybeOneWay.isPresent()) {
 			OneWayTile oneWay = maybeOneWay.get();
 			Direction toNeighbor = tile.dirTo(neighbor).get();
-			if (toNeighbor.equals(oneWay.dir.opposite()) && is(CHASING, SCATTERING)) {
+			if (toNeighbor.equals(oneWay.dir.opposite()) && ai.is(CHASING, SCATTERING)) {
 				return false;
 			}
 		}
@@ -331,15 +303,15 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	}
 
 	public void move() {
-		Steering<Ghost> currentSteering = steering();
+		Steering currentSteering = steering();
 		if (previousSteering != currentSteering) {
 			currentSteering.init();
 			currentSteering.force();
 			previousSteering = currentSteering;
 		}
 		// TODO check why ghosts get lost in tunnel/portal
-		if (!world.isTunnel(tileLocation())) {
-			currentSteering.steer(this);
+		if (!entity.world.isTunnel(entity.tileLocation())) {
+			currentSteering.steer(entity);
 		}
 		movement.update();
 		if (madnessController != null) {
@@ -349,10 +321,10 @@ public class Ghost extends Creature<Ghost, GhostState> {
 	}
 
 	public boolean isAtHouseEntry() {
-		return house.isEntry(tileLocation()) && (tileOffsetX() - Tile.SIZE / 2) <= 1;
+		return house.isEntry(entity.tileLocation()) && (entity.tileOffsetX() - Tile.SIZE / 2) <= 1;
 	}
 
 	public boolean isInsideHouse() {
-		return house.isInsideOrDoor(tileLocation());
+		return house.isInsideOrDoor(entity.tileLocation());
 	}
 }

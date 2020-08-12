@@ -5,7 +5,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -63,10 +62,6 @@ public class PlayView implements PacManGameView {
 
 	@Override
 	public void update() {
-	}
-
-	public Stream<Ghost> ghostsInsideWorld() {
-		return folks.ghosts().filter(world::contains);
 	}
 
 	@Override
@@ -154,8 +149,8 @@ public class PlayView implements PacManGameView {
 
 	protected void drawActors(Graphics2D g) {
 		drawPacMan(g, folks.pacMan);
-		ghostsInsideWorld().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
-		ghostsInsideWorld().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
+		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
+		folks.ghostsInWorld().filter(ghost -> !ghost.ai.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
 	}
 
 	protected void drawScores(Graphics2D g) {

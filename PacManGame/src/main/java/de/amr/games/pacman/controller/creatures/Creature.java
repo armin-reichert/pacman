@@ -3,21 +3,19 @@ package de.amr.games.pacman.controller.creatures;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.entity.Entity;
-import de.amr.easy.game.entity.Transform;
+import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.MobileLifeform;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.statemachine.core.StateMachine;
 
@@ -27,35 +25,42 @@ import de.amr.statemachine.core.StateMachine;
  * <p>
  * The physical size is one tile, however the visual appearance may be larger.
  * 
- * @param <M> subtype of mobile lifeform
  * @param <S> state (identifier) type
  * 
  * @author Armin Reichert
  */
-public abstract class Creature<M extends MobileLifeform, S> extends StateMachine<S, PacManGameEvent>
-		implements MobileLifeform {
+public abstract class Creature<S> implements Lifecycle {
 
-	public final Entity entity;
+	public final StateMachine<S, PacManGameEvent> ai;
+	public final MobileLifeform entity;
 	public final String name;
-	protected final World world;
+
 	protected Game game;
 	protected boolean enabled;
-	protected Map<S, Steering<M>> steeringsByState;
+	protected Map<S, Steering> steeringsByState;
 	protected Movement movement;
-	protected Direction moveDir;
-	protected Direction wishDir;
 	protected Theme theme;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Creature(Class<S> stateClass, String name, World world) {
-		super(stateClass);
 		this.name = name;
-		this.world = world;
 		enabled = true;
-		entity = new Entity();
+		entity = new MobileLifeform(world);
 		entity.tf.width = entity.tf.height = Tile.SIZE;
+		movement = new Movement(this);
 		steeringsByState = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
-		movement = new Movement(this, name);
+		ai = buildAI();
+	}
+
+	protected abstract StateMachine<S, PacManGameEvent> buildAI();
+
+	public boolean canMoveBetween(Tile tile, Tile neighbor) {
+		return entity.world.isAccessible(neighbor);
+	}
+
+	public boolean canCrossBorderTo(Direction dir) {
+		Tile currentTile = entity.tileLocation(), neighbor = entity.world.neighbor(currentTile, dir);
+		return canMoveBetween(currentTile, neighbor);
 	}
 
 	/**
@@ -67,12 +72,7 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	}
 
 	public Stream<StateMachine<?, ?>> machines() {
-		return Stream.of(this, movement);
-	}
-
-	@Override
-	public World world() {
-		return world;
+		return Stream.of(ai, movement);
 	}
 
 	public boolean isEnabled() {
@@ -83,16 +83,6 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 		this.enabled = enabled;
 	}
 
-	@Override
-	public boolean isVisible() {
-		return entity.visible;
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
-		entity.visible = visible;
-	}
-
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 	}
@@ -100,20 +90,19 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	/**
 	 * @return this creatures' current speed (pixels per tick)
 	 */
-	@Override
 	public float getSpeed() {
 		return 0;
 	}
 
-	public Steering<M> steering() {
-		return steering(this);
+	public Steering steering() {
+		return steering(entity);
 	}
 
 	/**
 	 * @return the current steering for this actor.
 	 */
-	public Steering<M> steering(MobileLifeform mover) {
-		return steeringsByState.getOrDefault(getState(), m -> {
+	public Steering steering(MobileLifeform mover) {
+		return steeringsByState.getOrDefault(ai.getState(), m -> {
 		});
 	}
 
@@ -130,7 +119,7 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	 * @param state state
 	 * @return steering defined for this state
 	 */
-	public Steering<M> steering(S state) {
+	public Steering steering(S state) {
 		if (steeringsByState.containsKey(state)) {
 			return steeringsByState.get(state);
 		}
@@ -143,11 +132,10 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	 * @param state    state
 	 * @param steering steering defined for this state
 	 */
-	public void behavior(S state, Steering<M> steering) {
+	public void behavior(S state, Steering steering) {
 		steeringsByState.put(state, steering);
 	}
 
-	@Override
 	public boolean requiresAlignment() {
 		return steering().requiresGridAlignment();
 	}
@@ -155,15 +143,9 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	@Override
 	public void init() {
 		movement.init();
-		super.init();
+		ai.init();
 	}
 
-	@Override
-	public Transform tf() {
-		return entity.tf;
-	}
-
-	@Override
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		movement.placeAt(tile, xOffset, yOffset);
 	}
@@ -172,45 +154,12 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 		return movement.is(MovementType.TELEPORTING);
 	}
 
-	@Override
-	public boolean enteredNewTile() {
-		return movement.enteredNewTile;
-	}
-
-	@Override
-	public Direction moveDir() {
-		return moveDir;
-	}
-
-	@Override
-	public void setMoveDir(Direction dir) {
-		moveDir = Objects.requireNonNull(dir);
-	}
-
-	@Override
-	public Direction wishDir() {
-		return wishDir;
-	}
-
-	@Override
-	public void setWishDir(Direction dir) {
-		wishDir = dir;
-	}
-
-	@Override
-	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = tileLocation(), neighbor = world().neighbor(currentTile, dir);
-		return canMoveBetween(currentTile, neighbor);
-	}
-
-	@Override
-	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		return world().isAccessible(neighbor);
-	}
-
-	@Override
 	public void forceMoving(Direction dir) {
-		setWishDir(dir);
+		entity.wishDir = dir;
 		movement.update();
+	}
+
+	public void reverseDirection() {
+		forceMoving(entity.moveDir.opposite());
 	}
 }

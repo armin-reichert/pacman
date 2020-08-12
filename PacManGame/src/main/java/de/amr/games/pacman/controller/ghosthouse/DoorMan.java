@@ -76,7 +76,7 @@ public class DoorMan implements Lifecycle {
 		pacManStarvingTicks = 0;
 		if (globalCounter.enabled) {
 			globalCounter.dots++;
-			if (globalCounter.dots == 32 && folks.clyde.is(LOCKED)) {
+			if (globalCounter.dots == 32 && folks.clyde.ai.is(LOCKED)) {
 				globalCounter.dots = 0;
 				globalCounter.enabled = false;
 				loginfo("Global dot counter reset and disabled (Clyde was locked when counter reached 32)");
@@ -155,8 +155,11 @@ public class DoorMan implements Lifecycle {
 	}
 
 	public Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(folks.blinky, folks.pinky, folks.inky, folks.clyde).filter(world::contains)
-				.filter(ghost -> ghost.is(LOCKED)).findFirst();
+		//@formatter:off
+		return Stream.of(folks.blinky, folks.pinky, folks.inky, folks.clyde)
+				.filter(ghost -> world.contains(ghost.entity))
+				.filter(ghost -> ghost.ai.is(LOCKED)).findFirst();
+		//@formatter:on
 	}
 
 	public void closeDoor(Door door) {
@@ -168,13 +171,13 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private void unlock(Ghost ghost) {
-		ghost.process(new GhostUnlockedEvent());
+		ghost.ai.process(new GhostUnlockedEvent());
 	}
 
 	private boolean isOpeningRequested(Door door) {
 		//@formatter:off
-		return folks.ghosts().filter(world::contains)
-				.filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE))
+		return folks.ghostsInWorld()
+				.filter(ghost -> ghost.ai.is(ENTERING_HOUSE, LEAVING_HOUSE))
 				.filter(ghost -> isGhostNearDoor(ghost, door))
 				.findAny()
 				.isPresent();
@@ -182,9 +185,9 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private boolean isGhostNearDoor(Ghost ghost, Door door) {
-		Tile fromGhostTowardsHouse = world.neighbor(ghost.tileLocation(), door.intoHouse);
-		Tile fromGhostAwayFromHouse = world.neighbor(ghost.tileLocation(), door.intoHouse.opposite());
-		return door.includes(ghost.tileLocation()) || door.includes(fromGhostAwayFromHouse)
+		Tile fromGhostTowardsHouse = world.neighbor(ghost.entity.tileLocation(), door.intoHouse);
+		Tile fromGhostAwayFromHouse = world.neighbor(ghost.entity.tileLocation(), door.intoHouse.opposite());
+		return door.includes(ghost.entity.tileLocation()) || door.includes(fromGhostAwayFromHouse)
 				|| door.includes(fromGhostTowardsHouse);
 	}
 
@@ -201,7 +204,7 @@ public class DoorMan implements Lifecycle {
 	 *      Dossier</a>
 	 */
 	private Decision makeDecisionAboutReleasing(Ghost ghost) {
-		if (!ghost.is(LOCKED)) {
+		if (!ghost.ai.is(LOCKED)) {
 			return confirmed("Ghost is not locked");
 		}
 		if (ghost == folks.blinky) {

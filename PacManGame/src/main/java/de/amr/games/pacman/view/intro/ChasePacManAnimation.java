@@ -52,14 +52,14 @@ public class ChasePacManAnimation extends GameObject {
 		folks.all().forEach(Creature::init);
 
 		folks.pacMan.entity.tf.vx = -0.55f;
-		folks.pacMan.setMoveDir(Direction.LEFT);
-		folks.pacMan.setState(PacManState.AWAKE);
+		folks.pacMan.entity.moveDir = Direction.LEFT;
+		folks.pacMan.ai.setState(PacManState.AWAKE);
 
 		folks.ghosts().forEach(ghost -> {
+			ghost.entity.moveDir = Direction.LEFT;
 			ghost.entity.tf.setVelocity(-0.55f, 0);
-			ghost.setState(GhostState.CHASING);
-			ghost.state(GhostState.CHASING).removeTimer();
-			ghost.setMoveDir(Direction.LEFT);
+			ghost.ai.setState(GhostState.CHASING);
+			ghost.ai.state(GhostState.CHASING).removeTimer();
 		});
 
 		initPositions(world.width() * Tile.SIZE);

@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Food;
-import de.amr.games.pacman.model.world.api.Lifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Block;
@@ -95,15 +94,15 @@ public abstract class AbstractWorld extends Block implements World {
 	}
 
 	@Override
-	public void include(Lifeform life) {
-		excluded.remove(life);
-		life.setVisible(true);
+	public void include(Lifeform lifeform) {
+		excluded.remove(lifeform);
+		lifeform.visible = true;
 	}
 
 	@Override
-	public void exclude(Lifeform life) {
-		excluded.add(life);
-		life.setVisible(false);
+	public void exclude(Lifeform lifeform) {
+		excluded.add(lifeform);
+		lifeform.visible = false;
 	}
 
 	@Override

@@ -34,9 +34,9 @@ class PortalTestUI extends TestUI {
 		super.init();
 		include(blinky, clyde);
 		AnimalMaster.you(blinky).when(GhostState.CHASING).headFor().tile(Tile.at(0, 17)).ok();
-		blinky.setState(GhostState.CHASING);
+		blinky.ai.setState(GhostState.CHASING);
 		AnimalMaster.you(clyde).when(GhostState.CHASING).headFor().tile(Tile.at(35, 17)).ok();
-		clyde.setState(GhostState.LEAVING_HOUSE);
+		clyde.ai.setState(GhostState.LEAVING_HOUSE);
 		clyde.setNextState(GhostState.CHASING);
 		view.turnRoutesOn();
 	}

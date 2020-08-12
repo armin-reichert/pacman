@@ -31,7 +31,7 @@ class JumpingTestUI extends TestUI {
 	public void init() {
 		super.init();
 		include(blinky, inky, pinky, clyde);
-		ghostsOnStage().forEach(ghost -> {
+		folks.ghostsInWorld().forEach(ghost -> {
 			ghost.init();
 		});
 		view.turnGridOn();

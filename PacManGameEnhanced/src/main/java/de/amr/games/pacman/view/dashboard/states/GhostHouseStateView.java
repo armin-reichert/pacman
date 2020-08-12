@@ -176,7 +176,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		if (!ghost.isInsideHouse()) {
 			return null;
 		}
-		if (!ghost.is(LOCKED)) {
+		if (!ghost.ai.is(LOCKED)) {
 			return Color.GREEN;
 		}
 		Ghost next = house.preferredLockedGhost().orElse(null);

@@ -15,10 +15,11 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.core.MobileLifeform;
 
 /**
  * Steers an actor towards a target tile.
@@ -28,18 +29,18 @@ import de.amr.games.pacman.model.world.api.Tile;
  * 
  * @author Armin Reichert
  */
-public class HeadingForTargetTile<M extends MobileLifeform> implements PathProvidingSteering<M> {
+public class HeadingForTargetTile implements PathProvidingSteering {
 
 	private static final List<Direction> directionPriority = asList(UP, LEFT, DOWN, RIGHT);
 
-	private final M mover;
+	private final Creature<?> guy;
 	private final ConcurrentLinkedDeque<Tile> path = new ConcurrentLinkedDeque<>();
 	private Supplier<Tile> fnTargetTile;
 	private boolean forced;
 	private boolean pathComputed;
 
-	public HeadingForTargetTile(M mover, Supplier<Tile> fnTargetTile) {
-		this.mover = Objects.requireNonNull(mover);
+	public HeadingForTargetTile(Creature<?> guy, Supplier<Tile> fnTargetTile) {
+		this.guy = Objects.requireNonNull(guy);
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}
 
@@ -54,11 +55,11 @@ public class HeadingForTargetTile<M extends MobileLifeform> implements PathProvi
 
 	@Override
 	public void steer(MobileLifeform mover) {
-		if (mover.enteredNewTile() || forced) {
+		if (mover.enteredNewTile || forced) {
 			forced = false;
 			Tile targetTile = fnTargetTile.get();
 			if (targetTile != null) {
-				mover.setWishDir(bestDirTowardsTarget(mover, mover.moveDir(), mover.tileLocation(), targetTile));
+				mover.wishDir = bestDirTowardsTarget(mover, mover.moveDir, mover.tileLocation(), targetTile);
 				if (pathComputed) {
 					computePath(targetTile);
 				}
@@ -85,15 +86,15 @@ public class HeadingForTargetTile<M extends MobileLifeform> implements PathProvi
 	 * @param target  target tile
 	 */
 	private Direction bestDirTowardsTarget(MobileLifeform mover, Direction moveDir, Tile tile, Tile target) {
-		Function<Direction, Double> fnTargetDistance = dir -> mover.world().neighbor(tile, dir).distance(target);
+		Function<Direction, Double> fnTargetDistance = dir -> mover.world.neighbor(tile, dir).distance(target);
 		Function<Direction, Integer> fnDirectionPriority = directionPriority::indexOf;
 		/*@formatter:off*/
 		return Direction.dirs()
 			.filter(dir -> dir != moveDir.opposite())
-			.filter(dir -> mover.canMoveBetween(tile, mover.world().neighbor(tile, dir)))
+			.filter(dir -> guy.canMoveBetween(tile, mover.world.neighbor(tile, dir)))
 			.sorted(Comparator.comparing(fnTargetDistance).thenComparing(fnDirectionPriority))
 			.findFirst()
-			.orElse(mover.moveDir());
+			.orElse(mover.moveDir);
 		/*@formatter:on*/
 	}
 
@@ -103,12 +104,12 @@ public class HeadingForTargetTile<M extends MobileLifeform> implements PathProvi
 	 */
 	private void computePath(Tile target) {
 		path.clear();
-		Direction dir = mover.moveDir();
-		Tile head = mover.tileLocation();
-		while (mover.world().includes(head) && !head.equals(target) && !path.contains(head)) {
+		Direction dir = guy.entity.moveDir;
+		Tile head = guy.entity.tileLocation();
+		while (guy.entity.world.includes(head) && !head.equals(target) && !path.contains(head)) {
 			path.add(head);
-			dir = bestDirTowardsTarget(mover, dir, head, target);
-			head = mover.world().neighbor(head, dir);
+			dir = bestDirTowardsTarget(guy.entity, dir, head, target);
+			head = guy.entity.world.neighbor(head, dir);
 		}
 	}
 

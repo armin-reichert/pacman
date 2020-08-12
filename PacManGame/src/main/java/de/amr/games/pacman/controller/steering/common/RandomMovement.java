@@ -1,17 +1,23 @@
 package de.amr.games.pacman.controller.steering.common;
 
+import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.MobileLifeform;
+import de.amr.games.pacman.model.world.core.MobileLifeform;
 
 /**
  * Lets a creature move randomly but never reverse its direction.
  * 
  * @author Armin Reichert
  */
-public class RandomMovement<M extends MobileLifeform> implements Steering<M> {
+public class RandomMovement implements Steering {
 
+	private Creature<?> guy;
 	private boolean forced;
+
+	public RandomMovement(Creature<?> guy) {
+		this.guy = guy;
+	}
 
 	@Override
 	public boolean requiresGridAlignment() {
@@ -24,14 +30,14 @@ public class RandomMovement<M extends MobileLifeform> implements Steering<M> {
 	}
 
 	@Override
-	public void steer(M mover) {
-		if (forced || mover.enteredNewTile() || !mover.canCrossBorderTo(mover.moveDir())) {
+	public void steer(MobileLifeform entity) {
+		if (forced || entity.enteredNewTile || !guy.canCrossBorderTo(entity.moveDir)) {
 			/*@formatter:off*/
 			Direction.dirsShuffled()
-				.filter(dir -> dir != mover.moveDir().opposite())
-				.filter(mover::canCrossBorderTo)
+				.filter(dir -> dir != entity.moveDir.opposite())
+				.filter(guy::canCrossBorderTo)
 				.findFirst()
-				.ifPresent(mover::setWishDir);
+				.ifPresent(dir -> entity.wishDir = dir);
 			/*@formatter:on*/
 			forced = false;
 		}

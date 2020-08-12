@@ -14,11 +14,11 @@ class PacManRenderer implements IPacManRenderer {
 
 	@Override
 	public void render(Graphics2D g, PacMan pacMan) {
-		if (!pacMan.isVisible()) {
+		if (!pacMan.entity.visible) {
 			return;
 		}
 		Rendering.smoothOn(g);
-		PacManState state = pacMan.getState();
+		PacManState state = pacMan.ai.getState();
 		int size = 2 * pacMan.entity.tf.width;
 		switch (state) {
 		case AWAKE:

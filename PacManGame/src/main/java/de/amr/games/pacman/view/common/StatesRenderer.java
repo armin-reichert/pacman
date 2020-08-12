@@ -41,15 +41,15 @@ public class StatesRenderer {
 	}
 
 	private void drawPacManState(Graphics2D g, PacMan pacMan) {
-		if (!pacMan.isVisible() || pacMan.getState() == null) {
+		if (!pacMan.entity.visible || pacMan.ai.getState() == null) {
 			return;
 		}
-		String text = pacMan.getState().name();
-		if (pacMan.is(POWERFUL)) {
-			text += String.format("(%d)", pacMan.state(POWERFUL).getTicksRemaining());
+		String text = pacMan.ai.getState().name();
+		if (pacMan.ai.is(POWERFUL)) {
+			text += String.format("(%d)", pacMan.ai.state(POWERFUL).getTicksRemaining());
 		}
-		if (pacMan.state().hasTimer()) {
-			text += String.format("(%d of %d)", pacMan.state().getTicksConsumed(), pacMan.state().getDuration());
+		if (pacMan.ai.state().hasTimer()) {
+			text += String.format("(%d of %d)", pacMan.ai.state().getTicksConsumed(), pacMan.ai.state().getDuration());
 		}
 		if (settings.pacManImmortable) {
 			text += " lives " + Rendering.INFTY;
@@ -66,28 +66,28 @@ public class StatesRenderer {
 	}
 
 	private void drawGhostState(Graphics2D g, Ghost ghost, GhostCommand ghostCommand) {
-		if (!ghost.isVisible()) {
+		if (!ghost.entity.visible) {
 			return;
 		}
-		if (ghost.getState() == null) {
+		if (ghost.ai.getState() == null) {
 			return; // may happen in test applications where not all ghosts are used
 		}
 		StringBuilder text = new StringBuilder();
 		// show ghost name if not obvious
-		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name : "");
+		text.append(ghost.ai.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name : "");
 		// chasing or scattering time
-		if (ghostCommand != null && ghost.is(SCATTERING, CHASING)) {
+		if (ghostCommand != null && ghost.ai.is(SCATTERING, CHASING)) {
 			long remaining = ghostCommand.state().getTicksRemaining();
 			String remainingText = formatLargeTicks(remaining);
 			long duration = ghostCommand.state().getDuration();
 			String durationText = formatLargeTicks(duration);
-			text.append(String.format("(%s,%s|%s)", ghost.getState(), remainingText, durationText));
+			text.append(String.format("(%s,%s|%s)", ghost.ai.getState(), remainingText, durationText));
 		} else {
-			if (ghost.state().hasTimer()) {
-				text.append(String.format("(%s,%d|%d)", ghost.getState(), ghost.state().getTicksRemaining(),
-						ghost.state().getDuration()));
+			if (ghost.ai.state().hasTimer()) {
+				text.append(String.format("(%s,%d|%d)", ghost.ai.getState(), ghost.ai.state().getTicksRemaining(),
+						ghost.ai.state().getDuration()));
 			} else {
-				text.append(ghost.getState());
+				text.append(ghost.ai.getState());
 			}
 		}
 		drawEntityState(g, ghost.entity, text.toString(), ghostColor(ghost));
@@ -111,8 +111,8 @@ public class StatesRenderer {
 		folks.ghostsInWorld().forEach(ghost -> drawActorOffTrack(g, ghost));
 	}
 
-	private void drawActorOffTrack(Graphics2D g, Creature<?, ?> creature) {
-		if (!creature.isVisible()) {
+	private void drawActorOffTrack(Graphics2D g, Creature<?> creature) {
+		if (!creature.entity.visible) {
 			return;
 		}
 		Stroke normal = g.getStroke();
@@ -121,7 +121,7 @@ public class StatesRenderer {
 		g.setColor(Color.RED);
 		g.translate(creature.entity.tf.x, creature.entity.tf.y);
 		int w = creature.entity.tf.width, h = creature.entity.tf.height;
-		Direction moveDir = creature.moveDir();
+		Direction moveDir = creature.entity.moveDir;
 		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(creature.entity.tf.y) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);

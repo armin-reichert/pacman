@@ -1,6 +1,7 @@
 package de.amr.games.pacman.controller.event;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.model.world.api.Tile;
 
 public class PacManGhostCollisionEvent implements PacManGameEvent {
 
@@ -12,7 +13,7 @@ public class PacManGhostCollisionEvent implements PacManGameEvent {
 
 	@Override
 	public String toString() {
-		return String.format("PacManGhostCollision(%s, col: %d row: %d)", ghost.name, ghost.tileLocation().col,
-				ghost.tileLocation().row);
+		Tile location = ghost.entity.tileLocation();
+		return String.format("PacManGhostCollision(%s, col: %d row: %d)", ghost.name, location.col, location.row);
 	}
 }

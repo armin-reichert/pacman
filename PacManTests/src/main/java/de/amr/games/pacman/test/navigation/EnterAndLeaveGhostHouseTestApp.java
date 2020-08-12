@@ -53,7 +53,7 @@ class EnterGhostHouseTestUI extends TestUI {
 		inky.init();
 		Bed bed = world.house(0).bed(0);
 		inky.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-		inky.setState(SCATTERING);
+		inky.ai.setState(SCATTERING);
 		view.turnRoutesOn();
 		view.turnGridOn();
 		capes.remove(1); // avoid loop around ghosthouse
@@ -62,12 +62,12 @@ class EnterGhostHouseTestUI extends TestUI {
 
 	@Override
 	public void update() {
-		if (inky.getState() == LEAVING_HOUSE && !inky.isInsideHouse()) {
-			inky.setState(SCATTERING);
+		if (inky.ai.getState() == LEAVING_HOUSE && !inky.isInsideHouse()) {
+			inky.ai.setState(SCATTERING);
 			you(inky).when(SCATTERING).headFor().tile(nextCapeToVisit).ok();
-		} else if (inky.getState() == SCATTERING) {
+		} else if (inky.ai.getState() == SCATTERING) {
 			// one round around the block, then killed at cape
-			if (capes.contains(inky.tileLocation())) {
+			if (capes.contains(inky.entity.tileLocation())) {
 				enteredCape = true;
 			} else {
 				if (enteredCape) {
@@ -77,7 +77,7 @@ class EnterGhostHouseTestUI extends TestUI {
 				}
 			}
 			if (leftCape && visits == 2) {
-				inky.setState(DEAD);
+				inky.ai.setState(DEAD);
 				visits = 0;
 				enteredCape = leftCape = false;
 				nextCapeToVisit = randomCape();

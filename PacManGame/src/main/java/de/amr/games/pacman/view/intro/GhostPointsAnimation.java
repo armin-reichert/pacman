@@ -83,17 +83,13 @@ public class GhostPointsAnimation extends GameObject {
 		killed.clear();
 		ghostToKill = 0;
 		energizer = true;
-
 		folks.all().forEach(Creature::init);
-
-		folks.pacMan.setMoveDir(Direction.RIGHT);
-		folks.pacMan.setState(PacManState.AWAKE);
-
+		folks.pacMan.entity.moveDir = Direction.RIGHT;
+		folks.pacMan.ai.setState(PacManState.AWAKE);
 		folks.ghosts().forEach(ghost -> {
-			ghost.setState(GhostState.FRIGHTENED);
-			ghost.state().removeTimer();
+			ghost.ai.setState(GhostState.FRIGHTENED);
+			ghost.ai.state().removeTimer();
 		});
-
 		initPositions();
 	}
 
@@ -141,7 +137,7 @@ public class GhostPointsAnimation extends GameObject {
 					stop();
 				} else {
 					theme.sounds().clipEatGhost().play();
-					ghosts[ghostToKill].setState(GhostState.DEAD);
+					ghosts[ghostToKill].ai.setState(GhostState.DEAD);
 					ghosts[ghostToKill].setBounty(GHOST_BOUNTIES[ghostToKill]);
 					killed.set(ghostToKill);
 					ghostToKill = ghostToKill + 1;

@@ -107,10 +107,10 @@ public class AnimalMaster {
 			return this;
 		}
 
-		public Steering<Ghost> ok() {
+		public Steering ok() {
 			ensureGhost();
 			ensureGhostState();
-			Steering<Ghost> steering = new BouncingOnBed(bed != null ? bed : ghost.bed());
+			Steering steering = new BouncingOnBed(bed != null ? bed : ghost.bed());
 			ghost.behavior(ghostState, steering);
 			return steering;
 		}
@@ -131,7 +131,7 @@ public class AnimalMaster {
 			return this;
 		}
 
-		public Steering<Ghost> ok() {
+		public Steering ok() {
 			ensureGhost();
 			ensureGhostState();
 			if (door == null) {
@@ -140,7 +140,7 @@ public class AnimalMaster {
 			if (bed == null) {
 				throw new IllegalStateException(String.format("Which bed should %s go into", ghost.name));
 			}
-			Steering<Ghost> steering = new EnteringDoorAndGoingToBed(ghost, door, bed);
+			Steering steering = new EnteringDoorAndGoingToBed(ghost, door, bed);
 			ghost.behavior(ghostState, steering);
 			return steering;
 		}
@@ -163,13 +163,13 @@ public class AnimalMaster {
 			return tile(Tile.at(col, row));
 		}
 
-		public Steering<?> ok() {
+		public Steering ok() {
 			if (ghost != null) {
 				ensureGhostState();
-				ghost.behavior(ghostState, new HeadingForTargetTile<>(ghost, fnTargetTile));
+				ghost.behavior(ghostState, new HeadingForTargetTile(ghost, fnTargetTile));
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.setWalkingBehavior(new HeadingForTargetTile<>(pacMan, fnTargetTile));
+				pacMan.setWalkingBehavior(new HeadingForTargetTile(pacMan, fnTargetTile));
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
@@ -185,7 +185,7 @@ public class AnimalMaster {
 			return this;
 		}
 
-		public Steering<Ghost> ok() {
+		public Steering ok() {
 			ensureGhost();
 			ensureGhostState();
 			ghost.behavior(ghostState, new LeavingHouse(house));
@@ -195,13 +195,13 @@ public class AnimalMaster {
 
 	public class MovesRandomlyBuilder {
 
-		public Steering<?> ok() {
+		public Steering ok() {
 			if (ghost != null) {
 				ensureGhostState();
-				ghost.behavior(ghostState, new RandomMovement<>());
+				ghost.behavior(ghostState, new RandomMovement(ghost));
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.setWalkingBehavior(new RandomMovement<>());
+				pacMan.setWalkingBehavior(new RandomMovement(pacMan));
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
@@ -220,13 +220,13 @@ public class AnimalMaster {
 			return this;
 		}
 
-		public Steering<?> ok() {
+		public Steering ok() {
 			if (ghost != null) {
 				ensureGhostState();
-				ghost.behavior(ghostState, new FollowingKeys<>(up, right, down, left));
+				ghost.behavior(ghostState, new FollowingKeys(up, right, down, left));
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.setWalkingBehavior(new FollowingKeys<>(up, right, down, left));
+				pacMan.setWalkingBehavior(new FollowingKeys(up, right, down, left));
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();

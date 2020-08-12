@@ -63,10 +63,10 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	String ghostLetter(Ghost ghost) {
-		if (ghost.getState() == null) {
+		if (ghost.ai.getState() == null) {
 			return ghost.name.substring(0, 1);
 		}
-		switch (ghost.getState()) {
+		switch (ghost.ai.getState()) {
 		case FRIGHTENED:
 			return ghost.name.substring(0, 1).toLowerCase();
 		case DEAD:
@@ -80,7 +80,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	@Override
 	public IGhostRenderer ghostRenderer(Ghost ghost_) {
 		return (g, ghost) -> {
-			if (ghost.isVisible()) {
+			if (ghost.entity.visible) {
 				Font font = $font("font");
 				int offset_baseline = $int("offset-baseline");
 				g.setFont(font.deriveFont((float) ghost.entity.tf.width));
@@ -97,12 +97,12 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	@Override
 	public IPacManRenderer pacManRenderer(PacMan pacMan_) {
 		return (g, pacMan) -> {
-			if (pacMan.isVisible()) {
+			if (pacMan.entity.visible) {
 				Transform tf = pacMan.entity.tf;
 				int offset_baseline = $int("offset-baseline");
 				g.setFont($font("font").deriveFont((float) tf.width));
 				g.setColor(Color.YELLOW);
-				String letter = pacMan.is(COLLAPSING) ? "\u2668" : "O";
+				String letter = pacMan.ai.is(COLLAPSING) ? "\u2668" : "O";
 				g.drawString(letter, tf.x, tf.y + offset_baseline);
 			}
 		};

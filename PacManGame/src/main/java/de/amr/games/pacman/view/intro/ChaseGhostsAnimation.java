@@ -50,15 +50,15 @@ public class ChaseGhostsAnimation extends GameObject {
 		points = 200;
 		folks.all().forEach(Creature::init);
 
-		folks.pacMan.setMoveDir(Direction.RIGHT);
+		folks.pacMan.entity.moveDir = Direction.RIGHT;
 		folks.pacMan.entity.tf.vx = 0.8f;
-		folks.pacMan.setState(PacManState.AWAKE);
+		folks.pacMan.ai.setState(PacManState.AWAKE);
 
 		folks.ghosts().forEach(ghost -> {
-			ghost.setMoveDir(Direction.RIGHT);
+			ghost.entity.moveDir = Direction.RIGHT;
 			ghost.entity.tf.setVelocity(0.55f, 0);
-			ghost.setState(GhostState.FRIGHTENED);
-			ghost.state(GhostState.FRIGHTENED).removeTimer();
+			ghost.ai.setState(GhostState.FRIGHTENED);
+			ghost.ai.state(GhostState.FRIGHTENED).removeTimer();
 		});
 		initPositions();
 	}
@@ -75,10 +75,10 @@ public class ChaseGhostsAnimation extends GameObject {
 	public void update() {
 		//@formatter:off
 		folks.ghosts()
-			.filter(ghost -> ghost.getState() != GhostState.DEAD)
-			.filter(ghost -> ghost.tileLocation().equals(folks.pacMan.tileLocation()))
+			.filter(ghost -> ghost.ai.getState() != GhostState.DEAD)
+			.filter(ghost -> ghost.entity.tileLocation().equals(folks.pacMan.entity.tileLocation()))
 			.forEach(ghost -> {
-				ghost.setState(GhostState.DEAD);
+				ghost.ai.setState(GhostState.DEAD);
 				ghost.setBounty(points);
 				points *= 2;
 				theme.sounds().clipEatGhost().play();

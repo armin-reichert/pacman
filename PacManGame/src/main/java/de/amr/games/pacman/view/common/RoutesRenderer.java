@@ -31,14 +31,14 @@ public class RoutesRenderer {
 
 	public void renderRoutes(Graphics2D g, Folks folks) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		if (folks.pacMan.isVisible()) {
+		if (folks.pacMan.entity.visible) {
 			drawPacManRoute(g, folks.pacMan);
 		}
-		folks.ghostsInWorld().filter(Ghost::isVisible).forEach(ghost -> drawGhostRoute(g, ghost));
-		if (folks.inky.isInsideWorld() && folks.inky.isVisible()) {
+		folks.ghostsInWorld().filter(ghost -> ghost.entity.visible).forEach(ghost -> drawGhostRoute(g, ghost));
+		if (folks.inky.entity.isInsideWorld() && folks.inky.entity.visible) {
 			drawInkyChasing(g, folks);
 		}
-		if (folks.clyde.isInsideWorld() && folks.clyde.isVisible()) {
+		if (folks.clyde.entity.isInsideWorld() && folks.clyde.entity.visible) {
 			drawClydeChasingArea(g, folks);
 		}
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -46,19 +46,19 @@ public class RoutesRenderer {
 
 	public void drawPacManRoute(Graphics2D g, PacMan pacMan) {
 		if (pacMan.steering() instanceof PathProvidingSteering) {
-			PathProvidingSteering<?> steering = (PathProvidingSteering<?>) pacMan.steering();
-			drawTargetTilePath(g, steering.pathToTarget(pacMan), Color.YELLOW);
+			PathProvidingSteering steering = (PathProvidingSteering) pacMan.steering();
+			drawTargetTilePath(g, steering.pathToTarget(pacMan.entity), Color.YELLOW);
 		}
 	}
 
 	public void drawGhostRoute(Graphics2D g, Ghost ghost) {
 		if (ghost.steering() instanceof PathProvidingSteering && ghost.targetTile() != null) {
 			drawTargetTileRubberband(g, ghost, ghost.targetTile());
-			PathProvidingSteering<?> steering = (PathProvidingSteering<?>) ghost.steering();
-			drawTargetTilePath(g, steering.pathToTarget(ghost), Rendering.ghostColor(ghost));
-		} else if (ghost.wishDir() != null) {
-			Vector2f v = ghost.wishDir().vector();
-			Rendering.drawDirectionIndicator(g, Rendering.ghostColor(ghost), true, ghost.wishDir(),
+			PathProvidingSteering steering = (PathProvidingSteering) ghost.steering();
+			drawTargetTilePath(g, steering.pathToTarget(ghost.entity), Rendering.ghostColor(ghost));
+		} else if (ghost.entity.wishDir != null) {
+			Vector2f v = ghost.entity.wishDir.vector();
+			Rendering.drawDirectionIndicator(g, Rendering.ghostColor(ghost), true, ghost.entity.wishDir,
 					ghost.entity.tf.getCenter().roundedX() + v.roundedX() * Tile.SIZE,
 					ghost.entity.tf.getCenter().roundedY() + v.roundedY() * Tile.SIZE);
 		}
@@ -114,18 +114,18 @@ public class RoutesRenderer {
 	private void drawInkyChasing(Graphics2D g, Folks folks) {
 		PacMan pacMan = folks.pacMan;
 		Ghost inky = folks.inky, blinky = folks.blinky;
-		if (!inky.is(CHASING) || inky.targetTile().isEmpty() || !folks.world.contains(blinky)) {
+		if (!inky.ai.is(CHASING) || inky.targetTile().isEmpty() || !folks.world.contains(blinky.entity)) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
-		x1 = blinky.tileLocation().centerX();
-		y1 = blinky.tileLocation().centerY();
+		x1 = blinky.entity.tileLocation().centerX();
+		y1 = blinky.entity.tileLocation().centerY();
 		x2 = inky.targetTile().get().centerX();
 		y2 = inky.targetTile().get().centerY();
 		g.setColor(Color.GRAY);
 		g.drawLine(x1, y1, x2, y2);
-		Tile pacManTile = pacMan.tileLocation();
-		Direction pacManDir = pacMan.moveDir();
+		Tile pacManTile = pacMan.entity.tileLocation();
+		Direction pacManDir = pacMan.entity.moveDir;
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
 		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
@@ -153,11 +153,11 @@ public class RoutesRenderer {
 
 	private void drawClydeChasingArea(Graphics2D g, Folks folks) {
 		Ghost clyde = folks.clyde;
-		if (!clyde.is(CHASING)) {
+		if (!clyde.ai.is(CHASING)) {
 			return;
 		}
 		Color ghostColor = ghostColor(clyde);
-		int cx = clyde.tileLocation().centerX(), cy = clyde.tileLocation().centerY();
+		int cx = clyde.entity.tileLocation().centerX(), cy = clyde.entity.tileLocation().centerY();
 		int r = 8 * Tile.SIZE;
 		g.setColor(alpha(ghostColor, 200));
 		g.setStroke(new BasicStroke(0.2f));

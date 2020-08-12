@@ -44,18 +44,18 @@ class GhostRenderer implements IGhostRenderer, ISpriteRenderer {
 	}
 
 	private void selectSprite(Ghost ghost) {
-		GhostState state = ghost.getState();
+		GhostState state = ghost.ai.getState();
 		GhostPersonality personality = ghost.getPersonality();
-		Direction dir = ghost.moveDir();
+		Direction dir = ghost.entity.moveDir;
 		if (state == null) {
 			spriteMap.select(spriteMap.keyColor(personality, dir));
-		} else if (ghost.is(LOCKED, LEAVING_HOUSE, CHASING, SCATTERING)) {
+		} else if (ghost.ai.is(LOCKED, LEAVING_HOUSE, CHASING, SCATTERING)) {
 			spriteMap.select(spriteMap.keyColor(personality, dir));
-		} else if (ghost.is(ENTERING_HOUSE)) {
+		} else if (ghost.ai.is(ENTERING_HOUSE)) {
 			spriteMap.select(spriteMap.keyEyes(dir));
-		} else if (ghost.is(FRIGHTENED)) {
+		} else if (ghost.ai.is(FRIGHTENED)) {
 			spriteMap.select(ghost.isFlashing() ? "flashing" : "frightened");
-		} else if (ghost.is(DEAD)) {
+		} else if (ghost.ai.is(DEAD)) {
 			spriteMap.select(ghost.getBounty() == 0 ? spriteMap.keyEyes(dir) : spriteMap.keyPoints(ghost.getBounty()));
 		}
 	}

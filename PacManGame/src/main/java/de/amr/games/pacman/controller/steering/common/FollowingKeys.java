@@ -7,14 +7,14 @@ import java.util.EnumMap;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.MobileLifeform;
+import de.amr.games.pacman.model.world.core.MobileLifeform;
 
 /**
  * Steers a mover using the keyboard keys for UP, RIGHT, DOWN, LEFT.
  * 
  * @author Armin Reichert
  */
-public class FollowingKeys<M extends MobileLifeform> implements Steering<M> {
+public class FollowingKeys implements Steering {
 
 	private EnumMap<Direction, Integer> keys = new EnumMap<>(Direction.class);
 
@@ -26,8 +26,8 @@ public class FollowingKeys<M extends MobileLifeform> implements Steering<M> {
 	}
 
 	@Override
-	public void steer(M mover) {
-		dirs().filter(dir -> Keyboard.keyDown(keys.get(dir))).findAny().ifPresent(mover::setWishDir);
+	public void steer(MobileLifeform entity) {
+		dirs().filter(dir -> Keyboard.keyDown(keys.get(dir))).findAny().ifPresent(dir -> entity.wishDir = dir);
 	}
 
 	@Override

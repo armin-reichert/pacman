@@ -41,11 +41,11 @@ class MovingRandomlyTestUI extends TestUI {
 	public void init() {
 		super.init();
 		include(blinky, pinky, inky, clyde);
-		ghostsOnStage().forEach(ghost -> {
+		folks.ghostsInWorld().forEach(ghost -> {
 			ghost.init();
 			you(ghost).when(FRIGHTENED).moveRandomly().ok();
-			ghost.state(FRIGHTENED).removeTimer();
-			ghost.setState(FRIGHTENED);
+			ghost.ai.state(FRIGHTENED).removeTimer();
+			ghost.ai.setState(FRIGHTENED);
 			Bed bed = world.pacManBed();
 			ghost.entity.tf.centerBoth(bed.col() * Tile.SIZE, bed.row() * Tile.SIZE, bed.width() * Tile.SIZE,
 					bed.height() * Tile.SIZE);
