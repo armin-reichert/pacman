@@ -41,7 +41,6 @@ public class ChasePacManAnimation extends GameObject {
 
 	public void setTheme(Theme theme) {
 		this.theme = theme;
-		folks.all().forEach(guy -> guy.theme = theme);
 	}
 
 	@Override

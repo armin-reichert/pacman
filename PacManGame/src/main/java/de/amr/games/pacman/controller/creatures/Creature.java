@@ -12,7 +12,6 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.MobileLifeform;
-import de.amr.games.pacman.view.api.Theme;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -34,7 +33,6 @@ public abstract class Creature<S> implements Lifecycle {
 	public final Movement movement;
 
 	public Game game;
-	public Theme theme;
 	public boolean enabled;
 
 	public Creature(String name, World world, Map<S, Steering> steeringsMap) {

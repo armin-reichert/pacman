@@ -56,7 +56,6 @@ public class MusicLoadingView implements PacManGameView {
 	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
-		folks.all().forEach(guy -> guy.theme = theme);
 		messagesRenderer = theme.messagesRenderer();
 	}
 

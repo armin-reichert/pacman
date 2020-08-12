@@ -69,8 +69,6 @@ public class PlayView implements PacManGameView {
 		if (this.theme != theme) {
 			this.theme = theme;
 			messagesRenderer = theme.messagesRenderer();
-			folks.pacMan.theme = theme;
-			folks.ghosts().forEach(ghost -> ghost.theme = theme);
 		}
 	}
 
