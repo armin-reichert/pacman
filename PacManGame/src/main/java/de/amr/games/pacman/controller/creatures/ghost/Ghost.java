@@ -202,18 +202,6 @@ public class Ghost extends Creature<GhostState> {
 		return Stream.concat(super.machines(), Stream.of(madnessController));
 	}
 
-	public PacMan getPacMan() {
-		return pacMan;
-	}
-
-	public void setPacMan(PacMan pacMan) {
-		this.pacMan = pacMan;
-	}
-
-	public Bed bed() {
-		return bed;
-	}
-
 	public void assignBed(House house, int bedNumber) {
 		this.house = house;
 		this.bed = house.bed(bedNumber);

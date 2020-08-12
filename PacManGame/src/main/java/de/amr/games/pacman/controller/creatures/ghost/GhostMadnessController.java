@@ -120,7 +120,7 @@ public class GhostMadnessController extends StateMachine<GhostMentalState, Byte>
 	}
 
 	private void targetPacMan() {
-		you(ghost).when(SCATTERING).headFor().tile(ghost.getPacMan().entity::tileLocation).ok();
+		you(ghost).when(SCATTERING).headFor().tile(ghost.pacMan.entity::tileLocation).ok();
 	}
 
 	public void pacManDies() {

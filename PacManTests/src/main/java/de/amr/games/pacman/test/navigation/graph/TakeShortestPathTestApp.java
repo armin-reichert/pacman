@@ -59,7 +59,7 @@ class TakeShortestPathTestUI extends TestUI {
 				capes.get(3),
 				world.neighbor(thePortal.either, RIGHT), 
 				capes.get(0),
-				Tile.at(blinky.bed().col(), blinky.bed().row()), 
+				Tile.at(blinky.bed.col(), blinky.bed.row()), 
 				capes.get(1),
 				world.neighbor(thePortal.other, LEFT), 
 				Tile.at(world.pacManBed().col(), 

@@ -42,7 +42,7 @@ public class Folks {
 		pinky = new Ghost("Pinky", GhostPersonality.SPEEDY, world);
 		clyde = new Ghost("Clyde", GhostPersonality.POKEY, world);
 
-		ghosts().forEach(ghost -> ghost.setPacMan(pacMan));
+		ghosts().forEach(ghost -> ghost.pacMan = pacMan);
 
 		blinky.assignBed(ghostHouse, 0);
 		inky.assignBed(ghostHouse, 1);
@@ -64,7 +64,7 @@ public class Folks {
 			you(ghost).when(DEAD).headFor().tile(houseEntry).ok();
 		});
 
-		you(blinky).when(ENTERING_HOUSE).enterDoorAndGoToBed().door(door).bed(pinky.bed()).ok();
+		you(blinky).when(ENTERING_HOUSE).enterDoorAndGoToBed().door(door).bed(pinky.bed).ok();
 		you(blinky).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
 		you(blinky).when(CHASING).headFor().tile(pacMan.entity::tileLocation).ok();
 

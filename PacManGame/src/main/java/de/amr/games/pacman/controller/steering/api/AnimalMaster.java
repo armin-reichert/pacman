@@ -80,7 +80,7 @@ public class AnimalMaster {
 
 	public EnteringDoorAndGoingToBedBuilder enterDoorAndGoToBed() {
 		ensureGhost();
-		return new EnteringDoorAndGoingToBedBuilder().bed(ghost.bed());
+		return new EnteringDoorAndGoingToBedBuilder().bed(ghost.bed);
 	}
 
 	public LeavesHouseBuilder leaveHouse() {
@@ -110,7 +110,7 @@ public class AnimalMaster {
 		public Steering ok() {
 			ensureGhost();
 			ensureGhostState();
-			Steering steering = new BouncingOnBed(bed != null ? bed : ghost.bed());
+			Steering steering = new BouncingOnBed(bed != null ? bed : ghost.bed);
 			ghost.behavior(ghostState, steering);
 			return steering;
 		}
