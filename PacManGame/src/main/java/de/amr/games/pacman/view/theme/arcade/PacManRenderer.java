@@ -33,6 +33,9 @@ class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
 	public void render(Graphics2D g, PacMan pacMan) {
 		selectSprite(pacMan).ifPresent(sprite -> {
 			sprite.enableAnimation(pacMan.enabled);
+			if (!pacMan.enabled) {
+				sprite.resetAnimation();
+			}
 			int sw = 2 * pacMan.entity.tf.width, sh = 2 * pacMan.entity.tf.height;
 			if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
 				sprite.scale(sw, sh);
