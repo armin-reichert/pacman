@@ -6,7 +6,7 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.Mover;
 
 /**
- * Interface for steering of lifeforms through their world.
+ * Interface for steering of movers through their world.
  * 
  * @author Armin Reichert
  */
@@ -14,9 +14,9 @@ import de.amr.games.pacman.model.world.core.Mover;
 public interface Steering {
 
 	/**
-	 * Steers the lifeform in its current state.
+	 * Steers the mover in its current state.
 	 * 
-	 * @param mover the steered lifeform
+	 * @param mover the steered mover
 	 */
 	void steer(Mover mover);
 
@@ -42,7 +42,7 @@ public interface Steering {
 	}
 
 	/**
-	 * @return tells if the steering requires that the lifeform stays aligned with the grid (default is
+	 * @return tells if the steering requires that the mover stays aligned with the grid (default is
 	 *         {@code false}).
 	 */
 	default boolean requiresGridAlignment() {

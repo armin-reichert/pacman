@@ -30,13 +30,13 @@ import de.amr.games.pacman.model.world.components.House;
  */
 public class Folks {
 
-	public final World world;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
 	public Folks(World world, House ghostHouse) {
-		this.world = world;
+
 		pacMan = new PacMan(world);
+
 		blinky = new Ghost("Blinky", GhostPersonality.SHADOW, world);
 		inky = new Ghost("Inky", GhostPersonality.BASHFUL, world);
 		pinky = new Ghost("Pinky", GhostPersonality.SPEEDY, world);
@@ -82,7 +82,8 @@ public class Folks {
 
 		you(clyde).when(SCATTERING).headFor().tile(0, world.height() - 1).ok();
 		you(clyde).when(CHASING).headFor()
-				.tile(() -> clyde.entity.tileDistance(pacMan.entity) > 8 ? pacMan.entity.tile() : Tile.at(0, world.height() - 1))
+				.tile(
+						() -> clyde.entity.tileDistance(pacMan.entity) > 8 ? pacMan.entity.tile() : Tile.at(0, world.height() - 1))
 				.ok();
 	}
 

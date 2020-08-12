@@ -21,6 +21,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 
 /**
  * Renderes the routes of the creatures towards their current target tiles.
@@ -113,8 +114,9 @@ public class RoutesRenderer {
 
 	private void drawInkyChasing(Graphics2D g, Folks folks) {
 		PacMan pacMan = folks.pacMan;
+		World world = pacMan.entity.world;
 		Ghost inky = folks.inky, blinky = folks.blinky;
-		if (!inky.ai.is(CHASING) || inky.steering().targetTile().isEmpty() || !folks.world.contains(blinky.entity)) {
+		if (!inky.ai.is(CHASING) || inky.steering().targetTile().isEmpty() || !world.contains(blinky.entity)) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
@@ -129,8 +131,8 @@ public class RoutesRenderer {
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
 		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
-			Tile twoAhead = folks.world.tileToDir(pacManTile, pacManDir, 2);
-			Tile twoLeft = folks.world.tileToDir(twoAhead, Direction.LEFT, 2);
+			Tile twoAhead = world.tileToDir(pacManTile, pacManDir, 2);
+			Tile twoLeft = world.tileToDir(twoAhead, Direction.LEFT, 2);
 			x1 = pacManTile.centerX();
 			y1 = pacManTile.centerY();
 			x2 = twoAhead.centerX();
