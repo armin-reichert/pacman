@@ -59,7 +59,7 @@ public class WorldPreview extends JFrame {
 			if (world.isTunnel(tile)) {
 				return Color.GRAY;
 			}
-			if (world.houses().anyMatch(house -> house.isDoor(tile))) {
+			if (world.houses().anyMatch(house -> house.hasDoorAt(tile))) {
 				return Color.PINK;
 			}
 			if (world.houses().anyMatch(house -> house.includes(tile))) {

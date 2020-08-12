@@ -196,13 +196,13 @@ public class Ghost extends Creature<GhostState> {
 
 	@Override
 	public float getSpeed() {
+		if (ai.getState() == null) {
+			throw new IllegalStateException(String.format("Ghost %s is not initialized.", name));
+		}
 		if (game == null) {
 			return 0;
 		}
 		GameLevel level = game.level;
-		if (ai.getState() == null) {
-			throw new IllegalStateException(String.format("Ghost %s is not initialized.", name));
-		}
 		boolean tunnel = entity.world.isTunnel(entity.tileLocation());
 		switch (ai.getState()) {
 		case LOCKED:
@@ -235,7 +235,7 @@ public class Ghost extends Creature<GhostState> {
 
 	@Override
 	public Stream<StateMachine<?, ?>> machines() {
-		return Stream.of(ai, movement, madnessController);
+		return madnessController != null ? Stream.of(ai, movement, madnessController) : Stream.of(ai, movement);
 	}
 
 	public void assignBed(House house, int bedNumber) {
@@ -274,19 +274,17 @@ public class Ghost extends Creature<GhostState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (house.isDoor(neighbor)) {
+		if (house.hasDoorAt(neighbor)) {
 			return ai.is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		Optional<OneWayTile> maybeOneWay = entity.world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor))
-				.findFirst();
-		if (maybeOneWay.isPresent()) {
-			OneWayTile oneWay = maybeOneWay.get();
-			Direction toNeighbor = tile.dirTo(neighbor).get();
-			if (toNeighbor.equals(oneWay.dir.opposite()) && ai.is(CHASING, SCATTERING)) {
+		if (ai.is(CHASING, SCATTERING)) {
+			Optional<OneWayTile> oneWay = entity.world.oneWayTiles().filter(oneWayTile -> oneWayTile.tile.equals(neighbor))
+					.findFirst();
+			if (oneWay.isPresent() && tile.dirTo(neighbor).get().equals(oneWay.get().dir.opposite())) {
 				return false;
 			}
 		}
-		return super.canMoveBetween(tile, neighbor);
+		return entity.world.isAccessible(neighbor);
 	}
 
 	public void move() {

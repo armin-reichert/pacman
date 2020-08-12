@@ -32,7 +32,7 @@ public class House implements Area {
 		return doors.stream();
 	}
 
-	public boolean isDoor(Tile location) {
+	public boolean hasDoorAt(Tile location) {
 		return doors().anyMatch(door -> door.includes(location));
 	}
 
@@ -53,13 +53,13 @@ public class House implements Area {
 	}
 
 	public boolean isInsideOrDoor(Tile tile) {
-		return isDoor(tile) || layout.includes(tile);
+		return hasDoorAt(tile) || layout.includes(tile);
 	}
 
 	public boolean isEntry(Tile tile) {
 		for (Direction dir : Direction.values()) {
 			Tile neighbor = tile.towards(dir);
-			if (isDoor(neighbor)) {
+			if (hasDoorAt(neighbor)) {
 				Door door = doors().filter(d -> d.includes(neighbor)).findFirst().get();
 				return dir == door.intoHouse;
 			}

@@ -41,7 +41,7 @@ public class WorldTests {
 		assertTrue(world.portals().findFirst().get().either.equals(Tile.at(0, 17)));
 		assertTrue(world.portals().findFirst().get().other.equals(Tile.at(27, 17)));
 		assertFalse(world.isAccessible(Tile.at(0, 3)));
-		assertTrue(world.house(0).isDoor(Tile.at(13, 15)));
+		assertTrue(world.house(0).hasDoorAt(Tile.at(13, 15)));
 	}
 
 	@Test
