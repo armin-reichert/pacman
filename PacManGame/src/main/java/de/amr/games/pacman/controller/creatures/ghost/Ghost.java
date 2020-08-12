@@ -203,7 +203,7 @@ public class Ghost extends Creature<GhostState> {
 			return 0;
 		}
 		GameLevel level = game.level;
-		boolean tunnel = entity.world.isTunnel(entity.tile());
+		boolean tunnel = world.isTunnel(entity.tile());
 		switch (ai.getState()) {
 		case LOCKED:
 			return speed(isInsideHouse() ? level.ghostSpeed / 2 : 0);
@@ -272,13 +272,13 @@ public class Ghost extends Creature<GhostState> {
 			return ai.is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		if (ai.is(CHASING, SCATTERING)) {
-			Optional<OneWayTile> oneWay = entity.world.oneWayTiles().filter(oneWayTile -> oneWayTile.tile.equals(neighbor))
+			Optional<OneWayTile> oneWay = world.oneWayTiles().filter(oneWayTile -> oneWayTile.tile.equals(neighbor))
 					.findFirst();
 			if (oneWay.isPresent() && tile.dirTo(neighbor).get().equals(oneWay.get().dir.opposite())) {
 				return false;
 			}
 		}
-		return entity.world.isAccessible(neighbor);
+		return world.isAccessible(neighbor);
 	}
 
 	public void move() {
@@ -288,7 +288,7 @@ public class Ghost extends Creature<GhostState> {
 			currentSteering.force();
 			previousSteering = currentSteering;
 		}
-		if (!entity.world.isTunnel(entity.tile())) {
+		if (!world.isTunnel(entity.tile())) {
 			currentSteering.steer(entity);
 		}
 		movement.update();

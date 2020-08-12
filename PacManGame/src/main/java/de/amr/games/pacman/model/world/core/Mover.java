@@ -4,7 +4,6 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
 
 /**
  * An entity that can move through a tile-based world.
@@ -13,14 +12,9 @@ import de.amr.games.pacman.model.world.api.World;
  */
 public class Mover extends Entity {
 
-	public final World world;
 	public Direction moveDir;
 	public Direction wishDir;
 	public boolean enteredNewTile;
-
-	public Mover(World world) {
-		this.world = world;
-	}
 
 	/**
 	 * The tile location is defined as the tile containing the center of the lifeforms body.
@@ -73,15 +67,5 @@ public class Mover extends Entity {
 	 */
 	public double tileDistance(Mover other) {
 		return tile().distance(other.tile());
-	}
-
-	/**
-	 * The neighbor tile of this mover's current tile.
-	 * 
-	 * @param dir a direction
-	 * @return the neighbor tile towards the given direction
-	 */
-	public Tile neighborTile(Direction dir) {
-		return world.tileToDir(tile(), dir, 1);
 	}
 }

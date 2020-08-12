@@ -114,7 +114,7 @@ public class RoutesRenderer {
 
 	private void drawInkyChasing(Graphics2D g, Folks folks) {
 		PacMan pacMan = folks.pacMan;
-		World world = pacMan.entity.world;
+		World world = pacMan.world;
 		Ghost inky = folks.inky, blinky = folks.blinky;
 		if (!inky.ai.is(CHASING) || inky.steering().targetTile().isEmpty() || !world.contains(blinky.entity)) {
 			return;

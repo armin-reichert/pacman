@@ -59,7 +59,7 @@ public class PacMan extends Creature<PacManState> {
 			
 				.state(IN_BED)
 					.onEntry(() -> {
-						putIntoBed(entity.world.pacManBed());
+						putIntoBed(world.pacManBed());
 						entity.visible = true;
 						enabled = true;
 						fat = 0;
@@ -131,10 +131,10 @@ public class PacMan extends Creature<PacManState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (entity.world.houses().flatMap(House::doors).anyMatch(door -> door.includes(neighbor))) {
+		if (world.houses().flatMap(House::doors).anyMatch(door -> door.includes(neighbor))) {
 			return false;
 		}
-		return entity.world.isAccessible(neighbor);
+		return world.isAccessible(neighbor);
 	}
 
 	/**
@@ -148,9 +148,9 @@ public class PacMan extends Creature<PacManState> {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int nTiles) {
-		Tile tileAhead = entity.world.tileToDir(entity.tile(), entity.moveDir, nTiles);
+		Tile tileAhead = world.tileToDir(entity.tile(), entity.moveDir, nTiles);
 		if (entity.moveDir == UP && !settings.fixOverflowBug) {
-			tileAhead = entity.world.tileToDir(tileAhead, LEFT, nTiles);
+			tileAhead = world.tileToDir(tileAhead, LEFT, nTiles);
 		}
 		return tileAhead;
 	}
@@ -205,18 +205,18 @@ public class PacMan extends Creature<PacManState> {
 	}
 
 	private Optional<PacManGameEvent> searchForFood(Tile location) {
-		if (entity.world.bonusFood().isPresent()) {
-			BonusFood bonus = entity.world.bonusFood().get();
+		if (world.bonusFood().isPresent()) {
+			BonusFood bonus = world.bonusFood().get();
 			if (bonus.isPresent() && bonus.location().equals(location)) {
 				fat += Game.BIG_MEAL_FAT;
 				return Optional.of(new BonusFoundEvent(bonus));
 			}
 		}
-		if (entity.world.hasFood(Pellet.ENERGIZER, location)) {
+		if (world.hasFood(Pellet.ENERGIZER, location)) {
 			fat += Game.BIG_MEAL_FAT;
 			return Optional.of(new FoodFoundEvent(location));
 		}
-		if (entity.world.hasFood(Pellet.SNACK, location)) {
+		if (world.hasFood(Pellet.SNACK, location)) {
 			fat += Game.SNACK_FAT;
 			return Optional.of(new FoodFoundEvent(location));
 		}

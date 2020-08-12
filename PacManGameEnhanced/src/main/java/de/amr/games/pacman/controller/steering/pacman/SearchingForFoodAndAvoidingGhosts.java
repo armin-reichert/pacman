@@ -49,7 +49,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	public SearchingForFoodAndAvoidingGhosts(Folks folks) {
 		me = folks.pacMan;
 		this.folks = folks;
-		this.world = folks.pacMan.entity.world;
+		this.world = folks.pacMan.world;
 		graph = new WorldGraph(world);
 		graph.setPathFinder(PathFinder.ASTAR);
 	}
@@ -129,7 +129,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 		aheadThenRightThenLeft()
 			.filter(me::canCrossBorderTo)
 			.forEach(dir -> {
-				Tile neighbor = me.entity.neighborTile(dir);
+				Tile neighbor = world.tileToDir(me.entity.tile(), dir, 1);
 				preferredFoodLocationFrom(neighbor).ifPresent(foodLocation -> {
 					double d = neighbor.distance(foodLocation);
 					if (d < distance) {

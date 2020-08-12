@@ -92,7 +92,7 @@ public class Folks {
 	}
 
 	public Stream<Ghost> ghostsInWorld() {
-		return ghosts().filter(ghost -> ghost.entity.world.contains(ghost.entity));
+		return ghosts().filter(ghost -> ghost.world.contains(ghost.entity));
 	}
 
 	public Stream<Creature<?>> guys() {
@@ -100,6 +100,6 @@ public class Folks {
 	}
 
 	public Stream<Creature<?>> guysInWorld() {
-		return guys().filter(guy -> guy.entity.world.contains(guy.entity));
+		return guys().filter(guy -> guy.world.contains(guy.entity));
 	}
 }

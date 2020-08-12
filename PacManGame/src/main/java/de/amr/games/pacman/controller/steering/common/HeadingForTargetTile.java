@@ -19,6 +19,7 @@ import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Mover;
 
 /**
@@ -34,6 +35,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	private static final List<Direction> directionPriority = asList(UP, LEFT, DOWN, RIGHT);
 
 	private final Creature<?> guy;
+	private final World world;
 	private final ConcurrentLinkedDeque<Tile> path = new ConcurrentLinkedDeque<>();
 	private Supplier<Tile> fnTargetTile;
 	private boolean forced;
@@ -41,6 +43,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 
 	public HeadingForTargetTile(Creature<?> guy, Supplier<Tile> fnTargetTile) {
 		this.guy = Objects.requireNonNull(guy);
+		world = guy.world;
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}
 
@@ -86,12 +89,12 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * @param target  target tile
 	 */
 	private Direction bestDirTowardsTarget(Mover mover, Direction moveDir, Tile tile, Tile target) {
-		Function<Direction, Double> fnTargetDistance = dir -> mover.world.neighbor(tile, dir).distance(target);
+		Function<Direction, Double> fnTargetDistance = dir -> world.neighbor(tile, dir).distance(target);
 		Function<Direction, Integer> fnDirectionPriority = directionPriority::indexOf;
 		/*@formatter:off*/
 		return Direction.dirs()
 			.filter(dir -> dir != moveDir.opposite())
-			.filter(dir -> guy.canMoveBetween(tile, mover.world.neighbor(tile, dir)))
+			.filter(dir -> guy.canMoveBetween(tile, world.neighbor(tile, dir)))
 			.sorted(Comparator.comparing(fnTargetDistance).thenComparing(fnDirectionPriority))
 			.findFirst()
 			.orElse(mover.moveDir);
@@ -106,10 +109,10 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		path.clear();
 		Direction dir = guy.entity.moveDir;
 		Tile head = guy.entity.tile();
-		while (guy.entity.world.includes(head) && !head.equals(target) && !path.contains(head)) {
+		while (world.includes(head) && !head.equals(target) && !path.contains(head)) {
 			path.add(head);
 			dir = bestDirTowardsTarget(guy.entity, dir, head, target);
-			head = guy.entity.world.neighbor(head, dir);
+			head = world.neighbor(head, dir);
 		}
 	}
 

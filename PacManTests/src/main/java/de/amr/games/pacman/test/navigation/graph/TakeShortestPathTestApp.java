@@ -67,7 +67,7 @@ class TakeShortestPathTestUI extends TestUI {
 		//@formatter:on
 		targetIndex = 0;
 
-		FollowingPath visitNextTarget = new TakingShortestPath(blinky.entity, () -> targets.get(targetIndex));
+		FollowingPath visitNextTarget = new TakingShortestPath(blinky, () -> targets.get(targetIndex));
 		blinky.behavior(CHASING, visitNextTarget);
 		blinky.behavior(FRIGHTENED, visitNextTarget);
 		blinky.ai.setState(CHASING);

@@ -78,7 +78,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 			return; // already entered portal before
 		}
 		Tile tile = guy.entity.tile();
-		guy.entity.world.portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
+		guy.world.portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
 			if (portal.either.equals(tile) && (guy.entity.moveDir == LEFT && guy.entity.tileOffsetX() <= 1)
 					|| (guy.entity.moveDir == UP && guy.entity.tileOffsetY() <= 1)) {
 				setActivePortal(portal, tile);

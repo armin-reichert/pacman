@@ -27,6 +27,7 @@ import de.amr.statemachine.core.StateMachine;
 public abstract class Creature<S> implements Lifecycle {
 
 	public final String name;
+	public final World world;
 	public final Mover entity;
 	public final StateMachine<S, PacManGameEvent> ai;
 	public final Map<S, Steering> steeringsMap;
@@ -37,7 +38,8 @@ public abstract class Creature<S> implements Lifecycle {
 
 	public Creature(String name, World world, Map<S, Steering> steeringsMap) {
 		this.name = name;
-		this.entity = new Mover(world);
+		this.world = world;
+		this.entity = new Mover();
 		this.entity.tf.width = entity.tf.height = Tile.SIZE;
 		this.ai = buildAI();
 		this.steeringsMap = steeringsMap;
@@ -70,7 +72,7 @@ public abstract class Creature<S> implements Lifecycle {
 	 * @return {@code true} if this creature can cross the border to the given direction
 	 */
 	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = entity.tile(), neighbor = entity.world.neighbor(currentTile, dir);
+		Tile currentTile = entity.tile(), neighbor = world.neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
 

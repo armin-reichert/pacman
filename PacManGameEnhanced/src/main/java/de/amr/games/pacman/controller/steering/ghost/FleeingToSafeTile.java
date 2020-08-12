@@ -24,6 +24,7 @@ import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 public class FleeingToSafeTile extends FollowingPath {
 
 	private final Mover attacker;
+	private final World world;
 	private final WorldGraph graph;
 	private final List<Tile> capes;
 	private final List<Tile> portalEntries;
@@ -33,8 +34,8 @@ public class FleeingToSafeTile extends FollowingPath {
 
 	public FleeingToSafeTile(Ghost refugee, Mover attacker) {
 		super(refugee.entity);
+		world = refugee.world;
 		this.attacker = attacker;
-		World world = refugee.entity.world;
 		graph = new WorldGraph(world);
 		graph.setPathFinder(PathFinder.BEST_FIRST_SEARCH);
 		capes = world.capes();
@@ -64,7 +65,7 @@ public class FleeingToSafeTile extends FollowingPath {
 
 	@Override
 	public boolean isComplete() {
-		if (passingPortal && !mover.world.isTunnel(mover.tile())) {
+		if (passingPortal && !world.isTunnel(mover.tile())) {
 			// refugee passed portal and tunnel, now compute new safe tile
 			passingPortal = false;
 			return true;
