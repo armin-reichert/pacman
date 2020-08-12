@@ -14,6 +14,7 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
+import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -55,7 +56,8 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 
 	@Override
 	public void steer(MobileLifeform pacMan) {
-		if (!me.entity.enteredNewTile && me.canCrossBorderTo(me.entity.moveDir) || me.isTeleporting()) {
+		if (!me.entity.enteredNewTile && me.canCrossBorderTo(me.entity.moveDir)
+				|| me.movement.is(MovementType.TELEPORTING)) {
 			return;
 		}
 		boolean acted = avoidTouchingGhostAhead() || avoidOncomingGhost() || chaseFrightenedGhost(10);

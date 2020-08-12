@@ -26,6 +26,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
+import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -200,7 +201,7 @@ public class PacMan extends Creature<PacManState> {
 		if (entity.enteredNewTile) {
 			fat = Math.max(0, fat - 1);
 		}
-		if (!isTeleporting()) {
+		if (!movement.is(MovementType.TELEPORTING)) {
 			searchForFood(entity.tileLocation()).ifPresent(ai::publish);
 		}
 	}
