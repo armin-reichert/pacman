@@ -64,8 +64,8 @@ public class Ghost extends Creature<GhostState> {
 		/*@formatter:off*/
 		StateMachine<GhostState, PacManGameEvent> fsm = StateMachine
 			.beginStateMachine(GhostState.class, PacManGameEvent.class, TransitionMatchStrategy.BY_CLASS)
-
-			.description("Ghost " + name + " AI").initialState(LOCKED)
+				.description("Ghost " + name + " AI")
+				.initialState(LOCKED)
 
 			.states()
 
@@ -125,40 +125,63 @@ public class Ghost extends Creature<GhostState> {
 
 				.when(LOCKED).then(LEAVING_HOUSE).on(GhostUnlockedEvent.class)
 	
-				.when(LEAVING_HOUSE).then(SCATTERING).condition(() -> justLeftGhostHouse() && nextState == SCATTERING)
-				.annotation("Outside house")
+				.when(LEAVING_HOUSE).then(SCATTERING)
+					.condition(() -> justLeftGhostHouse() && nextState == SCATTERING)
+					.annotation("Outside house")
 	
-				.when(LEAVING_HOUSE).then(CHASING).condition(() -> justLeftGhostHouse() && nextState == CHASING)
-				.annotation("Outside house")
+				.when(LEAVING_HOUSE).then(CHASING)
+					.condition(() -> justLeftGhostHouse() && nextState == CHASING)
+					.annotation("Outside house")
 	
-				.when(LEAVING_HOUSE).then(FRIGHTENED).condition(() -> justLeftGhostHouse() && nextState == FRIGHTENED)
-				.annotation("Outside house")
+				.when(LEAVING_HOUSE).then(FRIGHTENED)
+					.condition(() -> justLeftGhostHouse() && nextState == FRIGHTENED)
+					.annotation("Outside house")
 	
-				.when(ENTERING_HOUSE).then(LEAVING_HOUSE).condition(() -> steering().isComplete()).annotation("Reached bed")
+				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
+					.condition(() -> steering().isComplete())
+					.annotation("Reached bed")
 	
-				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class).act(() -> reverseDirection())
+				.when(CHASING).then(FRIGHTENED)
+					.on(PacManGainsPowerEvent.class)
+					.act(this::reverseDirection)
 	
-				.when(CHASING).then(DEAD).on(GhostKilledEvent.class)
+				.when(CHASING).then(DEAD)
+					.on(GhostKilledEvent.class)
 	
-				.when(CHASING).then(SCATTERING).condition(() -> nextState == SCATTERING).act(() -> reverseDirection())
-				.annotation("Got scattering command")
+				.when(CHASING).then(SCATTERING)
+					.condition(() -> nextState == SCATTERING)
+					.act(this::reverseDirection)
+					.annotation("Got scattering command")
 	
-				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class).act(() -> reverseDirection())
+				.when(SCATTERING).then(FRIGHTENED)
+					.on(PacManGainsPowerEvent.class)
+					.act(this::reverseDirection)
 	
-				.when(SCATTERING).then(DEAD).on(GhostKilledEvent.class)
+				.when(SCATTERING).then(DEAD)
+					.on(GhostKilledEvent.class)
 	
-				.when(SCATTERING).then(CHASING).condition(() -> nextState == CHASING).act(() -> reverseDirection())
-				.annotation("Got chasing command")
+				.when(SCATTERING).then(CHASING)
+					.condition(() -> nextState == CHASING)
+					.act(this::reverseDirection)
+					.annotation("Got chasing command")
 	
-				.stay(FRIGHTENED).on(PacManGainsPowerEvent.class).act(() -> ai.resetTimer(FRIGHTENED))
+				.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
+					.act(() -> ai.resetTimer(FRIGHTENED))
 	
-				.when(FRIGHTENED).then(DEAD).on(GhostKilledEvent.class)
+				.when(FRIGHTENED).then(DEAD)
+					.on(GhostKilledEvent.class)
 	
-				.when(FRIGHTENED).then(SCATTERING).onTimeout().condition(() -> nextState == SCATTERING)
+				.when(FRIGHTENED).then(SCATTERING)
+					.onTimeout()
+					.condition(() -> nextState == SCATTERING)
 	
-				.when(FRIGHTENED).then(CHASING).onTimeout().condition(() -> nextState == CHASING)
+				.when(FRIGHTENED).then(CHASING)
+					.onTimeout()
+					.condition(() -> nextState == CHASING)
 	
-				.when(DEAD).then(ENTERING_HOUSE).condition(this::isAtHouseEntry).annotation("Reached house entry")
+				.when(DEAD).then(ENTERING_HOUSE)
+					.condition(this::isAtHouseEntry)
+					.annotation("Reached house entry")
 
 			.endStateMachine();
 		/*@formatter:on*/
@@ -212,7 +235,7 @@ public class Ghost extends Creature<GhostState> {
 
 	@Override
 	public Stream<StateMachine<?, ?>> machines() {
-		return Stream.concat(super.machines(), Stream.of(madnessController));
+		return Stream.of(ai, movement, madnessController);
 	}
 
 	public void assignBed(House house, int bedNumber) {
