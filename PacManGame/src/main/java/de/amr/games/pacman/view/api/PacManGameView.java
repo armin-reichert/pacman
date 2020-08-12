@@ -11,7 +11,11 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public interface PacManGameView extends Themeable, View, Lifecycle {
+public interface PacManGameView extends View, Lifecycle {
+
+	void setTheme(Theme theme);
+
+	Theme getTheme();
 
 	default Stream<StateMachine<?, ?>> machines() {
 		return Stream.empty();

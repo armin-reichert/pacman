@@ -19,7 +19,6 @@ import de.amr.games.pacman.model.world.api.MobileLifeform;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.api.Themeable;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -34,7 +33,7 @@ import de.amr.statemachine.core.StateMachine;
  * @author Armin Reichert
  */
 public abstract class Creature<M extends MobileLifeform, S> extends StateMachine<S, PacManGameEvent>
-		implements MobileLifeform, Themeable {
+		implements MobileLifeform {
 
 	public final Entity entity;
 	public final String name;
@@ -59,27 +58,6 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 		movement = new Movement(this, name);
 	}
 
-	@Override
-	public World world() {
-		return world;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	/**
-	 * @return this creatures' current speed (pixels per tick)
-	 */
-	@Override
-	public float getSpeed() {
-		return 0;
-	}
-
 	/**
 	 * @param game the game this creature takes part in
 	 */
@@ -93,6 +71,19 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 	}
 
 	@Override
+	public World world() {
+		return world;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	@Override
 	public boolean isVisible() {
 		return entity.visible;
 	}
@@ -102,14 +93,16 @@ public abstract class Creature<M extends MobileLifeform, S> extends StateMachine
 		entity.visible = visible;
 	}
 
-	@Override
-	public Theme getTheme() {
-		return theme;
-	}
-
-	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
+	}
+
+	/**
+	 * @return this creatures' current speed (pixels per tick)
+	 */
+	@Override
+	public float getSpeed() {
+		return 0;
 	}
 
 	public Steering<M> steering() {

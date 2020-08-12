@@ -19,7 +19,6 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.api.Themeable;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
@@ -27,7 +26,7 @@ import de.amr.games.pacman.view.api.Themeable;
  * 
  * @author Armin Reichert
  */
-public class GhostPointsAnimation extends GameObject implements Themeable {
+public class GhostPointsAnimation extends GameObject {
 
 	private final Folks folks;
 	private final Ghost[] ghosts;
@@ -47,15 +46,9 @@ public class GhostPointsAnimation extends GameObject implements Themeable {
 		setTheme(theme);
 	}
 
-	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 		folks.all().forEach(creature -> creature.setTheme(theme));
-	}
-
-	@Override
-	public Theme getTheme() {
-		return theme;
 	}
 
 	@Override

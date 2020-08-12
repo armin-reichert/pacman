@@ -52,7 +52,6 @@ import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.api.Themeable;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.MusicLoadingView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -64,8 +63,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class GameController extends StateMachine<PacManGameState, PacManGameEvent>
-		implements VisualController, Themeable {
+public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
 	/**
 	 * In Shaun William's <a href="https://github.com/masonicGIT/pacman">Pac-Man remake</a> there is a
@@ -610,7 +608,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		setTheme(themes[currentThemeIndex]);
 	}
 
-	@Override
 	public void setTheme(Theme theme) {
 		this.currentThemeIndex = Arrays.asList(themes).indexOf(theme);
 		this.theme = theme;
@@ -619,7 +616,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	@Override
 	public Theme getTheme() {
 		return themes[currentThemeIndex];
 	}

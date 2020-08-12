@@ -16,9 +16,8 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.api.Themeable;
 
-public class ChasePacManAnimation extends GameObject implements Themeable {
+public class ChasePacManAnimation extends GameObject {
 
 	enum PelletDisplay {
 		SIMPLE, TEN, ENERGIZER, FIFTY
@@ -40,15 +39,9 @@ public class ChasePacManAnimation extends GameObject implements Themeable {
 		return folks;
 	}
 
-	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 		folks.all().forEach(creature -> creature.setTheme(theme));
-	}
-
-	@Override
-	public Theme getTheme() {
-		return theme;
 	}
 
 	@Override
