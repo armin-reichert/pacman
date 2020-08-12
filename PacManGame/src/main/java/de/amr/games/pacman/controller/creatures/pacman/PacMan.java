@@ -12,6 +12,7 @@ import static de.amr.games.pacman.model.game.Game.sec;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
+import java.util.EnumMap;
 import java.util.Optional;
 
 import de.amr.games.pacman.PacManApp;
@@ -111,7 +112,7 @@ public class PacMan extends Creature<PacManState> {
 	}
 
 	public PacMan(World world) {
-		super(PacManState.class, "Pac-Man", world);
+		super("Pac-Man", world, new EnumMap<>(PacManState.class));
 	}
 
 	@Override

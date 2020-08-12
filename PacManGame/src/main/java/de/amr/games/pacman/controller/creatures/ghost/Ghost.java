@@ -10,6 +10,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERI
 import static de.amr.games.pacman.controller.game.GameController.speed;
 import static de.amr.games.pacman.model.game.Game.sec;
 
+import java.util.EnumMap;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -52,7 +53,7 @@ public class Ghost extends Creature<GhostState> {
 	private boolean flashing;
 
 	public Ghost(String name, GhostPersonality personality, World world) {
-		super(GhostState.class, name, world);
+		super(name, world, new EnumMap<>(GhostState.class));
 		this.personality = personality;
 		if (personality == GhostPersonality.SHADOW) {
 			madnessController = new GhostMadnessController(this);

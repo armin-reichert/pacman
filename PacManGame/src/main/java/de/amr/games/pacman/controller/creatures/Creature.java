@@ -1,7 +1,5 @@
 package de.amr.games.pacman.controller.creatures;
 
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -34,21 +32,19 @@ public abstract class Creature<S> implements Lifecycle {
 	public final StateMachine<S, PacManGameEvent> ai;
 	public final MobileLifeform entity;
 	public final String name;
-
+	protected final Map<S, Steering> steeringsMap;
 	protected Game game;
 	protected boolean enabled;
-	protected Map<S, Steering> steeringsByState;
 	protected Movement movement;
 	protected Theme theme;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Creature(Class<S> stateClass, String name, World world) {
+	public Creature(String name, World world, Map<S, Steering> steeringsMap) {
 		this.name = name;
 		enabled = true;
 		entity = new MobileLifeform(world);
 		entity.tf.width = entity.tf.height = Tile.SIZE;
 		movement = new Movement(this);
-		steeringsByState = stateClass.isEnum() ? new EnumMap(stateClass) : new HashMap<>();
+		this.steeringsMap = steeringsMap;
 		ai = buildAI();
 	}
 
@@ -102,7 +98,7 @@ public abstract class Creature<S> implements Lifecycle {
 	 * @return the current steering for this actor.
 	 */
 	public Steering steering(MobileLifeform mover) {
-		return steeringsByState.getOrDefault(ai.getState(), m -> {
+		return steeringsMap.getOrDefault(ai.getState(), m -> {
 		});
 	}
 
@@ -120,8 +116,8 @@ public abstract class Creature<S> implements Lifecycle {
 	 * @return steering defined for this state
 	 */
 	public Steering steering(S state) {
-		if (steeringsByState.containsKey(state)) {
-			return steeringsByState.get(state);
+		if (steeringsMap.containsKey(state)) {
+			return steeringsMap.get(state);
 		}
 		throw new IllegalArgumentException(String.format("%s: No steering found for state %s", this, state));
 	}
@@ -133,7 +129,7 @@ public abstract class Creature<S> implements Lifecycle {
 	 * @param steering steering defined for this state
 	 */
 	public void behavior(S state, Steering steering) {
-		steeringsByState.put(state, steering);
+		steeringsMap.put(state, steering);
 	}
 
 	public boolean requiresAlignment() {
