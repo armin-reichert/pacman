@@ -90,12 +90,14 @@ public class Ghost extends Creature<GhostState> {
 	
 				.state(SCATTERING)
 					.onTick(() -> {
+						updateMentalHealth();
 						checkPacManCollision();
 						move();
 					})
 	
 				.state(CHASING)
 					.onTick(() -> {
+						updateMentalHealth();
 						checkPacManCollision();
 						move();
 					})
@@ -103,6 +105,7 @@ public class Ghost extends Creature<GhostState> {
 				.state(FRIGHTENED)
 					.timeoutAfter(this::getFrightenedTicks)
 					.onTick((state, consumed, remaining) -> {
+						updateMentalHealth();
 						checkPacManCollision();
 						move();
 						recovering = remaining < getFlashTimeTicks() * 0.5f; // one flashing takes 0.5 sec
@@ -279,10 +282,13 @@ public class Ghost extends Creature<GhostState> {
 			currentSteering.steer(entity);
 		}
 		movement.update();
+		enabled = entity.tf.vx != 0 || entity.tf.vy != 0;
+	}
+
+	private void updateMentalHealth() {
 		if (madnessController != null) {
 			madnessController.update();
 		}
-		enabled = entity.tf.vx != 0 || entity.tf.vy != 0;
 	}
 
 	public boolean hasLeftHouse() {
