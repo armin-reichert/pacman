@@ -338,7 +338,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				ghostCommand.update();
 				doorMan.update();
 				bonusControl.update();
-				if (folks.clyde.justLeftGhostHouse()) {
+				if (folks.clyde.hasLeftHouse()) {
 					folks.blinky.madnessController.clydeExitsHouse();
 				}
 				sound.chasingGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.ai.is(GhostState.CHASING));

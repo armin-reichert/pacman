@@ -126,15 +126,15 @@ public class Ghost extends Creature<GhostState> {
 				.when(LOCKED).then(LEAVING_HOUSE).on(GhostUnlockedEvent.class)
 	
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> justLeftGhostHouse() && nextState == SCATTERING)
+					.condition(() -> hasLeftHouse() && nextState == SCATTERING)
 					.annotation("Outside house")
 	
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> justLeftGhostHouse() && nextState == CHASING)
+					.condition(() -> hasLeftHouse() && nextState == CHASING)
 					.annotation("Outside house")
 	
 				.when(LEAVING_HOUSE).then(FRIGHTENED)
-					.condition(() -> justLeftGhostHouse() && nextState == FRIGHTENED)
+					.condition(() -> hasLeftHouse() && nextState == FRIGHTENED)
 					.annotation("Outside house")
 	
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
@@ -261,11 +261,6 @@ public class Ghost extends Creature<GhostState> {
 		}
 	}
 
-	public boolean justLeftGhostHouse() {
-		Tile location = entity.tile();
-		return ai.is(LEAVING_HOUSE) && house.isEntry(location) && entity.tf.y == location.row * Tile.SIZE;
-	}
-
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
 		if (house.hasDoorAt(neighbor)) {
@@ -296,6 +291,11 @@ public class Ghost extends Creature<GhostState> {
 			madnessController.update();
 		}
 		enabled = entity.tf.vx != 0 || entity.tf.vy != 0;
+	}
+
+	public boolean hasLeftHouse() {
+		Tile location = entity.tile();
+		return ai.is(LEAVING_HOUSE) && house.isEntry(location) && entity.tf.y == location.row * Tile.SIZE;
 	}
 
 	public boolean isAtHouseEntry() {
