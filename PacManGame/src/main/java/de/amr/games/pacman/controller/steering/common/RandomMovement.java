@@ -20,18 +20,9 @@ public class RandomMovement implements Steering {
 	}
 
 	@Override
-	public boolean requiresGridAlignment() {
-		return true;
-	}
-
-	@Override
-	public void force() {
-		forced = true;
-	}
-
-	@Override
 	public void steer(Mover entity) {
-		if (forced || entity.enteredNewTile || !guy.canCrossBorderTo(entity.moveDir)) {
+		if (forced || !guy.canCrossBorderTo(entity.moveDir)
+				|| entity.enteredNewTile && guy.world.isIntersection(entity.tile())) {
 			/*@formatter:off*/
 			Direction.dirsShuffled()
 				.filter(dir -> dir != entity.moveDir.opposite())
@@ -41,5 +32,15 @@ public class RandomMovement implements Steering {
 			/*@formatter:on*/
 			forced = false;
 		}
+	}
+
+	@Override
+	public boolean requiresGridAlignment() {
+		return true;
+	}
+
+	@Override
+	public void force() {
+		forced = true;
 	}
 }
