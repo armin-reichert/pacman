@@ -220,11 +220,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
-					.act(state_PLAYING()::onFoodFound)
+					.act(state_PLAYING()::onPacManFoodFound)
 					
 				.stay(PLAYING)
 					.on(BonusFoundEvent.class)
-					.act(state_PLAYING()::onBonusFound)
+					.act(state_PLAYING()::onPacManFoundBonus)
 					
 				.stay(PLAYING)
 					.on(PacManLostPowerEvent.class)
@@ -390,7 +390,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 		}
 
-		private void onBonusFound(PacManGameEvent event) {
+		private void onPacManFoundBonus(PacManGameEvent event) {
 			BonusFoundEvent bonusFound = (BonusFoundEvent) event;
 			int value = game.level.bonusValue;
 			loginfo("PacMan found bonus '%s'", bonusFound.food);
@@ -403,7 +403,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			bonusControl.process(event);
 		}
 
-		private void onFoodFound(PacManGameEvent event) {
+		private void onPacManFoodFound(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
 			boolean energizer = world.hasFood(Pellet.ENERGIZER, found.location);
 			world.clearFood(found.location);
@@ -424,9 +424,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (game.level.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
 			} else if (energizer && game.level.pacManPowerSeconds > 0) {
-				ghostCommand.stopAttacking();
+				ghostCommand.pauseAttacking();
 				folks.guysInWorld()
-						.forEach(creature -> creature.ai.process(new PacManGainsPowerEvent(sec(game.level.pacManPowerSeconds))));
+						.forEach(guy -> guy.ai.process(new PacManGainsPowerEvent(sec(game.level.pacManPowerSeconds))));
 			}
 		}
 	}

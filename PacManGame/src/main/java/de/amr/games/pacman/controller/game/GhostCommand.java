@@ -1,17 +1,14 @@
 package de.amr.games.pacman.controller.game;
 
-import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState.CHASE;
-import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState.SCATTER;
-import static de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState.PAUSED;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.game.GhostCommand.Phase.CHASE;
+import static de.amr.games.pacman.controller.game.GhostCommand.Phase.PAUSED;
+import static de.amr.games.pacman.controller.game.GhostCommand.Phase.SCATTER;
 import static de.amr.games.pacman.model.game.Game.sec;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import de.amr.games.pacman.controller.creatures.Folks;
-import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.controller.game.GhostCommand.GhostCommandState;
+import de.amr.games.pacman.controller.game.GhostCommand.Phase;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
@@ -26,117 +23,114 @@ import de.amr.statemachine.core.StateMachine;
  * @see <a href=
  *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
-public class GhostCommand extends StateMachine<GhostCommandState, String> {
+public class GhostCommand extends StateMachine<Phase, String> {
 
-	public static enum GhostCommandState {
+	public static enum Phase {
 		SCATTER, CHASE, PAUSED
 	}
 
-	static class Round {
-		long scatterTicks, chaseTicks;
-
-		static Round[] newRounds() {
-			Round[] rounds = new Round[5];
-			for (int i = 1; i < 5; ++i) {
-				rounds[i] = new Round();
-			}
-			return rounds;
-		}
+	private static class Times {
+		long scatter, chase;
 	}
 
-	private static final Round[] L1 = Round.newRounds();
-	private static final Round[] L4 = Round.newRounds();
-	private static final Round[] L5 = Round.newRounds();
+	private static Times[] createTimes() {
+		Times[] times = new Times[5];
+		for (int i = 1; i < 5; ++i) { // index 0 not used!
+			times[i] = new Times();
+		}
+		return times;
+	}
+
+	private Folks folks;
+	private int round; // numbering starts with 1!
+	private Phase pausedState;
+
+	private final Times[] L1 = createTimes(); // level 1
+	private final Times[] L2 = createTimes(); // levels 2-4
+	private final Times[] L5 = createTimes(); // levels 5...
 
 	/*@formatter:off*/
-	static {
-		// first level
-		L1[1].scatterTicks = sec(7);
-		L1[1].chaseTicks   = sec(20);
-		L1[2].scatterTicks = sec(7);
-		L1[2].chaseTicks   = sec(20);
-		L1[3].scatterTicks = sec(5);
-		L1[3].chaseTicks   = sec(20);
-		L1[4].scatterTicks = sec(5);
-		L1[4].chaseTicks   = Integer.MAX_VALUE;
+	{
+		L1[1].scatter = sec(7);
+		L1[1].chase   = sec(20);
+		L1[2].scatter = sec(7);
+		L1[2].chase   = sec(20);
+		L1[3].scatter = sec(5);
+		L1[3].chase   = sec(20);
+		L1[4].scatter = sec(5);
+		L1[4].chase   = Long.MAX_VALUE;
 
-		// levels upto 4
-		L4[1].scatterTicks = sec(7);
-		L4[1].chaseTicks   = sec(20);
-		L4[2].scatterTicks = sec(7);
-		L4[2].chaseTicks   = sec(20);
-		L4[3].scatterTicks = sec(5);
-		L4[3].chaseTicks   = sec(1033);
-		L4[4].scatterTicks = 1;
-		L4[4].chaseTicks   = Integer.MAX_VALUE;
+		L2[1].scatter = sec(7);
+		L2[1].chase   = sec(20);
+		L2[2].scatter = sec(7);
+		L2[2].chase   = sec(20);
+		L2[3].scatter = sec(5);
+		L2[3].chase   = sec(1033);
+		L2[4].scatter = 1;
+		L2[4].chase   = Long.MAX_VALUE;
 
-		// levels from 5 on
-		L5[1].scatterTicks = sec(5);
-		L5[1].chaseTicks   = sec(20);
-		L5[2].scatterTicks = sec(5);
-		L5[2].chaseTicks   = sec(20);
-		L5[3].scatterTicks = sec(5);
-		L5[3].chaseTicks   = sec(1037);
-		L5[4].scatterTicks = 1;
-		L5[4].chaseTicks   = Integer.MAX_VALUE;
+		L5[1].scatter = sec(5);
+		L5[1].chase   = sec(20);
+		L5[2].scatter = sec(5);
+		L5[2].chase   = sec(20);
+		L5[3].scatter = sec(5);
+		L5[3].chase   = sec(1037);
+		L5[4].scatter = 1;
+		L5[4].chase   = Long.MAX_VALUE;
 	}
 	/*@formatter:on*/
 
-	private static long scatterTicks(int level, int round) {
-		return level == 1 ? L1[round].scatterTicks : level <= 4 ? L4[round].scatterTicks : L5[round].scatterTicks;
+	private Times times(int level) {
+		return level >= 5 ? L5[round] : level >= 2 ? L2[round] : L1[round];
 	}
-
-	private static long chaseTicks(int level, int round) {
-		return level == 1 ? L1[round].chaseTicks : level <= 4 ? L4[round].chaseTicks : L5[round].chaseTicks;
-	}
-
-	private int round; // numbering starts with 1!
-	private GhostCommandState suspendedStateId;
 
 	public GhostCommand(Game game, Folks folks) {
-		super(GhostCommandState.class, TransitionMatchStrategy.BY_VALUE);
-		List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
+		super(Phase.class, TransitionMatchStrategy.BY_VALUE);
+		this.folks = folks;
+		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("Ghost Attack Controller")
 			.initialState(SCATTER)
 		.states()
 			.state(SCATTER)
-				.timeoutAfter(() -> scatterTicks(game.level.number, round))
-				.onTick(() -> ghosts.forEach(ghost -> ghost.nextState = GhostState.SCATTERING))
+				.timeoutAfter(() -> times(game.level.number).scatter)
+				.onTick(this::notifyGhosts)
+				.annotation(() -> "Round " + round)
 			.state(CHASE)
-				.timeoutAfter(() -> chaseTicks(game.level.number, round))
-				.onTick(() -> ghosts.forEach(ghost -> ghost.nextState = GhostState.CHASING))
+				.timeoutAfter(() -> times(game.level.number).chase)
+				.onTick(this::notifyGhosts)
+				.annotation(() -> "Round " + round)
 			.state(PAUSED)
 		.transitions()
 			.when(SCATTER).then(CHASE).onTimeout()
-			.when(SCATTER).then(PAUSED).on("Pause")
+			.when(SCATTER).then(PAUSED).on("Pause").act(() -> pausedState = getState())
 			.when(CHASE).then(SCATTER).onTimeout().act(() -> ++round)
-			.when(CHASE).then(PAUSED).on("Pause")
+			.when(CHASE).then(PAUSED).on("Pause").act(() -> pausedState = getState())
 		.endStateMachine();
 		/*@formatter:on*/
 		init();
 	}
 
+	private void notifyGhosts() {
+		folks.ghosts().forEach(ghost -> ghost.nextState = getState() == SCATTER ? SCATTERING : CHASING);
+	}
+
 	@Override
 	public void init() {
 		round = 1;
-		suspendedStateId = null;
+		pausedState = null;
 		super.init();
 	}
 
-	public void stopAttacking() {
-		if (getState() != PAUSED) {
-			suspendedStateId = getState();
-			process("Pause");
-		}
+	public void pauseAttacking() {
+		process("Pause");
 	}
 
 	public void resumeAttacking() {
-		if (getState() == PAUSED) {
-			resumeState(suspendedStateId);
-		} else {
-			throw new IllegalStateException();
+		if (getState() != PAUSED) {
+			throw new IllegalStateException("GhostCommand: cannot resume attacking from state " + getState());
 		}
+		resumeState(pausedState); // resumeState() does not reset timer, setState() does!
 	}
 }
