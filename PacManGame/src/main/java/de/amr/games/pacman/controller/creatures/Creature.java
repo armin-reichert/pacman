@@ -33,6 +33,7 @@ public abstract class Creature<S> implements Lifecycle {
 	public final Map<S, Steering> steeringsMap;
 	public final Movement movement;
 
+	public Steering previousSteering;
 	public Game game;
 	public boolean enabled;
 
@@ -51,6 +52,7 @@ public abstract class Creature<S> implements Lifecycle {
 
 	@Override
 	public void init() {
+		previousSteering = null;
 		movement.init();
 		ai.init();
 	}
@@ -87,8 +89,14 @@ public abstract class Creature<S> implements Lifecycle {
 	 * @return the current steering
 	 */
 	public Steering steering() {
-		return steeringsMap.getOrDefault(ai.getState(), mover -> {
+		Steering currentSteering = steeringsMap.getOrDefault(ai.getState(), mover -> {
 		});
+		if (previousSteering != currentSteering) {
+			currentSteering.init();
+			currentSteering.force(); //TODO correct?
+			previousSteering = currentSteering;
+		}
+		return currentSteering;
 	}
 
 	/**

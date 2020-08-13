@@ -47,7 +47,6 @@ public class Ghost extends Creature<GhostState> {
 	public Bed bed;
 	public GhostState nextState;
 	public GhostMadnessController madnessController;
-	public Steering previousSteering;
 	public int bounty;
 	public boolean recovering;
 
@@ -87,26 +86,24 @@ public class Ghost extends Creature<GhostState> {
 					.onExit(() -> forceMoving(Direction.LEFT))
 	
 				.state(ENTERING_HOUSE)
-					.onEntry(() -> steering().init())
 					.onTick(this::move)
 	
 				.state(SCATTERING)
 					.onTick(() -> {
-						maybeMeetPacMan(pacMan);
+						checkPacManCollision();
 						move();
 					})
 	
 				.state(CHASING)
 					.onTick(() -> {
-						maybeMeetPacMan(pacMan);
+						checkPacManCollision();
 						move();
 					})
 	
 				.state(FRIGHTENED)
 					.timeoutAfter(this::getFrightenedTicks)
-					.onEntry(() -> steering().init())
 					.onTick((state, consumed, remaining) -> {
-						maybeMeetPacMan(pacMan);
+						checkPacManCollision();
 						move();
 						recovering = remaining < getFlashTimeTicks() * 0.5f; // one flashing takes 0.5 sec
 					})
@@ -254,7 +251,7 @@ public class Ghost extends Creature<GhostState> {
 		return game != null ? game.level.numFlashes * sec(0.5f) : 0;
 	}
 
-	private void maybeMeetPacMan(PacMan pacMan) {
+	private void checkPacManCollision() {
 		if (entity.visible && pacMan.entity.visible && entity.tile().equals(pacMan.entity.tile())
 				&& !pacMan.ai.is(PacManState.DEAD, PacManState.COLLAPSING)) {
 			ai.publish(new PacManGhostCollisionEvent(this));
@@ -278,11 +275,6 @@ public class Ghost extends Creature<GhostState> {
 
 	public void move() {
 		Steering currentSteering = steering();
-		if (previousSteering != currentSteering) {
-			currentSteering.init();
-			currentSteering.force();
-			previousSteering = currentSteering;
-		}
 		if (!world.isTunnel(entity.tile())) {
 			currentSteering.steer(entity);
 		}
