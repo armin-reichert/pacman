@@ -84,7 +84,7 @@ public class FsmGraphView extends JPanel {
 				graphDisplay.setIcon(new ImageIcon(png));
 				++RENDERING_COUNT;
 			} catch (Exception x) {
-				System.err.println("Graphviz rendering failed at %d'th PNG" + RENDERING_COUNT);
+				System.err.println("Graphviz rendering failed for image #" + RENDERING_COUNT);
 				x.printStackTrace(System.err);
 			}
 		} else {
