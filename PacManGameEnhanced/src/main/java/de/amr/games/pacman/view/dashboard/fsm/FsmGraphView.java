@@ -21,6 +21,7 @@ import guru.nidi.graphviz.engine.Graphviz;
 public class FsmGraphView extends JPanel {
 
 	public static int GRAPHVIZ_MEMORY = 20_000_000;
+	public static int RENDERING_COUNT = 0;
 
 	static final double SCALE_MIN = 0.4;
 	static final double SCALE_MAX = 3.0;
@@ -77,9 +78,15 @@ public class FsmGraphView extends JPanel {
 
 	public void update() {
 		if (data != null) {
-			BufferedImage png = Graphviz.fromString(data.getGraph()).totalMemory(GRAPHVIZ_MEMORY).scale(scaling)
-					.render(Format.PNG).toImage();
-			graphDisplay.setIcon(new ImageIcon(png));
+			try {
+				BufferedImage png = Graphviz.fromString(data.getGraph()).totalMemory(GRAPHVIZ_MEMORY).scale(scaling)
+						.render(Format.PNG).toImage();
+				graphDisplay.setIcon(new ImageIcon(png));
+				++RENDERING_COUNT;
+			} catch (Exception x) {
+				System.err.println("Graphviz rendering failed at %d'th PNG" + RENDERING_COUNT);
+				x.printStackTrace(System.err);
+			}
 		} else {
 			graphDisplay.setIcon(null);
 		}
