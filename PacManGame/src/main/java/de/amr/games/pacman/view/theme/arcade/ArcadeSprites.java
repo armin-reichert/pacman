@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.theme.arcade;
 
-import static de.amr.easy.game.ui.sprites.AnimationType.FORWARD_BACKWARDS;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
+import static de.amr.easy.game.ui.sprites.AnimationType.FORWARD_BACKWARDS;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
 
 import java.awt.Color;

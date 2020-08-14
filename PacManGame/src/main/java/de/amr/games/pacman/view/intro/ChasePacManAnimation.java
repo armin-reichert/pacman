@@ -11,7 +11,7 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
-import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
@@ -45,7 +45,7 @@ public class ChasePacManAnimation extends GameObject {
 
 	@Override
 	public void init() {
-		pelletTimer = Game.sec(6 * 0.5f);
+		pelletTimer = GameController.sec(6 * 0.5f);
 		pelletDisplay = PelletDisplay.SIMPLE;
 
 		folks.guys().forEach(Creature::init);
@@ -79,7 +79,7 @@ public class ChasePacManAnimation extends GameObject {
 	public void update() {
 		folks.guys().forEach(c -> c.entity.tf.move());
 		if (pelletTimer > 0) {
-			if (pelletTimer % Game.sec(0.5f) == 0)
+			if (pelletTimer % GameController.sec(0.5f) == 0)
 				if (pelletDisplay == PelletDisplay.FIFTY) {
 					pelletDisplay = PelletDisplay.SIMPLE;
 				} else {
@@ -87,7 +87,7 @@ public class ChasePacManAnimation extends GameObject {
 				}
 			pelletTimer--;
 		} else {
-			pelletTimer = Game.sec(6 * 0.5f);
+			pelletTimer = GameController.sec(6 * 0.5f);
 		}
 	}
 

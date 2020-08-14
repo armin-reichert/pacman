@@ -6,7 +6,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.confirmed;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.rejected;
-import static de.amr.games.pacman.model.game.Game.sec;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -16,6 +15,7 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -192,7 +192,7 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private long pacManStarvingTimeLimit() {
-		return game.level.number < 5 ? sec(4) : sec(3);
+		return game.level.number < 5 ? GameController.sec(4) : GameController.sec(3);
 	}
 
 	/**

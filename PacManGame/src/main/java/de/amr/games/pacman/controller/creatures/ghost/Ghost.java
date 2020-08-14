@@ -8,7 +8,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.game.GameController.speed;
-import static de.amr.games.pacman.model.game.Game.sec;
 
 import java.util.EnumMap;
 import java.util.Optional;
@@ -22,6 +21,7 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.GameLevel;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -112,7 +112,7 @@ public class Ghost extends Creature<GhostState> {
 					})
 	
 				.state(DEAD)
-					.timeoutAfter(sec(1))
+					.timeoutAfter(GameController.sec(1))
 					.onEntry(this::computeBounty)
 					.onTick((s, consumed, remaining) -> {
 						if (remaining == 0) {
@@ -247,11 +247,11 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private long getFrightenedTicks() {
-		return game != null ? sec(game.level.pacManPowerSeconds) : sec(5);
+		return game != null ? GameController.sec(game.level.pacManPowerSeconds) : GameController.sec(5);
 	}
 
 	private long getFlashTimeTicks() {
-		return game != null ? game.level.numFlashes * sec(0.5f) : 0;
+		return game != null ? game.level.numFlashes * GameController.sec(0.5f) : 0;
 	}
 
 	private void checkPacManCollision() {

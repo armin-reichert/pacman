@@ -60,17 +60,6 @@ public class Game {
 	public static final int BONUS_ACTIVATION_2 = 170;
 	public static final int BONUS_SECONDS = 9;
 
-	/**
-	 * Returns the number of ticks corresponding to the given time (in seconds) for a framerate of 60
-	 * ticks/sec.
-	 * 
-	 * @param seconds seconds
-	 * @return ticks corresponding to given number of seconds
-	 */
-	public static long sec(float seconds) {
-		return Math.round(60 * seconds);
-	}
-
 	public final List<Symbol> levelCounter = new ArrayList<>();
 	public final Hiscore hiscore = new Hiscore();
 	public final int totalFoodCount;

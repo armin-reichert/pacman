@@ -3,7 +3,6 @@ package de.amr.games.pacman.controller.steering.common;
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.steering.common.MovementType.TELEPORTING;
 import static de.amr.games.pacman.controller.steering.common.MovementType.WALKING;
-import static de.amr.games.pacman.model.game.Game.sec;
 import static de.amr.games.pacman.model.world.api.Direction.DOWN;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
@@ -13,6 +12,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Portal;
@@ -45,7 +45,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 				.state(WALKING)
 					.onTick(() -> move(guy.steering().requiresGridAlignment(), guy.getSpeed()))
 				.state(TELEPORTING)
-					.timeoutAfter(sec(1.0f))
+					.timeoutAfter(GameController.sec(1.0f))
 					.onEntry(() -> guy.entity.visible = false)
 					.onExit(() -> guy.entity.visible = true)
 			.transitions()

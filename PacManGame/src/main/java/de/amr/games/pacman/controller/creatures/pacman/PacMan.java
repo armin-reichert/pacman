@@ -8,7 +8,6 @@ import static de.amr.games.pacman.controller.creatures.pacman.PacManState.IN_BED
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
 import static de.amr.games.pacman.controller.game.GameController.speed;
-import static de.amr.games.pacman.model.game.Game.sec;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
@@ -25,6 +24,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.Game;
@@ -74,7 +74,7 @@ public class PacMan extends Creature<PacManState> {
 					.onTick(this::wander)
 					
 				.state(DEAD)
-					.timeoutAfter(sec(2.5f))
+					.timeoutAfter(GameController.sec(2.5f))
 
 				.state(COLLAPSING)
 

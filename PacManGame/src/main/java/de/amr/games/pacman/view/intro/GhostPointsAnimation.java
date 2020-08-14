@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.games.pacman.model.game.Game.GHOST_BOUNTIES;
-import static de.amr.games.pacman.model.game.Game.sec;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -15,6 +14,7 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -103,11 +103,11 @@ public class GhostPointsAnimation extends GameObject {
 	}
 
 	private void resetGhostTimer() {
-		ghostTimer = sec(1);
+		ghostTimer = GameController.sec(1);
 	}
 
 	private void resetEnergizerTimer() {
-		energizerTimer = sec(0.5f);
+		energizerTimer = GameController.sec(0.5f);
 	}
 
 	@Override
