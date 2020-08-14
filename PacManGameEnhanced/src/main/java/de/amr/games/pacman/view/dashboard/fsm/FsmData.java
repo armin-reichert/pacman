@@ -14,7 +14,7 @@ public class FsmData {
 	}
 
 	public void updateGraph() {
-		graph = DotPrinter.printToString(fsm);
+		graph = DotPrinter.toDotFormat(fsm);
 	}
 
 	public StateMachine<?, ?> getFsm() {
