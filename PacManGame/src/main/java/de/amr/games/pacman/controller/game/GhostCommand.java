@@ -34,15 +34,15 @@ public class GhostCommand extends StateMachine<Phase, String> {
 	}
 
 	private static Times[] createTimes() {
-		Times[] times = new Times[5];
-		for (int i = 1; i < 5; ++i) { // index 0 not used!
+		Times[] times = new Times[4];
+		for (int i = 0; i < 4; ++i) {
 			times[i] = new Times();
 		}
 		return times;
 	}
 
 	private Folks folks;
-	private int round; // numbering starts with 1!
+	private int round;
 	private Phase pausedState;
 
 	private final Times[] L1 = createTimes(); // level 1
@@ -51,32 +51,32 @@ public class GhostCommand extends StateMachine<Phase, String> {
 
 	/*@formatter:off*/
 	{
+		L1[0].scatter = sec(7);
+		L1[0].chase   = sec(20);
 		L1[1].scatter = sec(7);
 		L1[1].chase   = sec(20);
-		L1[2].scatter = sec(7);
+		L1[2].scatter = sec(5);
 		L1[2].chase   = sec(20);
 		L1[3].scatter = sec(5);
-		L1[3].chase   = sec(20);
-		L1[4].scatter = sec(5);
-		L1[4].chase   = Long.MAX_VALUE;
+		L1[3].chase   = Long.MAX_VALUE;
 
+		L2[0].scatter = sec(7);
+		L2[0].chase   = sec(20);
 		L2[1].scatter = sec(7);
 		L2[1].chase   = sec(20);
-		L2[2].scatter = sec(7);
-		L2[2].chase   = sec(20);
-		L2[3].scatter = sec(5);
-		L2[3].chase   = sec(1033);
-		L2[4].scatter = 1;
-		L2[4].chase   = Long.MAX_VALUE;
+		L2[2].scatter = sec(5);
+		L2[2].chase   = sec(1033);
+		L2[3].scatter = 1;
+		L2[3].chase   = Long.MAX_VALUE;
 
+		L5[0].scatter = sec(5);
+		L5[0].chase   = sec(20);
 		L5[1].scatter = sec(5);
 		L5[1].chase   = sec(20);
 		L5[2].scatter = sec(5);
-		L5[2].chase   = sec(20);
-		L5[3].scatter = sec(5);
-		L5[3].chase   = sec(1037);
-		L5[4].scatter = 1;
-		L5[4].chase   = Long.MAX_VALUE;
+		L5[2].chase   = sec(1037);
+		L5[3].scatter = 1;
+		L5[3].chase   = Long.MAX_VALUE;
 	}
 	/*@formatter:on*/
 
@@ -96,11 +96,11 @@ public class GhostCommand extends StateMachine<Phase, String> {
 			.state(SCATTER)
 				.timeoutAfter(() -> times(game.level.number).scatter)
 				.onTick(this::notifyGhosts)
-				.annotation(() -> "Round " + round)
+				.annotation(() -> "Round " + (round + 1))
 			.state(CHASE)
 				.timeoutAfter(() -> times(game.level.number).chase)
 				.onTick(this::notifyGhosts)
-				.annotation(() -> "Round " + round)
+				.annotation(() -> "Round " + (round + 1))
 			.state(PAUSED)
 		.transitions()
 			.when(SCATTER).then(CHASE).onTimeout()
@@ -118,7 +118,7 @@ public class GhostCommand extends StateMachine<Phase, String> {
 
 	@Override
 	public void init() {
-		round = 1;
+		round = 0;
 		pausedState = null;
 		super.init();
 	}
