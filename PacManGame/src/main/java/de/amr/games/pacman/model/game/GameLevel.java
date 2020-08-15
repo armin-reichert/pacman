@@ -49,14 +49,26 @@ public class GameLevel {
 	public Hiscore hiscore;
 	public List<Symbol> counter;
 
-	public GameLevel(int foodCount, Object[] data) {
+	public GameLevel(int lives, int score, int foodCount, Object[] data) {
+		this.lives = lives;
+		this.score = score;
 		this.foodCount = foodCount;
-		lives = 3;
-		score = 0;
 		counter = new ArrayList<>();
 		hiscore = new Hiscore();
 		hiscore.load();
+		fill(data);
+	}
 
+	public GameLevel(GameLevel previous, Object[] data) {
+		lives = previous.lives;
+		score = previous.score;
+		foodCount = previous.foodCount;
+		counter = previous.counter;
+		hiscore = previous.hiscore;
+		fill(data);
+	}
+
+	private void fill(Object[] data) {
 		int i = 0;
 		bonusSymbol = Symbol.valueOf((String) data[i++]);
 		bonusValue = integer(data[i++]);
@@ -73,14 +85,6 @@ public class GameLevel {
 		ghostFrightenedSpeed = percentage(data[i++]);
 		pacManPowerSeconds = integer(data[i++]);
 		numFlashes = integer(data[i++]);
-	}
-
-	public GameLevel(GameLevel previous) {
-		foodCount = previous.foodCount;
-		lives = previous.lives;
-		score = previous.score;
-		counter = previous.counter;
-		hiscore = previous.hiscore;
 	}
 
 	public int remainingFoodCount() {

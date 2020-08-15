@@ -208,6 +208,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onExit(() -> {
 						playView.clearMessage(2);
 						theme.sounds().stopMusic(theme.sounds().musicGameOver());
+						world.fillFood();
 					})
 	
 			.transitions()
@@ -482,6 +483,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				playView.init();
 			}
 
+			
 			// One second later, let ghosts jump again inside the house
 			if (passed >= flashingEnd + GameController.sec(2)) {
 				folks.guysInWorld().forEach(Creature::update);
@@ -575,7 +577,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	protected void newGame() {
-		world.fillFood();
 		game = new Game(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, folks);
 		bonusControl = new BonusControl(game, world);

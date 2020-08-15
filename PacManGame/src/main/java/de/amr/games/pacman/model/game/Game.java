@@ -90,7 +90,11 @@ public class Game {
 			n = 1;
 		}
 		loginfo("Enter level %d", n);
-		level = level == null ? new GameLevel(foodCount, levelData(n)) : new GameLevel(level);
+		if (level == null) {
+			level = new GameLevel(3, 0, foodCount, levelData(n));
+		} else {
+			level = new GameLevel(level, levelData(n));
+		}
 		level.number = n;
 		level.counter.add(level.bonusSymbol);
 	}
