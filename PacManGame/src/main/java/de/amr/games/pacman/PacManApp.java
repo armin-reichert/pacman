@@ -70,16 +70,16 @@ public class PacManApp extends Application {
 	@Override
 	protected void printSettings() {
 		super.printSettings();
-		settings.printValue("Demo Mode", "%s", settings.demoMode);
-		settings.printValue("Ghosts harmless", "%s", settings.ghostsHarmless);
-		settings.printValue("Ghosts flee into corner", "%s", settings.ghostsSafeCorner);
-		settings.printValue("Fix Overflow Bug", "%s", settings.fixOverflowBug);
-		settings.printValue("Pac-Man immortable", "%s", settings.pacManImmortable);
-		settings.printValue("Pathfinder", "%s", settings.pathFinder);
-		settings.printValue("Skip Intro", "%s", settings.skipIntro);
-		settings.printValue("Startlevel", "%d", settings.startLevel);
-		settings.printValue("Theme", "%s", settings.theme.toUpperCase());
-		settings.printValue("User Language", "%s", Localized.texts.getLocale().getDisplayLanguage());
+		settings.print("Demo Mode", "%s", settings.demoMode);
+		settings.print("Ghosts harmless", "%s", settings.ghostsHarmless);
+		settings.print("Ghosts flee into corner", "%s", settings.ghostsSafeCorner);
+		settings.print("Fix Overflow Bug", "%s", settings.fixOverflowBug);
+		settings.print("Pac-Man immortable", "%s", settings.pacManImmortable);
+		settings.print("Pathfinder", "%s", settings.pathFinder);
+		settings.print("Skip Intro", "%s", settings.skipIntro);
+		settings.print("Startlevel", "%d", settings.startLevel);
+		settings.print("Theme", "%s", settings.theme.toUpperCase());
+		settings.print("User Language", "%s", Localized.texts.getLocale().getDisplayLanguage());
 	}
 
 	@Override
