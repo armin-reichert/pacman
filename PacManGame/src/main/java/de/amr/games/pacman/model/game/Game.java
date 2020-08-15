@@ -57,13 +57,13 @@ public class Game {
 
 	public GameLevel level;
 
-	public void enterLevel(int number, int foodCount) {
-		loginfo("Enter level %d", number);
-		if (level == null) {
-			level = new GameLevel(number, 3, 0, foodCount);
-		} else {
-			level = new GameLevel(number, level);
-		}
-		level.counter.add(level.bonusSymbol);
+	public void startLevel(int number, int foodCount) {
+		level = new GameLevel(number, 3, 0, foodCount);
+		loginfo("Level %d started", number);
+	}
+
+	public void nextLevel() {
+		level = new GameLevel(level.number + 1, level);
+		loginfo("Level %d started", level.number);
 	}
 }

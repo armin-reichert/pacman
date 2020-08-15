@@ -59,6 +59,7 @@ public class GameLevel {
 		this.lives = lives;
 		this.score = score;
 		counter = new ArrayList<>();
+		counter.add(bonusSymbol);
 		hiscore = new Hiscore();
 		hiscore.load();
 	}
@@ -68,6 +69,7 @@ public class GameLevel {
 		lives = previous.lives;
 		score = previous.score;
 		counter = previous.counter;
+		counter.add(bonusSymbol);
 		hiscore = previous.hiscore;
 	}
 

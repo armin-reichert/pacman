@@ -122,6 +122,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		currentThemeIndex = 0;
 		theme = themes[currentThemeIndex];
 
+		game = new Game();
 		Application.app().onClose(() -> game().ifPresent(game -> game.level.hiscore.save()));
 
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
@@ -477,7 +478,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (passed == flashingEnd) {
 				world.setChanging(false);
 				world.fillFood();
-				game.enterLevel(game.level.number + 1, world.totalFoodCount());
+				game.nextLevel();
 				folks.guys().forEach(Creature::init);
 				folks.blinky.madnessController.init();
 				playView.init();
@@ -576,8 +577,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	protected void newGame() {
-		game = new Game();
-		game.enterLevel(settings.startLevel, world.totalFoodCount());
+		game.startLevel(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, folks);
 		bonusControl = new BonusControl(game, world);
 		doorMan = new DoorMan(world, world.house(0), game, folks);
