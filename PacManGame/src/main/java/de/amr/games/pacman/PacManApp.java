@@ -70,16 +70,16 @@ public class PacManApp extends Application {
 	@Override
 	protected void printSettings() {
 		super.printSettings();
-		settings.print("Demo Mode", "%s", settings.demoMode);
-		settings.print("Ghosts harmless", "%s", settings.ghostsHarmless);
-		settings.print("Ghosts flee into corner", "%s", settings.ghostsSafeCorner);
-		settings.print("Fix Overflow Bug", "%s", settings.fixOverflowBug);
-		settings.print("Pac-Man immortable", "%s", settings.pacManImmortable);
-		settings.print("Pathfinder", "%s", settings.pathFinder);
-		settings.print("Skip Intro", "%s", settings.skipIntro);
-		settings.print("Startlevel", "%d", settings.startLevel);
-		settings.print("Theme", "%s", settings.theme.toUpperCase());
-		settings.print("User Language", "%s", Localized.texts.getLocale().getDisplayLanguage());
+		settings.print("Demo Mode", settings.demoMode);
+		settings.print("Ghosts harmless", settings.ghostsHarmless);
+		settings.print("Ghosts flee into corner", settings.ghostsSafeCorner);
+		settings.print("Fix Overflow Bug", settings.fixOverflowBug);
+		settings.print("Pac-Man immortable", settings.pacManImmortable);
+		settings.print("Pathfinder", settings.pathFinder);
+		settings.print("Skip Intro", settings.skipIntro);
+		settings.print("Startlevel", settings.startLevel);
+		settings.print("Theme", settings.theme.toUpperCase());
+		settings.print("User Language", Localized.texts.getLocale().getDisplayLanguage());
 	}
 
 	@Override
