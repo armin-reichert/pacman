@@ -139,7 +139,7 @@ public class GameLevel {
 		ghostsKilledByEnergizer += 1;
 		ghostsKilled += 1;
 		if (ghostsKilled == 16) {
-			score(Game.POINTS_KILLED_ALL_GHOSTS);
+			score(Game.POINTS_ALL_GHOSTS);
 		}
 		int points = killedGhostPoints();
 		loginfo("Scored %d points for killing %s ghost", points,

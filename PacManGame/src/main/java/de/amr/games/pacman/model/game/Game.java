@@ -52,17 +52,19 @@ public class Game {
 		}
 	}
 
+	/*@formatter:off*/
 	public static final int POINTS_SIMPLE_PELLET = 10;
-	public static final int POINTS_ENERGIZER = 50;
-	public static final int POINTS_EXTRA_LIFE = 10_000;
-	public static final int POINTS_KILLED_ALL_GHOSTS = 12_000;
-	public static final int POINTS_BONUS[] = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
-	public static final int GHOST_BOUNTIES[] = { 200, 400, 800, 1600 };
-	public static final int SNACK_FAT = 1;
-	public static final int BIG_MEAL_FAT = 3;
-	public static final int BONUS_ACTIVATION_1 = 70;
-	public static final int BONUS_ACTIVATION_2 = 170;
-	public static final int BONUS_SECONDS = 9;
+	public static final int POINTS_ENERGIZER     = 50;
+	public static final int POINTS_EXTRA_LIFE    = 10_000;
+	public static final int POINTS_ALL_GHOSTS    = 12_000;
+	public static final int POINTS_BONUS[]       = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	public static final int GHOST_BOUNTIES[]     = { 200, 400, 800, 1600 };
+	public static final int SNACK_FAT            = 1;
+	public static final int BIG_MEAL_FAT         = 3;
+	public static final int BONUS_ACTIVATION_1   = 70;
+	public static final int BONUS_ACTIVATION_2   = 170;
+	public static final int BONUS_SECONDS        = 9;
+	/*@formatter:on*/
 
 	public GameLevel level;
 
