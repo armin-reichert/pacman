@@ -78,17 +78,7 @@ public class Game {
 		enterLevel(level.number + 1, level.foodCount);
 	}
 
-	/**
-	 * Enters level with given number (starting at 1).
-	 * 
-	 * @param n         level number (1-...)
-	 * @param foodCount number of food in level
-	 */
-	public void enterLevel(int n, int foodCount) {
-		if (n < 1) {
-			loginfo("Cannot enter level %d, using 1 instead", n);
-			n = 1;
-		}
+	private void enterLevel(int n, int foodCount) {
 		loginfo("Enter level %d", n);
 		if (level == null) {
 			level = new GameLevel(3, 0, foodCount, levelData(n));
