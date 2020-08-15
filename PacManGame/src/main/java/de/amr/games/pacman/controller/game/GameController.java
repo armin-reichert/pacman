@@ -68,8 +68,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 * In Shaun William's <a href="https://github.com/masonicGIT/pacman">Pac-Man remake</a> there is a
 	 * speed table giving the number of steps (=pixels?) which Pac-Man is moving in 16 frames. In level
 	 * 5, he uses 4 * 2 + 12 = 20 steps in 16 frames, which is 1.25 pixels/frame. The table from
-	 * Gamasutra ({@link Game#LEVELS}) states that this corresponds to 100% base speed for Pac-Man at
-	 * level 5. Therefore I use 1.25 pixel/frame for 100% speed.
+	 * Gamasutra ({@link Game#LEVEL_DATA}) states that this corresponds to 100% base speed for Pac-Man
+	 * at level 5. Therefore I use 1.25 pixel/frame for 100% speed.
 	 */
 	public static final float BASE_SPEED = 1.25f;
 
@@ -122,7 +122,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		currentThemeIndex = 0;
 		theme = themes[currentThemeIndex];
 
-		Application.app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
+		Application.app().onClose(() -> game().ifPresent(game -> game.level.hiscore.save()));
 
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
@@ -168,7 +168,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(GameController.sec(5))
 					.onEntry(() -> {
 						if (!settings.pacManImmortable) {
-							game.lives -= 1;
+							game.level.lives -= 1;
 						}
 						world.setFrozen(true);
 						folks.blinky.madnessController.pacManDies();
@@ -264,14 +264,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
 					.onTimeout()
-					.condition(() -> game.lives == 0)
+					.condition(() -> game.level.lives == 0)
 					.annotation("No lives left, game over")
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
-					.condition(() -> game.lives > 0)
+					.condition(() -> game.level.lives > 0)
 					.act(state_PLAYING()::resumePlaying)
-					.annotation(() -> String.format("Lives remaining = %d, resume game", game.lives))
+					.annotation(() -> String.format("Lives remaining = %d, resume game", game.level.lives))
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce("space") || Keyboard.keyPressedOnce("enter"))
@@ -381,9 +381,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			loginfo("%s got killed at %s", ghost.name, ghost.entity.tile());
 
 			if (ghost.ai.is(FRIGHTENED)) {
-				int livesBefore = game.lives;
-				game.scoreGhostKilled(ghost.name);
-				if (game.lives > livesBefore) {
+				int livesBefore = game.level.lives;
+				game.level.scoreGhostKilled(ghost.name);
+				if (game.level.lives > livesBefore) {
 					sound.gotExtraLife = true;
 				}
 				ghost.ai.process(new GhostKilledEvent(ghost));
@@ -404,10 +404,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			BonusFoundEvent bonusFound = (BonusFoundEvent) event;
 			int value = game.level.bonusValue;
 			loginfo("PacMan found bonus '%s'", bonusFound.food);
-			int livesBefore = game.lives;
-			game.score(value);
+			int livesBefore = game.level.lives;
+			game.level.score(value);
 			sound.bonusEaten = true;
-			if (game.lives > livesBefore) {
+			if (game.level.lives > livesBefore) {
 				sound.gotExtraLife = true;
 			}
 			bonusControl.process(event);
@@ -417,26 +417,26 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			FoodFoundEvent found = (FoodFoundEvent) event;
 			boolean energizer = world.hasFood(Pellet.ENERGIZER, found.location);
 			world.clearFood(found.location);
-			int livesBeforeScoring = game.lives;
+			int livesBeforeScoring = game.level.lives;
 			if (energizer) {
-				game.scoreEnergizerFound();
+				game.level.scoreEnergizerFound();
 			} else {
-				game.scoreSimplePelletFound();
+				game.level.scoreSimplePelletFound();
 			}
 			doorMan.onPacManFoundFood();
-			if (game.isBonusDue()) {
+			if (game.level.isBonusDue()) {
 				bonusControl.setState(BonusFoodState.PRESENT);
 			}
 			sound.lastMealAt = System.currentTimeMillis();
-			if (game.lives > livesBeforeScoring) {
+			if (game.level.lives > livesBeforeScoring) {
 				sound.gotExtraLife = true;
 			}
 			if (game.level.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
 			} else if (energizer && game.level.pacManPowerSeconds > 0) {
 				ghostCommand.pauseAttacking();
-				folks.guysInWorld()
-						.forEach(guy -> guy.ai.process(new PacManGainsPowerEvent(GameController.sec(game.level.pacManPowerSeconds))));
+				folks.guysInWorld().forEach(
+						guy -> guy.ai.process(new PacManGainsPowerEvent(GameController.sec(game.level.pacManPowerSeconds))));
 			}
 		}
 	}
@@ -476,7 +476,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (passed == flashingEnd) {
 				world.setChanging(false);
 				world.fillFood();
-				game.enterLevel(game.level.number + 1);
+				game.nextLevel();
 				folks.guys().forEach(Creature::init);
 				folks.blinky.madnessController.init();
 				playView.init();

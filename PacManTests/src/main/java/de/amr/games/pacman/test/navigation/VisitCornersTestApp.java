@@ -61,7 +61,6 @@ class FollowTargetTilesTestUI extends TestUI {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
-				game.enterLevel(game.level.number + 1);
 			}
 		}
 		super.update();

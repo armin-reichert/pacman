@@ -24,11 +24,11 @@ class LevelCounterRenderer implements IGameScoreRenderer {
 	@Override
 	public void render(Graphics2D g, Game game) {
 		int max = 7;
-		int first = Math.max(0, game.levelCounter.size() - max);
-		int n = Math.min(max, game.levelCounter.size());
+		int first = Math.max(0, game.level.counter.size() - max);
+		int n = Math.min(max, game.level.counter.size());
 		int size = 2 * Tile.SIZE; // image size
 		for (int i = 0, x = -2 * size; i < n; ++i, x -= size) {
-			Symbol symbol = game.levelCounter.get(first + i);
+			Symbol symbol = game.level.counter.get(first + i);
 			g.drawImage(bonusImages.get(symbol), x, 0, size, size, null);
 		}
 	}

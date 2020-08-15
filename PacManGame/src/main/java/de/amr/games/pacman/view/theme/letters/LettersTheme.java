@@ -127,7 +127,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 			int offset_baseline = $int("offset-baseline");
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
-			g.drawString(String.format("Lives: %d", game.lives), 0, Tile.SIZE + offset_baseline);
+			g.drawString(String.format("Lives: %d", game.level.lives), 0, Tile.SIZE + offset_baseline);
 		};
 	}
 
@@ -139,7 +139,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
 			g.drawString(" Score          Highscore        Pellets", 0, offset_baseline);
-			g.drawString(String.format(" %08d       %08d         %03d", game.score, game.hiscore.points,
+			g.drawString(String.format(" %08d       %08d         %03d", game.level.score, game.level.hiscore.points,
 					game.level.remainingFoodCount()), 0, Tile.SIZE + offset_baseline);
 		};
 	}

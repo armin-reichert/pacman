@@ -82,7 +82,6 @@ class TakeShortestPathTestUI extends TestUI {
 	private void selectNextTarget() {
 		if (++targetIndex == targets.size()) {
 			targetIndex = 0;
-			game.enterLevel(game.level.number + 1);
 		}
 	}
 

@@ -14,7 +14,7 @@ class LivesCounterRenderer implements IGameScoreRenderer {
 	public void render(Graphics2D g, Game game) {
 		Rendering.smoothOn(g);
 		g.setColor(Color.YELLOW);
-		for (int i = 0, x = 0; i < game.lives; ++i, x += 2 * Tile.SIZE) {
+		for (int i = 0, x = 0; i < game.level.lives; ++i, x += 2 * Tile.SIZE) {
 			g.fillOval(x, 0, Tile.SIZE, Tile.SIZE);
 		}
 		Rendering.smoothOff(g);

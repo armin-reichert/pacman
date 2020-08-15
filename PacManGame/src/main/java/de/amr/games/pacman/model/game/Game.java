@@ -3,9 +3,6 @@ package de.amr.games.pacman.model.game;
 import static de.amr.easy.game.Application.loginfo;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import de.amr.games.pacman.model.world.api.Symbol;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
@@ -22,7 +19,7 @@ public class Game {
 	/**
 	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
 	 */
-	public static final Object[][] LEVELS = {
+	static final Object[][] LEVEL_DATA = {
 		/*@formatter:off*/
 		{"CHERRIES",   100,  80,  71,  75,  40,  20,  80,  10,  85,  90, 79, 50, 6, 5},
 		{"STRAWBERRY", 300,  90,  79,  85,  45,  30,  90,  15,  95,  95, 83, 55, 5, 5},
@@ -60,12 +57,7 @@ public class Game {
 	public static final int BONUS_ACTIVATION_2 = 170;
 	public static final int BONUS_SECONDS = 9;
 
-	public final List<Symbol> levelCounter = new ArrayList<>();
-	public final Hiscore hiscore = new Hiscore();
-	public final int totalFoodCount;
 	public GameLevel level;
-	public int lives;
-	public int score;
 
 	/**
 	 * Creates a game starting with the given level.
@@ -74,97 +66,44 @@ public class Game {
 	 * @param totalFoodCount total number of food in each level
 	 */
 	public Game(int startLevel, int totalFoodCount) {
-		this.totalFoodCount = totalFoodCount;
-		lives = 3;
-		score = 0;
-		enterLevel(startLevel);
+		enterLevel(startLevel, totalFoodCount);
+	}
+
+	/**
+	 * Enters the next level.
+	 */
+	public void nextLevel() {
+		enterLevel(level.number + 1, level.totalFoodCount);
 	}
 
 	/**
 	 * Enters level with given number (starting at 1).
 	 * 
-	 * @param n level number (1-...)
+	 * @param n              level number (1-...)
+	 * @param totalFoodCount total number of food in each level
 	 */
-	public void enterLevel(int n) {
+	public void enterLevel(int n, int totalFoodCount) {
 		if (n < 1) {
 			loginfo("Specified start level is %d, using 1 instead", n);
 			n = 1;
 		}
 		loginfo("Enter level %d", n);
-		level = new GameLevel(n, totalFoodCount, LEVELS[n <= LEVELS.length ? n - 1 : LEVELS.length - 1]);
-		level.number = n;
-		level.totalFoodCount = totalFoodCount;
-		levelCounter.add(level.bonusSymbol);
-		hiscore.load();
-	}
-
-	/**
-	 * @return {@code true} if the number of eaten pellets causes the bonus to get active
-	 */
-	public boolean isBonusDue() {
-		return level.eatenFoodCount == BONUS_ACTIVATION_1 || level.eatenFoodCount == BONUS_ACTIVATION_2;
-	}
-
-	/**
-	 * Score the given number of points and handles high score, extra life etc.
-	 * 
-	 * @param points points to score
-	 * @return points scored
-	 */
-	public int score(int points) {
-		int oldScore = score;
-		score += points;
-		if (oldScore < POINTS_EXTRA_LIFE && POINTS_EXTRA_LIFE <= score) {
-			lives += 1;
+		Object[] data = LEVEL_DATA[n <= LEVEL_DATA.length ? n - 1 : LEVEL_DATA.length - 1];
+		if (level == null) {
+			level = new GameLevel(n, totalFoodCount, data);
+			level.lives = 3;
+			level.score = 0;
+			level.counter = new ArrayList<>();
+			level.hiscore = new Hiscore();
+			level.hiscore.load();
+		} else {
+			GameLevel nextLevel = new GameLevel(n, totalFoodCount, data);
+			nextLevel.lives = level.lives;
+			nextLevel.score = level.score;
+			nextLevel.counter = level.counter;
+			nextLevel.hiscore = level.hiscore;
+			level = nextLevel;
 		}
-		hiscore.checkNewHiscore(level, score);
-		return points;
-	}
-
-	/**
-	 * Score points for finding an energizer.
-	 * 
-	 * @return points scored
-	 */
-	public int scoreEnergizerFound() {
-		level.eatenFoodCount += 1;
-		level.ghostsKilledByEnergizer = 0;
-		return score(POINTS_ENERGIZER);
-	}
-
-	/**
-	 * Score points for finding a simple pellet
-	 * 
-	 * @return points scored
-	 */
-	public int scoreSimplePelletFound() {
-		level.eatenFoodCount += 1;
-		return score(POINTS_SIMPLE_PELLET);
-	}
-
-	/**
-	 * Scores for killing a ghost. Value of a killed ghost doubles if killed in series using the same
-	 * energizer.
-	 * 
-	 * @param ghostName killed ghost's name
-	 */
-	public int scoreGhostKilled(String ghostName) {
-		level.ghostsKilledByEnergizer += 1;
-		level.ghostsKilled += 1;
-		if (level.ghostsKilled == 16) {
-			score(POINTS_KILLED_ALL_GHOSTS);
-		}
-		int points = killedGhostPoints();
-		loginfo("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
-				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);
-		return score(points);
-	}
-
-	/**
-	 * @return current value of a killed ghost. Value doubles for each ghost killed by the same
-	 *         energizer.
-	 */
-	public int killedGhostPoints() {
-		return GHOST_BOUNTIES[level.ghostsKilledByEnergizer > 0 ? level.ghostsKilledByEnergizer - 1 : 0];
+		level.counter.add(level.bonusSymbol);
 	}
 }
