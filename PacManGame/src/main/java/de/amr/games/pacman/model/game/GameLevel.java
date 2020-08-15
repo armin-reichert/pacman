@@ -39,7 +39,7 @@ public class GameLevel {
 	public int numFlashes;
 
 	public int number;
-	public int totalFoodCount;
+	public int foodCount;
 	public int eatenFoodCount;
 	public int ghostsKilledByEnergizer;
 	public int ghostsKilled;
@@ -48,30 +48,30 @@ public class GameLevel {
 	public Hiscore hiscore;
 	public List<Symbol> counter;
 
-	public GameLevel(int n, int totalFoodCount, Object[] parameters) {
+	public GameLevel(int n, int foodCount, Object[] data) {
 		this.number = n;
-		this.totalFoodCount = totalFoodCount;
+		this.foodCount = foodCount;
 
 		int i = 0;
-		bonusSymbol = Symbol.valueOf((String) parameters[i++]);
-		bonusValue = integer(parameters[i++]);
-		pacManSpeed = percentage(parameters[i++]);
-		pacManDotsSpeed = percentage(parameters[i++]);
-		ghostSpeed = percentage(parameters[i++]);
-		ghostTunnelSpeed = percentage(parameters[i++]);
-		elroy1DotsLeft = integer(parameters[i++]);
-		elroy1Speed = percentage(parameters[i++]);
-		elroy2DotsLeft = integer(parameters[i++]);
-		elroy2Speed = percentage(parameters[i++]);
-		pacManPowerSpeed = percentage(parameters[i++]);
-		pacManPowerDotsSpeed = percentage(parameters[i++]);
-		ghostFrightenedSpeed = percentage(parameters[i++]);
-		pacManPowerSeconds = integer(parameters[i++]);
-		numFlashes = integer(parameters[i++]);
+		bonusSymbol = Symbol.valueOf((String) data[i++]);
+		bonusValue = integer(data[i++]);
+		pacManSpeed = percentage(data[i++]);
+		pacManDotsSpeed = percentage(data[i++]);
+		ghostSpeed = percentage(data[i++]);
+		ghostTunnelSpeed = percentage(data[i++]);
+		elroy1DotsLeft = integer(data[i++]);
+		elroy1Speed = percentage(data[i++]);
+		elroy2DotsLeft = integer(data[i++]);
+		elroy2Speed = percentage(data[i++]);
+		pacManPowerSpeed = percentage(data[i++]);
+		pacManPowerDotsSpeed = percentage(data[i++]);
+		ghostFrightenedSpeed = percentage(data[i++]);
+		pacManPowerSeconds = integer(data[i++]);
+		numFlashes = integer(data[i++]);
 	}
 
 	public int remainingFoodCount() {
-		return totalFoodCount - eatenFoodCount;
+		return foodCount - eatenFoodCount;
 	}
 
 	/**
@@ -91,22 +91,22 @@ public class GameLevel {
 	}
 
 	/**
-	 * Score points for finding an energizer.
+	 * Score points for eating an energizer.
 	 * 
 	 * @return points scored
 	 */
-	public int scoreEnergizerFound() {
+	public int scoreEnergizerEaten() {
 		eatenFoodCount += 1;
 		ghostsKilledByEnergizer = 0;
 		return score(Game.POINTS_ENERGIZER);
 	}
 
 	/**
-	 * Score points for finding a simple pellet
+	 * Score points for eating a simple pellet
 	 * 
 	 * @return points scored
 	 */
-	public int scoreSimplePelletFound() {
+	public int scoreSimplePelletEaten() {
 		eatenFoodCount += 1;
 		return score(Game.POINTS_SIMPLE_PELLET);
 	}
@@ -114,17 +114,15 @@ public class GameLevel {
 	/**
 	 * Scores for killing a ghost. Value of a killed ghost doubles if killed in series using the same
 	 * energizer.
-	 * 
-	 * @param ghostName killed ghost's name
 	 */
-	public int scoreGhostKilled(String ghostName) {
+	public int scoreGhostKilled() {
 		ghostsKilledByEnergizer += 1;
 		ghostsKilled += 1;
 		if (ghostsKilled == 16) {
 			score(Game.POINTS_KILLED_ALL_GHOSTS);
 		}
 		int points = killedGhostPoints();
-		loginfo("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
+		loginfo("Scored %d points for killing %s ghost", points,
 				new String[] { "", "first", "2nd", "3rd", "4th" }[ghostsKilledByEnergizer]);
 		return score(points);
 	}
@@ -143,5 +141,4 @@ public class GameLevel {
 	public boolean isBonusDue() {
 		return eatenFoodCount == Game.BONUS_ACTIVATION_1 || eatenFoodCount == Game.BONUS_ACTIVATION_2;
 	}
-
 }

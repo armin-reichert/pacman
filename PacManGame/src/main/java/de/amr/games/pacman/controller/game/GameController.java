@@ -382,7 +382,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 			if (ghost.ai.is(FRIGHTENED)) {
 				int livesBefore = game.level.lives;
-				game.level.scoreGhostKilled(ghost.name);
+				game.level.scoreGhostKilled();
 				if (game.level.lives > livesBefore) {
 					sound.gotExtraLife = true;
 				}
@@ -419,9 +419,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			world.clearFood(found.location);
 			int livesBeforeScoring = game.level.lives;
 			if (energizer) {
-				game.level.scoreEnergizerFound();
+				game.level.scoreEnergizerEaten();
 			} else {
-				game.level.scoreSimplePelletFound();
+				game.level.scoreSimplePelletEaten();
 			}
 			doorMan.onPacManFoundFood();
 			if (game.level.isBonusDue()) {

@@ -87,7 +87,7 @@ public class GameLevelTableModel extends AbstractTableModel {
 		case 0:
 			return integer(level.number);
 		case 1:
-			return integer(level.totalFoodCount);
+			return integer(level.foodCount);
 		case 2:
 			return integer(level.eatenFoodCount);
 		case 3:

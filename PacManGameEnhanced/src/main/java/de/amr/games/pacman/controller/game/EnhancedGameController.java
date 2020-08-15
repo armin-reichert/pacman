@@ -299,7 +299,7 @@ public class EnhancedGameController extends GameController {
 		}
 		world.tiles().filter(location -> world.hasFood(Pellet.SNACK, location)).forEach(tile -> {
 			world.clearFood(tile);
-			game.level.scoreSimplePelletFound();
+			game.level.scoreSimplePelletEaten();
 			doorMan().ifPresent(doorMan -> {
 				doorMan.onPacManFoundFood();
 				doorMan.update();
@@ -318,7 +318,7 @@ public class EnhancedGameController extends GameController {
 		}
 		game.level.ghostsKilledByEnergizer = 0;
 		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
-			game.level.scoreGhostKilled(ghost.name);
+			game.level.scoreGhostKilled();
 			ghost.ai.process(new GhostKilledEvent(ghost));
 		});
 		loginfo("All ghosts have been killed");

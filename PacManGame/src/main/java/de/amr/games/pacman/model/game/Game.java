@@ -63,26 +63,26 @@ public class Game {
 	 * Creates a game starting with the given level.
 	 * 
 	 * @param startLevel     start level number (1-...)
-	 * @param totalFoodCount total number of food in each level
+	 * @param foodCount total number of food in each level
 	 */
-	public Game(int startLevel, int totalFoodCount) {
-		enterLevel(startLevel, totalFoodCount);
+	public Game(int startLevel, int foodCount) {
+		enterLevel(startLevel, foodCount);
 	}
 
 	/**
 	 * Enters the next level.
 	 */
 	public void nextLevel() {
-		enterLevel(level.number + 1, level.totalFoodCount);
+		enterLevel(level.number + 1, level.foodCount);
 	}
 
 	/**
 	 * Enters level with given number (starting at 1).
 	 * 
-	 * @param n              level number (1-...)
-	 * @param totalFoodCount total number of food in each level
+	 * @param n         level number (1-...)
+	 * @param foodCount number of food in level
 	 */
-	public void enterLevel(int n, int totalFoodCount) {
+	public void enterLevel(int n, int foodCount) {
 		if (n < 1) {
 			loginfo("Specified start level is %d, using 1 instead", n);
 			n = 1;
@@ -90,14 +90,14 @@ public class Game {
 		loginfo("Enter level %d", n);
 		Object[] data = LEVEL_DATA[n <= LEVEL_DATA.length ? n - 1 : LEVEL_DATA.length - 1];
 		if (level == null) {
-			level = new GameLevel(n, totalFoodCount, data);
+			level = new GameLevel(n, foodCount, data);
 			level.lives = 3;
 			level.score = 0;
 			level.counter = new ArrayList<>();
 			level.hiscore = new Hiscore();
 			level.hiscore.load();
 		} else {
-			GameLevel nextLevel = new GameLevel(n, totalFoodCount, data);
+			GameLevel nextLevel = new GameLevel(n, foodCount, data);
 			nextLevel.lives = level.lives;
 			nextLevel.score = level.score;
 			nextLevel.counter = level.counter;
