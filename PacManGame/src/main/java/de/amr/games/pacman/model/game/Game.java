@@ -43,10 +43,6 @@ public class Game {
 		/*@formatter:on*/
 	};
 
-	static Object[] levelData(int n) { // 1-based
-		return LEVEL_DATA[n <= LEVEL_DATA.length ? n - 1 : LEVEL_DATA.length - 1];
-	}
-
 	public static final int POINTS_SIMPLE_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 	public static final int POINTS_EXTRA_LIFE = 10_000;
@@ -61,14 +57,13 @@ public class Game {
 
 	public GameLevel level;
 
-	public void enterLevel(int n, int foodCount) {
-		loginfo("Enter level %d", n);
+	public void enterLevel(int number, int foodCount) {
+		loginfo("Enter level %d", number);
 		if (level == null) {
-			level = new GameLevel(3, 0, foodCount, levelData(n));
+			level = new GameLevel(number, 3, 0, foodCount);
 		} else {
-			level = new GameLevel(level, levelData(n));
+			level = new GameLevel(number, level);
 		}
-		level.number = n;
 		level.counter.add(level.bonusSymbol);
 	}
 }

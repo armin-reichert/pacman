@@ -14,6 +14,10 @@ import de.amr.games.pacman.model.world.api.Symbol;
  */
 public class GameLevel {
 
+	private static Object[] levelData(int n) { // 1-based
+		return Game.LEVEL_DATA[n <= Game.LEVEL_DATA.length ? n - 1 : Game.LEVEL_DATA.length - 1];
+	}
+
 	private static float percentage(Object value) {
 		return ((int) value) / 100f;
 	}
@@ -23,24 +27,25 @@ public class GameLevel {
 	}
 
 	// constant values from table
-	public Symbol bonusSymbol;
-	public int bonusValue;
-	public float pacManSpeed;
-	public float pacManDotsSpeed;
-	public float ghostSpeed;
-	public float ghostTunnelSpeed;
-	public int elroy1DotsLeft;
-	public float elroy1Speed;
-	public int elroy2DotsLeft;
-	public float elroy2Speed;
-	public float pacManPowerSpeed;
-	public float pacManPowerDotsSpeed;
-	public float ghostFrightenedSpeed;
-	public int pacManPowerSeconds;
-	public int numFlashes;
+	public final Symbol bonusSymbol;
+	public final int bonusValue;
+	public final float pacManSpeed;
+	public final float pacManDotsSpeed;
+	public final float ghostSpeed;
+	public final float ghostTunnelSpeed;
+	public final int elroy1DotsLeft;
+	public final float elroy1Speed;
+	public final int elroy2DotsLeft;
+	public final float elroy2Speed;
+	public final float pacManPowerSpeed;
+	public final float pacManPowerDotsSpeed;
+	public final float ghostFrightenedSpeed;
+	public final int pacManPowerSeconds;
+	public final int numFlashes;
 
-	public int number;
-	public int foodCount;
+	public final int number;
+	public final int foodCount;
+
 	public int eatenFoodCount;
 	public int ghostsKilledByEnergizer;
 	public int ghostsKilled;
@@ -49,26 +54,26 @@ public class GameLevel {
 	public Hiscore hiscore;
 	public List<Symbol> counter;
 
-	public GameLevel(int lives, int score, int foodCount, Object[] data) {
+	public GameLevel(int number, int lives, int score, int foodCount) {
+		this(number, foodCount, levelData(number));
 		this.lives = lives;
 		this.score = score;
-		this.foodCount = foodCount;
 		counter = new ArrayList<>();
 		hiscore = new Hiscore();
 		hiscore.load();
-		fill(data);
 	}
 
-	public GameLevel(GameLevel previous, Object[] data) {
+	public GameLevel(int number, GameLevel previous) {
+		this(number, previous.foodCount, levelData(number));
 		lives = previous.lives;
 		score = previous.score;
-		foodCount = previous.foodCount;
 		counter = previous.counter;
 		hiscore = previous.hiscore;
-		fill(data);
 	}
 
-	private void fill(Object[] data) {
+	private GameLevel(int number, int foodCount, Object[] data) {
+		this.number = number;
+		this.foodCount = foodCount;
 		int i = 0;
 		bonusSymbol = Symbol.valueOf((String) data[i++]);
 		bonusValue = integer(data[i++]);
