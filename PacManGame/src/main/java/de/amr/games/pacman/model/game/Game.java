@@ -2,8 +2,6 @@ package de.amr.games.pacman.model.game;
 
 import static de.amr.easy.game.Application.loginfo;
 
-import java.util.ArrayList;
-
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
  * 
@@ -45,6 +43,10 @@ public class Game {
 		/*@formatter:on*/
 	};
 
+	static Object[] levelData(int n) { // 1-based
+		return LEVEL_DATA[n <= LEVEL_DATA.length ? n - 1 : LEVEL_DATA.length - 1];
+	}
+
 	public static final int POINTS_SIMPLE_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 	public static final int POINTS_EXTRA_LIFE = 10_000;
@@ -62,8 +64,8 @@ public class Game {
 	/**
 	 * Creates a game starting with the given level.
 	 * 
-	 * @param startLevel     start level number (1-...)
-	 * @param foodCount total number of food in each level
+	 * @param startLevel start level number (1-...)
+	 * @param foodCount  total number of food in level (assumed to be the same for all levels)
 	 */
 	public Game(int startLevel, int foodCount) {
 		enterLevel(startLevel, foodCount);
@@ -88,22 +90,8 @@ public class Game {
 			n = 1;
 		}
 		loginfo("Enter level %d", n);
-		Object[] data = LEVEL_DATA[n <= LEVEL_DATA.length ? n - 1 : LEVEL_DATA.length - 1];
-		if (level == null) {
-			level = new GameLevel(n, foodCount, data);
-			level.lives = 3;
-			level.score = 0;
-			level.counter = new ArrayList<>();
-			level.hiscore = new Hiscore();
-			level.hiscore.load();
-		} else {
-			GameLevel nextLevel = new GameLevel(n, foodCount, data);
-			nextLevel.lives = level.lives;
-			nextLevel.score = level.score;
-			nextLevel.counter = level.counter;
-			nextLevel.hiscore = level.hiscore;
-			level = nextLevel;
-		}
+		level = level == null ? new GameLevel(foodCount, levelData(n)) : new GameLevel(level);
+		level.number = n;
 		level.counter.add(level.bonusSymbol);
 	}
 }

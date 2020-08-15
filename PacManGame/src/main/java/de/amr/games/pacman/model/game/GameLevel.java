@@ -2,6 +2,7 @@ package de.amr.games.pacman.model.game;
 
 import static de.amr.easy.game.Application.loginfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.amr.games.pacman.model.world.api.Symbol;
@@ -48,9 +49,13 @@ public class GameLevel {
 	public Hiscore hiscore;
 	public List<Symbol> counter;
 
-	public GameLevel(int n, int foodCount, Object[] data) {
-		this.number = n;
+	public GameLevel(int foodCount, Object[] data) {
 		this.foodCount = foodCount;
+		lives = 3;
+		score = 0;
+		counter = new ArrayList<>();
+		hiscore = new Hiscore();
+		hiscore.load();
 
 		int i = 0;
 		bonusSymbol = Symbol.valueOf((String) data[i++]);
@@ -68,6 +73,14 @@ public class GameLevel {
 		ghostFrightenedSpeed = percentage(data[i++]);
 		pacManPowerSeconds = integer(data[i++]);
 		numFlashes = integer(data[i++]);
+	}
+
+	public GameLevel(GameLevel previous) {
+		foodCount = previous.foodCount;
+		lives = previous.lives;
+		score = previous.score;
+		counter = previous.counter;
+		hiscore = previous.hiscore;
 	}
 
 	public int remainingFoodCount() {
