@@ -86,7 +86,7 @@ public class Game {
 	 */
 	public void enterLevel(int n, int foodCount) {
 		if (n < 1) {
-			loginfo("Specified start level is %d, using 1 instead", n);
+			loginfo("Cannot enter level %d, using 1 instead", n);
 			n = 1;
 		}
 		loginfo("Enter level %d", n);
