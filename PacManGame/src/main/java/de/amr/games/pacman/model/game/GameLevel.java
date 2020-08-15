@@ -14,10 +14,6 @@ import de.amr.games.pacman.model.world.api.Symbol;
  */
 public class GameLevel {
 
-	private static Object[] levelData(int n) { // 1-based
-		return Game.LEVEL_DATA[n <= Game.LEVEL_DATA.length ? n - 1 : Game.LEVEL_DATA.length - 1];
-	}
-
 	private static float percentage(Object value) {
 		return ((int) value) / 100f;
 	}
@@ -55,7 +51,7 @@ public class GameLevel {
 	public List<Symbol> counter;
 
 	public GameLevel(int number, int lives, int score, int foodCount) {
-		this(number, foodCount, levelData(number));
+		this(number, foodCount, Game.levelData(number));
 		this.lives = lives;
 		this.score = score;
 		counter = new ArrayList<>();
@@ -65,7 +61,7 @@ public class GameLevel {
 	}
 
 	public GameLevel(int number, GameLevel previous) {
-		this(number, previous.foodCount, levelData(number));
+		this(number, previous.foodCount, Game.levelData(number));
 		lives = previous.lives;
 		score = previous.score;
 		counter = previous.counter;
@@ -73,25 +69,25 @@ public class GameLevel {
 		hiscore = previous.hiscore;
 	}
 
-	private GameLevel(int number, int foodCount, Object[] data) {
+	private GameLevel(int number, int foodCount, List<Object> data) {
 		this.number = number;
 		this.foodCount = foodCount;
 		int i = 0;
-		bonusSymbol = Symbol.valueOf((String) data[i++]);
-		bonusValue = integer(data[i++]);
-		pacManSpeed = percentage(data[i++]);
-		pacManDotsSpeed = percentage(data[i++]);
-		ghostSpeed = percentage(data[i++]);
-		ghostTunnelSpeed = percentage(data[i++]);
-		elroy1DotsLeft = integer(data[i++]);
-		elroy1Speed = percentage(data[i++]);
-		elroy2DotsLeft = integer(data[i++]);
-		elroy2Speed = percentage(data[i++]);
-		pacManPowerSpeed = percentage(data[i++]);
-		pacManPowerDotsSpeed = percentage(data[i++]);
-		ghostFrightenedSpeed = percentage(data[i++]);
-		pacManPowerSeconds = integer(data[i++]);
-		numFlashes = integer(data[i++]);
+		bonusSymbol = Symbol.valueOf((String) data.get(i++));
+		bonusValue = integer(data.get(i++));
+		pacManSpeed = percentage(data.get(i++));
+		pacManDotsSpeed = percentage(data.get(i++));
+		ghostSpeed = percentage(data.get(i++));
+		ghostTunnelSpeed = percentage(data.get(i++));
+		elroy1DotsLeft = integer(data.get(i++));
+		elroy1Speed = percentage(data.get(i++));
+		elroy2DotsLeft = integer(data.get(i++));
+		elroy2Speed = percentage(data.get(i++));
+		pacManPowerSpeed = percentage(data.get(i++));
+		pacManPowerDotsSpeed = percentage(data.get(i++));
+		ghostFrightenedSpeed = percentage(data.get(i++));
+		pacManPowerSeconds = integer(data.get(i++));
+		numFlashes = integer(data.get(i++));
 	}
 
 	public int remainingFoodCount() {
