@@ -61,24 +61,7 @@ public class Game {
 
 	public GameLevel level;
 
-	/**
-	 * Creates a game starting with the given level.
-	 * 
-	 * @param startLevel start level number (1-...)
-	 * @param foodCount  total number of food in level (assumed to be the same for all levels)
-	 */
-	public Game(int startLevel, int foodCount) {
-		enterLevel(startLevel, foodCount);
-	}
-
-	/**
-	 * Enters the next level.
-	 */
-	public void nextLevel() {
-		enterLevel(level.number + 1, level.foodCount);
-	}
-
-	private void enterLevel(int n, int foodCount) {
+	public void enterLevel(int n, int foodCount) {
 		loginfo("Enter level %d", n);
 		if (level == null) {
 			level = new GameLevel(3, 0, foodCount, levelData(n));
