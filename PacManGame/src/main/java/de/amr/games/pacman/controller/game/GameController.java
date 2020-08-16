@@ -171,7 +171,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							game.level.lives -= 1;
 						}
 						world.setFrozen(true);
-						folks.blinky.madnessController.pacManDies();
+						folks.blinky.madness.pacManDies();
 						theme.sounds().stopMusic(theme.sounds().musicGameRunning());
 						theme.sounds().clips().forEach(SoundClip::stop);
 					})
@@ -350,7 +350,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				doorMan.update();
 				bonusControl.update();
 				if (folks.clyde.hasLeftHouse()) {
-					folks.blinky.madnessController.clydeExitsHouse();
+					folks.blinky.madness.clydeExitsHouse();
 				}
 				sound.chasingGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.ai.is(GhostState.CHASING));
 				sound.deadGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.ai.is(GhostState.DEAD));
@@ -479,7 +479,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				world.fillFood();
 				game.nextLevel(world);
 				folks.guys().forEach(SmartGuy::init);
-				folks.blinky.madnessController.init();
+				folks.blinky.madness.init();
 				playView.init();
 			}
 
@@ -585,7 +585,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			guy.game = game;
 			guy.init();
 		});
-		folks.blinky.madnessController.init();
+		folks.blinky.madness.init();
 	}
 
 	protected MusicLoadingView createMusicLoadingView() {

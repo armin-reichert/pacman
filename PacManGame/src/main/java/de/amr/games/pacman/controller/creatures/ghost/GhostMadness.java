@@ -46,7 +46,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @see https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=7
  */
-public class GhostMadnessController extends StateMachine<GhostMentalState, Byte> {
+public class GhostMadness extends StateMachine<GhostMentalState, Byte> {
 
 	// events:
 	private static final byte PACMAN_DIES = 0;
@@ -54,7 +54,7 @@ public class GhostMadnessController extends StateMachine<GhostMentalState, Byte>
 
 	private final Ghost ghost;
 
-	public GhostMadnessController(Ghost ghost) {
+	public GhostMadness(Ghost ghost) {
 		super(GhostMentalState.class, TransitionMatchStrategy.BY_VALUE);
 		this.ghost = Objects.requireNonNull(ghost);
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);

@@ -7,6 +7,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTEN
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.game.GameController.sec;
 import static de.amr.games.pacman.controller.game.GameController.speed;
 
 import java.util.EnumMap;
@@ -46,7 +47,7 @@ public class Ghost extends SmartGuy<GhostState> {
 	public House house;
 	public Bed bed;
 	public GhostState nextState;
-	public GhostMadnessController madnessController;
+	public GhostMadness madness;
 	public int bounty;
 	public boolean recovering;
 
@@ -54,7 +55,7 @@ public class Ghost extends SmartGuy<GhostState> {
 		super(name, world, new EnumMap<>(GhostState.class));
 		this.personality = personality;
 		if (personality == GhostPersonality.SHADOW) {
-			madnessController = new GhostMadnessController(this);
+			madness = new GhostMadness(this);
 		}
 	}
 
@@ -235,11 +236,11 @@ public class Ghost extends SmartGuy<GhostState> {
 
 	@Override
 	public Stream<StateMachine<?, ?>> machines() {
-		return madnessController != null ? Stream.of(ai, movement, madnessController) : Stream.of(ai, movement);
+		return madness != null ? Stream.of(ai, movement, madness) : Stream.of(ai, movement);
 	}
 
 	public GhostMentalState getMentalState() {
-		return madnessController != null ? madnessController.getState() : GhostMentalState.HEALTHY;
+		return madness != null ? madness.getState() : GhostMentalState.HEALTHY;
 	}
 
 	private void computeBounty() {
@@ -247,11 +248,11 @@ public class Ghost extends SmartGuy<GhostState> {
 	}
 
 	private long getFrightenedTicks() {
-		return game != null ? GameController.sec(game.level.pacManPowerSeconds) : GameController.sec(5);
+		return game != null ? sec(game.level.pacManPowerSeconds) : sec(5);
 	}
 
 	private long getFlashTimeTicks() {
-		return game != null ? game.level.numFlashes * GameController.sec(0.5f) : 0;
+		return game != null ? game.level.numFlashes * sec(0.5f) : 0;
 	}
 
 	private void checkPacManCollision() {
@@ -286,8 +287,8 @@ public class Ghost extends SmartGuy<GhostState> {
 	}
 
 	private void updateMentalHealth() {
-		if (madnessController != null) {
-			madnessController.update();
+		if (madness != null) {
+			madness.update();
 		}
 	}
 

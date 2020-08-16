@@ -47,6 +47,10 @@ public class PacMan extends SmartGuy<PacManState> {
 
 	private int fat;
 
+	public PacMan(World world) {
+		super("Pac-Man", world, new EnumMap<>(PacManState.class));
+	}
+
 	@Override
 	protected StateMachine<PacManState, PacManGameEvent> buildAI() {
 		StateMachine<PacManState, PacManGameEvent> fsm = StateMachine
@@ -110,10 +114,6 @@ public class PacMan extends SmartGuy<PacManState> {
 		fsm.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		fsm.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
 		return fsm;
-	}
-
-	public PacMan(World world) {
-		super("Pac-Man", world, new EnumMap<>(PacManState.class));
 	}
 
 	@Override
