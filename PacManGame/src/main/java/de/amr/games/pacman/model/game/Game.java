@@ -55,6 +55,7 @@ public class Game {
 	}
 
 	/*@formatter:off*/
+	public static final int LIVES              = 3;
 	public static final int POINTS_PELLET      = 10;
 	public static final int POINTS_ENERGIZER   = 50;
 	public static final int POINTS_EXTRA_LIFE  = 10_000;
@@ -71,7 +72,7 @@ public class Game {
 	public GameLevel level;
 
 	public void start(int levelNumber, World world) {
-		level = new GameLevel(levelNumber, world.totalFoodCount(), 3, levelData(levelNumber));
+		level = new GameLevel(levelNumber, world.totalFoodCount(), LIVES, levelData(levelNumber));
 		loginfo("Game level %d started", levelNumber);
 	}
 
