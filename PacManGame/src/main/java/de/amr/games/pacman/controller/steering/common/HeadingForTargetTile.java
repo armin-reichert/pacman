@@ -50,9 +50,8 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		return Direction.dirs()
 			.filter(dir -> dir != moveDir.opposite())
 			.filter(dir -> guy.canMoveBetween(tile, guy.world.neighbor(tile, dir)))
-			.sorted(
-					comparing((Direction dir) -> guy.world.neighbor(tile, dir).distance(target))
-			   .thenComparing(DIRECTION_ORDER::indexOf))
+			.sorted(comparing((Direction dir) -> guy.world.neighbor(tile, dir).distance(target))
+					.thenComparing(DIRECTION_ORDER::indexOf))
 			.findFirst()
 			.orElse(moveDir);
 		/*@formatter:on*/
