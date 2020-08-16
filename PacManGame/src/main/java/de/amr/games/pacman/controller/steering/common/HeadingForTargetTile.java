@@ -32,6 +32,32 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 
 	private static final List<Direction> DIRECTION_ORDER = List.of(UP, LEFT, DOWN, RIGHT);
 
+	/**
+	 * Computes the next move direction as described
+	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
+	 * <p>
+	 * Note: I use method parameters for the move direction, current and target tile instead of the
+	 * fields of the guy because the {@link #pathTo(Tile)} method also uses this method without actually
+	 * moving the guy along the path.
+	 * 
+	 * @param guy     the guy moving
+	 * @param moveDir current move direction
+	 * @param tile    current tile
+	 * @param target  target tile
+	 */
+	private static Direction bestDirTowardsTarget(SmartGuy<?> guy, Direction moveDir, Tile tile, Tile target) {
+		/*@formatter:off*/
+		return Direction.dirs()
+			.filter(dir -> dir != moveDir.opposite())
+			.filter(dir -> guy.canMoveBetween(tile, guy.world.neighbor(tile, dir)))
+			.sorted(
+					comparing((Direction dir) -> guy.world.neighbor(tile, dir).distance(target))
+			   .thenComparing(DIRECTION_ORDER::indexOf))
+			.findFirst()
+			.orElse(moveDir);
+		/*@formatter:on*/
+	}
+
 	private final SmartGuy<?> guy;
 	private final Deque<Tile> path = new ConcurrentLinkedDeque<>();
 	private Supplier<Tile> fnTargetTile;
@@ -49,12 +75,12 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	@Override
-	public void steer(MovingGuy mover) {
-		if (mover.enteredNewTile || forced) {
+	public void steer(MovingGuy body) {
+		if (body.enteredNewTile || forced) {
 			forced = false;
 			Tile targetTile = fnTargetTile.get();
 			if (targetTile != null) {
-				mover.wishDir = bestDirTowardsTarget(mover.moveDir, mover.tile(), targetTile);
+				body.wishDir = bestDirTowardsTarget(guy, body.moveDir, body.tile(), targetTile);
 				if (pathComputed) {
 					computePath(targetTile);
 				}
@@ -62,30 +88,6 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 				path.clear();
 			}
 		}
-	}
-
-	/**
-	 * Computes the next move direction as described
-	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
-	 * <p>
-	 * Note: I use method parameters for the move direction, current and target tile instead of the
-	 * fields of the guy because the {@link #pathTo(Tile)} method also uses this method without actually
-	 * moving the guy along the path.
-	 * 
-	 * @param moveDir current move direction
-	 * @param tile    current tile
-	 * @param target  target tile
-	 */
-	private Direction bestDirTowardsTarget(Direction moveDir, Tile tile, Tile target) {
-		/*@formatter:off*/
-		return Direction.dirs()
-			.filter(dir -> dir != moveDir.opposite())
-			.filter(dir -> guy.canMoveBetween(tile, guy.world.neighbor(tile, dir)))
-			.sorted(comparing((Direction dir) -> guy.world.neighbor(tile, dir).distance(target))
-					   .thenComparing(DIRECTION_ORDER::indexOf))
-			.findFirst()
-			.orElse(guy.body.moveDir);
-		/*@formatter:on*/
 	}
 
 	/**
@@ -98,7 +100,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		path.clear();
 		while (guy.world.includes(head) && !head.equals(target) && !path.contains(head)) {
 			path.add(head);
-			dir = bestDirTowardsTarget(dir, head, target);
+			dir = bestDirTowardsTarget(guy, dir, head, target);
 			head = guy.world.neighbor(head, dir);
 		}
 	}
