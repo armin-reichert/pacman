@@ -208,16 +208,16 @@ public class PacMan extends Creature<PacManState> {
 		if (world.bonusFood().isPresent()) {
 			BonusFood bonus = world.bonusFood().get();
 			if (bonus.isPresent() && bonus.location().equals(location)) {
-				fat += Game.BIG_MEAL_FAT;
+				fat += Game.FAT_ENERGIZER;
 				return Optional.of(new BonusFoundEvent(bonus));
 			}
 		}
 		if (world.hasFood(Pellet.ENERGIZER, location)) {
-			fat += Game.BIG_MEAL_FAT;
+			fat += Game.FAT_ENERGIZER;
 			return Optional.of(new FoodFoundEvent(location));
 		}
 		if (world.hasFood(Pellet.SNACK, location)) {
-			fat += Game.SNACK_FAT;
+			fat += Game.FAT_PELLET;
 			return Optional.of(new FoodFoundEvent(location));
 		}
 		return Optional.empty();

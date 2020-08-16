@@ -4,6 +4,8 @@ import static de.amr.easy.game.Application.loginfo;
 
 import java.util.List;
 
+import de.amr.games.pacman.model.world.api.World;
+
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
  * 
@@ -19,11 +21,11 @@ public class Game {
 	/**
 	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
 	 */
-	static List<Object> levelData(int number) {
-		if (number > 21) {
-			number = 21;
+	private static List<Object> levelData(int level) {
+		if (level > 21) {
+			level = 21;
 		}
-		switch (number) {
+		switch (level) {
 		/*@formatter:off*/
 		case  1: return List.of("CHERRIES",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5);
 		case  2: return List.of("STRAWBERRY", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5);
@@ -48,33 +50,35 @@ public class Game {
 		case 21: return List.of("KEY",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
 		/*@formatter:on*/
 		default:
-			throw new IllegalArgumentException("Illegal game level number: " + number);
+			throw new IllegalArgumentException("Illegal game level number: " + level);
 		}
 	}
 
 	/*@formatter:off*/
-	public static final int POINTS_SIMPLE_PELLET = 10;
-	public static final int POINTS_ENERGIZER     = 50;
-	public static final int POINTS_EXTRA_LIFE    = 10_000;
-	public static final int POINTS_ALL_GHOSTS    = 12_000;
-	public static final int POINTS_BONUS[]       = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
-	public static final int GHOST_BOUNTIES[]     = { 200, 400, 800, 1600 };
-	public static final int SNACK_FAT            = 1;
-	public static final int BIG_MEAL_FAT         = 3;
-	public static final int BONUS_ACTIVATION_1   = 70;
-	public static final int BONUS_ACTIVATION_2   = 170;
-	public static final int BONUS_SECONDS        = 9;
+	public static final int POINTS_PELLET      = 10;
+	public static final int POINTS_ENERGIZER   = 50;
+	public static final int POINTS_EXTRA_LIFE  = 10_000;
+	public static final int POINTS_ALL_GHOSTS  = 12_000;
+	public static final int POINTS_BONUS[]     = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	public static final int POINTS_GHOSTS[]    = { 200, 400, 800, 1600 };
+	public static final int FAT_PELLET         = 1;
+	public static final int FAT_ENERGIZER      = 3;
+	public static final int BONUS_ACTIVATION_1 = 70;
+	public static final int BONUS_ACTIVATION_2 = 170;
+	public static final int BONUS_SECONDS      = 9;
 	/*@formatter:on*/
+
+	public static Game start(int level, World world) {
+		Game game = new Game();
+		game.level = new GameLevel(level, 3, 0, world.totalFoodCount(), levelData(level));
+		loginfo("Level %d started", level);
+		return game;
+	}
 
 	public GameLevel level;
 
-	public void startLevel(int number, int foodCount) {
-		level = new GameLevel(number, 3, 0, foodCount);
-		loginfo("Level %d started", number);
-	}
-
-	public void nextLevel() {
-		level = new GameLevel(level.number + 1, level);
+	public void nextLevel(World world) {
+		level = new GameLevel(level.number + 1, level, world.totalFoodCount(), levelData(level.number + 1));
 		loginfo("Level %d started", level.number);
 	}
 }

@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.games.pacman.model.game.Game.GHOST_BOUNTIES;
+import static de.amr.games.pacman.model.game.Game.POINTS_GHOSTS;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -137,7 +137,7 @@ public class GhostPointsAnimation extends GameObject {
 				} else {
 					theme.sounds().clipEatGhost().play();
 					ghosts[ghostToKill].ai.setState(GhostState.DEAD);
-					ghosts[ghostToKill].bounty = GHOST_BOUNTIES[ghostToKill];
+					ghosts[ghostToKill].bounty = POINTS_GHOSTS[ghostToKill];
 					killed.set(ghostToKill);
 					ghostToKill = ghostToKill + 1;
 					resetGhostTimer();

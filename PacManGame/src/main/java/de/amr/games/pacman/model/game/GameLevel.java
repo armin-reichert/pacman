@@ -22,7 +22,6 @@ public class GameLevel {
 		return (int) value;
 	}
 
-	// constant values from table
 	public final Symbol bonusSymbol;
 	public final int bonusValue;
 	public final float pacManSpeed;
@@ -50,8 +49,8 @@ public class GameLevel {
 	public Hiscore hiscore;
 	public List<Symbol> counter;
 
-	public GameLevel(int number, int lives, int score, int foodCount) {
-		this(number, foodCount, Game.levelData(number));
+	public GameLevel(int level, int lives, int score, int foodCount, List<Object> data) {
+		this(level, foodCount, data);
 		this.lives = lives;
 		this.score = score;
 		counter = new ArrayList<>();
@@ -60,8 +59,8 @@ public class GameLevel {
 		hiscore.load();
 	}
 
-	public GameLevel(int number, GameLevel previous) {
-		this(number, previous.foodCount, Game.levelData(number));
+	public GameLevel(int level, GameLevel previous, int foodCount, List<Object> data) {
+		this(level, foodCount, data);
 		lives = previous.lives;
 		score = previous.score;
 		counter = previous.counter;
@@ -69,8 +68,8 @@ public class GameLevel {
 		hiscore = previous.hiscore;
 	}
 
-	private GameLevel(int number, int foodCount, List<Object> data) {
-		this.number = number;
+	private GameLevel(int level, int foodCount, List<Object> data) {
+		this.number = level;
 		this.foodCount = foodCount;
 		int i = 0;
 		bonusSymbol = Symbol.valueOf((String) data.get(i++));
@@ -128,7 +127,7 @@ public class GameLevel {
 	 */
 	public int scoreSimplePelletEaten() {
 		eatenFoodCount += 1;
-		return score(Game.POINTS_SIMPLE_PELLET);
+		return score(Game.POINTS_PELLET);
 	}
 
 	/**
@@ -152,7 +151,7 @@ public class GameLevel {
 	 *         energizer.
 	 */
 	public int killedGhostPoints() {
-		return Game.GHOST_BOUNTIES[ghostsKilledByEnergizer > 0 ? ghostsKilledByEnergizer - 1 : 0];
+		return Game.POINTS_GHOSTS[ghostsKilledByEnergizer > 0 ? ghostsKilledByEnergizer - 1 : 0];
 	}
 
 	/**

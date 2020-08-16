@@ -30,7 +30,7 @@ class GhostSpriteMap extends SpriteMap {
 		}
 		set("frightened", sprites.makeSprite_ghostFrightened());
 		set("flashing", sprites.makeSprite_ghostFlashing());
-		for (int bounty : Game.GHOST_BOUNTIES) {
+		for (int bounty : Game.POINTS_GHOSTS) {
 			set(keyPoints(bounty), sprites.makeSprite_number(bounty));
 		}
 	}
