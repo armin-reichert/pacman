@@ -1,6 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
+import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;

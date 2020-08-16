@@ -26,7 +26,7 @@ import de.amr.games.pacman.model.world.components.House;
  * 
  * @author Armin Reichert
  */
-public class AnimalMaster {
+public class SteeringBuilder {
 
 	protected Ghost ghost;
 	protected PacMan pacMan;
@@ -50,19 +50,19 @@ public class AnimalMaster {
 		}
 	}
 
-	public static AnimalMaster you(Ghost ghost) {
-		AnimalMaster master = new AnimalMaster();
+	public static SteeringBuilder you(Ghost ghost) {
+		SteeringBuilder master = new SteeringBuilder();
 		master.ghost = Objects.requireNonNull(ghost);
 		return master;
 	}
 
-	public static AnimalMaster you(PacMan pacMan) {
-		AnimalMaster master = new AnimalMaster();
+	public static SteeringBuilder you(PacMan pacMan) {
+		SteeringBuilder master = new SteeringBuilder();
 		master.pacMan = Objects.requireNonNull(pacMan);
 		return master;
 	}
 
-	public AnimalMaster when(GhostState state) {
+	public SteeringBuilder when(GhostState state) {
 		ensureGhost();
 		ghostState = Objects.requireNonNull(state);
 		return this;

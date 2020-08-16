@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.navigation.graph;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
+import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;

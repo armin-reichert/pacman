@@ -11,7 +11,7 @@ import static de.amr.games.pacman.controller.game.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.game.PacManGameState.GETTING_READY;
 import static de.amr.games.pacman.controller.game.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
-import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
+import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;

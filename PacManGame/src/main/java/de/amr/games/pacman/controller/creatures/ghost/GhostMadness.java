@@ -5,7 +5,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.EL
 import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.HEALTHY;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.TRANQUILIZED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
-import static de.amr.games.pacman.controller.steering.api.AnimalMaster.you;
+import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
 
 import java.util.Objects;
 

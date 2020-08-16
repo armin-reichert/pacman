@@ -3,7 +3,7 @@ package de.amr.games.pacman.test.navigation;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.controller.steering.api.AnimalMaster;
+import de.amr.games.pacman.controller.steering.api.SteeringBuilder;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.test.TestUI;
 
@@ -33,9 +33,9 @@ class PortalTestUI extends TestUI {
 	public void init() {
 		super.init();
 		include(blinky, clyde);
-		AnimalMaster.you(blinky).when(GhostState.CHASING).headFor().tile(Tile.at(0, 17)).ok();
+		SteeringBuilder.you(blinky).when(GhostState.CHASING).headFor().tile(Tile.at(0, 17)).ok();
 		blinky.ai.setState(GhostState.CHASING);
-		AnimalMaster.you(clyde).when(GhostState.CHASING).headFor().tile(Tile.at(35, 17)).ok();
+		SteeringBuilder.you(clyde).when(GhostState.CHASING).headFor().tile(Tile.at(35, 17)).ok();
 		clyde.ai.setState(GhostState.LEAVING_HOUSE);
 		clyde.nextState = GhostState.CHASING;
 		view.turnRoutesOn();
