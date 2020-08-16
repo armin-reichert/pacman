@@ -103,9 +103,9 @@ class GameStateTableModel extends AbstractTableModel {
 		GameStateRecord r = records[row];
 		if (r.creature instanceof Ghost) {
 			if (r.included) {
-				world.include(r.creature.entity);
+				world.include(r.creature.body);
 			} else {
-				world.exclude(r.creature.entity);
+				world.exclude(r.creature.body);
 			}
 		}
 	}
@@ -137,11 +137,11 @@ class GameStateTableModel extends AbstractTableModel {
 
 	void fillPacManRecord(GameStateRecord r, Game game, PacMan pacMan) {
 		r.creature = pacMan;
-		r.included = world.contains(pacMan.entity);
+		r.included = world.contains(pacMan.body);
 		r.name = "Pac-Man";
-		r.tile = pacMan.entity.tile();
-		r.moveDir = pacMan.entity.moveDir;
-		r.wishDir = pacMan.entity.wishDir;
+		r.tile = pacMan.body.tile();
+		r.moveDir = pacMan.body.moveDir;
+		r.wishDir = pacMan.body.wishDir;
 		if (pacMan.ai.getState() != null) {
 			r.speed = pacMan.getSpeed() * app().clock().getTargetFramerate();
 			r.state = pacMan.ai.getState().name();
@@ -152,12 +152,12 @@ class GameStateTableModel extends AbstractTableModel {
 
 	void fillGhostRecord(GameStateRecord r, Game game, GhostCommand ghostCommand, Ghost ghost, PacMan pacMan) {
 		r.creature = ghost;
-		r.included = world.contains(ghost.entity);
+		r.included = world.contains(ghost.body);
 		r.name = ghost.name;
-		r.tile = ghost.entity.tile();
+		r.tile = ghost.body.tile();
 		r.target = ghost.steering().targetTile().orElse(null);
-		r.moveDir = ghost.entity.moveDir;
-		r.wishDir = ghost.entity.wishDir;
+		r.moveDir = ghost.body.moveDir;
+		r.wishDir = ghost.body.wishDir;
 		if (ghost.ai.getState() != null) {
 			r.speed = ghost.getSpeed() * app().clock().getTargetFramerate();
 			r.state = ghost.ai.getState().name();
@@ -167,7 +167,7 @@ class GameStateTableModel extends AbstractTableModel {
 					: ghost.ai.state().getDuration();
 		}
 		r.ghostSanity = ghost.getMentalState();
-		r.pacManCollision = ghost.entity.tile().equals(pacMan.entity.tile());
+		r.pacManCollision = ghost.body.tile().equals(pacMan.body.tile());
 	}
 
 	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {

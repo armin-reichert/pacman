@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.dashboard.states;
 
-import de.amr.games.pacman.controller.creatures.Creature;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.ghost.GhostMentalState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.world.api.Tile;
  * @author Armin Reichert
  */
 class GameStateRecord {
-	public Creature<?> creature;
+	public SmartGuy<?> creature;
 	public boolean included;
 	public String name;
 	public Tile tile;

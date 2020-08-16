@@ -13,7 +13,7 @@ import java.util.EnumMap;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.creatures.Creature;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -39,7 +39,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature<GhostState> {
+public class Ghost extends SmartGuy<GhostState> {
 
 	public GhostPersonality personality;
 	public PacMan pacMan;
@@ -74,10 +74,10 @@ public class Ghost extends Creature<GhostState> {
 						bounty = 0;
 						nextState = LOCKED;
 						enabled = true;
-						entity.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-						entity.visible = true;
-						entity.moveDir = bed.exitDir;
-						entity.wishDir = bed.exitDir;
+						body.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+						body.visible = true;
+						body.moveDir = bed.exitDir;
+						body.wishDir = bed.exitDir;
 					})
 					.onTick(this::move)
 	
@@ -203,7 +203,7 @@ public class Ghost extends Creature<GhostState> {
 			return 0;
 		}
 		GameLevel level = game.level;
-		boolean tunnel = world.isTunnel(entity.tile());
+		boolean tunnel = world.isTunnel(body.tile());
 		switch (ai.getState()) {
 		case LOCKED:
 			return speed(isInsideHouse() ? level.ghostSpeed / 2 : 0);
@@ -255,7 +255,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private void checkPacManCollision() {
-		if (entity.visible && pacMan.entity.visible && entity.tile().equals(pacMan.entity.tile())
+		if (body.visible && pacMan.body.visible && body.tile().equals(pacMan.body.tile())
 				&& !pacMan.ai.is(PacManState.DEAD, PacManState.COLLAPSING)) {
 			ai.publish(new PacManGhostCollisionEvent(this));
 		}
@@ -278,11 +278,11 @@ public class Ghost extends Creature<GhostState> {
 
 	public void move() {
 		Steering currentSteering = steering();
-		if (!world.isTunnel(entity.tile())) {
-			currentSteering.steer(entity);
+		if (!world.isTunnel(body.tile())) {
+			currentSteering.steer(body);
 		}
 		movement.update();
-		enabled = entity.tf.vx != 0 || entity.tf.vy != 0;
+		enabled = body.tf.vx != 0 || body.tf.vy != 0;
 	}
 
 	private void updateMentalHealth() {
@@ -292,15 +292,15 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public boolean hasLeftHouse() {
-		Tile location = entity.tile();
-		return ai.is(LEAVING_HOUSE) && house.isEntry(location) && entity.tf.y == location.row * Tile.SIZE;
+		Tile location = body.tile();
+		return ai.is(LEAVING_HOUSE) && house.isEntry(location) && body.tf.y == location.row * Tile.SIZE;
 	}
 
 	public boolean isAtHouseEntry() {
-		return house.isEntry(entity.tile()) && (entity.tileOffsetX() - Tile.SIZE / 2) <= 1;
+		return house.isEntry(body.tile()) && (body.tileOffsetX() - Tile.SIZE / 2) <= 1;
 	}
 
 	public boolean isInsideHouse() {
-		return house.isInsideOrDoor(entity.tile());
+		return house.isInsideOrDoor(body.tile());
 	}
 }

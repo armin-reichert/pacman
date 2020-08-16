@@ -9,7 +9,7 @@ import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.controller.creatures.Creature;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GameController;
@@ -25,10 +25,10 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class Movement extends StateMachine<MovementType, Void> {
 
-	private final Creature<?> guy;
+	private final SmartGuy<?> guy;
 	private Portal activePortal;
 
-	public Movement(Creature<?> guy) {
+	public Movement(SmartGuy<?> guy) {
 		super(MovementType.class);
 		this.guy = guy;
 		String description = guy.name;
@@ -46,8 +46,8 @@ public class Movement extends StateMachine<MovementType, Void> {
 					.onTick(() -> move(guy.steering().requiresGridAlignment(), guy.getSpeed()))
 				.state(TELEPORTING)
 					.timeoutAfter(GameController.sec(1.0f))
-					.onEntry(() -> guy.entity.visible = false)
-					.onExit(() -> guy.entity.visible = true)
+					.onEntry(() -> guy.body.visible = false)
+					.onExit(() -> guy.body.visible = true)
 			.transitions()
 				.when(WALKING).then(TELEPORTING)
 					.condition(this::hasEnteredPortal)
@@ -63,9 +63,9 @@ public class Movement extends StateMachine<MovementType, Void> {
 	@Override
 	public void init() {
 		super.init();
-		guy.entity.enteredNewTile = true;
-		guy.entity.moveDir = RIGHT;
-		guy.entity.wishDir = RIGHT;
+		guy.body.enteredNewTile = true;
+		guy.body.moveDir = RIGHT;
+		guy.body.wishDir = RIGHT;
 		activePortal = null;
 	}
 
@@ -77,13 +77,13 @@ public class Movement extends StateMachine<MovementType, Void> {
 		if (activePortal != null) {
 			return; // already entered portal before
 		}
-		Tile tile = guy.entity.tile();
+		Tile tile = guy.body.tile();
 		guy.world.portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
-			if (portal.either.equals(tile) && (guy.entity.moveDir == LEFT && guy.entity.tileOffsetX() <= 1)
-					|| (guy.entity.moveDir == UP && guy.entity.tileOffsetY() <= 1)) {
+			if (portal.either.equals(tile) && (guy.body.moveDir == LEFT && guy.body.tileOffsetX() <= 1)
+					|| (guy.body.moveDir == UP && guy.body.tileOffsetY() <= 1)) {
 				setActivePortal(portal, tile);
-			} else if (portal.other.equals(tile) && (guy.entity.moveDir == RIGHT && guy.entity.tileOffsetX() >= 7)
-					|| (guy.entity.moveDir == DOWN && guy.entity.tileOffsetY() >= 7)) {
+			} else if (portal.other.equals(tile) && (guy.body.moveDir == RIGHT && guy.body.tileOffsetX() >= 7)
+					|| (guy.body.moveDir == DOWN && guy.body.tileOffsetY() >= 7)) {
 				setActivePortal(portal, tile);
 			}
 		});
@@ -91,40 +91,40 @@ public class Movement extends StateMachine<MovementType, Void> {
 
 	private void setActivePortal(Portal portal, Tile entry) {
 		activePortal = portal;
-		activePortal.setPassageDir(guy.entity.moveDir);
+		activePortal.setPassageDir(guy.body.moveDir);
 		loginfo("%s enters portal at %s moving %s with offsetX %.2f", guy.name, entry, activePortal.getPassageDir(),
-				guy.entity.tileOffsetX());
+				guy.body.tileOffsetX());
 	}
 
 	private void teleport() {
 		Tile exit = activePortal.exit();
-		guy.entity.tf.setPosition(exit.x(), exit.y());
-		guy.entity.enteredNewTile = true;
+		guy.body.tf.setPosition(exit.x(), exit.y());
+		guy.body.enteredNewTile = true;
 		activePortal = null;
-		loginfo("%s exits portal at %s", guy.name, guy.entity.tile());
+		loginfo("%s exits portal at %s", guy.name, guy.body.tile());
 	}
 
 	private void move(boolean aligned, float speed) {
-		final Tile tileBeforeMove = guy.entity.tile();
+		final Tile tileBeforeMove = guy.body.tile();
 
 		// how far can we move?
-		float pixels = possibleMoveDistance(guy.entity.moveDir, speed);
-		if (guy.entity.wishDir != null && guy.entity.wishDir != guy.entity.moveDir) {
-			float pixelsWishDir = possibleMoveDistance(guy.entity.wishDir, speed);
+		float pixels = possibleMoveDistance(guy.body.moveDir, speed);
+		if (guy.body.wishDir != null && guy.body.wishDir != guy.body.moveDir) {
+			float pixelsWishDir = possibleMoveDistance(guy.body.wishDir, speed);
 			if (pixelsWishDir > 0) {
-				if (guy.entity.wishDir == guy.entity.moveDir.left() || guy.entity.wishDir == guy.entity.moveDir.right()) {
+				if (guy.body.wishDir == guy.body.moveDir.left() || guy.body.wishDir == guy.body.moveDir.right()) {
 					if (aligned) {
-						guy.entity.placeAt(tileBeforeMove, 0, 0);
+						guy.body.placeAt(tileBeforeMove, 0, 0);
 					}
 				}
-				guy.entity.moveDir = guy.entity.wishDir;
+				guy.body.moveDir = guy.body.wishDir;
 				pixels = pixelsWishDir;
 			}
 		}
-		Vector2f velocity = guy.entity.moveDir.vector().times(pixels);
-		guy.entity.tf.setVelocity(velocity);
-		guy.entity.tf.move();
-		guy.entity.enteredNewTile = !tileBeforeMove.equals(guy.entity.tile());
+		Vector2f velocity = guy.body.moveDir.vector().times(pixels);
+		guy.body.tf.setVelocity(velocity);
+		guy.body.tf.move();
+		guy.body.enteredNewTile = !tileBeforeMove.equals(guy.body.tile());
 		checkIfJustEnteredPortal();
 	}
 
@@ -140,13 +140,13 @@ public class Movement extends StateMachine<MovementType, Void> {
 		}
 		switch (dir) {
 		case UP:
-			return Math.min(guy.entity.tileOffsetY() - Tile.SIZE / 2, speed);
+			return Math.min(guy.body.tileOffsetY() - Tile.SIZE / 2, speed);
 		case DOWN:
-			return Math.min(-guy.entity.tileOffsetY() + Tile.SIZE / 2, speed);
+			return Math.min(-guy.body.tileOffsetY() + Tile.SIZE / 2, speed);
 		case LEFT:
-			return Math.min(guy.entity.tileOffsetX() - Tile.SIZE / 2, speed);
+			return Math.min(guy.body.tileOffsetX() - Tile.SIZE / 2, speed);
 		case RIGHT:
-			return Math.min(-guy.entity.tileOffsetX() + Tile.SIZE / 2, speed);
+			return Math.min(-guy.body.tileOffsetX() + Tile.SIZE / 2, speed);
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}

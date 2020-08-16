@@ -15,47 +15,44 @@ import de.amr.games.pacman.model.world.core.MovingGuy;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * A creature is a named entity that can move through the world and has "intelligence", i.e. it can
- * make decisions changing its behavior.
- * <p>
- * The physical size is one tile, however the visual appearance may be larger.
+ * A moving entity with "artificial intelligence", i.e. he/she can make decisions influencing its
+ * behavior.
  * 
- * @param <S> state (identifier) type
+ * @param <STATE> state (identifier) type
  * 
  * @author Armin Reichert
  */
-public abstract class Creature<S> implements Lifecycle {
+public abstract class SmartGuy<STATE> implements Lifecycle {
 
 	public final String name;
 	public final World world;
-	public final MovingGuy entity;
-	public final StateMachine<S, PacManGameEvent> ai;
-	public final Map<S, Steering> steeringsMap;
+	public final MovingGuy body;
+	public final StateMachine<STATE, PacManGameEvent> ai;
+	public final Map<STATE, Steering> steeringsMap;
 	public final Movement movement;
 
 	public Steering previousSteering;
 	public Game game;
 	public boolean enabled;
 
-	public Creature(String name, World world, Map<S, Steering> steeringsMap) {
+	public SmartGuy(String name, World world, Map<STATE, Steering> steeringsMap) {
 		this.name = name;
 		this.world = world;
-		this.entity = new MovingGuy();
-		this.entity.tf.width = entity.tf.height = Tile.SIZE;
+		this.body = new MovingGuy();
 		this.ai = buildAI();
 		this.steeringsMap = steeringsMap;
 		this.movement = new Movement(this);
-		this.enabled = true;
 	}
-
-	protected abstract StateMachine<S, PacManGameEvent> buildAI();
 
 	@Override
 	public void init() {
 		previousSteering = null;
+		enabled = true;
 		movement.init();
 		ai.init();
 	}
+
+	protected abstract StateMachine<STATE, PacManGameEvent> buildAI();
 
 	/**
 	 * @return speed in pixels/ticks
@@ -65,51 +62,52 @@ public abstract class Creature<S> implements Lifecycle {
 	/**
 	 * @param tile some tile, not necessary the current tile
 	 * @param a    neighbor tile of the tile
-	 * @return {@code true} if this creature can move between the given tiles
+	 * @return {@code true} if this guy can move between the given tiles
 	 */
 	public abstract boolean canMoveBetween(Tile tile, Tile neighbor);
 
 	/**
 	 * @param dir a direction
-	 * @return {@code true} if this creature can cross the border to the given direction
+	 * @return {@code true} if this guy can cross the border to the given direction
 	 */
 	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = entity.tile(), neighbor = world.neighbor(currentTile, dir);
+		Tile currentTile = body.tile(), neighbor = world.neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
 
 	/**
-	 * @return the state machines of this creature
+	 * @return all state machines of this guy
 	 */
 	public Stream<StateMachine<?, ?>> machines() {
 		return Stream.of(ai, movement);
 	}
 
 	/**
-	 * @return the current steering
+	 * @return the current steering of this guy. If the steering has changed since the last access it
+	 *         gets initialized.
 	 */
 	public Steering steering() {
-		Steering currentSteering = steeringsMap.getOrDefault(ai.getState(), mover -> {
+		Steering currentSteering = steeringsMap.getOrDefault(ai.getState(), guy -> {
 		});
 		if (previousSteering != currentSteering) {
 			currentSteering.init();
-			currentSteering.force(); //TODO correct?
+			currentSteering.force();
 			previousSteering = currentSteering;
 		}
 		return currentSteering;
 	}
 
 	/**
-	 * Returns the steering for the given state.
+	 * Returns the steering defined for the given state.
 	 * 
 	 * @param state state ID
 	 * @return steering defined for this state
 	 */
-	public Steering steering(S state) {
+	public Steering steering(STATE state) {
 		if (steeringsMap.containsKey(state)) {
 			return steeringsMap.get(state);
 		}
-		throw new IllegalArgumentException(String.format("%s: No steering found for state %s", this, state));
+		throw new IllegalArgumentException(String.format("%s: No steering defined for state %s", this, state));
 	}
 
 	/**
@@ -118,24 +116,24 @@ public abstract class Creature<S> implements Lifecycle {
 	 * @param state    state
 	 * @param steering steering defined for this state
 	 */
-	public void behavior(S state, Steering steering) {
+	public void behavior(STATE state, Steering steering) {
 		steeringsMap.put(state, steering);
 	}
 
 	/**
-	 * Forces the creature to move to the given direction.
+	 * Forces this guy to move to the given direction.
 	 * 
 	 * @param dir direction
 	 */
 	public void forceMoving(Direction dir) {
-		entity.wishDir = dir;
+		body.wishDir = dir;
 		movement.update();
 	}
 
 	/**
-	 * Forces the creature to reverse its direction.
+	 * Forces this guy to reverse its direction.
 	 */
 	public void reverseDirection() {
-		forceMoving(entity.moveDir.opposite());
+		forceMoving(body.moveDir.opposite());
 	}
 }

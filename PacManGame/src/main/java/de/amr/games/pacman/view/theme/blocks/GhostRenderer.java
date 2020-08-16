@@ -16,7 +16,7 @@ class GhostRenderer implements IGhostRenderer {
 
 	@Override
 	public void render(Graphics2D g, Ghost ghost) {
-		if (!ghost.entity.visible) {
+		if (!ghost.body.visible) {
 			return;
 		}
 		GhostState state = ghost.ai.getState();
@@ -24,7 +24,7 @@ class GhostRenderer implements IGhostRenderer {
 			state = GhostState.CHASING;
 		}
 		Rendering.smoothOn(g);
-		int width = 2 * ghost.entity.tf.width - 4, height = 2 * ghost.entity.tf.height - 2;
+		int width = 2 * ghost.body.tf.width - 4, height = 2 * ghost.body.tf.height - 2;
 		switch (state) {
 		case CHASING:
 		case SCATTERING:
@@ -44,7 +44,7 @@ class GhostRenderer implements IGhostRenderer {
 			if (ghost.bounty > 0) {
 				drawPoints(g, ghost);
 			} else {
-				drawEyes(g, ghost, ghost.entity.tf.width, ghost.entity.tf.width);
+				drawEyes(g, ghost, ghost.body.tf.width, ghost.body.tf.width);
 			}
 			break;
 		default:
@@ -61,7 +61,7 @@ class GhostRenderer implements IGhostRenderer {
 
 	private void drawPoints(Graphics2D g, Ghost ghost) {
 		g.setColor(Color.GREEN);
-		Font font = BlocksTheme.THEME.$font("font").deriveFont((float) ghost.entity.tf.height);
+		Font font = BlocksTheme.THEME.$font("font").deriveFont((float) ghost.body.tf.height);
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
 		String text = String.valueOf(ghost.bounty);
@@ -96,10 +96,10 @@ class GhostRenderer implements IGhostRenderer {
 	}
 
 	private int centerOffsetX(Ghost ghost, int width) {
-		return (int) ghost.entity.tf.x + (ghost.entity.tf.width - width) / 2;
+		return (int) ghost.body.tf.x + (ghost.body.tf.width - width) / 2;
 	}
 
 	private int centerOffsetY(Ghost ghost, int height) {
-		return (int) ghost.entity.tf.y + (ghost.entity.tf.height - height) / 2;
+		return (int) ghost.body.tf.y + (ghost.body.tf.height - height) / 2;
 	}
 }

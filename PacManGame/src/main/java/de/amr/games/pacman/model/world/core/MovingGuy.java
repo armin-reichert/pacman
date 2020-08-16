@@ -5,7 +5,8 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 
 /**
- * An entity that can move through a tile-based world.
+ * An entity that can move through a tile-based world. Guys by default have a body size of exactly
+ * one tile but their visual shape normally is larger.
  * 
  * @author Armin Reichert
  */
@@ -14,6 +15,10 @@ public class MovingGuy extends Entity {
 	public Direction moveDir;
 	public Direction wishDir;
 	public boolean enteredNewTile;
+
+	public MovingGuy() {
+		tf.width = tf.height = Tile.SIZE;
+	}
 
 	/**
 	 * The tile location is defined as the tile containing the center of the guy's body.

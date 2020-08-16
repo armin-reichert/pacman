@@ -25,7 +25,7 @@ import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.controller.creatures.Creature;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
@@ -151,7 +151,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GHOST_DYING)
 					.timeoutAfter(GameController.sec(1))
 					.onEntry(() -> {
-						folks.pacMan.entity.visible = false;
+						folks.pacMan.body.visible = false;
 						sound.ghostEaten = true;
 					})
 					.onTick(() -> {
@@ -161,7 +161,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							.forEach(Ghost::update);
 					})
 					.onExit(() -> {
-						folks.pacMan.entity.visible = true;
+						folks.pacMan.body.visible = true;
 					})
 				
 				.state(PACMAN_DYING)
@@ -178,7 +178,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTick((state, passed, remaining) -> {
 						if (passed == GameController.sec(2)) {
 							bonusControl.setState(BonusFoodState.ABSENT);
-							folks.ghostsInWorld().forEach(ghost -> ghost.entity.visible = false);
+							folks.ghostsInWorld().forEach(ghost -> ghost.body.visible = false);
 						}
 						else if (passed == GameController.sec(2.5f)) {
 							sound.pacManDied = true;
@@ -194,8 +194,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						folks.ghostsInWorld().forEach(ghost -> {
 							Bed bed = world.house(0).bed(0);
 							ghost.init();
-							ghost.entity.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-							ghost.entity.wishDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+							ghost.body.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+							ghost.body.wishDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 							ghost.ai.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
 						playView.showMessage(2, "Game Over!", Color.RED);
@@ -318,7 +318,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (remaining == GameController.sec(1)) {
 				world.setFrozen(false);
 			}
-			folks.guysInWorld().forEach(Creature::update);
+			folks.guysInWorld().forEach(SmartGuy::update);
 		}
 
 		@Override
@@ -341,7 +341,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onTick(State<PacManGameState> state, long passed, long remaining) {
-			folks.guysInWorld().forEach(Creature::update);
+			folks.guysInWorld().forEach(SmartGuy::update);
 			if (passed == INITIAL_WAIT_TIME) {
 				folks.pacMan.wakeUp();
 			}
@@ -369,7 +369,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			world.setFrozen(false);
 			bonusControl.init();
 			ghostCommand.init();
-			folks.guysInWorld().forEach(Creature::init);
+			folks.guysInWorld().forEach(SmartGuy::init);
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
@@ -379,7 +379,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private void onPacManGhostCollision(PacManGameEvent event) {
 			PacManGhostCollisionEvent collision = (PacManGhostCollisionEvent) event;
 			Ghost ghost = collision.ghost;
-			loginfo("%s got killed at %s", ghost.name, ghost.entity.tile());
+			loginfo("%s got killed at %s", ghost.name, ghost.body.tile());
 
 			if (ghost.ai.is(FRIGHTENED)) {
 				int livesBefore = game.level.lives;
@@ -392,7 +392,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			else if (!settings.ghostsHarmless) {
-				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.entity.tile());
+				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.body.tile());
 				doorMan.onLifeLost();
 				sound.chasingGhosts = false;
 				sound.deadGhosts = false;
@@ -471,21 +471,21 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			// After wait time, hide ghosts and start flashing.
 			if (passed == flashingStart) {
 				world.setChanging(true);
-				folks.ghosts().forEach(ghost -> ghost.entity.visible = false);
+				folks.ghosts().forEach(ghost -> ghost.body.visible = false);
 			}
 
 			if (passed == flashingEnd) {
 				world.setChanging(false);
 				world.fillFood();
 				game.nextLevel(world);
-				folks.guys().forEach(Creature::init);
+				folks.guys().forEach(SmartGuy::init);
 				folks.blinky.madnessController.init();
 				playView.init();
 			}
 
 			// One second later, let ghosts jump again inside the house
 			if (passed >= flashingEnd + GameController.sec(2)) {
-				folks.guysInWorld().forEach(Creature::update);
+				folks.guysInWorld().forEach(SmartGuy::update);
 			}
 
 			if (passed == flashingEnd + GameController.sec(4)) {
@@ -501,7 +501,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		selectTheme(settings.theme);
 		world = new ArcadeWorld();
 		folks = new Folks(world, world.house(0));
-		folks.guys().forEach(guy -> world.include(guy.entity));
+		folks.guys().forEach(guy -> world.include(guy.body));
 		folks.pacMan.ai.addEventListener(this::process);
 		folks.ghosts().forEach(ghost -> ghost.ai.addEventListener(this::process));
 		super.init();
@@ -581,7 +581,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		bonusControl = new BonusControl(game, world);
 		doorMan = new DoorMan(world, world.house(0), game, folks);
 		folks.guys().forEach(guy -> {
-			world.include(guy.entity);
+			world.include(guy.body);
 			guy.game = game;
 			guy.init();
 		});

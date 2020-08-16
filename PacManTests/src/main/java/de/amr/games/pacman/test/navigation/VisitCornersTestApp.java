@@ -47,7 +47,7 @@ class FollowTargetTilesTestUI extends TestUI {
 		app().soundManager().muteAll();
 		include(blinky);
 		blinky.init();
-		blinky.entity.placeAt(targets.get(0), 0, 0);
+		blinky.body.placeAt(targets.get(0), 0, 0);
 		you(blinky).when(CHASING).headFor().tile(() -> targets.get(current)).ok();
 		blinky.ai.setState(CHASING);
 		blinky.steering().force();
@@ -57,7 +57,7 @@ class FollowTargetTilesTestUI extends TestUI {
 
 	@Override
 	public void update() {
-		if (blinky.entity.tile().equals(targets.get(current))) {
+		if (blinky.body.tile().equals(targets.get(current))) {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;

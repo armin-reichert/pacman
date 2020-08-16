@@ -198,8 +198,8 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 
 	private ImageIcon createPacManIcon(Theme theme, PacMan pacMan) {
 		pacMan.ai.setState(PacManState.AWAKE);
-		pacMan.entity.moveDir = Direction.RIGHT;
-		pacMan.entity.tf.width = folks.pacMan.entity.tf.height = ENTITY_SIZE;
+		pacMan.body.moveDir = Direction.RIGHT;
+		pacMan.body.tf.width = folks.pacMan.body.tf.height = ENTITY_SIZE;
 		BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
 		g.translate((THUMBNAIL_SIZE - ENTITY_SIZE) / 2, (THUMBNAIL_SIZE - ENTITY_SIZE) / 2);
@@ -209,9 +209,9 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 
 	private ImageIcon createGhostIcon(Theme theme, Ghost ghost, GhostState state, Direction moveDir, int bounty) {
 		ghost.ai.setState(state);
-		ghost.entity.moveDir = moveDir;
+		ghost.body.moveDir = moveDir;
 		ghost.bounty = bounty;
-		ghost.entity.tf.width = ghost.entity.tf.height = ENTITY_SIZE;
+		ghost.body.tf.width = ghost.body.tf.height = ENTITY_SIZE;
 		BufferedImage img = new BufferedImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
 		g.translate((THUMBNAIL_SIZE - ENTITY_SIZE) / 2, (THUMBNAIL_SIZE - ENTITY_SIZE) / 2);

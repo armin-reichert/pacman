@@ -36,11 +36,11 @@ class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
 			if (!pacMan.enabled) {
 				sprite.resetAnimation();
 			}
-			int sw = 2 * pacMan.entity.tf.width, sh = 2 * pacMan.entity.tf.height;
+			int sw = 2 * pacMan.body.tf.width, sh = 2 * pacMan.body.tf.height;
 			if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
 				sprite.scale(sw, sh);
 			}
-			drawEntitySprite(g, pacMan.entity, sprite);
+			drawEntitySprite(g, pacMan.body, sprite);
 		});
 	}
 
@@ -48,7 +48,7 @@ class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
 		if (pacMan.ai.getState() == null || pacMan.ai.is(IN_BED, SLEEPING)) {
 			return spriteMap.select("full");
 		} else if (pacMan.ai.is(AWAKE, POWERFUL)) {
-			return spriteMap.select("walking-" + pacMan.entity.moveDir);
+			return spriteMap.select("walking-" + pacMan.body.moveDir);
 		} else if (pacMan.ai.is(DEAD)) {
 			spriteMap.get("collapsing").resetAnimation();
 			return spriteMap.select("full");

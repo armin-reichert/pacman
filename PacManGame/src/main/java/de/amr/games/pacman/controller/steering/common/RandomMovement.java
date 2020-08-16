@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.steering.common;
 
-import de.amr.games.pacman.controller.creatures.Creature;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.MovingGuy;
@@ -12,10 +12,10 @@ import de.amr.games.pacman.model.world.core.MovingGuy;
  */
 public class RandomMovement implements Steering {
 
-	private Creature<?> guy;
+	private SmartGuy<?> guy;
 	private boolean forced;
 
-	public RandomMovement(Creature<?> guy) {
+	public RandomMovement(SmartGuy<?> guy) {
 		this.guy = guy;
 	}
 

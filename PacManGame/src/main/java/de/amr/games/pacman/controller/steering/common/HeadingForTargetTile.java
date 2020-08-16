@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.creatures.Creature;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -34,14 +34,14 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 
 	private static final List<Direction> directionPriority = asList(UP, LEFT, DOWN, RIGHT);
 
-	private final Creature<?> guy;
+	private final SmartGuy<?> guy;
 	private final World world;
 	private final ConcurrentLinkedDeque<Tile> path = new ConcurrentLinkedDeque<>();
 	private Supplier<Tile> fnTargetTile;
 	private boolean forced;
 	private boolean pathComputed;
 
-	public HeadingForTargetTile(Creature<?> guy, Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(SmartGuy<?> guy, Supplier<Tile> fnTargetTile) {
 		this.guy = Objects.requireNonNull(guy);
 		world = guy.world;
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
@@ -107,11 +107,11 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 */
 	private void computePath(Tile target) {
 		path.clear();
-		Direction dir = guy.entity.moveDir;
-		Tile head = guy.entity.tile();
+		Direction dir = guy.body.moveDir;
+		Tile head = guy.body.tile();
 		while (world.includes(head) && !head.equals(target) && !path.contains(head)) {
 			path.add(head);
-			dir = bestDirTowardsTarget(guy.entity, dir, head, target);
+			dir = bestDirTowardsTarget(guy.body, dir, head, target);
 			head = world.neighbor(head, dir);
 		}
 	}

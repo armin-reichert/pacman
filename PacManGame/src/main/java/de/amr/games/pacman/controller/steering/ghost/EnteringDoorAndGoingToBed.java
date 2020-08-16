@@ -32,8 +32,8 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 
 	public EnteringDoorAndGoingToBed(Ghost ghost, Door door, Bed bed) {
 		super(State.class);
-		targetX = bed.center().x - ghost.entity.tf.width / 2;
-		targetY = bed.center().y - ghost.entity.tf.width / 2;
+		targetX = bed.center().x - ghost.body.tf.width / 2;
+		targetY = bed.center().y - ghost.body.tf.width / 2;
 		/*@formatter:off*/
 		beginStateMachine()
 			.initialState(FALLING)
@@ -44,11 +44,11 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 				.state(FALLING)
 					.onEntry(() -> {
 						// place the ghost centered over the ghost house entry and start falling down
-						Transform tf = ghost.entity.tf;
+						Transform tf = ghost.body.tf;
 						Direction awayFromHouse = door.intoHouse.opposite();
 						Vector2f houseEntry = door.center().add(awayFromHouse.vector().times(Tile.SIZE));
 						tf.setPosition(houseEntry.x - tf.width / 2, houseEntry.y - tf.height / 2);
-						ghost.entity.wishDir = Direction.DOWN;					
+						ghost.body.wishDir = Direction.DOWN;					
 					})
 					
 				// list all states such that they appear in Graphviz file
@@ -59,25 +59,25 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 			.transitions()
 	
 				.when(FALLING).then(MOVING_LEFT)
-					.condition(() -> ghost.entity.tf.y >= targetY && ghost.entity.tf.x > targetX)
-					.act(() -> ghost.entity.wishDir = Direction.LEFT)
+					.condition(() -> ghost.body.tf.y >= targetY && ghost.body.tf.x > targetX)
+					.act(() -> ghost.body.wishDir = Direction.LEFT)
 					.annotation("Reached floor: move left")
 				
 				.when(FALLING).then(MOVING_RIGHT)
-					.condition(() -> ghost.entity.tf.y >= targetY && ghost.entity.tf.x < targetX)
-					.act(() -> ghost.entity.wishDir = Direction.RIGHT)
+					.condition(() -> ghost.body.tf.y >= targetY && ghost.body.tf.x < targetX)
+					.act(() -> ghost.body.wishDir = Direction.RIGHT)
 					.annotation("Reached floor: move right")
 	
 				.when(FALLING).then(BED_REACHED)
-					.condition(() -> ghost.entity.tf.y >= targetY && ghost.entity.tf.x == targetX)
+					.condition(() -> ghost.body.tf.y >= targetY && ghost.body.tf.x == targetX)
 					.annotation("Reached bed")
 				
 				.when(MOVING_LEFT).then(BED_REACHED)
-					.condition(() -> ghost.entity.tf.x <= targetX)
+					.condition(() -> ghost.body.tf.x <= targetX)
 					.annotation("Reached bed in left tract")
 					
 				.when(MOVING_RIGHT).then(BED_REACHED)
-					.condition(() -> ghost.entity.tf.x >= targetX)
+					.condition(() -> ghost.body.tf.x >= targetX)
 					.annotation("Reached bed in right tract")
 					
 		.endStateMachine();

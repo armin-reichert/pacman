@@ -80,15 +80,15 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	@Override
 	public IGhostRenderer ghostRenderer(Ghost ghost_) {
 		return (g, ghost) -> {
-			if (ghost.entity.visible) {
+			if (ghost.body.visible) {
 				Font font = $font("font");
 				int offset_baseline = $int("offset-baseline");
-				g.setFont(font.deriveFont((float) ghost.entity.tf.width));
+				g.setFont(font.deriveFont((float) ghost.body.tf.width));
 				g.setColor(ghostColor(ghost));
 				if (ghost.bounty > 0) {
-					g.drawString("" + ghost.bounty, ghost.entity.tf.x, ghost.entity.tf.y + offset_baseline);
+					g.drawString("" + ghost.bounty, ghost.body.tf.x, ghost.body.tf.y + offset_baseline);
 				} else {
-					g.drawString(ghostLetter(ghost), ghost.entity.tf.x, ghost.entity.tf.y + offset_baseline);
+					g.drawString(ghostLetter(ghost), ghost.body.tf.x, ghost.body.tf.y + offset_baseline);
 				}
 			}
 		};
@@ -97,8 +97,8 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	@Override
 	public IPacManRenderer pacManRenderer(PacMan pacMan_) {
 		return (g, pacMan) -> {
-			if (pacMan.entity.visible) {
-				Transform tf = pacMan.entity.tf;
+			if (pacMan.body.visible) {
+				Transform tf = pacMan.body.tf;
 				int offset_baseline = $int("offset-baseline");
 				g.setFont($font("font").deriveFont((float) tf.width));
 				g.setColor(Color.YELLOW);

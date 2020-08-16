@@ -9,7 +9,7 @@ import java.awt.RenderingHints;
 import java.util.BitSet;
 
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.creatures.Creature;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
@@ -82,8 +82,8 @@ public class GhostPointsAnimation extends GameObject {
 		killed.clear();
 		ghostToKill = 0;
 		energizer = true;
-		folks.guys().forEach(Creature::init);
-		folks.pacMan.entity.moveDir = Direction.RIGHT;
+		folks.guys().forEach(SmartGuy::init);
+		folks.pacMan.body.moveDir = Direction.RIGHT;
 		folks.pacMan.ai.setState(PacManState.AWAKE);
 		folks.ghosts().forEach(ghost -> {
 			ghost.ai.setState(GhostState.FRIGHTENED);
@@ -94,10 +94,10 @@ public class GhostPointsAnimation extends GameObject {
 
 	private void initPositions() {
 		float x = tf.x;
-		folks.pacMan.entity.tf.setPosition(x, tf.y);
+		folks.pacMan.body.tf.setPosition(x, tf.y);
 		x += 2 * dx; // space for drawing pellet
 		for (int i = 0; i < ghosts.length; ++i) {
-			ghosts[i].entity.tf.setPosition(x, tf.y);
+			ghosts[i].body.tf.setPosition(x, tf.y);
 			x += dx;
 		}
 	}

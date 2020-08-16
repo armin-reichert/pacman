@@ -7,7 +7,7 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.controller.creatures.Creature;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
@@ -35,8 +35,8 @@ public class TestUI implements Lifecycle, VisualController {
 		return Optional.of(view);
 	}
 
-	protected void include(Creature<?>... creatures) {
-		Stream.of(creatures).forEach(guy -> world.include(guy.entity));
+	protected void include(SmartGuy<?>... creatures) {
+		Stream.of(creatures).forEach(guy -> world.include(guy.body));
 	}
 
 	protected Theme theme() {
@@ -62,8 +62,8 @@ public class TestUI implements Lifecycle, VisualController {
 
 	@Override
 	public void init() {
-		folks.guys().forEach(Creature::init);
-		folks.guys().forEach(guy -> world.exclude(guy.entity));
+		folks.guys().forEach(SmartGuy::init);
+		folks.guys().forEach(guy -> world.exclude(guy.body));
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class TestUI implements Lifecycle, VisualController {
 				view.turnStatesOn();
 			}
 		}
-		folks.guysInWorld().forEach(Creature::update);
+		folks.guysInWorld().forEach(SmartGuy::update);
 		view.update();
 	}
 }

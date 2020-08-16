@@ -47,7 +47,7 @@ class MovingRandomlyTestUI extends TestUI {
 			ghost.ai.state(FRIGHTENED).removeTimer();
 			ghost.ai.setState(FRIGHTENED);
 			Bed bed = world.pacManBed();
-			ghost.entity.tf.centerBoth(bed.col() * Tile.SIZE, bed.row() * Tile.SIZE, bed.width() * Tile.SIZE,
+			ghost.body.tf.centerBoth(bed.col() * Tile.SIZE, bed.row() * Tile.SIZE, bed.width() * Tile.SIZE,
 					bed.height() * Tile.SIZE);
 		});
 		view.turnRoutesOn();

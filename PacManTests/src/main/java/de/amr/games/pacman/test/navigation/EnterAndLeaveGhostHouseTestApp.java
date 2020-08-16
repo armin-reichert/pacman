@@ -52,7 +52,7 @@ class EnterGhostHouseTestUI extends TestUI {
 		include(inky);
 		inky.init();
 		Bed bed = world.house(0).bed(0);
-		inky.entity.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+		inky.body.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		inky.ai.setState(SCATTERING);
 		view.turnRoutesOn();
 		view.turnGridOn();
@@ -67,7 +67,7 @@ class EnterGhostHouseTestUI extends TestUI {
 			you(inky).when(SCATTERING).headFor().tile(nextCapeToVisit).ok();
 		} else if (inky.ai.getState() == SCATTERING) {
 			// one round around the block, then killed at cape
-			if (capes.contains(inky.entity.tile())) {
+			if (capes.contains(inky.body.tile())) {
 				enteredCape = true;
 			} else {
 				if (enteredCape) {

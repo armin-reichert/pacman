@@ -35,16 +35,16 @@ class GhostRenderer implements IGhostRenderer, ISpriteRenderer {
 		selectSprite(ghost);
 		Sprite sprite = spriteMap.current().get();
 		sprite.enableAnimation(ghost.enabled);
-		int sw = 2 * ghost.entity.tf.width, sh = 2 * ghost.entity.tf.height;
+		int sw = 2 * ghost.body.tf.width, sh = 2 * ghost.body.tf.height;
 		if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
 			sprite.scale(sw, sh);
 		}
-		drawEntitySprite(g, ghost.entity, sprite);
+		drawEntitySprite(g, ghost.body, sprite);
 	}
 
 	private void selectSprite(Ghost ghost) {
 		GhostState state = ghost.ai.getState();
-		Direction dir = ghost.entity.moveDir;
+		Direction dir = ghost.body.moveDir;
 		if (state == null) {
 			spriteMap.select(spriteMap.keyColor(ghost.personality, dir));
 		} else if (ghost.ai.is(LOCKED, LEAVING_HOUSE, CHASING, SCATTERING)) {

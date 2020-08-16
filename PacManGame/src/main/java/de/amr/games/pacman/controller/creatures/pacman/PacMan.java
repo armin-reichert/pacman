@@ -15,7 +15,7 @@ import java.util.EnumMap;
 import java.util.Optional;
 
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.Creature;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManFallAsleepEvent;
@@ -43,7 +43,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Creature<PacManState> {
+public class PacMan extends SmartGuy<PacManState> {
 
 	private int fat;
 
@@ -60,7 +60,7 @@ public class PacMan extends Creature<PacManState> {
 				.state(IN_BED)
 					.onEntry(() -> {
 						putIntoBed(world.pacManBed());
-						entity.visible = true;
+						body.visible = true;
 						enabled = true;
 						fat = 0;
 					})
@@ -148,8 +148,8 @@ public class PacMan extends Creature<PacManState> {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int nTiles) {
-		Tile tileAhead = world.tileToDir(entity.tile(), entity.moveDir, nTiles);
-		if (entity.moveDir == UP && !settings.fixOverflowBug) {
+		Tile tileAhead = world.tileToDir(body.tile(), body.moveDir, nTiles);
+		if (body.moveDir == UP && !settings.fixOverflowBug) {
 			tileAhead = world.tileToDir(tileAhead, LEFT, nTiles);
 		}
 		return tileAhead;
@@ -182,8 +182,8 @@ public class PacMan extends Creature<PacManState> {
 	}
 
 	private void putIntoBed(Bed bed) {
-		entity.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-		entity.moveDir = entity.wishDir = bed.exitDir;
+		body.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+		body.moveDir = body.wishDir = bed.exitDir;
 	}
 
 	private void setPowerTimer(PacManGameEvent e) {
@@ -193,14 +193,14 @@ public class PacMan extends Creature<PacManState> {
 	}
 
 	private void wander() {
-		steering().steer(entity);
+		steering().steer(body);
 		movement.update();
-		enabled = entity.tf.vx != 0 || entity.tf.vy != 0;
-		if (entity.enteredNewTile) {
+		enabled = body.tf.vx != 0 || body.tf.vy != 0;
+		if (body.enteredNewTile) {
 			fat = Math.max(0, fat - 1);
 		}
 		if (!movement.is(MovementType.TELEPORTING)) {
-			searchForFood(entity.tile()).ifPresent(ai::publish);
+			searchForFood(body.tile()).ifPresent(ai::publish);
 		}
 	}
 

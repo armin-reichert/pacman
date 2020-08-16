@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller.steering.common;
 
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.creatures.Creature;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.MovingGuy;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
@@ -17,8 +17,8 @@ public class TakingShortestPath extends FollowingPath {
 	private final WorldGraph graph;
 	private final Supplier<Tile> fnTargetTile;
 
-	public TakingShortestPath(Creature<?> guy, Supplier<Tile> fnTargetTile) {
-		super(guy.entity);
+	public TakingShortestPath(SmartGuy<?> guy, Supplier<Tile> fnTargetTile) {
+		super(guy.body);
 		this.fnTargetTile = fnTargetTile;
 		graph = new WorldGraph(guy.world);
 	}

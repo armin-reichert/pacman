@@ -247,10 +247,10 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void toggleGhostInWorld(Ghost ghost) {
-		if (world.contains(ghost.entity)) {
-			world.exclude(ghost.entity);
+		if (world.contains(ghost.body)) {
+			world.exclude(ghost.body);
 		} else {
-			world.include(ghost.entity);
+			world.include(ghost.body);
 			ghost.init();
 		}
 	}
@@ -267,7 +267,7 @@ public class EnhancedGameController extends GameController {
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;
-			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, new FleeingToSafeTile(ghost, folks.pacMan.entity)));
+			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, new FleeingToSafeTile(ghost, folks.pacMan.body)));
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}

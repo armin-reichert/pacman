@@ -33,7 +33,7 @@ public class FleeingToSafeTile extends FollowingPath {
 	private boolean passingPortal;
 
 	public FleeingToSafeTile(Ghost refugee, MovingGuy attacker) {
-		super(refugee.entity);
+		super(refugee.body);
 		world = refugee.world;
 		this.attacker = attacker;
 		graph = new WorldGraph(world);
