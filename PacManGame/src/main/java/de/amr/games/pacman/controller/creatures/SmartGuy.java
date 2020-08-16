@@ -29,8 +29,7 @@ public abstract class SmartGuy<STATE> implements Lifecycle {
 	public final MovingGuy body;
 	public final StateMachine<STATE, PacManGameEvent> ai;
 	public final Map<STATE, Steering> steeringsMap;
-	public final Movement movement;
-
+	public Movement movement;
 	public Steering previousSteering;
 	public Game game;
 	public boolean enabled;
@@ -41,7 +40,6 @@ public abstract class SmartGuy<STATE> implements Lifecycle {
 		this.body = new MovingGuy();
 		this.ai = buildAI();
 		this.steeringsMap = steeringsMap;
-		this.movement = new Movement(this);
 	}
 
 	@Override

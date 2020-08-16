@@ -10,8 +10,6 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.SmartGuy;
-import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -28,15 +26,9 @@ public class Movement extends StateMachine<MovementType, Void> {
 	private final SmartGuy<?> guy;
 	private Portal activePortal;
 
-	public Movement(SmartGuy<?> guy) {
+	public Movement(SmartGuy<?> guy, String description) {
 		super(MovementType.class);
 		this.guy = guy;
-		String description = guy.name;
-		if (guy instanceof Ghost) {
-			description = "Ghost " + guy.name + " Movement";
-		} else if (guy instanceof PacMan) {
-			description = "Pac-Man Movement";
-		}
 		//@formatter:off
 		beginStateMachine()
 			.description(description)
@@ -138,15 +130,17 @@ public class Movement extends StateMachine<MovementType, Void> {
 		if (guy.canCrossBorderTo(dir)) {
 			return speed;
 		}
+		float availableX = guy.body.tileOffsetX() - Tile.SIZE / 2;
+		float availableY = guy.body.tileOffsetY() - Tile.SIZE / 2;
 		switch (dir) {
 		case UP:
-			return Math.min(guy.body.tileOffsetY() - Tile.SIZE / 2, speed);
+			return Math.min(availableY, speed);
 		case DOWN:
-			return Math.min(-guy.body.tileOffsetY() + Tile.SIZE / 2, speed);
+			return Math.min(-availableY, speed);
 		case LEFT:
-			return Math.min(guy.body.tileOffsetX() - Tile.SIZE / 2, speed);
+			return Math.min(availableX, speed);
 		case RIGHT:
-			return Math.min(-guy.body.tileOffsetX() + Tile.SIZE / 2, speed);
+			return Math.min(-availableX, speed);
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}

@@ -24,6 +24,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
+import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.model.game.GameLevel;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -57,6 +58,7 @@ public class Ghost extends SmartGuy<GhostState> {
 		if (personality == GhostPersonality.SHADOW) {
 			madness = new GhostMadness(this);
 		}
+		movement = new Movement(this, "Ghost " + name + " Movement");
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
+import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.BonusFood;
@@ -49,6 +50,7 @@ public class PacMan extends SmartGuy<PacManState> {
 
 	public PacMan(World world) {
 		super("Pac-Man", world, new EnumMap<>(PacManState.class));
+		movement = new Movement(this, "Pac-Man Movement");
 	}
 
 	@Override
