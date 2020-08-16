@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Pellet;
-import de.amr.games.pacman.model.world.core.Mover;
+import de.amr.games.pacman.model.world.core.MovingGuy;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 
@@ -55,7 +55,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	@Override
-	public void steer(Mover pacMan) {
+	public void steer(MovingGuy pacMan) {
 		if (!me.entity.enteredNewTile && me.canCrossBorderTo(me.entity.moveDir)
 				|| me.movement.is(MovementType.TELEPORTING)) {
 			return;
@@ -81,7 +81,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	@Override
-	public List<Tile> pathToTarget(Mover pacMan) {
+	public List<Tile> pathToTarget(MovingGuy pacMan) {
 		return target != null ? graph.shortestPath(pacMan.tile(), target) : Collections.emptyList();
 	}
 

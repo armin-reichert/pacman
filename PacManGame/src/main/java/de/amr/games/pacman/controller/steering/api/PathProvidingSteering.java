@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller.steering.api;
 import java.util.List;
 
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.core.Mover;
+import de.amr.games.pacman.model.world.core.MovingGuy;
 
 /**
  * Implemented by steerings that can compute the complete path to the target tile.
@@ -15,7 +15,7 @@ public interface PathProvidingSteering extends Steering {
 	/**
 	 * @return the path from the current position of the mover to its current target tile
 	 */
-	List<Tile> pathToTarget(Mover mover);
+	List<Tile> pathToTarget(MovingGuy mover);
 
 	/**
 	 * @param enabled if {@code true} the steering computes the path to the target

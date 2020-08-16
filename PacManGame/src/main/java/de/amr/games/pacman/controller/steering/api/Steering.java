@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller.steering.api;
 import java.util.Optional;
 
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.core.Mover;
+import de.amr.games.pacman.model.world.core.MovingGuy;
 
 /**
  * Interface for steering of movers through their world.
@@ -18,7 +18,7 @@ public interface Steering {
 	 * 
 	 * @param mover the steered mover
 	 */
-	void steer(Mover mover);
+	void steer(MovingGuy mover);
 
 	/**
 	 * Some steerings needs an initial step.

@@ -7,7 +7,7 @@ import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.model.world.core.Mover;
+import de.amr.games.pacman.model.world.core.MovingGuy;
 
 public interface Territory extends RectangularArea {
 
@@ -50,21 +50,21 @@ public interface Territory extends RectangularArea {
 	 * @param mover a mover
 	 * @return {@code true} if the mover is currently included in this territory
 	 */
-	boolean contains(Mover mover);
+	boolean contains(MovingGuy mover);
 
 	/**
 	 * Includes the mover into the territory.
 	 * 
 	 * @param mover a mover
 	 */
-	void include(Mover mover);
+	void include(MovingGuy mover);
 
 	/**
 	 * Excludes the mover from the territory.
 	 * 
 	 * @param mover a mover
 	 */
-	void exclude(Mover mover);
+	void exclude(MovingGuy mover);
 
 	/**
 	 * @return list of "capes" in order NW, NE, SE, SW

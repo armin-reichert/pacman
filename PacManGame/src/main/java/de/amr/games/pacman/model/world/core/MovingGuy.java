@@ -9,23 +9,23 @@ import de.amr.games.pacman.model.world.api.Tile;
  * 
  * @author Armin Reichert
  */
-public class Mover extends Entity {
+public class MovingGuy extends Entity {
 
 	public Direction moveDir;
 	public Direction wishDir;
 	public boolean enteredNewTile;
 
 	/**
-	 * The tile location is defined as the tile containing the center of the lifeforms body.
+	 * The tile location is defined as the tile containing the center of the guy's body.
 	 * 
-	 * @return tile location of this mover
+	 * @return tile location of this guy
 	 */
 	public Tile tile() {
 		return Tile.at(col(), row());
 	}
 
 	/**
-	 * The current tile column (x-coordinate)
+	 * The current tile column (x-coordinate).
 	 * 
 	 * @return column index of current tile
 	 */
@@ -35,7 +35,7 @@ public class Mover extends Entity {
 	}
 
 	/**
-	 * The current tile row (y-coordinate)
+	 * The current tile row (y-coordinate).
 	 * 
 	 * @return row index of current tile
 	 */
@@ -65,7 +65,7 @@ public class Mover extends Entity {
 	}
 
 	/**
-	 * Places this mover at the given tile location.
+	 * Places this guy at the given tile location.
 	 * 
 	 * @param tile tile location
 	 * @param dx   additional pixels in x-direction
@@ -78,12 +78,12 @@ public class Mover extends Entity {
 	}
 
 	/**
-	 * Euclidean distance (in tiles) between this and the other mover.
+	 * Euclidean distance (in tiles) between this and the other guy.
 	 * 
-	 * @param other other animal
+	 * @param other other guy
 	 * @return Euclidean distance measured in tiles
 	 */
-	public double tileDistance(Mover other) {
+	public double tileDistance(MovingGuy other) {
 		return tile().distance(other.tile());
 	}
 }

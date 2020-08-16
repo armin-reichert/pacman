@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Mover;
+import de.amr.games.pacman.model.world.core.MovingGuy;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -28,7 +28,7 @@ public abstract class Creature<S> implements Lifecycle {
 
 	public final String name;
 	public final World world;
-	public final Mover entity;
+	public final MovingGuy entity;
 	public final StateMachine<S, PacManGameEvent> ai;
 	public final Map<S, Steering> steeringsMap;
 	public final Movement movement;
@@ -40,7 +40,7 @@ public abstract class Creature<S> implements Lifecycle {
 	public Creature(String name, World world, Map<S, Steering> steeringsMap) {
 		this.name = name;
 		this.world = world;
-		this.entity = new Mover();
+		this.entity = new MovingGuy();
 		this.entity.tf.width = entity.tf.height = Tile.SIZE;
 		this.ai = buildAI();
 		this.steeringsMap = steeringsMap;

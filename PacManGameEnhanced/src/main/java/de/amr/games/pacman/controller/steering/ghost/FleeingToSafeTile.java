@@ -9,7 +9,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Mover;
+import de.amr.games.pacman.model.world.core.MovingGuy;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 
@@ -23,7 +23,7 @@ import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
  */
 public class FleeingToSafeTile extends FollowingPath {
 
-	private final Mover attacker;
+	private final MovingGuy attacker;
 	private final World world;
 	private final WorldGraph graph;
 	private final List<Tile> capes;
@@ -32,7 +32,7 @@ public class FleeingToSafeTile extends FollowingPath {
 	private Tile safeTile;
 	private boolean passingPortal;
 
-	public FleeingToSafeTile(Ghost refugee, Mover attacker) {
+	public FleeingToSafeTile(Ghost refugee, MovingGuy attacker) {
 		super(refugee.entity);
 		world = refugee.world;
 		this.attacker = attacker;
@@ -49,7 +49,7 @@ public class FleeingToSafeTile extends FollowingPath {
 	}
 
 	@Override
-	public void steer(Mover entity) {
+	public void steer(MovingGuy entity) {
 		if (path.size() == 0 || isComplete()) {
 			safeTile = computeSafestCorner();
 			setPath(graph.shortestPath(entity.tile(), safeTile));

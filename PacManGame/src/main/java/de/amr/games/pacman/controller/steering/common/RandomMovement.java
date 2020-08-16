@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller.steering.common;
 import de.amr.games.pacman.controller.creatures.Creature;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.core.Mover;
+import de.amr.games.pacman.model.world.core.MovingGuy;
 
 /**
  * Lets a creature move randomly but never reverse its direction.
@@ -20,7 +20,7 @@ public class RandomMovement implements Steering {
 	}
 
 	@Override
-	public void steer(Mover entity) {
+	public void steer(MovingGuy entity) {
 		if (forced || !guy.canCrossBorderTo(entity.moveDir)
 				|| entity.enteredNewTile && guy.world.isIntersection(entity.tile())) {
 			/*@formatter:off*/

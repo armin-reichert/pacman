@@ -21,7 +21,7 @@ import de.amr.games.pacman.model.world.components.Portal;
  */
 public abstract class AbstractWorld extends Block implements World {
 
-	private final Collection<Mover> excluded = new HashSet<>();
+	private final Collection<MovingGuy> excluded = new HashSet<>();
 	protected boolean changing;
 	protected boolean frozen;
 
@@ -94,19 +94,19 @@ public abstract class AbstractWorld extends Block implements World {
 	}
 
 	@Override
-	public void include(Mover lifeform) {
+	public void include(MovingGuy lifeform) {
 		excluded.remove(lifeform);
 		lifeform.visible = true;
 	}
 
 	@Override
-	public void exclude(Mover lifeform) {
+	public void exclude(MovingGuy lifeform) {
 		excluded.add(lifeform);
 		lifeform.visible = false;
 	}
 
 	@Override
-	public boolean contains(Mover life) {
+	public boolean contains(MovingGuy life) {
 		return !excluded.contains(life);
 	}
 

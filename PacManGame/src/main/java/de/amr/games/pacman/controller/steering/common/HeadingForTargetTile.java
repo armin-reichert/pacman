@@ -20,7 +20,7 @@ import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Mover;
+import de.amr.games.pacman.model.world.core.MovingGuy;
 
 /**
  * Steers an actor towards a target tile.
@@ -57,7 +57,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	@Override
-	public void steer(Mover mover) {
+	public void steer(MovingGuy mover) {
 		if (mover.enteredNewTile || forced) {
 			forced = false;
 			Tile targetTile = fnTargetTile.get();
@@ -88,7 +88,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * @param tile    current tile
 	 * @param target  target tile
 	 */
-	private Direction bestDirTowardsTarget(Mover mover, Direction moveDir, Tile tile, Tile target) {
+	private Direction bestDirTowardsTarget(MovingGuy mover, Direction moveDir, Tile tile, Tile target) {
 		Function<Direction, Double> fnTargetDistance = dir -> world.neighbor(tile, dir).distance(target);
 		Function<Direction, Integer> fnDirectionPriority = directionPriority::indexOf;
 		/*@formatter:off*/
@@ -140,7 +140,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	@Override
-	public List<Tile> pathToTarget(Mover mover) {
+	public List<Tile> pathToTarget(MovingGuy mover) {
 		return new ArrayList<>(path);
 	}
 }
