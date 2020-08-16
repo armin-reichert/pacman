@@ -7,6 +7,7 @@ import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.IN_BED;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
+import static de.amr.games.pacman.controller.game.GameController.sec;
 import static de.amr.games.pacman.controller.game.GameController.speed;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
@@ -24,7 +25,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
-import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.controller.steering.common.MovementType;
@@ -80,7 +80,7 @@ public class PacMan extends SmartGuy<PacManState> {
 					.onTick(this::wander)
 					
 				.state(DEAD)
-					.timeoutAfter(GameController.sec(2.5f))
+					.timeoutAfter(sec(2.5f))
 
 				.state(COLLAPSING)
 

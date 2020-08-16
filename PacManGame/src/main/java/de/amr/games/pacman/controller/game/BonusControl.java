@@ -1,6 +1,7 @@
 package de.amr.games.pacman.controller.game;
 
 import static de.amr.easy.game.Application.loginfo;
+import static de.amr.games.pacman.controller.game.GameController.sec;
 import static de.amr.games.pacman.model.world.api.BonusFoodState.ABSENT;
 import static de.amr.games.pacman.model.world.api.BonusFoodState.CONSUMED;
 import static de.amr.games.pacman.model.world.api.BonusFoodState.PRESENT;
@@ -35,7 +36,7 @@ public class BonusControl extends StateMachine<BonusFoodState, PacManGameEvent> 
 					.onEntry(world::clearBonusFood)
 			
 				.state(PRESENT)
-					.timeoutAfter(() -> GameController.sec(Game.BONUS_SECONDS + new Random().nextFloat()))
+					.timeoutAfter(() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()))
 					.onEntry(() -> {
 							ArcadeBonus bonus = new ArcadeBonus(game.level.bonusSymbol);
 							bonus.setValue(game.level.bonusValue);
@@ -44,7 +45,7 @@ public class BonusControl extends StateMachine<BonusFoodState, PacManGameEvent> 
 							loginfo("Bonus '%s' activated for %.2f sec", bonus, state().getDuration() / 60f);
 					})
 				
-				.state(CONSUMED).timeoutAfter(GameController.sec(3))
+				.state(CONSUMED).timeoutAfter(sec(3))
 
 			.transitions()
 				

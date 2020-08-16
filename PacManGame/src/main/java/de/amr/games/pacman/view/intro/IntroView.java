@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.controller.game.GameController.sec;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.CHASING_ANIMATIONS;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.SCROLLING_LOGO_ANIMATION;
@@ -20,7 +21,6 @@ import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.Localized;
@@ -87,7 +87,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 				
 				.state(WAITING_FOR_INPUT)
 					.customState(new WaitingForInput())
-					.timeoutAfter(GameController.sec(15))
+					.timeoutAfter(sec(15))
 					
 				.state(READY_TO_PLAY)
 					
@@ -250,7 +250,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			chasePacMan.draw(g);
 			ghostPointsAnimation.draw(g);
 			gitHubLink.draw(g);
-			if (app().clock().getTotalTicks() % GameController.sec(1) < GameController.sec(0.5f)) {
+			if (app().clock().getTotalTicks() % sec(1) < sec(0.5f)) {
 				messagesRenderer.setRow(18);
 				messagesRenderer.setTextColor(Color.WHITE);
 				messagesRenderer.drawCentered(g, Localized.texts.getString("press_space_to_start"), world.width());

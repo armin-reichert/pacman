@@ -1,17 +1,18 @@
 package de.amr.games.pacman.view.intro;
 
+import static de.amr.games.pacman.controller.game.GameController.sec;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.Folks;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
-import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
@@ -45,7 +46,7 @@ public class ChasePacManAnimation extends GameObject {
 
 	@Override
 	public void init() {
-		pelletTimer = GameController.sec(6 * 0.5f);
+		pelletTimer = sec(6 * 0.5f);
 		pelletDisplay = PelletDisplay.SIMPLE;
 
 		folks.guys().forEach(SmartGuy::init);
@@ -79,7 +80,7 @@ public class ChasePacManAnimation extends GameObject {
 	public void update() {
 		folks.guys().forEach(c -> c.body.tf.move());
 		if (pelletTimer > 0) {
-			if (pelletTimer % GameController.sec(0.5f) == 0)
+			if (pelletTimer % sec(0.5f) == 0)
 				if (pelletDisplay == PelletDisplay.FIFTY) {
 					pelletDisplay = PelletDisplay.SIMPLE;
 				} else {
@@ -87,7 +88,7 @@ public class ChasePacManAnimation extends GameObject {
 				}
 			pelletTimer--;
 		} else {
-			pelletTimer = GameController.sec(6 * 0.5f);
+			pelletTimer = sec(6 * 0.5f);
 		}
 	}
 

@@ -22,7 +22,6 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
-import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.model.game.GameLevel;
@@ -115,7 +114,7 @@ public class Ghost extends SmartGuy<GhostState> {
 					})
 	
 				.state(DEAD)
-					.timeoutAfter(GameController.sec(1))
+					.timeoutAfter(sec(1))
 					.onEntry(this::computeBounty)
 					.onTick((s, consumed, remaining) -> {
 						if (remaining == 0) {

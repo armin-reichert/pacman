@@ -18,8 +18,8 @@ import java.awt.Stroke;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.Folks;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GhostCommand;

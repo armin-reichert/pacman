@@ -1,6 +1,7 @@
 package de.amr.games.pacman.controller.steering.common;
 
 import static de.amr.easy.game.Application.loginfo;
+import static de.amr.games.pacman.controller.game.GameController.sec;
 import static de.amr.games.pacman.controller.steering.common.MovementType.TELEPORTING;
 import static de.amr.games.pacman.controller.steering.common.MovementType.WALKING;
 import static de.amr.games.pacman.model.world.api.Direction.DOWN;
@@ -10,7 +11,6 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.SmartGuy;
-import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Portal;
@@ -37,7 +37,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 				.state(WALKING)
 					.onTick(() -> move(guy.steering().requiresGridAlignment(), guy.getSpeed()))
 				.state(TELEPORTING)
-					.timeoutAfter(GameController.sec(1.0f))
+					.timeoutAfter(sec(1.0f))
 					.onEntry(() -> guy.body.visible = false)
 					.onExit(() -> guy.body.visible = true)
 			.transitions()

@@ -25,8 +25,8 @@ import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.Folks;
+import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
@@ -149,7 +149,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(CHANGING_LEVEL).customState(new ChangingLevelState())
 				
 				.state(GHOST_DYING)
-					.timeoutAfter(GameController.sec(1))
+					.timeoutAfter(sec(1))
 					.onEntry(() -> {
 						folks.pacMan.body.visible = false;
 						sound.ghostEaten = true;
@@ -165,7 +165,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 				
 				.state(PACMAN_DYING)
-					.timeoutAfter(GameController.sec(5))
+					.timeoutAfter(sec(5))
 					.onEntry(() -> {
 						if (!settings.pacManImmortable) {
 							game.level.lives -= 1;
@@ -176,11 +176,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						theme.sounds().clips().forEach(SoundClip::stop);
 					})
 					.onTick((state, passed, remaining) -> {
-						if (passed == GameController.sec(2)) {
+						if (passed == sec(2)) {
 							bonusControl.setState(BonusFoodState.ABSENT);
 							folks.ghostsInWorld().forEach(ghost -> ghost.body.visible = false);
 						}
-						else if (passed == GameController.sec(2.5f)) {
+						else if (passed == sec(2.5f)) {
 							sound.pacManDied = true;
 						}
 						folks.pacMan.update();
@@ -299,7 +299,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class GettingReadyState extends State<PacManGameState> {
 
 		public GettingReadyState() {
-			setTimer(GameController.sec(6));
+			setTimer(sec(6));
 		}
 
 		@Override
@@ -315,7 +315,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onTick(State<PacManGameState> state, long passed, long remaining) {
-			if (remaining == GameController.sec(1)) {
+			if (remaining == sec(1)) {
 				world.setFrozen(false);
 			}
 			folks.guysInWorld().forEach(SmartGuy::update);
@@ -329,7 +329,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public class PlayingState extends State<PacManGameState> {
 
-		final long INITIAL_WAIT_TIME = GameController.sec(2);
+		final long INITIAL_WAIT_TIME = sec(2);
 
 		@Override
 		public void onEntry() {
@@ -437,7 +437,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else if (energizer && game.level.pacManPowerSeconds > 0) {
 				ghostCommand.pauseAttacking();
 				folks.guysInWorld().forEach(
-						guy -> guy.ai.process(new PacManGainsPowerEvent(GameController.sec(game.level.pacManPowerSeconds))));
+						guy -> guy.ai.process(new PacManGainsPowerEvent(sec(game.level.pacManPowerSeconds))));
 			}
 		}
 	}
@@ -445,7 +445,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class ChangingLevelState extends State<PacManGameState> {
 
 		private boolean complete;
-		private long flashingStart = GameController.sec(2), flashingEnd;
+		private long flashingStart = sec(2), flashingEnd;
 
 		public boolean isComplete() {
 			return complete;
@@ -459,7 +459,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			doorMan.onLevelChange();
 			folks.ghosts().forEach(ghost -> ghost.enabled = false);
 			theme.sounds().clips().forEach(SoundClip::stop);
-			flashingEnd = flashingStart + game.level.numFlashes * GameController.sec(theme.$float("maze-flash-sec"));
+			flashingEnd = flashingStart + game.level.numFlashes * sec(theme.$float("maze-flash-sec"));
 			complete = false;
 		}
 
@@ -484,11 +484,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			// One second later, let ghosts jump again inside the house
-			if (passed >= flashingEnd + GameController.sec(2)) {
+			if (passed >= flashingEnd + sec(2)) {
 				folks.guysInWorld().forEach(SmartGuy::update);
 			}
 
-			if (passed == flashingEnd + GameController.sec(4)) {
+			if (passed == flashingEnd + sec(4)) {
 				world.setFrozen(false);
 				complete = true;
 			}
