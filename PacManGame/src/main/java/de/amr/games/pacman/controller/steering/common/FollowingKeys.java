@@ -26,8 +26,8 @@ public class FollowingKeys implements Steering {
 	}
 
 	@Override
-	public void steer(MovingGuy entity) {
-		dirs().filter(dir -> Keyboard.keyDown(keys.get(dir))).findAny().ifPresent(dir -> entity.wishDir = dir);
+	public void steer(MovingGuy guy) {
+		dirs().filter(dir -> Keyboard.keyDown(keys.get(dir))).findAny().ifPresent(dir -> guy.wishDir = dir);
 	}
 
 	@Override

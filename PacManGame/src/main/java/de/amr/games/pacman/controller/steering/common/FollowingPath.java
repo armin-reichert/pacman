@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.MovingGuy;
 
 /**
- * Lets a lifeform follow a path.
+ * Lets a guy follow a path.
  * 
  * @author Armin Reichert
  */
