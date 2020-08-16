@@ -14,8 +14,8 @@ import de.amr.games.pacman.model.world.api.Symbol;
  */
 public class GameLevel {
 
-	private static float percentage(Object value) {
-		return ((int) value) / 100f;
+	private static float percent(Object value) {
+		return (int) value / 100f;
 	}
 
 	private static int integer(Object value) {
@@ -69,17 +69,17 @@ public class GameLevel {
 		int i = 0;
 		bonusSymbol = Symbol.valueOf((String) data.get(i++));
 		bonusValue = integer(data.get(i++));
-		pacManSpeed = percentage(data.get(i++));
-		pacManDotsSpeed = percentage(data.get(i++));
-		ghostSpeed = percentage(data.get(i++));
-		ghostTunnelSpeed = percentage(data.get(i++));
+		pacManSpeed = percent(data.get(i++));
+		pacManDotsSpeed = percent(data.get(i++));
+		ghostSpeed = percent(data.get(i++));
+		ghostTunnelSpeed = percent(data.get(i++));
 		elroy1DotsLeft = integer(data.get(i++));
-		elroy1Speed = percentage(data.get(i++));
+		elroy1Speed = percent(data.get(i++));
 		elroy2DotsLeft = integer(data.get(i++));
-		elroy2Speed = percentage(data.get(i++));
-		pacManPowerSpeed = percentage(data.get(i++));
-		pacManPowerDotsSpeed = percentage(data.get(i++));
-		ghostFrightenedSpeed = percentage(data.get(i++));
+		elroy2Speed = percent(data.get(i++));
+		pacManPowerSpeed = percent(data.get(i++));
+		pacManPowerDotsSpeed = percent(data.get(i++));
+		ghostFrightenedSpeed = percent(data.get(i++));
 		pacManPowerSeconds = integer(data.get(i++));
 		numFlashes = integer(data.get(i++));
 		counter.add(bonusSymbol);
