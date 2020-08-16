@@ -56,8 +56,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 
 	@Override
 	public void steer(MovingGuy pacMan) {
-		if (!me.body.enteredNewTile && me.canCrossBorderTo(me.body.moveDir)
-				|| me.movement.is(MovementType.TELEPORTING)) {
+		if (!me.body.enteredNewTile && me.canCrossBorderTo(me.body.moveDir) || me.movement.is(MovementType.TELEPORTING)) {
 			return;
 		}
 		boolean acted = avoidTouchingGhostAhead() || avoidOncomingGhost() || chaseFrightenedGhost(10);
@@ -72,17 +71,17 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	@Override
-	public boolean isPathComputationEnabled() {
+	public boolean isPathComputed() {
 		return target != null;
 	}
 
 	@Override
-	public void setPathComputationEnabled(boolean enabled) {
+	public void setPathComputed(boolean enabled) {
 	}
 
 	@Override
-	public List<Tile> pathToTarget(MovingGuy pacMan) {
-		return target != null ? graph.shortestPath(pacMan.tile(), target) : Collections.emptyList();
+	public List<Tile> pathToTarget() {
+		return target != null ? graph.shortestPath(me.body.tile(), target) : Collections.emptyList();
 	}
 
 	private boolean avoidTouchingGhostAhead() {
@@ -98,8 +97,8 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 
 	private boolean avoidOncomingGhost() {
 		// is dangerous ghost coming directly towards pacMan?
-		Ghost enemy = dangerousGhostsInRange(4).filter(ghost -> me.body.moveDir == ghost.body.moveDir.opposite())
-				.findAny().orElse(null);
+		Ghost enemy = dangerousGhostsInRange(4).filter(ghost -> me.body.moveDir == ghost.body.moveDir.opposite()).findAny()
+				.orElse(null);
 		if (enemy != null) {
 			me.reverseDirection();
 			return true;

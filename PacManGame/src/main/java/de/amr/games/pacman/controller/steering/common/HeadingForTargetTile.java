@@ -7,11 +7,9 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 import static java.util.Comparator.comparing;
 
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.creatures.SmartGuy;
@@ -58,7 +56,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	private final SmartGuy<?> guy;
-	private final Deque<Tile> path = new ConcurrentLinkedDeque<>();
+	private final List<Tile> path = new ArrayList<>();
 	private Supplier<Tile> fnTargetTile;
 	private boolean forced;
 	private boolean pathComputed;
@@ -110,7 +108,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	@Override
-	public void setPathComputationEnabled(boolean computed) {
+	public void setPathComputed(boolean computed) {
 		if (pathComputed != computed) {
 			path.clear();
 		}
@@ -118,7 +116,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	@Override
-	public boolean isPathComputationEnabled() {
+	public boolean isPathComputed() {
 		return pathComputed;
 	}
 
@@ -128,7 +126,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	@Override
-	public List<Tile> pathToTarget(MovingGuy mover) {
+	public List<Tile> pathToTarget() {
 		return new ArrayList<>(path);
 	}
 }

@@ -59,17 +59,17 @@ public abstract class FollowingPath implements PathProvidingSteering {
 	}
 
 	@Override
-	public List<Tile> pathToTarget(MovingGuy mover) {
+	public List<Tile> pathToTarget() {
 		return Collections.unmodifiableList(path);
 	}
 
 	@Override
-	public boolean isPathComputationEnabled() {
+	public boolean isPathComputed() {
 		return true;
 	}
 
 	@Override
-	public void setPathComputationEnabled(boolean enabled) {
+	public void setPathComputed(boolean enabled) {
 	}
 
 	@Override
