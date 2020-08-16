@@ -49,28 +49,23 @@ public class GameLevel {
 	public Hiscore hiscore;
 	public List<Symbol> counter;
 
-	public GameLevel(int level, int lives, int score, int foodCount, List<Object> data) {
-		this(level, foodCount, data);
-		this.lives = lives;
-		this.score = score;
-		counter = new ArrayList<>();
-		counter.add(bonusSymbol);
-		hiscore = new Hiscore();
+	public GameLevel(int levelNumber, int foodCount, int lives, List<Object> data) {
+		this(levelNumber, foodCount, lives, 0, new Hiscore(), new ArrayList<>(), data);
 		hiscore.load();
 	}
 
-	public GameLevel(int level, GameLevel previous, int foodCount, List<Object> data) {
-		this(level, foodCount, data);
-		lives = previous.lives;
-		score = previous.score;
-		counter = previous.counter;
-		counter.add(bonusSymbol);
-		hiscore = previous.hiscore;
+	public GameLevel(int levelNumber, int foodCount, GameLevel previous, List<Object> data) {
+		this(levelNumber, foodCount, previous.lives, previous.score, previous.hiscore, previous.counter, data);
 	}
 
-	private GameLevel(int level, int foodCount, List<Object> data) {
-		this.number = level;
+	private GameLevel(int levelNumber, int foodCount, int lives, int score, Hiscore hiscore, List<Symbol> counter,
+			List<Object> data) {
+		this.number = levelNumber;
 		this.foodCount = foodCount;
+		this.lives = lives;
+		this.score = score;
+		this.hiscore = hiscore;
+		this.counter = counter;
 		int i = 0;
 		bonusSymbol = Symbol.valueOf((String) data.get(i++));
 		bonusValue = integer(data.get(i++));
@@ -87,6 +82,7 @@ public class GameLevel {
 		ghostFrightenedSpeed = percentage(data.get(i++));
 		pacManPowerSeconds = integer(data.get(i++));
 		numFlashes = integer(data.get(i++));
+		counter.add(bonusSymbol);
 	}
 
 	public int remainingFoodCount() {

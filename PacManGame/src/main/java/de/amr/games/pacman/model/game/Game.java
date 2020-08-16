@@ -68,17 +68,15 @@ public class Game {
 	public static final int BONUS_SECONDS      = 9;
 	/*@formatter:on*/
 
-	public static Game start(int level, World world) {
-		Game game = new Game();
-		game.level = new GameLevel(level, 3, 0, world.totalFoodCount(), levelData(level));
-		loginfo("Level %d started", level);
-		return game;
-	}
-
 	public GameLevel level;
 
+	public void start(int levelNumber, World world) {
+		level = new GameLevel(levelNumber, world.totalFoodCount(), 3, levelData(levelNumber));
+		loginfo("Game level %d started", levelNumber);
+	}
+
 	public void nextLevel(World world) {
-		level = new GameLevel(level.number + 1, level, world.totalFoodCount(), levelData(level.number + 1));
-		loginfo("Level %d started", level.number);
+		level = new GameLevel(level.number + 1, world.totalFoodCount(), level, levelData(level.number + 1));
+		loginfo("Game level %d started", level.number);
 	}
 }

@@ -93,7 +93,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	// model
-	protected Game game;
+	protected final Game game;
 	protected World world;
 
 	// view
@@ -117,6 +117,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 */
 	public GameController(Theme... supportedThemes) {
 		super(PacManGameState.class);
+
+		game = new Game();
 
 		themes = supportedThemes;
 		currentThemeIndex = 0;
@@ -436,8 +438,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				enqueue(new LevelCompletedEvent());
 			} else if (energizer && game.level.pacManPowerSeconds > 0) {
 				ghostCommand.pauseAttacking();
-				folks.guysInWorld().forEach(
-						guy -> guy.ai.process(new PacManGainsPowerEvent(sec(game.level.pacManPowerSeconds))));
+				folks.guysInWorld()
+						.forEach(guy -> guy.ai.process(new PacManGainsPowerEvent(sec(game.level.pacManPowerSeconds))));
 			}
 		}
 	}
@@ -576,7 +578,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	protected void newGame() {
-		game = Game.start(settings.startLevel, world);
+		game.start(settings.startLevel, world);
 		ghostCommand = new GhostCommand(game, folks);
 		bonusControl = new BonusControl(game, world);
 		doorMan = new DoorMan(world, world.house(0), game, folks);
