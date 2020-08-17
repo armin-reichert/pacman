@@ -18,7 +18,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
+import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -46,22 +46,21 @@ public class RoutesRenderer {
 	}
 
 	public void drawPacManRoute(Graphics2D g, PacMan pacMan) {
-		if (pacMan.steering() instanceof PathProvidingSteering) {
-			PathProvidingSteering steering = (PathProvidingSteering) pacMan.steering();
-			drawTargetTilePath(g, steering.pathToTarget(), Color.YELLOW);
-		}
+		drawTargetTilePath(g, pacMan.steering().pathToTarget(), Color.YELLOW);
 	}
 
 	public void drawGhostRoute(Graphics2D g, Ghost ghost) {
-		if (ghost.steering() instanceof PathProvidingSteering && ghost.steering().targetTile() != null) {
-			drawTargetTileRubberband(g, ghost, ghost.steering().targetTile());
-			PathProvidingSteering steering = (PathProvidingSteering) ghost.steering();
-			drawTargetTilePath(g, steering.pathToTarget(), Rendering.ghostColor(ghost));
-		} else if (ghost.body.wishDir != null) {
-			Vector2f v = ghost.body.wishDir.vector();
-			Rendering.drawDirectionIndicator(g, Rendering.ghostColor(ghost), true, ghost.body.wishDir,
-					ghost.body.tf.getCenter().roundedX() + v.roundedX() * Tile.SIZE,
-					ghost.body.tf.getCenter().roundedY() + v.roundedY() * Tile.SIZE);
+		Steering steering = ghost.steering();
+		if (steering.targetTile().isPresent()) {
+			drawTargetTileRubberband(g, ghost, steering.targetTile());
+			drawTargetTilePath(g, steering.pathToTarget(), ghostColor(ghost));
+			return;
+		}
+		if (ghost.body.wishDir != null) {
+			Vector2f center = ghost.body.tf.getCenter();
+			Vector2f dir_vector = ghost.body.wishDir.vector();
+			drawDirectionIndicator(g, ghostColor(ghost), true, ghost.body.wishDir,
+					(int) (center.x + dir_vector.x * Tile.SIZE), (int) (center.y + dir_vector.y * Tile.SIZE));
 		}
 	}
 

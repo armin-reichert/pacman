@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
+import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.MovingGuy;
@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.world.core.MovingGuy;
  * 
  * @author Armin Reichert
  */
-public abstract class FollowingPath implements PathProvidingSteering {
+public abstract class FollowingPath implements Steering {
 
 	protected final MovingGuy mover;
 	protected List<Tile> path;

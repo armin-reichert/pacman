@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
+import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -29,7 +29,7 @@ import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
  * 
  * @author Armin Reichert
  */
-public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering {
+public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	static class Target {
 		Direction dir;

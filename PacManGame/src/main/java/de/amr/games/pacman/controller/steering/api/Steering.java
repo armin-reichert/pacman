@@ -1,5 +1,7 @@
 package de.amr.games.pacman.controller.steering.api;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import de.amr.games.pacman.model.world.api.Tile;
@@ -56,5 +58,25 @@ public interface Steering {
 	 */
 	default Optional<Tile> targetTile() {
 		return Optional.empty();
+	}
+
+	/**
+	 * @return the path from the current position of the mover to its current target tile
+	 */
+	default List<Tile> pathToTarget() {
+		return Collections.emptyList();
+	}
+
+	/**
+	 * @param enabled if {@code true} the steering computes the path to the target
+	 */
+	default void setPathComputed(boolean enabled) {
+	}
+
+	/**
+	 * @return tells if the steering computes the complete path to the target
+	 */
+	default boolean isPathComputed() {
+		return false;
 	}
 }

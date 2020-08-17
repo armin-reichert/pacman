@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.GhostCommand;
-import de.amr.games.pacman.controller.steering.api.PathProvidingSteering;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -46,10 +45,7 @@ public class EnhancedPlayView extends PlayView {
 
 	@Override
 	public void update() {
-		folks.ghosts().filter(ghost -> ghost.steering() instanceof PathProvidingSteering).forEach(ghost -> {
-			PathProvidingSteering pathProvider = (PathProvidingSteering) ghost.steering();
-			pathProvider.setPathComputed(showingRoutes);
-		});
+		folks.ghosts().forEach(ghost -> ghost.steering().setPathComputed(showingRoutes));
 	}
 
 	@Override
