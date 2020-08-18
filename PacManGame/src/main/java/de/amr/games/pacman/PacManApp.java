@@ -1,3 +1,4 @@
+
 package de.amr.games.pacman;
 
 import java.awt.DisplayMode;

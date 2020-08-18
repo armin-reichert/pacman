@@ -339,6 +339,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				music.setVolume(0.4f);
 				music.loop();
 			});
+			if (settings.demoMode) {
+				playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
+			} else {
+				playView.clearMessage(1);
+			}
 		}
 
 		@Override

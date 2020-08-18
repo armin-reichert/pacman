@@ -71,6 +71,12 @@ public class EnhancedGameController extends GameController {
 	}
 
 	@Override
+	public void init() {
+		super.init();
+		setDemoMode(settings.demoMode);
+	}
+
+	@Override
 	protected PlayView createPlayView() {
 		return new EnhancedPlayView(world, getTheme(), folks, game, ghostCommand);
 	}
@@ -186,11 +192,9 @@ public class EnhancedGameController extends GameController {
 		if (demoMode) {
 			settings.pacManImmortable = true;
 			folks.pacMan.setWalkingBehavior(new SearchingForFoodAndAvoidingGhosts(folks));
-			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 		} else {
 			settings.pacManImmortable = false;
 			you(folks.pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
-			playView.clearMessage(1);
 		}
 	}
 
@@ -280,6 +284,11 @@ public class EnhancedGameController extends GameController {
 	public void toggleDemoMode() {
 		settings.demoMode = !settings.demoMode;
 		setDemoMode(settings.demoMode);
+		if (settings.demoMode) {
+			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
+		} else {
+			playView.clearMessage(1);
+		}
 		loginfo("Demo mode is %s", settings.demoMode ? "on" : "off");
 	}
 
