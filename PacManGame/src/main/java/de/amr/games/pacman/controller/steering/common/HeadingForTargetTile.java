@@ -111,7 +111,7 @@ public class HeadingForTargetTile implements Steering {
 
 	@Override
 	public List<Tile> pathToTarget() {
-		return !path.isEmpty() ? Collections.unmodifiableList(path) : Collections.emptyList();
+		return Collections.unmodifiableList(path);
 	}
 
 	/**
