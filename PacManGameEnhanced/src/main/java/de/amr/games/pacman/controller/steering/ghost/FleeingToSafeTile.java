@@ -27,34 +27,26 @@ public class FleeingToSafeTile extends FollowingPath {
 	private final World world;
 	private final WorldGraph graph;
 	private final List<Tile> capes;
-	private final List<Tile> portalEntries;
 	private final List<Tile> safeTiles;
 	private Tile safeTile;
-	private boolean passingPortal;
 
 	public FleeingToSafeTile(Ghost refugee, MovingGuy attacker) {
-		super(refugee.body);
+		super(refugee);
 		world = refugee.world;
 		this.attacker = attacker;
 		graph = new WorldGraph(world);
 		graph.setPathFinder(PathFinder.BEST_FIRST_SEARCH);
 		capes = world.capes();
-		portalEntries = new ArrayList<Tile>();
-		world.portals().forEach(portal -> {
-			portalEntries.add(portal.either);
-			portalEntries.add(portal.other);
-		});
 		safeTiles = new ArrayList<>(capes);
-		safeTiles.addAll(portalEntries);
 	}
 
 	@Override
-	public void steer(MovingGuy entity) {
+	public void steer(MovingGuy body) {
 		if (path.size() == 0 || isComplete()) {
 			safeTile = computeSafestCorner();
-			setPath(graph.shortestPath(entity.tile(), safeTile));
+			setPath(graph.shortestPath(body.tile(), safeTile));
 		}
-		super.steer(entity);
+		super.steer(body);
 	}
 
 	@Override
@@ -65,20 +57,7 @@ public class FleeingToSafeTile extends FollowingPath {
 
 	@Override
 	public boolean isComplete() {
-		if (passingPortal && !world.isTunnel(mover.tile())) {
-			// refugee passed portal and tunnel, now compute new safe tile
-			passingPortal = false;
-			return true;
-		}
-		if (mover.tile().equals(safeTile)) {
-			if (capes.contains(safeTile)) {
-				return true;
-			} else {
-				// let refugee go through portal
-				passingPortal = true;
-			}
-		}
-		return false;
+		return guy.body.tile().equals(safeTile);
 	}
 
 	@Override
@@ -93,7 +72,7 @@ public class FleeingToSafeTile extends FollowingPath {
 
 	private Comparator<Tile> byTileSafety() {
 		return (t1, t2) -> {
-			Tile refugeeLocation = mover.tile();
+			Tile refugeeLocation = guy.body.tile();
 			Tile attackerLocation = attacker.tile();
 			double d1 = distanceFromPath(graph.shortestPath(refugeeLocation, t1), attackerLocation);
 			double d2 = distanceFromPath(graph.shortestPath(refugeeLocation, t2), attackerLocation);

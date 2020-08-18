@@ -18,7 +18,7 @@ public class TakingShortestPath extends FollowingPath {
 	private final Supplier<Tile> fnTargetTile;
 
 	public TakingShortestPath(SmartGuy<?> guy, Supplier<Tile> fnTargetTile) {
-		super(guy.body);
+		super(guy);
 		this.fnTargetTile = fnTargetTile;
 		graph = new WorldGraph(guy.world);
 	}
