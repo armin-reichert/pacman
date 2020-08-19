@@ -17,7 +17,7 @@ public class House implements Area {
 	private final Area layout;
 	private final List<Door> doors;
 	private final List<Bed> beds;
-	
+
 	public static HouseBuilder construct() {
 		return new HouseBuilder();
 	}
@@ -38,10 +38,6 @@ public class House implements Area {
 
 	public Door door(int i) {
 		return doors.get(i);
-	}
-
-	public Area layout() {
-		return layout;
 	}
 
 	public Stream<Bed> beds() {

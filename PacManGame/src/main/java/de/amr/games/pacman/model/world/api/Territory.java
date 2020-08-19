@@ -7,22 +7,26 @@ import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.model.world.core.MovingGuy;
 
-public interface Territory extends RectangularArea {
+/**
+ * The territory part of a world.
+ * 
+ * @author Armin Reichert
+ */
+public interface Territory {
 
 	/**
 	 * @param tile reference tile
 	 * @param dir  some direction
 	 * @param n    some non-negative number
-	 * @return the tile that is located n tiles away from the reference tile into the given direction
+	 * @return the tile reached after going n tiles to the given direction
 	 */
 	Tile tileToDir(Tile tile, Direction dir, int n);
 
 	/**
 	 * @param tile reference tile
 	 * @param dir  some direction
-	 * @return the neighbor of the reference tile into the given direction
+	 * @return the direct neighbor to the given direction
 	 */
 	default Tile neighbor(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);
@@ -35,39 +39,19 @@ public interface Territory extends RectangularArea {
 	boolean isIntersection(Tile tile);
 
 	/**
-	 * @param tile some tile location
-	 * @return if this location is accessible
+	 * @param tile some tile
+	 * @return if this tile is accessible
 	 */
 	boolean isAccessible(Tile tile);
 
 	/**
-	 * @param tile some tile location
-	 * @return if there is a tunnel at this location
+	 * @param tile some tile
+	 * @return if there is a tunnel at this tile
 	 */
 	boolean isTunnel(Tile tile);
 
 	/**
-	 * @param mover a mover
-	 * @return {@code true} if the mover is currently included in this territory
-	 */
-	boolean contains(MovingGuy mover);
-
-	/**
-	 * Includes the mover into the territory.
-	 * 
-	 * @param mover a mover
-	 */
-	void include(MovingGuy mover);
-
-	/**
-	 * Excludes the mover from the territory.
-	 * 
-	 * @param mover a mover
-	 */
-	void exclude(MovingGuy mover);
-
-	/**
-	 * @return list of "capes" in order NW, NE, SE, SW
+	 * @return list of "capes" (outmost reachable tiles) in order NW, NE, SE, SW
 	 */
 	List<Tile> capes();
 
@@ -83,7 +67,7 @@ public interface Territory extends RectangularArea {
 
 	/**
 	 * @param i index
-	 * @return i'th house
+	 * @return i'th house in this territory or {@code null}
 	 */
 	House house(int i);
 
@@ -107,7 +91,7 @@ public interface Territory extends RectangularArea {
 
 	/**
 	 * @param tile some tile location
-	 * @param dir      some direction
+	 * @param dir  some direction
 	 * @return if this tile can only get traversed in the given direction
 	 */
 	default boolean isOneWay(Tile tile, Direction dir) {

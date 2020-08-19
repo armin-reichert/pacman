@@ -111,7 +111,7 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public House house(int i) {
-		return houses.get(i);
+		return i < houses.size() ? houses.get(i) : null;
 	}
 
 	@Override

@@ -1,11 +1,13 @@
 package de.amr.games.pacman.model.world.api;
 
+import de.amr.games.pacman.model.world.core.MovingGuy;
+
 /**
- * The Pac-Man game world is a territory where creatures can live and get their food.
+ * The Pac-Man game world is a territory where creatures can live and get food.
  * 
  * @author Armin Reichert
  */
-public interface World extends Territory, FoodSource {
+public interface World extends RectangularArea, Territory, FoodSource {
 
 	/**
 	 * Signals that the world is changing.
@@ -30,4 +32,24 @@ public interface World extends Territory, FoodSource {
 	 * @return if the world is frozen
 	 */
 	boolean isFrozen();
+
+	/**
+	 * @param mover a mover
+	 * @return {@code true} if the mover is currently included in this territory
+	 */
+	boolean contains(MovingGuy mover);
+
+	/**
+	 * Includes the mover into the territory.
+	 * 
+	 * @param mover a mover
+	 */
+	void include(MovingGuy mover);
+
+	/**
+	 * Excludes the mover from the territory.
+	 * 
+	 * @param mover a mover
+	 */
+	void exclude(MovingGuy mover);
 }

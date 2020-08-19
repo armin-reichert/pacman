@@ -3,7 +3,7 @@ package de.amr.games.pacman.model.world.api;
 import java.util.stream.Stream;
 
 /**
- * An area is composed of tiles.
+ * An area of tiles.
  * 
  * @author Armin Reichert
  */
