@@ -29,9 +29,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 		return map;
 	}
 
-	protected Portal horizontalPortal(Tile leftEntry, Tile rightEntry) {
-		Tile left = Tile.at(leftEntry.col - 1, leftEntry.row);
-		Tile right = Tile.at(rightEntry.col + 1, rightEntry.row);
+	protected Portal horizontalPortal(Tile left, Tile right) {
 		map.set0(left.row, left.col, B_WALL);
 		map.set1(left.row, left.col, B_TUNNEL);
 		map.set0(right.row, right.col, B_WALL);
@@ -39,9 +37,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 		return new Portal(left, right, false);
 	}
 
-	protected Portal verticalPortal(Tile topEntry, Tile bottomEntry) {
-		Tile top = Tile.at(topEntry.col, topEntry.row - 1);
-		Tile bottom = Tile.at(bottomEntry.col, bottomEntry.row + 1);
+	protected Portal verticalPortal(Tile top, Tile bottom) {
 		map.set0(top.row, top.col, B_WALL);
 		map.set1(top.row, top.col, B_TUNNEL);
 		map.set0(bottom.row, bottom.col, B_WALL);

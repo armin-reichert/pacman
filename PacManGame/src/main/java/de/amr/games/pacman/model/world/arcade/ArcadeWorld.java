@@ -88,9 +88,7 @@ public class ArcadeWorld extends MapBasedWorld {
 			.build()
 		);
 		
-		portals = List.of(
-			horizontalPortal(Tile.at(1, 17), Tile.at(26, 17))
-		);
+		portals = List.of(horizontalPortal(Tile.at(0, 17), Tile.at(27, 17)));
 		
 		oneWayTiles = List.of(
 			new OneWayTile(12, 13, Direction.DOWN), 
