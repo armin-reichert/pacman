@@ -151,15 +151,10 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public Optional<Food> foodAt(Tile location) {
-		if (!hasFood(location)) {
-			return Optional.empty();
-		}
 		if (BONUS_LOCATION.equals(location)) {
 			return Optional.ofNullable(bonus);
 		}
-		if (is(location, B_ENERGIZER)) {
-			return Optional.of(Pellet.ENERGIZER);
-		}
-		return Optional.of(Pellet.SNACK);
+		return hasFood(location) ? is(location, B_ENERGIZER) ? Optional.of(Pellet.ENERGIZER) : Optional.of(Pellet.SNACK)
+				: Optional.empty();
 	}
 }
