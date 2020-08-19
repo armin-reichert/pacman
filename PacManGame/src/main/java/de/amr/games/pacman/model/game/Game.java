@@ -77,7 +77,11 @@ public class Game {
 	}
 
 	public void nextLevel(World world) {
-		level = new GameLevel(level.number + 1, world.totalFoodCount(), level, levelData(level.number + 1));
-		loginfo("Game level %d started", level.number);
+		if (level == null) {
+			throw new IllegalStateException("Game not started. Cannot enter next level.");
+		}
+		int next = level.number + 1;
+		level = new GameLevel(next, world.totalFoodCount(), level, levelData(next));
+		loginfo("Game level %d started", next);
 	}
 }
