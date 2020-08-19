@@ -40,6 +40,7 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
+import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.BonusFoodState;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -392,6 +393,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			Ghost ghost = collision.ghost;
 			loginfo("%s got killed at %s", ghost.name, ghost.body.tile());
 
+			if (folks.pacMan.movement.is(MovementType.TELEPORTING)) {
+				return;
+			}
+			
 			if (ghost.ai.is(FRIGHTENED)) {
 				int livesBefore = game.level.lives;
 				game.level.scoreGhostKilled();
