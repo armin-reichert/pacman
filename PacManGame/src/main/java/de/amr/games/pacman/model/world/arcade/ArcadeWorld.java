@@ -130,18 +130,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public void setFood(Food food, Tile location) {
-		int row = location.row, col = location.col;
-		if (food.equals(Pellet.SNACK)) {
-			map.set1(row, col, B_FOOD);
-			map.set0(row, col, B_ENERGIZER);
-		} else if (food.equals(Pellet.ENERGIZER)) {
-			map.set1(row, col, B_FOOD);
-			map.set1(row, col, B_ENERGIZER);
-		}
-	}
-
-	@Override
 	public void addBonusFood(BonusFood bonusFood) {
 		if (bonusFood instanceof ArcadeBonus) {
 			bonus = (ArcadeBonus) bonusFood;

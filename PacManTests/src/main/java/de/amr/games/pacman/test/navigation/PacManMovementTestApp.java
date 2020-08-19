@@ -41,14 +41,14 @@ class PacManMovementTestUI extends TestUI {
 		super.init();
 		include(pacMan);
 		pacMan.init();
-		world.fillFood();
+		world.restoreFood();
 		pacMan.ai.addEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				world.clearFood(foodFound.location);
+				world.eatFood(foodFound.location);
 				game.level.eatenFoodCount++;
 				if (game.level.remainingFoodCount() == 0) {
-					world.fillFood();
+					world.restoreFood();
 					game.level.eatenFoodCount = 0;
 				}
 			}

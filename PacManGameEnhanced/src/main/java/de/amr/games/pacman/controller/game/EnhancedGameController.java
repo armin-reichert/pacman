@@ -307,7 +307,7 @@ public class EnhancedGameController extends GameController {
 			return;
 		}
 		world.tiles().filter(location -> world.hasFood(Pellet.SNACK, location)).forEach(tile -> {
-			world.clearFood(tile);
+			world.eatFood(tile);
 			game.level.scoreSimplePelletEaten();
 			doorMan().ifPresent(doorMan -> {
 				doorMan.onPacManFoundFood();

@@ -1,7 +1,8 @@
 package de.amr.games.pacman.test.navigation.graph;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
+
+import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
@@ -36,16 +37,12 @@ class EscapeIntoCornerTestUI extends TestUI {
 	public void init() {
 		super.init();
 		include(pacMan, blinky, inky);
-
+		Stream.of(blinky, inky).forEach(ghost -> ghost.behavior(FRIGHTENED, new FleeingToSafeTile(ghost, pacMan.body)));
 		blinky.ai.setState(FRIGHTENED);
-		inky.nextState = FRIGHTENED;
 		inky.ai.setState(GhostState.LEAVING_HOUSE);
-
-		folks.ghostsInWorld().forEach(ghost -> ghost.behavior(FRIGHTENED, new FleeingToSafeTile(ghost, pacMan.body)));
-
-		you(pacMan).moveRandomly().ok();
+		inky.nextState = FRIGHTENED;
+//		you(pacMan).moveRandomly().ok();
 		pacMan.wakeUp();
-
 		view.turnRoutesOn();
 		view.turnStatesOn();
 	}

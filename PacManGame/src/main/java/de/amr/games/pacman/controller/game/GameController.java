@@ -214,7 +214,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onExit(() -> {
 						playView.clearMessage(2);
 						theme.sounds().stopMusic(theme.sounds().musicGameOver());
-						world.fillFood();
+						world.restoreFood();
 					})
 	
 			.transitions()
@@ -428,7 +428,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private void onPacManFoodFound(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
 			boolean energizer = world.hasFood(Pellet.ENERGIZER, found.location);
-			world.clearFood(found.location);
+			world.eatFood(found.location);
 			int livesBeforeScoring = game.level.lives;
 			if (energizer) {
 				game.level.scoreEnergizerEaten();
@@ -487,7 +487,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 			if (passed == flashingEnd) {
 				world.setChanging(false);
-				world.fillFood();
+				world.restoreFood();
 				game.nextLevel(world);
 				folks.guys().forEach(SmartGuy::init);
 				folks.blinky.madness.init();

@@ -45,7 +45,7 @@ public class TestUI implements Lifecycle, VisualController {
 
 	public TestUI() {
 		world = new ArcadeWorld();
-		world.clearFood();
+		eatAllFood();
 		game = new Game();
 		game.start(1, world);
 		folks = new Folks(world, world.house(0));
@@ -59,6 +59,14 @@ public class TestUI implements Lifecycle, VisualController {
 		view = new EnhancedPlayView(world, theme(), folks, game, null);
 		view.turnScoresOff();
 		view.init();
+	}
+
+	private void eatAllFood() {
+		world.tiles().forEach(tile -> {
+			if (world.hasFood(tile)) {
+				world.eatFood(tile);
+			}
+		});
 	}
 
 	@Override

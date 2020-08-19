@@ -29,36 +29,24 @@ public abstract class MapBasedWorld extends AbstractWorld {
 		return map;
 	}
 
-	protected Portal horizontalPortal(Tile left, Tile right) {
-		map.set0(left.row, left.col, B_WALL);
-		map.set1(left.row, left.col, B_TUNNEL);
-		map.set0(right.row, right.col, B_WALL);
-		map.set1(right.row, right.col, B_TUNNEL);
-		return new Portal(left, right, false);
+	protected Portal horizontalPortal(Tile either, Tile other) {
+		map.set0(either.row, either.col, B_WALL);
+		map.set1(either.row, either.col, B_TUNNEL);
+		map.set0(other.row, other.col, B_WALL);
+		map.set1(other.row, other.col, B_TUNNEL);
+		return new Portal(either, other, false);
 	}
 
-	protected Portal verticalPortal(Tile top, Tile bottom) {
-		map.set0(top.row, top.col, B_WALL);
-		map.set1(top.row, top.col, B_TUNNEL);
-		map.set0(bottom.row, bottom.col, B_WALL);
-		map.set1(bottom.row, bottom.col, B_TUNNEL);
-		return new Portal(top, bottom, true);
+	protected Portal verticalPortal(Tile either, Tile other) {
+		map.set0(either.row, either.col, B_WALL);
+		map.set1(either.row, either.col, B_TUNNEL);
+		map.set0(other.row, other.col, B_WALL);
+		map.set1(other.row, other.col, B_TUNNEL);
+		return new Portal(either, other, true);
 	}
 
 	protected boolean is(Tile tile, int bit) {
 		return includes(tile) && map.is(tile.row, tile.col, bit);
-	}
-
-	protected void set(Tile tile, int bit) {
-		if (includes(tile)) {
-			map.set1(tile.row, tile.col, bit);
-		}
-	}
-
-	protected void clear(Tile tile, int bit) {
-		if (includes(tile)) {
-			map.set0(tile.row, tile.col, bit);
-		}
 	}
 
 	@Override
@@ -73,8 +61,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 
 	@Override
 	public boolean isAccessible(Tile tile) {
-		boolean inside = includes(tile);
-		return inside && !is(tile, B_WALL) || isPortal(tile);
+		return includes(tile) && !is(tile, B_WALL);
 	}
 
 	@Override
@@ -90,18 +77,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	// food container
 
 	@Override
-	public void clearFood() {
-		for (int row = 0; row < height(); ++row) {
-			for (int col = 0; col < width(); ++col) {
-				if (map.is(row, col, B_FOOD)) {
-					map.set1(row, col, B_EATEN);
-				}
-			}
-		}
-	}
-
-	@Override
-	public void fillFood() {
+	public void restoreFood() {
 		for (int row = 0; row < height(); ++row) {
 			for (int col = 0; col < width(); ++col) {
 				if (map.is(row, col, B_FOOD)) {
@@ -112,16 +88,9 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	}
 
 	@Override
-	public void clearFood(Tile tile) {
+	public void eatFood(Tile tile) {
 		if (is(tile, B_FOOD)) {
-			set(tile, B_EATEN);
-		}
-	}
-
-	@Override
-	public void fillFood(Tile tile) {
-		if (is(tile, B_FOOD)) {
-			clear(tile, B_EATEN);
+			map.set1(tile.row, tile.col, B_EATEN);
 		}
 	}
 
