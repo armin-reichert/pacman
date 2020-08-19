@@ -145,7 +145,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		gameController.game().ifPresent(game -> {
+		if (gameController.game.level != null) {
 			gameController.doorMan().ifPresent(ghostHouseAccess -> {
 				tfPinkyDots.setText(formatDots(ghostHouseAccess, folks.pinky));
 				tfPinkyDots.setEnabled(!ghostHouseAccess.isGlobalDotCounterEnabled());
@@ -164,7 +164,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 				tfPacManStarvingTime.setText(ticksAndSeconds(ghostHouseAccess.pacManStarvingTicks()));
 			});
-		});
+		}
 	}
 
 	private void setLabelIconOnly(JLabel label, Icon icon) {

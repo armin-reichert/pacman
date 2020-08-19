@@ -101,10 +101,10 @@ public class GameStateView extends JPanel implements Lifecycle {
 	}
 
 	private void createTableModel() {
-		gameController.game().ifPresent(game -> {
+		if (gameController.game.level != null) {
 			GameStateTableModel model = new GameStateTableModel(gameController);
 			table.setModel(model);
-		});
+		}
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 			if (!tableModel.hasGame()) {
 				createTableModel();
 			}
-			gameController.game().ifPresent(game -> {
+			if (gameController.game.level != null) {
 				table.update();
 				ghostHouseStateView.update();
 				setStateLabel();
@@ -122,7 +122,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 				cbShowGrid.setSelected(gameController.isShowingGrid());
 				cbShowStates.setSelected(gameController.isShowingStates());
 				cbDemoMode.setSelected(PacManAppEnhanced.settings.demoMode);
-			});
+			}
 		}
 	}
 

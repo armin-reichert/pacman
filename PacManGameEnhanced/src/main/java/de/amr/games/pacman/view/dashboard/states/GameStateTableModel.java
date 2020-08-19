@@ -115,22 +115,20 @@ class GameStateTableModel extends AbstractTableModel {
 	}
 
 	public boolean hasGame() {
-		return gameController != null && gameController.game().isPresent();
+		return gameController != null && gameController.game.level != null;
 	}
 
 	public void update() {
-		if (gameController != null) {
-			gameController.game().ifPresent(game -> {
-				gameController.ghostCommand().ifPresent(ghostCommand -> {
-					Folks folks = gameController.folks();
-					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, folks.blinky, folks.pacMan);
-					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, folks.pinky, folks.pacMan);
-					fillGhostRecord(records[ROW_INKY], game, ghostCommand, folks.inky, folks.pacMan);
-					fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, folks.clyde, folks.pacMan);
-					fillPacManRecord(records[ROW_PACMAN], game, folks.pacMan);
-					fillBonusRecord(records[ROW_BONUS], gameController, world);
-					fireTableDataChanged();
-				});
+		if (hasGame()) {
+			gameController.ghostCommand().ifPresent(ghostCommand -> {
+				Folks folks = gameController.folks();
+				fillGhostRecord(records[ROW_BLINKY], gameController.game, ghostCommand, folks.blinky, folks.pacMan);
+				fillGhostRecord(records[ROW_PINKY], gameController.game, ghostCommand, folks.pinky, folks.pacMan);
+				fillGhostRecord(records[ROW_INKY], gameController.game, ghostCommand, folks.inky, folks.pacMan);
+				fillGhostRecord(records[ROW_CLYDE], gameController.game, ghostCommand, folks.clyde, folks.pacMan);
+				fillPacManRecord(records[ROW_PACMAN], gameController.game, folks.pacMan);
+				fillBonusRecord(records[ROW_BONUS], gameController, world);
+				fireTableDataChanged();
 			});
 		}
 	}

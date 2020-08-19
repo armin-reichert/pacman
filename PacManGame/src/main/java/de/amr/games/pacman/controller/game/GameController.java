@@ -93,7 +93,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	// model
-	protected final Game game;
+	public final Game game;
 	protected World world;
 
 	// view
@@ -124,7 +124,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		currentThemeIndex = 0;
 		theme = themes[currentThemeIndex];
 
-		Application.app().onClose(() -> game().ifPresent(game -> game.level.hiscore.save()));
+		Application.app().onClose(() -> {
+			if (game.level != null) {
+				game.level.hiscore.save();
+			}
+		});
 
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
@@ -643,10 +647,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public World world() {
 		return world;
-	}
-
-	public Optional<Game> game() {
-		return Optional.ofNullable(game);
 	}
 
 	public Optional<GhostCommand> ghostCommand() {
