@@ -11,7 +11,7 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.test.TestUI;
+import de.amr.games.pacman.test.TestController;
 
 public class MovingRandomlyTestApp extends Application {
 
@@ -33,7 +33,7 @@ public class MovingRandomlyTestApp extends Application {
 	}
 }
 
-class MovingRandomlyTestUI extends TestUI {
+class MovingRandomlyTestUI extends TestController {
 
 	private boolean started;
 

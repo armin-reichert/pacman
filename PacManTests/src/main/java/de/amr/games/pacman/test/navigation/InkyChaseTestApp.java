@@ -11,7 +11,7 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.test.TestUI;
+import de.amr.games.pacman.test.TestController;
 
 public class InkyChaseTestApp extends Application {
 
@@ -33,7 +33,7 @@ public class InkyChaseTestApp extends Application {
 	}
 }
 
-class InkyChaseTestUI extends TestUI {
+class InkyChaseTestUI extends TestController {
 
 	@Override
 	public void init() {

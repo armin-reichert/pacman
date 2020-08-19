@@ -3,7 +3,7 @@ package de.amr.games.pacman.test.navigation;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.test.TestUI;
+import de.amr.games.pacman.test.TestController;
 
 public class JumpingTestApp extends Application {
 
@@ -25,7 +25,7 @@ public class JumpingTestApp extends Application {
 	}
 }
 
-class JumpingTestUI extends TestUI {
+class JumpingTestUI extends TestController {
 
 	@Override
 	public void init() {

@@ -13,7 +13,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.test.TestUI;
+import de.amr.games.pacman.test.TestController;
 
 public class EnterAndLeaveGhostHouseTestApp extends Application {
 
@@ -35,7 +35,7 @@ public class EnterAndLeaveGhostHouseTestApp extends Application {
 	}
 }
 
-class EnterGhostHouseTestUI extends TestUI {
+class EnterGhostHouseTestUI extends TestController {
 
 	private final List<Tile> capes = new ArrayList<>(world.capes());
 	private int visits;

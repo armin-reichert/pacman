@@ -10,7 +10,7 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.test.TestUI;
+import de.amr.games.pacman.test.TestController;
 
 public class PacManMovementTestApp extends Application {
 
@@ -32,16 +32,15 @@ public class PacManMovementTestApp extends Application {
 	}
 }
 
-class PacManMovementTestUI extends TestUI {
+class PacManMovementTestUI extends TestController {
 
 	private int steeringIndex;
 
 	@Override
 	public void init() {
 		super.init();
-		include(pacMan);
-		pacMan.init();
 		world.restoreFood();
+		include(pacMan);
 		pacMan.ai.addEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
@@ -53,10 +52,11 @@ class PacManMovementTestUI extends TestUI {
 				}
 			}
 		});
+		pacMan.init();
+		pacMan.wakeUp();
 		view.turnGridOn();
 		view.showMessage(1, "SPACE changes steering", Color.WHITE);
 		view.showMessage(2, "Cursor keys", Color.WHITE);
-		pacMan.wakeUp();
 	}
 
 	@Override

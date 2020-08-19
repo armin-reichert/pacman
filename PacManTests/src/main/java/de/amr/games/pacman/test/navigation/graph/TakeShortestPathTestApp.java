@@ -17,7 +17,7 @@ import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.controller.steering.common.TakingShortestPath;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.test.TestUI;
+import de.amr.games.pacman.test.TestController;
 
 public class TakeShortestPathTestApp extends Application {
 
@@ -40,7 +40,7 @@ public class TakeShortestPathTestApp extends Application {
 	}
 }
 
-class TakeShortestPathTestUI extends TestUI {
+class TakeShortestPathTestUI extends TestController {
 
 	private List<Tile> targets;
 	private int targetIndex;
