@@ -14,6 +14,11 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.test.TestController;
 
+/**
+ * Lets Blinky follow the mouse pointer.
+ * 
+ * @author Armin Reichert
+ */
 public class FollowMouseTestApp extends Application {
 
 	public static void main(String[] args) {
@@ -25,7 +30,7 @@ public class FollowMouseTestApp extends Application {
 		settings.width = 28 * Tile.SIZE;
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
-		settings.title = "Blinky Follows Mouse";
+		settings.title = "Blinky catching mouse";
 	}
 
 	@Override
