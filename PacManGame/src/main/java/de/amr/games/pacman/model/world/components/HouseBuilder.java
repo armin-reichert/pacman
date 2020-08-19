@@ -5,12 +5,18 @@ import java.util.List;
 
 import de.amr.games.pacman.model.world.api.Area;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Territory;
 
 public class HouseBuilder {
 
+	private Territory territory;
 	private Area layout;
 	private List<Door> doors = new ArrayList<>();
 	private List<Bed> beds = new ArrayList<>();
+
+	public HouseBuilder(Territory territory) {
+		this.territory = territory;
+	}
 
 	public HouseBuilder layout(int col, int row, int width, int height) {
 		layout = new Block(col, row, width, height);
@@ -34,6 +40,6 @@ public class HouseBuilder {
 	}
 
 	public House build() {
-		return new House(layout, doors, beds);
+		return new House(territory, layout, doors, beds);
 	}
 }

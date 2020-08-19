@@ -50,15 +50,6 @@ public class WorldPreview extends JFrame {
 		r.fnPassageColor = (cell, dir) -> Color.WHITE;
 		r.fnCellBgColor = cell -> {
 			Tile tile = graph.tile(cell);
-			if (!world.isAccessible(tile)) {
-				return Color.LIGHT_GRAY;
-			}
-			if (world.isPortal(tile)) {
-				return Color.YELLOW;
-			}
-			if (world.isTunnel(tile)) {
-				return Color.GRAY;
-			}
 			if (world.houses().anyMatch(house -> house.hasDoorAt(tile))) {
 				return Color.PINK;
 			}
@@ -70,6 +61,9 @@ public class WorldPreview extends JFrame {
 			}
 			if (world.isIntersection(tile)) {
 				return Color.GREEN;
+			}
+			if (!world.isAccessible(tile)) {
+				return Color.LIGHT_GRAY;
 			}
 			return Color.WHITE;
 		};
@@ -89,9 +83,6 @@ public class WorldPreview extends JFrame {
 				return "" + i;
 			}
 		}
-		if (!world.isAccessible(location)) {
-			return "#";
-		}
 		if (world.hasFood(Pellet.SNACK, location)) {
 			return ".";
 		}
@@ -99,7 +90,13 @@ public class WorldPreview extends JFrame {
 			return "Ö";
 		}
 		if (world.isPortal(location)) {
-			return "~";
+			return "P";
+		}
+		if (world.isTunnel(location)) {
+			return "T";
+		}
+		if (!world.isAccessible(location)) {
+			return "#";
 		}
 		return "";
 	}

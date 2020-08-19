@@ -78,8 +78,8 @@ public class ArcadeWorld extends MapBasedWorld {
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
 		//@formatter:off
 		houses = List.of(
-			House.construct()
-				.layout(11, 16, 6, 4)
+			House.construct(this)
+				.layout(10, 15, 8, 5)
 				.door(new Door(Direction.DOWN, 13, 15, 2, 1))
 				.bed(13, 14, Direction.LEFT)
 				.bed(11, 17, Direction.UP)
