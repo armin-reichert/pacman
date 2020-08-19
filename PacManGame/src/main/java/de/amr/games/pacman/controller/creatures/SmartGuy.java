@@ -96,19 +96,6 @@ public abstract class SmartGuy<STATE> implements Lifecycle {
 	}
 
 	/**
-	 * Returns the steering defined for the given state.
-	 * 
-	 * @param state state ID
-	 * @return steering defined for this state
-	 */
-	public Steering steering(STATE state) {
-		if (steeringsMap.containsKey(state)) {
-			return steeringsMap.get(state);
-		}
-		throw new IllegalArgumentException(String.format("%s: No steering defined for state %s", this, state));
-	}
-
-	/**
 	 * Defines the steering for the given state.
 	 * 
 	 * @param state    state
