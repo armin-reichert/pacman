@@ -44,11 +44,6 @@ public class EnhancedPlayView extends PlayView {
 	}
 
 	@Override
-	public void update() {
-		folks.ghosts().forEach(ghost -> ghost.steering().setPathComputed(showingRoutes));
-	}
-
-	@Override
 	public void draw(Graphics2D g) {
 		drawGrid(g);
 		drawWorld(g);
@@ -93,10 +88,12 @@ public class EnhancedPlayView extends PlayView {
 
 	public void turnRoutesOn() {
 		showingRoutes = true;
+		folks.ghosts().forEach(ghost -> ghost.steering().setPathComputed(showingRoutes));
 	}
 
 	public void turnRoutesOff() {
 		showingRoutes = false;
+		folks.ghosts().forEach(ghost -> ghost.steering().setPathComputed(showingRoutes));
 	}
 
 	public boolean isShowingStates() {
