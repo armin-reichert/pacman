@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.api.BonusFood;
-import de.amr.games.pacman.model.world.api.BonusFoodState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.Tile;
@@ -66,7 +65,7 @@ public class ArcadeWorld extends MapBasedWorld {
 			//@formatter:on
 	};
 
-	static final Tile BONUS_LOCATION = Tile.at(13, 20);
+	public static final Tile BONUS_LOCATION = Tile.at(13, 20);
 
 	protected House house;
 	protected Bed pacManBed;
@@ -130,11 +129,11 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public void addBonusFood(BonusFood bonusFood) {
+	public void showBonusFood(BonusFood bonusFood, Tile location) {
 		if (bonusFood instanceof ArcadeBonus) {
 			bonus = (ArcadeBonus) bonusFood;
-			bonus.setLocation(BONUS_LOCATION);
-			bonus.setState(BonusFoodState.PRESENT);
+			bonus.setLocation(location);
+			bonus.show();
 		} else {
 			throw new IllegalArgumentException("Cannot add this type of bonus food to Arcade world");
 		}

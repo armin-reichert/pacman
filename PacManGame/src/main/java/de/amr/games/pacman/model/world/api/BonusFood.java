@@ -11,15 +11,13 @@ public interface BonusFood extends Food {
 
 	int value();
 
-	BonusFoodState state();
+	boolean isPresent();
 
-	void setState(BonusFoodState state);
+	boolean isConsumed();
 
-	default boolean isPresent() {
-		return state() == BonusFoodState.PRESENT;
-	}
+	void show();
+	
+	void hide();
 
-	default boolean isConsumed() {
-		return state() == BonusFoodState.CONSUMED;
-	}
+	void consume();
 }

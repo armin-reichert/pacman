@@ -29,7 +29,7 @@ public interface FoodSource {
 
 	Optional<BonusFood> bonusFood();
 
-	void addBonusFood(BonusFood bonusFood);
+	void showBonusFood(BonusFood bonusFood, Tile location);
 
 	void clearBonusFood();
 }

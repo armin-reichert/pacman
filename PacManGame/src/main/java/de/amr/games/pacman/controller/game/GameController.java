@@ -42,7 +42,6 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.BonusFoodState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -109,7 +108,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected Folks folks;
 	protected GhostCommand ghostCommand;
 	protected DoorMan doorMan;
-	protected BonusControl bonusControl;
+	protected ArcadeBonusControl bonusControl;
 
 	/**
 	 * Creates a new game controller.
@@ -184,7 +183,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick((state, passed, remaining) -> {
 						if (passed == sec(2)) {
-							bonusControl.setState(BonusFoodState.ABSENT);
+							bonusControl.setState(BonusState.ABSENT);
 							folks.ghostsInWorld().forEach(ghost -> ghost.body.visible = false);
 						}
 						else if (passed == sec(2.5f)) {
@@ -442,7 +441,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 			doorMan.onPacManFoundFood();
 			if (game.level.isBonusDue()) {
-				bonusControl.setState(BonusFoodState.PRESENT);
+				bonusControl.setState(BonusState.PRESENT);
 			}
 			sound.lastMealAt = System.currentTimeMillis();
 			if (game.level.lives > livesBeforeScoring) {
@@ -594,7 +593,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected void newGame() {
 		game.start(settings.startLevel, world);
 		ghostCommand = new GhostCommand(game, folks);
-		bonusControl = new BonusControl(game, world);
+		bonusControl = new ArcadeBonusControl(game, world);
 		doorMan = new DoorMan(world, world.house(0), game, folks);
 		folks.guys().forEach(guy -> {
 			world.include(guy.body);
@@ -662,7 +661,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(doorMan);
 	}
 
-	public Optional<BonusControl> bonusControl() {
+	public Optional<ArcadeBonusControl> bonusControl() {
 		return Optional.ofNullable(bonusControl);
 	}
 
