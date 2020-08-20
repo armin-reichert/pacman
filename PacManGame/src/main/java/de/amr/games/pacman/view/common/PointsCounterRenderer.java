@@ -45,7 +45,7 @@ public class PointsCounterRenderer implements IGameScoreRenderer {
 			pen.down(interlineSpacing);
 			pen.drawAtGridPosition(String.format("%7d", game.level.hiscore.points), col, 1);
 			pen.color(Color.LIGHT_GRAY);
-			pen.drawAtGridPosition(String.format("L%02d", game.level.hiscore.level), col + 7, 1);
+			pen.drawAtGridPosition(String.format("L%02d", game.level.hiscore.levelNumber), col + 7, 1);
 			pen.up(interlineSpacing);
 	
 			col = 21;

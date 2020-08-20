@@ -19,62 +19,73 @@ import java.util.Properties;
  */
 public class Hiscore extends Score {
 
-	private File file = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
-	private DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+	private static final File DIR = new File(System.getProperty("user.home"));
+	private static final File FILE = new File(DIR, "pacman.hiscore.xml");
+	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+
+	private final Properties data = new Properties(3);
+	private ZonedDateTime time;
 	private boolean needsUpdate;
 
+	public Hiscore() {
+		time = ZonedDateTime.now();
+		needsUpdate = true;
+	}
+
 	public void load() {
-		loginfo("Loading highscore from %s", file);
-		Properties p = new Properties();
+		loginfo("Loading highscore from file '%s'", FILE);
 		try {
-			p.loadFromXML(new FileInputStream(file));
-			points = Integer.valueOf(p.getProperty("score"));
-			level = Integer.valueOf(p.getProperty("level"));
-			if (p.getProperty("time") != null) {
-				time = ZonedDateTime.parse(p.getProperty("time"), formatter);
+			data.loadFromXML(new FileInputStream(FILE));
+			points = Integer.valueOf(data.getProperty("score"));
+			levelNumber = Integer.valueOf(data.getProperty("level"));
+			if (data.getProperty("time") != null) {
+				time = ZonedDateTime.parse(data.getProperty("time"), DATE_FORMAT);
+			} else {
+				time = ZonedDateTime.now();
 			}
 		} catch (FileNotFoundException e) {
 			loginfo("Hiscore file not available, creating new one");
-			createHiscoreFile();
+			save();
 		} catch (DateTimeParseException e) {
-			loginfo("Could not parse time in hiscore from file %s", file);
+			loginfo("Could not parse time in hiscore file '%s'", FILE);
 			e.printStackTrace();
 		} catch (Exception e) {
-			loginfo("Could not load hiscore from file %s", file);
-		}
-	}
-
-	private void createHiscoreFile() {
-		points = 0;
-		level = 1;
-		time = ZonedDateTime.now();
-		needsUpdate = true;
-		save();
-	}
-
-	public void checkNewHiscore(GameLevel level, int points) {
-		if (points > this.points) {
-			this.points = points;
-			this.level = level.number;
-			this.time = ZonedDateTime.now();
-			needsUpdate = true;
+			loginfo("Could not load hiscore file '%s'", FILE);
+			e.printStackTrace();
 		}
 	}
 
 	public void save() {
 		if (needsUpdate) {
-			Properties p = new Properties();
-			p.setProperty("score", Integer.toString(points));
-			p.setProperty("level", Integer.toString(level));
-			p.setProperty("time", ZonedDateTime.now().format(formatter));
+			data.setProperty("score", Integer.toString(points));
+			data.setProperty("level", Integer.toString(levelNumber));
+			if (time == null) {
+				time = ZonedDateTime.now();
+			}
+			data.setProperty("time", time.format(DATE_FORMAT));
 			try {
-				p.storeToXML(new FileOutputStream(file), "Pac-Man Highscore");
+				data.storeToXML(new FileOutputStream(FILE), "Pac-Man Highscore");
 				needsUpdate = false;
-				loginfo("Saved highscore to %s", file);
+				loginfo("Saved highscore file '%s'", FILE);
 			} catch (IOException e) {
-				loginfo("Could not save hiscore in file %s", file);
+				loginfo("Could not save hiscore file '%s'", FILE);
 				throw new RuntimeException(e);
 			}
+		}
+	}
+
+	/**
+	 * Checks is the given level number and points mark a new hiscore.
+	 * 
+	 * @param levelNumber level number
+	 * @param points      points
+	 */
+	public void check(int levelNumber, int points) {
+		if (points > this.points) {
+			this.points = points;
+			this.levelNumber = levelNumber;
+			time = ZonedDateTime.now();
+			needsUpdate = true;
 		}
 	}
 }

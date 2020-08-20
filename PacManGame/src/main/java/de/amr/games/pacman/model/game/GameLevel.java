@@ -101,7 +101,7 @@ public class GameLevel {
 		if (oldScore < Game.POINTS_EXTRA_LIFE && Game.POINTS_EXTRA_LIFE <= score) {
 			lives += 1;
 		}
-		hiscore.checkNewHiscore(this, score);
+		hiscore.check(number, score);
 		return points;
 	}
 
