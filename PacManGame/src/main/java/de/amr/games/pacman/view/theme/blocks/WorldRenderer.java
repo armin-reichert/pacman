@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.model.world.api.Symbol;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
@@ -44,7 +43,7 @@ class WorldRenderer implements IWorldRenderer {
 		world.bonusFood().ifPresent(bonus -> {
 			Vector2f center = Vector2f.of(bonus.location().x() + Tile.SIZE, bonus.location().y() + Tile.SIZE / 2);
 			if (bonus.isPresent() && bonus instanceof ArcadeBonus) {
-				drawActiveBonus(g, center, ((ArcadeBonus) bonus).symbol());
+				drawActiveBonus(g, center, ((ArcadeBonus) bonus));
 			} else if (bonus.isConsumed()) {
 				drawConsumedBonus(g, center, bonus.value());
 			}
@@ -52,7 +51,7 @@ class WorldRenderer implements IWorldRenderer {
 		Rendering.smoothOff(g);
 	}
 
-	private void drawActiveBonus(Graphics2D g, Vector2f center, Symbol symbol) {
+	private void drawActiveBonus(Graphics2D g, Vector2f center, ArcadeBonus symbol) {
 		if (app().clock().getTotalTicks() % 60 < 30) {
 			return; // blink effect
 		}
@@ -74,7 +73,7 @@ class WorldRenderer implements IWorldRenderer {
 		}
 	}
 
-	private void drawBonusSymbol(Graphics2D g, Vector2f center, Symbol symbol) {
+	private void drawBonusSymbol(Graphics2D g, Vector2f center, ArcadeBonus symbol) {
 		int radius = 4;
 		g.setColor(BlocksTheme.THEME.symbolColor(symbol.name()));
 		g.fillOval(center.roundedX() - radius, center.roundedY() - radius, 2 * radius, 2 * radius);

@@ -6,17 +6,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.Symbol;
 import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.view.api.IGameScoreRenderer;
 
 class LevelCounterRenderer implements IGameScoreRenderer {
 
-	private final Map<Symbol, Image> bonusImages = new HashMap<Symbol, Image>();
+	private final Map<ArcadeBonus, Image> bonusImages = new HashMap<ArcadeBonus, Image>();
 
 	public LevelCounterRenderer() {
 		ArcadeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
-		for (Symbol symbol : Symbol.values()) {
+		for (ArcadeBonus symbol : ArcadeBonus.values()) {
 			bonusImages.put(symbol, arcadeSprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
 		}
 	}
@@ -28,7 +28,7 @@ class LevelCounterRenderer implements IGameScoreRenderer {
 		int n = Math.min(max, game.level.counter.size());
 		int size = 2 * Tile.SIZE; // image size
 		for (int i = 0, x = -2 * size; i < n; ++i, x -= size) {
-			Symbol symbol = game.level.counter.get(first + i);
+			ArcadeBonus symbol = ArcadeBonus.valueOf(game.level.counter.get(first + i));
 			g.drawImage(bonusImages.get(symbol), x, 0, size, size, null);
 		}
 	}

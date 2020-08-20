@@ -2,24 +2,20 @@ package de.amr.games.pacman.model.world.arcade;
 
 import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.BonusFoodState;
-import de.amr.games.pacman.model.world.api.Symbol;
 import de.amr.games.pacman.model.world.api.Tile;
 
-public class ArcadeBonus implements BonusFood {
+/**
+ * Symbols appearing as bonus food in the Arcade game.
+ * 
+ * @author Armin Reichert
+ */
+public enum ArcadeBonus implements BonusFood {
 
-	public final Symbol symbol;
+	CHERRIES, STRAWBERRY, PEACH, APPLE, GRAPES, GALAXIAN, BELL, KEY;
+
 	private Tile location;
 	private BonusFoodState state;
 	private int value;
-
-	public ArcadeBonus(Symbol symbol) {
-		this.symbol = symbol;
-	}
-
-	@Override
-	public String toString() {
-		return String.format("(%s,%s,%s)", symbol, value, state);
-	}
 
 	@Override
 	public Tile location() {
@@ -30,13 +26,13 @@ public class ArcadeBonus implements BonusFood {
 		this.location = location;
 	}
 
-	public void setValue(int value) {
-		this.value = value;
-	}
-
 	@Override
 	public int value() {
 		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
 	}
 
 	@Override
@@ -49,7 +45,8 @@ public class ArcadeBonus implements BonusFood {
 		this.state = state;
 	}
 
-	public Symbol symbol() {
-		return symbol;
+	@Override
+	public String toString() {
+		return String.format("(%s,%s,%s)", name(), value, state);
 	}
 }

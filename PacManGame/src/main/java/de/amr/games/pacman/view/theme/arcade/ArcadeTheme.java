@@ -8,8 +8,8 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.Symbol;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.view.api.IGameScoreRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
@@ -39,7 +39,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	private ArcadeTheme() {
 		set("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		set("maze-flash-sec", 0.4f);
-		for (Symbol symbol : Symbol.values()) {
+		for (ArcadeBonus symbol : ArcadeBonus.values()) {
 			set("symbol-" + symbol.name(), sprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
 		}
 		for (int points : Game.POINTS_BONUS) {

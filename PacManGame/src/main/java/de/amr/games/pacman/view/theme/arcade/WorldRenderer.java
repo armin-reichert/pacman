@@ -62,7 +62,7 @@ class WorldRenderer implements IWorldRenderer {
 			if (bonus.isPresent()) {
 				ArcadeBonus arcadeBonus = (ArcadeBonus) bonus;
 				Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.SIZE / 2);
-				Image img = ArcadeTheme.THEME.$image("symbol-" + arcadeBonus.symbol.name());
+				Image img = ArcadeTheme.THEME.$image("symbol-" + arcadeBonus.name());
 				g.drawImage(img, position.roundedX(), position.roundedY(), null);
 			} else if (bonus.isConsumed()) {
 				Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.SIZE / 2);

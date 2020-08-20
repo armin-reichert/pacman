@@ -5,8 +5,6 @@ import static de.amr.easy.game.Application.loginfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.model.world.api.Symbol;
-
 /**
  * Data structure storing the level-specific values.
  * 
@@ -22,7 +20,7 @@ public class GameLevel {
 		return (int) value;
 	}
 
-	public final Symbol bonusSymbol;
+	public final String bonusSymbol;
 	public final int bonusValue;
 	public final float pacManSpeed;
 	public final float pacManDotsSpeed;
@@ -47,7 +45,7 @@ public class GameLevel {
 	public int lives;
 	public int score;
 	public Hiscore hiscore;
-	public List<Symbol> counter;
+	public List<String> counter;
 
 	public GameLevel(int levelNumber, int foodCount, int lives, List<Object> data) {
 		this(levelNumber, foodCount, lives, 0, new Hiscore(), new ArrayList<>(), data);
@@ -58,7 +56,7 @@ public class GameLevel {
 		this(levelNumber, foodCount, previous.lives, previous.score, previous.hiscore, previous.counter, data);
 	}
 
-	private GameLevel(int levelNumber, int foodCount, int lives, int score, Hiscore hiscore, List<Symbol> counter,
+	private GameLevel(int levelNumber, int foodCount, int lives, int score, Hiscore hiscore, List<String> counter,
 			List<Object> data) {
 		this.number = levelNumber;
 		this.foodCount = foodCount;
@@ -67,7 +65,7 @@ public class GameLevel {
 		this.hiscore = hiscore;
 		this.counter = counter;
 		int i = 0;
-		bonusSymbol = Symbol.valueOf((String) data.get(i++));
+		bonusSymbol = (String) data.get(i++);
 		bonusValue = integer(data.get(i++));
 		pacManSpeed = percent(data.get(i++));
 		pacManDotsSpeed = percent(data.get(i++));

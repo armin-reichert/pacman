@@ -16,7 +16,7 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Symbol;
+import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 
 /**
  * Resources for Arcade theme.
@@ -98,7 +98,7 @@ public class ArcadeSprites {
 
 		// Symbols
 		BufferedImage[] symbolImages = tilesHorizontally(8, 2, 3);
-		for (Symbol symbol : Symbol.values()) {
+		for (ArcadeBonus symbol : ArcadeBonus.values()) {
 			imageMapSymbols.put(symbol.name(), symbolImages[symbol.ordinal()]);
 		}
 
