@@ -31,5 +31,5 @@ public interface FoodSource {
 
 	void showBonusFood(BonusFood bonusFood, Tile location);
 
-	void clearBonusFood();
+	void hideBonusFood();
 }

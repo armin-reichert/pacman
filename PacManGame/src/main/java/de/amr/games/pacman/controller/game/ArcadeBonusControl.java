@@ -33,7 +33,7 @@ public class ArcadeBonusControl extends StateMachine<BonusState, PacManGameEvent
 			.states()
 			
 				.state(ABSENT)
-					.onEntry(world::clearBonusFood)
+					.onEntry(world::hideBonusFood)
 			
 				.state(PRESENT)
 					.timeoutAfter(() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()))

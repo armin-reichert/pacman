@@ -140,7 +140,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public void clearBonusFood() {
+	public void hideBonusFood() {
 		bonus = null;
 	}
 
