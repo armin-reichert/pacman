@@ -1,7 +1,7 @@
 package de.amr.games.pacman.model.world.core;
 
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Portal;
+import de.amr.games.pacman.model.world.components.Tile;
 
 /**
  * Base class for worlds using a map.

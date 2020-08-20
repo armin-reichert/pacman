@@ -7,6 +7,7 @@ import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
+import de.amr.games.pacman.model.world.components.Tile;
 
 /**
  * The territory part of a world.

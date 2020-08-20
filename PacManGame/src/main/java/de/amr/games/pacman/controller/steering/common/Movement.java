@@ -12,8 +12,8 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Portal;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**

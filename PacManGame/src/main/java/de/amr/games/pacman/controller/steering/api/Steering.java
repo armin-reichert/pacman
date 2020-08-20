@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.core.MovingGuy;
 
 /**

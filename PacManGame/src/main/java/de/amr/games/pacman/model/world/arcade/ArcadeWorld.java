@@ -7,12 +7,12 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Food;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.core.MapBasedWorld;
 
 /**

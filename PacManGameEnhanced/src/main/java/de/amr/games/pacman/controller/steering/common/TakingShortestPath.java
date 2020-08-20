@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller.steering.common;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.creatures.SmartGuy;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.core.MovingGuy;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 

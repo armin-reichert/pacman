@@ -9,8 +9,8 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.test.TestController;
 
 public class MovingRandomlyTestApp extends Application {

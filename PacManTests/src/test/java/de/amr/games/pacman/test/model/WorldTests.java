@@ -15,9 +15,9 @@ import org.junit.Test;
 
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.components.Portal;
+import de.amr.games.pacman.model.world.components.Tile;
 
 public class WorldTests {
 

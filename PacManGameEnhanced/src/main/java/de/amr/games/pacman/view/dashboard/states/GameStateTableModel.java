@@ -15,9 +15,9 @@ import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
+import de.amr.games.pacman.model.world.components.Tile;
 
 /**
  * Data model of the table displaying actor data.

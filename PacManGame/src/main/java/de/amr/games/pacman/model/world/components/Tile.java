@@ -1,9 +1,10 @@
-package de.amr.games.pacman.model.world.api;
+package de.amr.games.pacman.model.world.components;
 
 import java.util.Objects;
 import java.util.Optional;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.model.world.api.Direction;
 
 /**
  * The Pac-Man game world is layed out into tiles of eight pixels size each.

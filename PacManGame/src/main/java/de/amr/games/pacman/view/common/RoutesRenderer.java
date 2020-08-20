@@ -20,8 +20,8 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.components.Tile;
 
 /**
  * Renderes the routes of the creatures towards their current target tiles.

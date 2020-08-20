@@ -2,7 +2,7 @@ package de.amr.games.pacman.model.world.arcade;
 
 import de.amr.games.pacman.controller.game.BonusState;
 import de.amr.games.pacman.model.world.api.BonusFood;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.components.Tile;
 
 /**
  * Symbols appearing as bonus food in the Arcade game.

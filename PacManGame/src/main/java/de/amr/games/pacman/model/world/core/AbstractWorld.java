@@ -6,10 +6,10 @@ import java.util.List;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Block;
 import de.amr.games.pacman.model.world.components.Portal;
+import de.amr.games.pacman.model.world.components.Tile;
 
 /**
  * World base class.

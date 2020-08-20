@@ -1,7 +1,6 @@
 package de.amr.games.pacman.model.world.components;
 
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
 
 /**
  * A tile that can only be traversed in a certain direction.

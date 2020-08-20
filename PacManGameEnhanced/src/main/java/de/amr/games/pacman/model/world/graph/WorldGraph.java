@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.impl.Grid4Topology;
 import de.amr.graph.grid.impl.GridGraph;

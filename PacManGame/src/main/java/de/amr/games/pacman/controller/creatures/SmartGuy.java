@@ -9,8 +9,8 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.core.MovingGuy;
 import de.amr.statemachine.core.StateMachine;
 

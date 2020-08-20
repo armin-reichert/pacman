@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.IGameScoreRenderer;
 
 class LevelCounterRenderer implements IGameScoreRenderer {

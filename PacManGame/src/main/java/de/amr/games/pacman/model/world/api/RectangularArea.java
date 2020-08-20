@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.model.world.components.Tile;
 
 public interface RectangularArea extends Area {
 

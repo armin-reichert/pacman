@@ -3,8 +3,8 @@ package de.amr.games.pacman.view.theme.blocks;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.IGameScoreRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 

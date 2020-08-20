@@ -10,9 +10,9 @@ import java.awt.image.BufferedImage;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.Tile;
 
 public class GridRenderer {
 

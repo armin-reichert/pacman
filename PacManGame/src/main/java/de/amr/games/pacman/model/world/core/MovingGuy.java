@@ -2,7 +2,7 @@ package de.amr.games.pacman.model.world.core;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.model.world.components.Tile;
 
 /**
  * An entity that can move through a tile-based world. Guys by default have a body size of exactly
