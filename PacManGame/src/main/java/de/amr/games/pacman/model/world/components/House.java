@@ -20,7 +20,7 @@ public class House implements Area {
 	private final List<Door> doors;
 	private final List<Bed> beds;
 
-	public static HouseBuilder construct(Territory territory) {
+	public static HouseBuilder world(Territory territory) {
 		return new HouseBuilder(territory);
 	}
 

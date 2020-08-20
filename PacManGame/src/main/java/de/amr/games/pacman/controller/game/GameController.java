@@ -47,7 +47,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.arcade.Pellet;
+import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.api.PacManGameView;
@@ -432,7 +432,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void onPacManFoodFound(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
-			boolean energizer = world.hasFood(Pellet.ENERGIZER, found.location);
+			boolean energizer = world.hasFood(ArcadeFood.ENERGIZER, found.location);
 			world.eatFood(found.location);
 			int livesBeforeScoring = game.level.lives;
 			if (energizer) {

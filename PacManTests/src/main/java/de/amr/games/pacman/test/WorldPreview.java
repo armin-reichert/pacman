@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.arcade.Pellet;
+import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
@@ -83,10 +83,10 @@ public class WorldPreview extends JFrame {
 				return "" + i;
 			}
 		}
-		if (world.hasFood(Pellet.SNACK, location)) {
+		if (world.hasFood(ArcadeFood.PELLET, location)) {
 			return ".";
 		}
-		if (world.hasFood(Pellet.ENERGIZER, location)) {
+		if (world.hasFood(ArcadeFood.ENERGIZER, location)) {
 			return "Ö";
 		}
 		if (world.isPortal(location)) {

@@ -32,7 +32,7 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.Pellet;
+import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.statemachine.api.TransitionMatchStrategy;
@@ -214,11 +214,11 @@ public class PacMan extends SmartGuy<PacManState> {
 				return Optional.of(new BonusFoundEvent(bonus));
 			}
 		}
-		if (world.hasFood(Pellet.ENERGIZER, location)) {
+		if (world.hasFood(ArcadeFood.ENERGIZER, location)) {
 			fat += Game.FAT_ENERGIZER;
 			return Optional.of(new FoodFoundEvent(location));
 		}
-		if (world.hasFood(Pellet.SNACK, location)) {
+		if (world.hasFood(ArcadeFood.PELLET, location)) {
 			fat += Game.FAT_PELLET;
 			return Optional.of(new FoodFoundEvent(location));
 		}

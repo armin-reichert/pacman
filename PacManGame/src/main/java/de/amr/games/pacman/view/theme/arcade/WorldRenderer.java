@@ -8,7 +8,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
-import de.amr.games.pacman.model.world.arcade.Pellet;
+import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 
@@ -52,7 +52,7 @@ class WorldRenderer implements IWorldRenderer {
 		});
 		// simulate energizer blinking animation
 		if (spriteMap.getEnergizerAnimation().isEnabled() && spriteMap.getEnergizerAnimation().currentFrameIndex() == 1) {
-			world.tiles().filter(tile -> world.hasFood(Pellet.ENERGIZER, tile)).forEach(tile -> {
+			world.tiles().filter(tile -> world.hasFood(ArcadeFood.ENERGIZER, tile)).forEach(tile -> {
 				g.setColor(eatenFoodColor);
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});

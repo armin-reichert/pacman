@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.model;
 
-import static de.amr.games.pacman.model.world.arcade.Pellet.ENERGIZER;
-import static de.amr.games.pacman.model.world.arcade.Pellet.SNACK;
+import static de.amr.games.pacman.model.world.arcade.ArcadeFood.ENERGIZER;
+import static de.amr.games.pacman.model.world.arcade.ArcadeFood.PELLET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -49,7 +49,7 @@ public class WorldTests {
 		assertEquals(4, world.tiles().filter(world::hasFood)
 				.filter(location -> world.foodAt(location).equals(Optional.of(ENERGIZER))).count());
 		assertEquals(244, world.tiles().filter(world::hasFood).count());
-		assertTrue(world.foodAt(Tile.at(1, 4)).get() == SNACK);
+		assertTrue(world.foodAt(Tile.at(1, 4)).get() == PELLET);
 		assertTrue(world.foodAt(Tile.at(1, 6)).get() == ENERGIZER);
 	}
 

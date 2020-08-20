@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.world.api.Symbol;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
-import de.amr.games.pacman.model.world.arcade.Pellet;
+import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.api.IWorldRenderer;
@@ -35,9 +35,9 @@ class WorldRenderer implements IWorldRenderer {
 	private void drawFood(Graphics2D g, World world) {
 		Rendering.smoothOn(g);
 		world.tiles().forEach(location -> {
-			if (world.hasFood(Pellet.ENERGIZER, location)) {
+			if (world.hasFood(ArcadeFood.ENERGIZER, location)) {
 				drawEnergizer(g, world, location);
-			} else if (world.hasFood(Pellet.SNACK, location)) {
+			} else if (world.hasFood(ArcadeFood.PELLET, location)) {
 				drawSimplePellet(g, location);
 			}
 		});

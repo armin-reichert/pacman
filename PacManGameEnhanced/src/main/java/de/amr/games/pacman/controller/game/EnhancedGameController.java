@@ -28,7 +28,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
-import de.amr.games.pacman.model.world.arcade.Pellet;
+import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -306,7 +306,7 @@ public class EnhancedGameController extends GameController {
 		if (getState() != PLAYING) {
 			return;
 		}
-		world.tiles().filter(location -> world.hasFood(Pellet.SNACK, location)).forEach(tile -> {
+		world.tiles().filter(location -> world.hasFood(ArcadeFood.PELLET, location)).forEach(tile -> {
 			world.eatFood(tile);
 			game.level.scoreSimplePelletEaten();
 			doorMan().ifPresent(doorMan -> {

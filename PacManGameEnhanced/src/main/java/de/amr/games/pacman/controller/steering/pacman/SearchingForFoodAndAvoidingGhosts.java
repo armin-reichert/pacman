@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.Pellet;
+import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.core.MovingGuy;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
@@ -176,7 +176,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	private Optional<Tile> energizerAtMostAway(Tile here, int distance) {
 		//@formatter:off
 		return foodTiles()
-				.filter(tile -> world.hasFood(Pellet.ENERGIZER, tile))
+				.filter(tile -> world.hasFood(ArcadeFood.ENERGIZER, tile))
 				.filter(energizer -> here.manhattanDistance(energizer) <= distance)
 				.findFirst();
 		//@formatter:on

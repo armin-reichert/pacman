@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.core.MapBasedWorld;
 
 /**
- * Map-based Pac-Man game world implementation.
+ * The world of the Arcade version of the game.
  * 
  * @author Armin Reichert
  */
@@ -67,28 +67,27 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	static final Tile BONUS_LOCATION = Tile.at(13, 20);
 
-	protected List<House> houses;
-	protected List<Portal> portals;
-	protected List<OneWayTile> oneWayTiles;
+	protected House house;
 	protected Bed pacManBed;
+	protected Portal portal;
+	protected List<OneWayTile> oneWayTiles;
 	protected ArcadeBonus bonus;
 
 	public ArcadeWorld() {
 		super(DATA);
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
 		//@formatter:off
-		houses = List.of(
-			House.construct(this)
-				.layout(10, 15, 8, 5)
-				.door(new Door(Direction.DOWN, 13, 15, 2, 1))
-				.bed(13, 14, Direction.LEFT)
-				.bed(11, 17, Direction.UP)
-				.bed(13, 17, Direction.DOWN)
-				.bed(15, 17, Direction.UP)
-			.build()
-		);
+		house =	House
+			.world(this)
+			.layout(10, 15, 8, 5)
+			.door(new Door(Direction.DOWN, 13, 15, 2, 1))
+			.bed(13, 14, Direction.LEFT)
+			.bed(11, 17, Direction.UP)
+			.bed(13, 17, Direction.DOWN)
+			.bed(15, 17, Direction.UP)
+			.build();
 		
-		portals = List.of(horizontalPortal(Tile.at(0, 17), Tile.at(27, 17)));
+		portal = horizontalPortal(Tile.at(0, 17), Tile.at(27, 17));
 		
 		oneWayTiles = List.of(
 			new OneWayTile(12, 13, Direction.DOWN), 
@@ -106,12 +105,12 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public Stream<House> houses() {
-		return houses.stream();
+		return Stream.of(house);
 	}
 
 	@Override
 	public House house(int i) {
-		return i < houses.size() ? houses.get(i) : null;
+		return i == 0 ? house : null;
 	}
 
 	@Override
@@ -121,7 +120,7 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public Stream<Portal> portals() {
-		return portals.stream();
+		return Stream.of(portal);
 	}
 
 	@Override
@@ -154,7 +153,8 @@ public class ArcadeWorld extends MapBasedWorld {
 		if (BONUS_LOCATION.equals(location)) {
 			return Optional.ofNullable(bonus);
 		}
-		return hasFood(location) ? is(location, B_ENERGIZER) ? Optional.of(Pellet.ENERGIZER) : Optional.of(Pellet.SNACK)
+		return hasFood(location)
+				? is(location, B_ENERGIZER) ? Optional.of(ArcadeFood.ENERGIZER) : Optional.of(ArcadeFood.PELLET)
 				: Optional.empty();
 	}
 }

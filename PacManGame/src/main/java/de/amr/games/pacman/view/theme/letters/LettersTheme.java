@@ -13,7 +13,7 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.Pellet;
+import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.api.IGameScoreRenderer;
@@ -154,11 +154,11 @@ public class LettersTheme extends ThemeParameters implements Theme {
 				for (int col = 0; col < world.width(); ++col) {
 					Tile tile = Tile.at(col, row);
 					if (world.isAccessible(tile)) {
-						if (world.hasFood(Pellet.ENERGIZER, tile) && Application.app().clock().getTotalTicks() % 60 < 30) {
+						if (world.hasFood(ArcadeFood.ENERGIZER, tile) && Application.app().clock().getTotalTicks() % 60 < 30) {
 							g.setColor(Color.PINK);
 							g.drawString("Ö", col * Tile.SIZE + 2, row * Tile.SIZE + offset_baseline);
 						}
-						if (world.hasFood(Pellet.SNACK, tile)) {
+						if (world.hasFood(ArcadeFood.PELLET, tile)) {
 							g.setColor(Color.PINK);
 							g.drawString(".", col * Tile.SIZE + 1, row * Tile.SIZE - 3 + offset_baseline);
 						}
