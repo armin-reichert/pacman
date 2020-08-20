@@ -1,6 +1,6 @@
 package de.amr.games.pacman.model.world.arcade;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -24,7 +24,7 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	public static final byte B_ENERGIZER = 5;
 
-	static final byte[][] DATA = {
+	static final byte[][] MAP = {
 			//@formatter:off
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
@@ -70,31 +70,30 @@ public class ArcadeWorld extends MapBasedWorld {
 	protected House house;
 	protected Bed pacManBed;
 	protected Portal portal;
-	protected List<OneWayTile> oneWayTiles;
+	protected OneWayTile[] oneWayTiles;
 	protected ArcadeBonus bonus;
 
 	public ArcadeWorld() {
-		super(DATA);
+		super(MAP);
+		portal = horizontalPortal(Tile.at(0, 17), Tile.at(27, 17));
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
 		//@formatter:off
 		house =	House
 			.world(this)
 			.layout(10, 15, 8, 5)
 			.door(new Door(Direction.DOWN, 13, 15, 2, 1))
-			.bed(13, 14, Direction.LEFT)
-			.bed(11, 17, Direction.UP)
-			.bed(13, 17, Direction.DOWN)
-			.bed(15, 17, Direction.UP)
+			.bed(new Bed(13, 14, Direction.LEFT))
+			.bed(new Bed(11, 17, Direction.UP))
+			.bed(new Bed(13, 17, Direction.DOWN))
+			.bed(new Bed(15, 17, Direction.UP))
 			.build();
 		
-		portal = horizontalPortal(Tile.at(0, 17), Tile.at(27, 17));
-		
-		oneWayTiles = List.of(
+		oneWayTiles = new OneWayTile[] {
 			new OneWayTile(12, 13, Direction.DOWN), 
 			new OneWayTile(15, 13, Direction.DOWN),
 			new OneWayTile(12, 25, Direction.DOWN), 
 			new OneWayTile(15, 25, Direction.DOWN)
-		);
+		};
 		//@formatter:on
 	}
 
@@ -125,18 +124,17 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public Stream<OneWayTile> oneWayTiles() {
-		return oneWayTiles.stream();
+		return Arrays.stream(oneWayTiles);
 	}
 
 	@Override
 	public void showBonusFood(BonusFood bonusFood, Tile location) {
-		if (bonusFood instanceof ArcadeBonus) {
-			bonus = (ArcadeBonus) bonusFood;
-			bonus.setLocation(location);
-			bonus.show();
-		} else {
+		if (!(bonusFood instanceof ArcadeBonus)) {
 			throw new IllegalArgumentException("Cannot add this type of bonus food to Arcade world");
 		}
+		bonus = (ArcadeBonus) bonusFood;
+		bonus.setLocation(location);
+		bonus.show();
 	}
 
 	@Override
@@ -151,8 +149,8 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public Optional<Food> foodAt(Tile location) {
-		if (BONUS_LOCATION.equals(location)) {
-			return Optional.ofNullable(bonus);
+		if (bonus != null && bonus.location().equals(location)) {
+			return Optional.of(bonus);
 		}
 		return hasFood(location)
 				? is(location, B_ENERGIZER) ? Optional.of(ArcadeFood.ENERGIZER) : Optional.of(ArcadeFood.PELLET)

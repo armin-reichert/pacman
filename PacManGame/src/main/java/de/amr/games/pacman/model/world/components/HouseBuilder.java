@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.amr.games.pacman.model.world.api.Area;
-import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Territory;
 
 public class HouseBuilder {
@@ -29,12 +28,6 @@ public class HouseBuilder {
 	}
 
 	public HouseBuilder bed(Bed bed) {
-		beds.add(bed);
-		return this;
-	}
-
-	public HouseBuilder bed(int col, int row, Direction dir) {
-		Bed bed = new Bed(col, row, dir);
 		beds.add(bed);
 		return this;
 	}
