@@ -8,7 +8,7 @@ import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.MovingGuy;
 
 /**
- * Interface for steering of movers through their world.
+ * Interface for steering guys through their world.
  * 
  * @author Armin Reichert
  */
@@ -16,11 +16,11 @@ import de.amr.games.pacman.model.world.core.MovingGuy;
 public interface Steering {
 
 	/**
-	 * Steers the mover in its current state.
+	 * Steers the guy.
 	 * 
-	 * @param mover the steered mover
+	 * @param guy the steered guy
 	 */
-	void steer(MovingGuy mover);
+	void steer(MovingGuy guy);
 
 	/**
 	 * Some steerings needs an initial step.
@@ -29,7 +29,8 @@ public interface Steering {
 	}
 
 	/**
-	 * Triggers the steering once, even if its preconditions are not fulfilled.
+	 * Triggers this steering once, even if preconditions (e.g. that a new tile has been entered) are
+	 * not fulfilled.
 	 */
 	default void force() {
 	}
