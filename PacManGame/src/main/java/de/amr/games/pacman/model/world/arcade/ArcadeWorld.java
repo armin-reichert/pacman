@@ -8,6 +8,7 @@ import de.amr.games.pacman.model.world.api.BonusFood;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.Block;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
@@ -43,7 +44,7 @@ public class ArcadeWorld extends MapBasedWorld {
 			{ 1, 1, 1, 1, 1, 1, 8, 1, 1, 0, 0, 0, 4, 0, 0, 4, 0, 0, 0, 1, 1, 8, 1, 1, 1, 1, 1, 1, },
 			{ 1, 1, 1, 1, 1, 1, 8, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 8, 1, 1, 1, 1, 1, 1, },
 			{ 1, 1, 1, 1, 1, 1, 8, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 8, 1, 1, 1, 1, 1, 1, },
-			{ 2, 2, 2, 2, 2, 2,12, 0, 0, 4, 1, 0, 0, 0, 0, 0, 0, 1, 4, 0, 0,12, 2, 2, 2, 2, 2, 2, },
+			{ 0, 0, 0, 0, 0, 0,12, 0, 0, 4, 1, 0, 0, 0, 0, 0, 0, 1, 4, 0, 0,12, 0, 0, 0, 0, 0, 0, },
 			{ 1, 1, 1, 1, 1, 1, 8, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 8, 1, 1, 1, 1, 1, 1, },
 			{ 1, 1, 1, 1, 1, 1, 8, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 8, 1, 1, 1, 1, 1, 1, },
 			{ 1, 1, 1, 1, 1, 1, 8, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 1, 1, 8, 1, 1, 1, 1, 1, 1, },
@@ -71,6 +72,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	protected Bed pacManBed;
 	protected Portal portal;
 	protected OneWayTile[] oneWayTiles;
+	protected Block[] tunnels;
 	protected ArcadeBonus bonus;
 
 	public ArcadeWorld() {
@@ -94,12 +96,22 @@ public class ArcadeWorld extends MapBasedWorld {
 			new OneWayTile(12, 25, Direction.DOWN), 
 			new OneWayTile(15, 25, Direction.DOWN)
 		};
+		
+		tunnels = new Block[] {
+			new Block(1, 17, 5, 1),
+			new Block(22, 17, 5, 1),
+		};
 		//@formatter:on
 	}
 
 	@Override
 	public int totalFoodCount() {
 		return 244;
+	}
+	
+	@Override
+	public boolean isTunnel(Tile tile) {
+		return Arrays.stream(tunnels).anyMatch(tunnel -> tunnel.includes(tile));
 	}
 
 	@Override

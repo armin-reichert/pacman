@@ -12,7 +12,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 
 	//@formatter:off
 	public static final byte B_WALL         = 0;
-	public static final byte B_TUNNEL       = 1;
+	public static final byte B_1            = 1;
 	public static final byte B_INTERSECTION = 2;
 	public static final byte B_FOOD         = 3;
 	public static final byte B_EATEN        = 4;
@@ -31,17 +31,13 @@ public abstract class MapBasedWorld extends AbstractWorld {
 
 	protected Portal horizontalPortal(Tile either, Tile other) {
 		map.set0(either.row, either.col, B_WALL);
-		map.set1(either.row, either.col, B_TUNNEL);
 		map.set0(other.row, other.col, B_WALL);
-		map.set1(other.row, other.col, B_TUNNEL);
 		return new Portal(either, other, false);
 	}
 
 	protected Portal verticalPortal(Tile either, Tile other) {
 		map.set0(either.row, either.col, B_WALL);
-		map.set1(either.row, either.col, B_TUNNEL);
 		map.set0(other.row, other.col, B_WALL);
-		map.set1(other.row, other.col, B_TUNNEL);
 		return new Portal(either, other, true);
 	}
 
@@ -67,11 +63,6 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	@Override
 	public boolean isIntersection(Tile tile) {
 		return is(tile, B_INTERSECTION);
-	}
-
-	@Override
-	public boolean isTunnel(Tile tile) {
-		return is(tile, B_TUNNEL);
 	}
 
 	// food container
