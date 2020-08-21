@@ -31,7 +31,7 @@ public interface FoodSource {
 
 	Optional<TemporaryFood> temporaryFood();
 
-	void showTemporaryFood(TemporaryFood food, Tile location);
+	void showTemporaryFood(TemporaryFood food);
 
 	void hideTemporaryFood();
 }

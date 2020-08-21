@@ -46,6 +46,7 @@ import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.components.Bed;
@@ -601,7 +602,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected void newGame() {
 		game.start(settings.startLevel, world);
 		ghostCommand = new GhostCommand(game, folks);
-		bonusControl = new ArcadeBonusControl(game, world);
+		//@formatter:off
+		bonusControl = new BonusFoodController(game, world,
+				() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()),
+				() -> ArcadeBonus.of(game.level.bonusSymbol, game.level.bonusValue, ArcadeWorld.BONUS_LOCATION)
+		);
+		bonusControl.init();
+		//@formatter:on
 		doorMan = new DoorMan(world, world.house(0), game, folks);
 		folks.guys().forEach(guy -> {
 			world.include(guy.body);

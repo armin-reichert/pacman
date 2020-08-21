@@ -12,6 +12,13 @@ public enum ArcadeBonus implements TemporaryFood {
 
 	CHERRIES, STRAWBERRY, PEACH, APPLE, GRAPES, GALAXIAN, BELL, KEY;
 
+	public static ArcadeBonus of(String name, int value, Tile location) {
+		ArcadeBonus bonus = valueOf(name);
+		bonus.value = value;
+		bonus.location = location;
+		return bonus;
+	}
+
 	private Tile location;
 	private int value;
 	private boolean active;
@@ -56,10 +63,6 @@ public enum ArcadeBonus implements TemporaryFood {
 
 	public void setLocation(Tile location) {
 		this.location = location;
-	}
-
-	public void setValue(int value) {
-		this.value = value;
 	}
 
 	@Override

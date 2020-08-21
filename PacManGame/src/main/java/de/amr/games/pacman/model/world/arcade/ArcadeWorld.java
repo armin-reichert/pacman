@@ -146,12 +146,11 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public void showTemporaryFood(TemporaryFood bonusFood, Tile location) {
-		if (!(bonusFood instanceof ArcadeBonus)) {
+	public void showTemporaryFood(TemporaryFood food) {
+		if (!(food instanceof ArcadeBonus)) {
 			throw new IllegalArgumentException("Cannot add this type of bonus food to Arcade world");
 		}
-		bonus = (ArcadeBonus) bonusFood;
-		bonus.setLocation(location);
+		bonus = (ArcadeBonus) food;
 		bonus.activate();
 	}
 
