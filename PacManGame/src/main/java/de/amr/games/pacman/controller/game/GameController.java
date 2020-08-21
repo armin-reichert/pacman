@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
@@ -95,44 +94,35 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Math.round(60 * seconds);
 	}
 
+	private static class SoundState {
+		boolean gotExtraLife;
+		boolean ghostEaten;
+		boolean bonusEaten;
+		boolean pacManDied;
+		boolean chasingGhosts;
+		boolean deadGhosts;
+		private long lastMealAt;
+	}
+
 	// model
 	public final Game game;
-	protected World world;
+	public final World world;
 
 	// view
-	protected final Theme[] themes;
-	protected Theme theme;
-	protected int currentThemeIndex = 0;
-	protected PacManGameView currentView;
-	protected PlayView playView;
-	protected SoundState sound = new SoundState();
+	public final SoundState sound = new SoundState();
+	public final Theme[] themes;
+	public Theme theme;
+	public int currentThemeIndex = 0;
+	public PacManGameView currentView;
+	public PlayView playView;
 
 	// controller
-	protected Folks folks;
-	protected GhostCommand ghostCommand;
-	protected DoorMan doorMan;
-	protected BonusFoodController bonusControl;
+	public final Folks folks;
+	public final GhostCommand ghostCommand;
+	public final DoorMan doorMan;
+	public final BonusFoodController bonusControl;
 
-	/**
-	 * Creates a new game controller.
-	 * 
-	 * @param supportedThemes supported themes
-	 */
-	public GameController(Theme... supportedThemes) {
-		super(PacManGameState.class);
-
-		game = new Game();
-
-		themes = supportedThemes;
-		currentThemeIndex = 0;
-		theme = themes[currentThemeIndex];
-
-		Application.app().onClose(() -> {
-			if (game.level != null) {
-				game.level.hiscore.save();
-			}
-		});
-
+	private void buildStateMachine() {
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		//@formatter:off
@@ -298,16 +288,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		//@formatter:on
 	}
 
-	private static class SoundState {
-		boolean gotExtraLife;
-		boolean ghostEaten;
-		boolean bonusEaten;
-		boolean pacManDied;
-		boolean chasingGhosts;
-		boolean deadGhosts;
-		private long lastMealAt;
-	}
-
 	public class GettingReadyState extends State<PacManGameState> {
 
 		public GettingReadyState() {
@@ -316,7 +296,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onEntry() {
-			newGame();
+			startGame();
 			world.setFrozen(true);
 			world.houses().flatMap(House::doors).forEach(doorMan::closeDoor);
 			currentView = playView = createPlayView();
@@ -510,16 +490,46 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	@Override
-	public void init() {
-		loginfo("Initializing game controller");
+	public GameController(Theme... supportedThemes) {
+		super(PacManGameState.class);
+		buildStateMachine();
+
+		themes = supportedThemes;
 		selectTheme(settings.theme);
+
+		game = new Game();
 		world = new ArcadeWorld();
 		folks = new Folks(world, world.house(0));
-		folks.guys().forEach(guy -> world.include(guy.body));
-		folks.pacMan.ai.addEventListener(this::process);
-		folks.ghosts().forEach(ghost -> ghost.ai.addEventListener(this::process));
-		super.init();
+
+		folks.guys().forEach(guy -> {
+			guy.ai.addEventListener(this::process);
+			guy.game = game;
+		});
+
+		app().onClose(() -> {
+			if (game.level != null) {
+				game.level.hiscore.save();
+			}
+		});
+
+		doorMan = new DoorMan(world, world.house(0), game, folks);
+		ghostCommand = new GhostCommand(game, folks);
+		//@formatter:off
+		bonusControl = new BonusFoodController(game, world,
+			() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()),
+			() -> ArcadeBonus.of(game.level.bonusSymbol, game.level.bonusValue, ArcadeWorld.BONUS_LOCATION));
+		//@formatter:on
+	}
+
+	protected void startGame() {
+		game.start(settings.startLevel, world);
+		folks.guys().forEach(guy -> {
+			world.include(guy.body);
+			guy.init();
+		});
+		folks.blinky.madness.init();
+		ghostCommand.init();
+		bonusControl.init();
 	}
 
 	@Override
@@ -597,25 +607,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			theme.sounds().clipEatGhost().play();
 			sound.ghostEaten = false;
 		}
-	}
-
-	protected void newGame() {
-		game.start(settings.startLevel, world);
-		ghostCommand = new GhostCommand(game, folks);
-		//@formatter:off
-		bonusControl = new BonusFoodController(game, world,
-				() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()),
-				() -> ArcadeBonus.of(game.level.bonusSymbol, game.level.bonusValue, ArcadeWorld.BONUS_LOCATION)
-		);
-		bonusControl.init();
-		//@formatter:on
-		doorMan = new DoorMan(world, world.house(0), game, folks);
-		folks.guys().forEach(guy -> {
-			world.include(guy.body);
-			guy.game = game;
-			guy.init();
-		});
-		folks.blinky.madness.init();
 	}
 
 	protected MusicLoadingView createMusicLoadingView() {

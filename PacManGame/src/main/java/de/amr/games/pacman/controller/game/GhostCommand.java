@@ -109,7 +109,6 @@ public class GhostCommand extends StateMachine<Phase, String> {
 			.when(CHASE).then(PAUSED).on("Pause").act(() -> pausedState = getState())
 		.endStateMachine();
 		/*@formatter:on*/
-		init();
 	}
 
 	private void notifyGhosts() {
