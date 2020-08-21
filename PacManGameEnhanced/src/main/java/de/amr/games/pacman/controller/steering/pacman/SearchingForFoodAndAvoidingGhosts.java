@@ -161,8 +161,8 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	private Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
 		//@formatter:off
-		if (world.bonusFood().isPresent()) {
-			TemporaryFood bonus = world.bonusFood().get();
+		if (world.temporaryFood().isPresent()) {
+			TemporaryFood bonus = world.temporaryFood().get();
 			if (bonus.isActive()) {
 				int dist = here.manhattanDistance(bonus.location());
 				if (dist <= maxDistance) {

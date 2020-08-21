@@ -167,7 +167,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 						g.drawString("#", col * Tile.SIZE + 1, row * Tile.SIZE + offset_baseline - 1);
 					}
 				}
-				world.bonusFood().ifPresent(bonus -> {
+				world.temporaryFood().ifPresent(bonus -> {
 					Tile tile = bonus.location();
 					g.setColor(Color.GREEN);
 					String text = "";

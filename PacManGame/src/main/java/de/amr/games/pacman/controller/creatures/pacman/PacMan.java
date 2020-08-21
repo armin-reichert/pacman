@@ -207,8 +207,8 @@ public class PacMan extends SmartGuy<PacManState> {
 	}
 
 	private Optional<PacManGameEvent> searchForFood(Tile location) {
-		if (world.bonusFood().filter(bonusFood -> !bonusFood.isConsumed()).isPresent()) {
-			TemporaryFood bonus = world.bonusFood().get();
+		if (world.temporaryFood().filter(bonusFood -> !bonusFood.isConsumed()).isPresent()) {
+			TemporaryFood bonus = world.temporaryFood().get();
 			if (bonus.isActive() && bonus.location().equals(location)) {
 				fat += Game.FAT_ENERGIZER;
 				return Optional.of(new BonusFoundEvent(bonus));

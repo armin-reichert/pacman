@@ -29,9 +29,9 @@ public interface FoodSource {
 
 	boolean hasEatenFood(Tile location);
 
-	Optional<TemporaryFood> bonusFood();
+	Optional<TemporaryFood> temporaryFood();
 
-	void showBonusFood(TemporaryFood bonusFood, Tile location);
+	void showTemporaryFood(TemporaryFood food, Tile location);
 
-	void hideBonusFood();
+	void hideTemporaryFood();
 }

@@ -58,7 +58,7 @@ class WorldRenderer implements IWorldRenderer {
 			});
 		}
 		// draw bonus as image when active or as number when consumed
-		world.bonusFood().ifPresent(bonus -> {
+		world.temporaryFood().ifPresent(bonus -> {
 			if (bonus.isActive()) {
 				if (bonus.isConsumed()) {
 					Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.SIZE / 2);

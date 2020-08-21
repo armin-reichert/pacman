@@ -33,14 +33,14 @@ public class ArcadeBonusControl extends StateMachine<BonusState, PacManGameEvent
 			.states()
 			
 				.state(ABSENT)
-					.onEntry(world::hideBonusFood)
+					.onEntry(world::hideTemporaryFood)
 			
 				.state(PRESENT)
 					.timeoutAfter(() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()))
 					.onEntry(() -> {
 							ArcadeBonus bonus = ArcadeBonus.valueOf(game.level.bonusSymbol);
 							bonus.setValue(game.level.bonusValue);
-							world.showBonusFood(bonus, ArcadeWorld.BONUS_LOCATION);
+							world.showTemporaryFood(bonus, ArcadeWorld.BONUS_LOCATION);
 							loginfo("Bonus '%s' activated for %.2f sec", bonus, state().getDuration() / 60f);
 					})
 				
@@ -50,7 +50,7 @@ public class ArcadeBonusControl extends StateMachine<BonusState, PacManGameEvent
 				
 				.when(PRESENT).then(CONSUMED).on(BonusFoundEvent.class)
 					.act(() -> {
-						world.bonusFood().ifPresent(bonusFood -> {
+						world.temporaryFood().ifPresent(bonusFood -> {
 							bonusFood.consume();
 							loginfo("Bonus '%s' consumed after %.2f sec",	bonusFood, state().getTicksConsumed() / 60f);
 						});
@@ -58,7 +58,7 @@ public class ArcadeBonusControl extends StateMachine<BonusState, PacManGameEvent
 					
 				.when(PRESENT).then(ABSENT).onTimeout()
 					.act(() -> {
-						world.bonusFood().ifPresent(bonusFood -> {
+						world.temporaryFood().ifPresent(bonusFood -> {
 							bonusFood.consume();
 							loginfo("Bonus '%s' not consumed", bonusFood);
 						});

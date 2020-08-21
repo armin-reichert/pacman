@@ -40,7 +40,7 @@ class WorldRenderer implements IWorldRenderer {
 				drawSimplePellet(g, location);
 			}
 		});
-		world.bonusFood().ifPresent(bonus -> {
+		world.temporaryFood().ifPresent(bonus -> {
 			Vector2f center = Vector2f.of(bonus.location().x() + Tile.SIZE, bonus.location().y() + Tile.SIZE / 2);
 			if (bonus.isActive()) {
 				if (bonus.isConsumed()) {

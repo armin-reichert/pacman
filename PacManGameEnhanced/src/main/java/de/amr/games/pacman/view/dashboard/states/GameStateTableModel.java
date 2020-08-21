@@ -175,7 +175,7 @@ class GameStateTableModel extends AbstractTableModel {
 			r.tile = null;
 			r.state = BonusState.ABSENT.name();
 			r.ticksRemaining = r.duration = 0;
-			world.bonusFood().filter(bonus -> bonus instanceof ArcadeBonus).map(ArcadeBonus.class::cast).ifPresent(bonus -> {
+			world.temporaryFood().filter(bonus -> bonus instanceof ArcadeBonus).map(ArcadeBonus.class::cast).ifPresent(bonus -> {
 				r.included = true;
 				r.name = bonus.name();
 				r.state = "";
