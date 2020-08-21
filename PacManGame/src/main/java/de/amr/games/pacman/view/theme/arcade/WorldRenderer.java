@@ -8,8 +8,8 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
-import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 
 class WorldRenderer implements IWorldRenderer {

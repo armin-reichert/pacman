@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.api.Area;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Territory;
+import de.amr.games.pacman.model.world.api.World;
 
 /**
  * A house has a room with beds and some doors.
@@ -14,17 +14,17 @@ import de.amr.games.pacman.model.world.api.Territory;
  */
 public class House implements Area {
 
-	private final Territory territory;
+	private final World world;
 	private final Area layout;
 	private final List<Door> doors;
 	private final List<Bed> beds;
 
-	public static HouseBuilder world(Territory territory) {
-		return new HouseBuilder(territory);
+	public static HouseBuilder world(World world) {
+		return new HouseBuilder(world);
 	}
 
-	public House(Territory territory, Area layout, List<Door> doors, List<Bed> beds) {
-		this.territory = territory;
+	public House(World world, Area layout, List<Door> doors, List<Bed> beds) {
+		this.world = world;
 		this.layout = layout;
 		this.doors = doors;
 		this.beds = beds;
@@ -51,7 +51,7 @@ public class House implements Area {
 	}
 
 	public boolean isInsideOrDoor(Tile tile) {
-		return layout.includes(tile) && territory.isAccessible(tile);
+		return layout.includes(tile) && world.isAccessible(tile);
 	}
 
 	public boolean isEntry(Tile tile) {

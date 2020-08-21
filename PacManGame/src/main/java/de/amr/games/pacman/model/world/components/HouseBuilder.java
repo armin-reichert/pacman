@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.amr.games.pacman.model.world.api.Area;
-import de.amr.games.pacman.model.world.api.Territory;
+import de.amr.games.pacman.model.world.api.World;
 
 public class HouseBuilder {
 
-	private Territory territory;
+	private World world;
 	private Area layout;
 	private List<Door> doors = new ArrayList<>();
 	private List<Bed> beds = new ArrayList<>();
 
-	public HouseBuilder(Territory territory) {
-		this.territory = territory;
+	public HouseBuilder(World world) {
+		this.world = world;
 	}
 
 	public HouseBuilder layout(int col, int row, int width, int height) {
@@ -33,6 +33,6 @@ public class HouseBuilder {
 	}
 
 	public House build() {
-		return new House(territory, layout, doors, beds);
+		return new House(world, layout, doors, beds);
 	}
 }
