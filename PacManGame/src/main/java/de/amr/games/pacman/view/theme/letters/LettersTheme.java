@@ -172,7 +172,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 					g.setColor(Color.GREEN);
 					String text = "";
 					int col = tile.col;
-					if (bonus.isPresent()) {
+					if (bonus.isActive()) {
 						text = "WIN " + bonus.value();
 						col = tile.col - 1;
 					} else if (bonus.isConsumed()) {

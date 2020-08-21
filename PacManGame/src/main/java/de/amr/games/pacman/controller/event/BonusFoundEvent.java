@@ -1,12 +1,12 @@
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.model.world.api.BonusFood;
+import de.amr.games.pacman.model.world.api.TemporaryFood;
 
 public class BonusFoundEvent implements PacManGameEvent {
 
-	public final BonusFood food;
+	public final TemporaryFood food;
 
-	public BonusFoundEvent(BonusFood food) {
+	public BonusFoundEvent(TemporaryFood food) {
 		this.food = food;
 	}
 

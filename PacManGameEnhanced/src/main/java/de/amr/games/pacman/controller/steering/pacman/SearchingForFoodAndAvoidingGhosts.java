@@ -15,7 +15,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementType;
-import de.amr.games.pacman.model.world.api.BonusFood;
+import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
@@ -162,8 +162,8 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	private Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
 		//@formatter:off
 		if (world.bonusFood().isPresent()) {
-			BonusFood bonus = world.bonusFood().get();
-			if (bonus.isPresent()) {
+			TemporaryFood bonus = world.bonusFood().get();
+			if (bonus.isActive()) {
 				int dist = here.manhattanDistance(bonus.location());
 				if (dist <= maxDistance) {
 					return Optional.of(bonus.location());

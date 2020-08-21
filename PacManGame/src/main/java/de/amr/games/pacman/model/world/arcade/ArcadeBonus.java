@@ -1,7 +1,6 @@
 package de.amr.games.pacman.model.world.arcade;
 
-import de.amr.games.pacman.controller.game.BonusState;
-import de.amr.games.pacman.model.world.api.BonusFood;
+import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.components.Tile;
 
 /**
@@ -9,13 +8,14 @@ import de.amr.games.pacman.model.world.components.Tile;
  * 
  * @author Armin Reichert
  */
-public enum ArcadeBonus implements BonusFood {
+public enum ArcadeBonus implements TemporaryFood {
 
 	CHERRIES, STRAWBERRY, PEACH, APPLE, GRAPES, GALAXIAN, BELL, KEY;
 
 	private Tile location;
-	private BonusState state;
 	private int value;
+	private boolean active;
+	private boolean consumed;
 
 	@Override
 	public Tile location() {
@@ -29,27 +29,29 @@ public enum ArcadeBonus implements BonusFood {
 
 	@Override
 	public boolean isConsumed() {
-		return state == BonusState.CONSUMED;
+		return consumed;
 	}
 
 	@Override
 	public void consume() {
-		state = BonusState.CONSUMED;
+		consumed = true;
 	}
 
 	@Override
-	public boolean isPresent() {
-		return state == BonusState.PRESENT;
+	public boolean isActive() {
+		return active;
 	}
 
 	@Override
-	public void show() {
-		state = BonusState.PRESENT;
+	public void activate() {
+		active = true;
+		consumed = false;
 	}
 
 	@Override
-	public void hide() {
-		state = BonusState.ABSENT;
+	public void deactivate() {
+		active = false;
+		consumed = false;
 	}
 
 	public void setLocation(Tile location) {
@@ -60,12 +62,8 @@ public enum ArcadeBonus implements BonusFood {
 		this.value = value;
 	}
 
-	public BonusState state() {
-		return state;
-	}
-
 	@Override
 	public String toString() {
-		return String.format("(%s,%s,%s)", name(), value, state);
+		return String.format("(%s,%s,present=%s,consumed=%s)", name(), value, active, consumed);
 	}
 }

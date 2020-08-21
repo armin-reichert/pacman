@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.world.api.BonusFood;
+import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.components.Bed;
@@ -146,13 +146,13 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public void showBonusFood(BonusFood bonusFood, Tile location) {
+	public void showBonusFood(TemporaryFood bonusFood, Tile location) {
 		if (!(bonusFood instanceof ArcadeBonus)) {
 			throw new IllegalArgumentException("Cannot add this type of bonus food to Arcade world");
 		}
 		bonus = (ArcadeBonus) bonusFood;
 		bonus.setLocation(location);
-		bonus.show();
+		bonus.activate();
 	}
 
 	@Override
@@ -161,7 +161,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public Optional<BonusFood> bonusFood() {
+	public Optional<TemporaryFood> bonusFood() {
 		return Optional.ofNullable(bonus);
 	}
 

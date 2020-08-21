@@ -29,7 +29,7 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.BonusFood;
+import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Bed;
@@ -207,9 +207,9 @@ public class PacMan extends SmartGuy<PacManState> {
 	}
 
 	private Optional<PacManGameEvent> searchForFood(Tile location) {
-		if (world.bonusFood().isPresent()) {
-			BonusFood bonus = world.bonusFood().get();
-			if (bonus.isPresent() && bonus.location().equals(location)) {
+		if (world.bonusFood().filter(bonusFood -> !bonusFood.isConsumed()).isPresent()) {
+			TemporaryFood bonus = world.bonusFood().get();
+			if (bonus.isActive() && bonus.location().equals(location)) {
 				fat += Game.FAT_ENERGIZER;
 				return Optional.of(new BonusFoundEvent(bonus));
 			}

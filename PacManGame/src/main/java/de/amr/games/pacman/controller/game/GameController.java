@@ -397,7 +397,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (folks.pacMan.movement.is(MovementType.TELEPORTING)) {
 				return;
 			}
-			
+
 			if (ghost.ai.is(FRIGHTENED)) {
 				int livesBefore = game.level.lives;
 				game.level.scoreGhostKilled();
@@ -419,9 +419,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onPacManFoundBonus(PacManGameEvent event) {
-			BonusFoundEvent bonusFound = (BonusFoundEvent) event;
 			int value = game.level.bonusValue;
-			loginfo("PacMan found bonus '%s'", bonusFound.food);
 			int livesBefore = game.level.lives;
 			game.level.score(value);
 			sound.bonusEaten = true;
