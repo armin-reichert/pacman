@@ -13,8 +13,8 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	//@formatter:off
 	public static final byte B_WALL         = 0;
 	public static final byte B_INTERSECTION = 1;
-	public static final byte B_FOOD         = 3;
-	public static final byte B_EATEN        = 4;
+	public static final byte B_FOOD         = 2;
+	public static final byte B_EATEN        = 3;
 	//@formatter:on
 
 	protected final ByteMap map;
