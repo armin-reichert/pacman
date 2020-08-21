@@ -235,6 +235,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.when(GETTING_READY).then(PLAYING)
 					.onTimeout()
+					.act(this::startBackgroundMusicForPlaying)
 					.annotation("Ready to play")
 				
 				.stay(PLAYING)
@@ -343,10 +344,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onEntry() {
-			theme.sounds().musicGameRunning().ifPresent(music -> {
-				music.setVolume(0.4f);
-				music.loop();
-			});
+			startBackgroundMusicForPlaying();
 			if (settings.demoMode) {
 				playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 			} else {
@@ -375,7 +373,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onExit() {
 			theme.sounds().clips().forEach(SoundClip::stop);
-			theme.sounds().stopMusic(theme.sounds().musicGameRunning());
 			sound.chasingGhosts = false;
 			sound.deadGhosts = false;
 		}
@@ -546,6 +543,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			theme = themes[currentThemeIndex];
 			currentView.setTheme(theme);
 		}
+	}
+
+	private void startBackgroundMusicForPlaying() {
+		theme.sounds().musicGameRunning().ifPresent(music -> {
+			if (!music.isRunning()) {
+				music.setVolume(0.4f);
+				music.loop();
+			}
+		});
 	}
 
 	private void renderPlayViewSound() {
