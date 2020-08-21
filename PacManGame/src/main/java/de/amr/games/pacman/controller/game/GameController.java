@@ -183,7 +183,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick((state, passed, remaining) -> {
 						if (passed == sec(2)) {
-							bonusControl.setState(BonusState.ABSENT);
+							bonusControl.setState(BonusState.INACTIVE);
 							folks.ghostsInWorld().forEach(ghost -> ghost.body.visible = false);
 						}
 						else if (passed == sec(2.5f)) {
@@ -441,7 +441,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 			doorMan.onPacManFoundFood();
 			if (game.level.isBonusDue()) {
-				bonusControl.setState(BonusState.PRESENT);
+				bonusControl.setState(BonusState.CONSUMABLE);
 			}
 			sound.lastMealAt = System.currentTimeMillis();
 			if (game.level.lives > livesBeforeScoring) {

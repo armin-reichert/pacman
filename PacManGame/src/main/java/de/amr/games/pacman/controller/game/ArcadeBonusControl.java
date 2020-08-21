@@ -1,9 +1,9 @@
 package de.amr.games.pacman.controller.game;
 
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacman.controller.game.BonusState.ABSENT;
+import static de.amr.games.pacman.controller.game.BonusState.INACTIVE;
 import static de.amr.games.pacman.controller.game.BonusState.CONSUMED;
-import static de.amr.games.pacman.controller.game.BonusState.PRESENT;
+import static de.amr.games.pacman.controller.game.BonusState.CONSUMABLE;
 import static de.amr.games.pacman.controller.game.GameController.sec;
 
 import java.util.Random;
@@ -29,42 +29,42 @@ public class ArcadeBonusControl extends StateMachine<BonusState, PacManGameEvent
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("Bonus Controller")
-			.initialState(ABSENT)
+			.initialState(INACTIVE)
 			.states()
 			
-				.state(ABSENT)
+				.state(INACTIVE)
 					.onEntry(world::hideTemporaryFood)
 			
-				.state(PRESENT)
+				.state(CONSUMABLE)
 					.timeoutAfter(() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()))
 					.onEntry(() -> {
 							ArcadeBonus bonus = ArcadeBonus.valueOf(game.level.bonusSymbol);
 							bonus.setValue(game.level.bonusValue);
 							world.showTemporaryFood(bonus, ArcadeWorld.BONUS_LOCATION);
-							loginfo("Bonus '%s' activated for %.2f sec", bonus, state().getDuration() / 60f);
+							loginfo("Bonus %s activated for %.2f sec", bonus, state().getDuration() / 60f);
 					})
 				
 				.state(CONSUMED).timeoutAfter(sec(3))
 
 			.transitions()
 				
-				.when(PRESENT).then(CONSUMED).on(BonusFoundEvent.class)
+				.when(CONSUMABLE).then(CONSUMED).on(BonusFoundEvent.class)
 					.act(() -> {
-						world.temporaryFood().ifPresent(bonusFood -> {
-							bonusFood.consume();
-							loginfo("Bonus '%s' consumed after %.2f sec",	bonusFood, state().getTicksConsumed() / 60f);
+						world.temporaryFood().ifPresent(food -> {
+							food.consume();
+							loginfo("Bonus %s consumed after %.2f sec",	food, state().getTicksConsumed() / 60f);
 						});
 					})
 					
-				.when(PRESENT).then(ABSENT).onTimeout()
+				.when(CONSUMABLE).then(INACTIVE).onTimeout()
 					.act(() -> {
-						world.temporaryFood().ifPresent(bonusFood -> {
-							bonusFood.consume();
-							loginfo("Bonus '%s' not consumed", bonusFood);
+						world.temporaryFood().ifPresent(food -> {
+							food.consume();
+							loginfo("Bonus %s has not been consumed", food);
 						});
 					})
 				
-				.when(CONSUMED).then(ABSENT).onTimeout()
+				.when(CONSUMED).then(INACTIVE).onTimeout()
 		
 		.endStateMachine();
 		/*@formatter:on*/
