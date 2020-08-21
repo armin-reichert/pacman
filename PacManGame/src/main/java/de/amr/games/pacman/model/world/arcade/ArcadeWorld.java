@@ -23,8 +23,6 @@ import de.amr.games.pacman.model.world.core.MapBasedWorld;
  */
 public class ArcadeWorld extends MapBasedWorld {
 
-	public static final byte B_ENERGIZER = 4;
-
 	static final byte[][] MAP = {
 			//@formatter:off
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
@@ -33,7 +31,7 @@ public class ArcadeWorld extends MapBasedWorld {
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
 			{ 1, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4, 4, 1, 1, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4, 1, },
 			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
-			{ 1,20, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1,20, 1, },
+			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
 			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
 			{ 1, 6, 4, 4, 4, 4, 6, 4, 4, 6, 4, 4, 6, 4, 4, 6, 4, 4, 6, 4, 4, 6, 4, 4, 4, 4, 6, 1, },
 			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
@@ -53,7 +51,7 @@ public class ArcadeWorld extends MapBasedWorld {
 			{ 1, 4, 4, 4, 4, 4, 6, 4, 4, 6, 4, 4, 4, 1, 1, 4, 4, 4, 6, 4, 4, 6, 4, 4, 4, 4, 4, 1, },
 			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
 			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
-			{ 1,20, 4, 4, 1, 1, 6, 4, 4, 6, 4, 4, 6, 0, 0, 6, 4, 4, 6, 4, 4, 6, 1, 1, 4, 4,20, 1, },
+			{ 1, 4, 4, 4, 1, 1, 6, 4, 4, 6, 4, 4, 6, 0, 0, 6, 4, 4, 6, 4, 4, 6, 1, 1, 4, 4, 4, 1, },
 			{ 1, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 1, },
 			{ 1, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 1, },
 			{ 1, 4, 4, 6, 4, 4, 4, 1, 1, 4, 4, 4, 4, 1, 1, 4, 4, 4, 4, 1, 1, 4, 4, 4, 6, 4, 4, 1, },
@@ -73,6 +71,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	protected Portal portal;
 	protected OneWayTile[] oneWayTiles;
 	protected Block[] tunnels;
+	protected Tile[] energizerTiles;
 	protected ArcadeBonus bonus;
 
 	public ArcadeWorld() {
@@ -101,6 +100,13 @@ public class ArcadeWorld extends MapBasedWorld {
 			new Block(1, 17, 5, 1),
 			new Block(22, 17, 5, 1),
 		};
+		
+		energizerTiles = new Tile[] {
+			Tile.at(1,6),
+			Tile.at(26,6),
+			Tile.at(1,26),
+			Tile.at(26,26),
+		};
 		//@formatter:on
 	}
 
@@ -108,7 +114,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	public int totalFoodCount() {
 		return 244;
 	}
-	
+
 	@Override
 	public boolean isTunnel(Tile tile) {
 		return Arrays.stream(tunnels).anyMatch(tunnel -> tunnel.includes(tile));
@@ -164,8 +170,12 @@ public class ArcadeWorld extends MapBasedWorld {
 		if (bonus != null && bonus.location().equals(location)) {
 			return Optional.of(bonus);
 		}
-		return hasFood(location)
-				? is(location, B_ENERGIZER) ? Optional.of(ArcadeFood.ENERGIZER) : Optional.of(ArcadeFood.PELLET)
-				: Optional.empty();
+		if (hasFood(location)) {
+			if (Arrays.stream(energizerTiles).anyMatch(energizer -> energizer.equals(location))) {
+				return Optional.of(ArcadeFood.ENERGIZER);
+			}
+			return Optional.of(ArcadeFood.PELLET);
+		}
+		return Optional.empty();
 	}
 }

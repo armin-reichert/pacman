@@ -74,8 +74,7 @@ public class WorldTests {
 		Block block = new Block(1, 1, 2, 5);
 		List<Tile> tiles = block.tiles().collect(Collectors.toList());
 		assertEquals(List.of(Tile.at(1, 1), Tile.at(2, 1), Tile.at(1, 2), Tile.at(2, 2), Tile.at(1, 3), Tile.at(2, 3),
-				Tile.at(1, 4), Tile.at(2, 4), Tile.at(1, 5), Tile.at(2, 5)
-		), tiles);
+				Tile.at(1, 4), Tile.at(2, 4), Tile.at(1, 5), Tile.at(2, 5)), tiles);
 	}
 
 	@Test
