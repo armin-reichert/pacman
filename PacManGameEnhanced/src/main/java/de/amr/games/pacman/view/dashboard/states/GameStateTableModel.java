@@ -6,11 +6,11 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERI
 
 import javax.swing.table.AbstractTableModel;
 
+import de.amr.games.pacman.controller.bonus.BonusFoodState;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostMentalState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.controller.game.BonusState;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.model.game.Game;
@@ -173,7 +173,7 @@ class GameStateTableModel extends AbstractTableModel {
 			r.included = false;
 			r.name = "Bonus";
 			r.tile = null;
-			r.state = BonusState.INACTIVE.name();
+			r.state = BonusFoodState.BONUS_INACTIVE.name();
 			r.ticksRemaining = r.duration = 0;
 			world.temporaryFood().filter(bonus -> bonus instanceof ArcadeBonus).map(ArcadeBonus.class::cast).ifPresent(bonus -> {
 				r.included = true;

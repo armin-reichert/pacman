@@ -64,6 +64,6 @@ public enum ArcadeBonus implements TemporaryFood {
 
 	@Override
 	public String toString() {
-		return String.format("(%s,%s,present=%s,consumed=%s)", name(), value, active, consumed);
+		return String.format("(%s,%s,active=%s,consumed=%s)", name(), value, active, consumed);
 	}
 }

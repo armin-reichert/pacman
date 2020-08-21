@@ -25,6 +25,8 @@ import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacman.controller.bonus.BonusFoodController;
+import de.amr.games.pacman.controller.bonus.BonusFoodState;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -108,7 +110,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected Folks folks;
 	protected GhostCommand ghostCommand;
 	protected DoorMan doorMan;
-	protected ArcadeBonusControl bonusControl;
+	protected BonusFoodController bonusControl;
 
 	/**
 	 * Creates a new game controller.
@@ -183,7 +185,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick((state, passed, remaining) -> {
 						if (passed == sec(2)) {
-							bonusControl.setState(BonusState.INACTIVE);
+							bonusControl.setState(BonusFoodState.BONUS_INACTIVE);
 							folks.ghostsInWorld().forEach(ghost -> ghost.body.visible = false);
 						}
 						else if (passed == sec(2.5f)) {
@@ -441,7 +443,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 			doorMan.onPacManFoundFood();
 			if (game.level.isBonusDue()) {
-				bonusControl.setState(BonusState.CONSUMABLE);
+				bonusControl.setState(BonusFoodState.BONUS_CONSUMABLE);
 			}
 			sound.lastMealAt = System.currentTimeMillis();
 			if (game.level.lives > livesBeforeScoring) {
@@ -661,7 +663,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(doorMan);
 	}
 
-	public Optional<ArcadeBonusControl> bonusControl() {
+	public Optional<BonusFoodController> bonusControl() {
 		return Optional.ofNullable(bonusControl);
 	}
 
