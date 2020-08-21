@@ -3,12 +3,12 @@ package de.amr.games.pacman.model.world.api;
 import java.util.List;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingGuy;
 
 /**
  * The Pac-Man game world is a territory where creatures can live and get food.
@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.world.core.MovingGuy;
  * @author Armin Reichert
  */
 public interface World extends RectangularArea, FoodSource {
-	
+
 	/**
 	 * @param tile reference tile
 	 * @param dir  some direction
@@ -100,7 +100,6 @@ public interface World extends RectangularArea, FoodSource {
 		return oneWayTiles().anyMatch(oneWay -> oneWay.tile.equals(tile) && oneWay.dir == dir);
 	}
 
-
 	/**
 	 * Signals that the world is changing.
 	 * 
@@ -126,22 +125,22 @@ public interface World extends RectangularArea, FoodSource {
 	boolean isFrozen();
 
 	/**
-	 * @param mover a mover
-	 * @return {@code true} if the mover is currently included in this territory
+	 * @param entity an entity
+	 * @return {@code true} if the entity is currently included in this territory
 	 */
-	boolean contains(MovingGuy mover);
+	boolean contains(Entity entity);
 
 	/**
-	 * Includes the mover into the territory.
+	 * Includes the entity into the territory.
 	 * 
-	 * @param mover a mover
+	 * @param entity an entity
 	 */
-	void include(MovingGuy mover);
+	void include(Entity entity);
 
 	/**
-	 * Excludes the mover from the territory.
+	 * Excludes the entity from the territory.
 	 * 
-	 * @param mover a mover
+	 * @param entity an entity
 	 */
-	void exclude(MovingGuy mover);
+	void exclude(Entity entity);
 }

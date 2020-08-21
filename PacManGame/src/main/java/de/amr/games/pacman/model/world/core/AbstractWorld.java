@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
@@ -18,7 +19,7 @@ import de.amr.games.pacman.model.world.components.Tile;
  */
 public abstract class AbstractWorld extends Block implements World {
 
-	private final Collection<MovingGuy> outsiders = new HashSet<>();
+	private final Collection<Entity> outsiders = new HashSet<>();
 	protected boolean changing;
 	protected boolean frozen;
 
@@ -91,20 +92,20 @@ public abstract class AbstractWorld extends Block implements World {
 	}
 
 	@Override
-	public void include(MovingGuy guy) {
-		outsiders.remove(guy);
-		guy.visible = true;
+	public void include(Entity entity) {
+		outsiders.remove(entity);
+		entity.visible = true;
 	}
 
 	@Override
-	public void exclude(MovingGuy guy) {
-		outsiders.add(guy);
-		guy.visible = false;
+	public void exclude(Entity entity) {
+		outsiders.add(entity);
+		entity.visible = false;
 	}
 
 	@Override
-	public boolean contains(MovingGuy guy) {
-		return !outsiders.contains(guy);
+	public boolean contains(Entity entity) {
+		return !outsiders.contains(entity);
 	}
 
 	@Override
