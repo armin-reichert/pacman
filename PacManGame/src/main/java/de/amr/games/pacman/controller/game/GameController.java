@@ -278,7 +278,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTimeout()
 					.condition(() -> game.level.lives > 0)
 					.act(state_PLAYING()::resumePlaying)
-					.annotation(() -> String.format("Lives remaining = %d, resume game", game.level.lives))
+					.annotation(() -> game.level != null ?
+							String.format("Lives remaining = %d, resume game", game.level.lives) : "Lives remaining, resume game"
+					)
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce("space") || Keyboard.keyPressedOnce("enter"))
