@@ -10,7 +10,7 @@ import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingGuy;
+import de.amr.games.pacman.model.world.core.MovingEntity;
 
 /**
  * Lets a guy follow a path.
@@ -33,7 +33,7 @@ public abstract class FollowingPath implements Steering {
 	}
 
 	@Override
-	public void steer(MovingGuy mover) {
+	public void steer(MovingEntity mover) {
 		if (!guy.canCrossBorderTo(guy.body.moveDir) || mover.enteredNewTile || pathIndex == -1) {
 			++pathIndex;
 			dirAlongPath().ifPresent(dir -> {

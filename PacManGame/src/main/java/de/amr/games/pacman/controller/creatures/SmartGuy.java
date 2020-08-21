@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingGuy;
+import de.amr.games.pacman.model.world.core.MovingEntity;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -26,7 +26,7 @@ public abstract class SmartGuy<STATE> implements Lifecycle {
 
 	public final String name;
 	public final World world;
-	public final MovingGuy body;
+	public final MovingEntity body;
 	public final StateMachine<STATE, PacManGameEvent> ai;
 	public final Map<STATE, Steering> steeringsMap;
 	public Movement movement;
@@ -37,7 +37,7 @@ public abstract class SmartGuy<STATE> implements Lifecycle {
 	public SmartGuy(String name, World world, Map<STATE, Steering> steeringsMap) {
 		this.name = name;
 		this.world = world;
-		this.body = new MovingGuy();
+		this.body = new MovingEntity();
 		this.ai = buildAI();
 		this.steeringsMap = steeringsMap;
 	}

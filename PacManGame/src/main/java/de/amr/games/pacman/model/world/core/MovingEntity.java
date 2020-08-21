@@ -10,13 +10,13 @@ import de.amr.games.pacman.model.world.components.Tile;
  * 
  * @author Armin Reichert
  */
-public class MovingGuy extends Entity {
+public class MovingEntity extends Entity {
 
 	public Direction moveDir;
 	public Direction wishDir;
 	public boolean enteredNewTile;
 
-	public MovingGuy() {
+	public MovingEntity() {
 		tf.width = tf.height = Tile.SIZE;
 	}
 
@@ -88,7 +88,7 @@ public class MovingGuy extends Entity {
 	 * @param other other guy
 	 * @return Euclidean distance measured in tiles
 	 */
-	public double tileDistance(MovingGuy other) {
+	public double tileDistance(MovingEntity other) {
 		return tile().distance(other.tile());
 	}
 }

@@ -17,7 +17,7 @@ import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingGuy;
+import de.amr.games.pacman.model.world.core.MovingEntity;
 
 /**
  * Steers a guy towards a target tile.
@@ -75,7 +75,7 @@ public class HeadingForTargetTile implements Steering {
 	}
 
 	@Override
-	public void steer(MovingGuy body) {
+	public void steer(MovingEntity body) {
 		if (forced || body.enteredNewTile) {
 			Tile target = fnTargetTile.get();
 			if (target != null) {

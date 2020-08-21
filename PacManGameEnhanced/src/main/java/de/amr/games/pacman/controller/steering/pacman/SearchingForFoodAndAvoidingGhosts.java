@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingGuy;
+import de.amr.games.pacman.model.world.core.MovingEntity;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 
@@ -55,7 +55,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	@Override
-	public void steer(MovingGuy pacMan) {
+	public void steer(MovingEntity pacMan) {
 		if (!me.body.enteredNewTile && me.canCrossBorderTo(me.body.moveDir) || me.movement.is(MovementType.TELEPORTING)) {
 			return;
 		}

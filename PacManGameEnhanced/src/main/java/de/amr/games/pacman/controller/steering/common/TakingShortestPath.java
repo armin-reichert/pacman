@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingGuy;
+import de.amr.games.pacman.model.world.core.MovingEntity;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 
 /**
@@ -24,7 +24,7 @@ public class TakingShortestPath extends FollowingPath {
 	}
 
 	@Override
-	public void steer(MovingGuy mover) {
+	public void steer(MovingEntity mover) {
 		if (path.size() == 0 || isComplete()) {
 			setPath(graph.shortestPath(mover.tile(), fnTargetTile.get()));
 		}

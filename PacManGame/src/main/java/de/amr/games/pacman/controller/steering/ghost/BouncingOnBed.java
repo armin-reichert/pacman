@@ -5,7 +5,7 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.model.world.core.MovingGuy;
+import de.amr.games.pacman.model.world.core.MovingEntity;
 
 /**
  * Lets a guy bounce on its bed.
@@ -21,7 +21,7 @@ public class BouncingOnBed implements Steering {
 	}
 
 	@Override
-	public void steer(MovingGuy guy) {
+	public void steer(MovingEntity guy) {
 		float dy = guy.tf.y + guy.tf.height / 2 - bedCenterY;
 		if (dy < -4) {
 			guy.wishDir = DOWN;
