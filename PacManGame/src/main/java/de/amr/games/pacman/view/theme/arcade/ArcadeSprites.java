@@ -52,10 +52,10 @@ public class ArcadeSprites extends Spritesheet {
 		pacMan_dying = horizontalTiles(11, 3, 0);
 		pacMan_walking = new BufferedImage[][] {
 			/*@formatter:off*/
-			{ tile(0, 0), tile(1, 0), pacMan_full }, // RIGHT
-			{ tile(0, 1), tile(1, 1), pacMan_full }, // LEFT
-			{ tile(0, 2), tile(1, 2), pacMan_full }, // UP
-			{ tile(0, 3), tile(1, 3), pacMan_full }  // DOWN
+			{ tile(0, 0), tile(0, 0), tile(0, 0), tile(1, 0), tile(1, 0), tile(2, 0) }, // RIGHT
+			{ tile(0, 1), tile(0, 1), tile(0, 1), tile(1, 1), tile(1, 1), tile(2, 0) }, // LEFT
+			{ tile(0, 2), tile(0, 2), tile(0, 2), tile(1, 2), tile(1, 2), tile(2, 0) }, // UP
+			{ tile(0, 3), tile(0, 3), tile(0, 3), tile(1, 3), tile(1, 3), tile(2, 0) }  // DOWN
 			/*@formatter:on*/
 		};
 
@@ -135,7 +135,7 @@ public class ArcadeSprites extends Spritesheet {
 	}
 
 	public Sprite makeSprite_pacManWalking(Direction dir) {
-		return Sprite.of(pacMan_walking[spriteSheetOrder(dir)]).animate(FORWARD_BACKWARDS, 20);
+		return Sprite.of(pacMan_walking[spriteSheetOrder(dir)]).animate(FORWARD_BACKWARDS, 15);
 	}
 
 	public Sprite makeSprite_pacManCollapsing() {
