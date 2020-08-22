@@ -5,15 +5,14 @@ import static de.amr.easy.game.ui.sprites.AnimationType.FORWARD_BACKWARDS;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.easy.game.ui.sprites.Spritesheet;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
@@ -23,11 +22,9 @@ import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
  * 
  * @author Armin Reichert
  */
-public class ArcadeSprites {
+public class ArcadeSprites extends Spritesheet {
 
-	private static final int TILE_SIZE = 16;
-
-	private final BufferedImage spriteSheet = Assets.readImage("themes/arcade/sprites.png");
+	private final BufferedImage imageLogo = Assets.readImage("images/logo.png");
 	private final BufferedImage imageMazeEmpty = Assets.readImage("themes/arcade/maze_empty.png");
 	private final BufferedImage imageMazeFull = Assets.readImage("themes/arcade/maze_full.png");
 	private final BufferedImage imageMazeEmptyWhite;
@@ -40,71 +37,40 @@ public class ArcadeSprites {
 	private final BufferedImage imageGhostEyes[];
 	private final BufferedImage imageGreenNumbers[];
 	private final BufferedImage imagePinkNumbers[];
-	private final BufferedImage imageLogo = Assets.readImage("images/logo.png");
-	private final Map<String, BufferedImage> imageMapSymbols = new HashMap<>();
+	private final Map<String, BufferedImage> symbols = new HashMap<>();
 
-	// in the spritesheet, the order of directions is: RIGHT, LEFT, UP, DOWN
-	private int index(Direction dir) {
-		switch (dir) {
-		case RIGHT:
+	private int spriteSheetOrder(Direction dir) {
+		if (dir == Direction.RIGHT) {
 			return 0;
-		case LEFT:
+		}
+		if (dir == Direction.LEFT) {
 			return 1;
-		case UP:
+		}
+		if (dir == Direction.UP) {
 			return 2;
-		case DOWN:
+		}
+		if (dir == Direction.DOWN) {
 			return 3;
-		default:
-			throw new IllegalArgumentException("Illegal direction: " + dir);
 		}
+		throw new IllegalArgumentException("Illegal direction: " + dir);
 	}
 
-	// in the spritesheet, the ghost order is: BLINKY, PINKY, INKY, CLYDE
-	private int index(GhostPersonality personality) {
-		return personality.ordinal();
-	}
+	public ArcadeSprites() {
+		super("themes/arcade/sprites.png");
+		tileSize = 16;
 
-	private BufferedImage section(int x, int y, int w, int h) {
-		return spriteSheet.getSubimage(x, y, w, h);
-	}
-
-	private BufferedImage tile(int col, int row) {
-		return section(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-	}
-
-	private BufferedImage[] tilesHorizontally(int n, int col, int row) {
-		return IntStream.range(0, n).mapToObj(i -> tile(col + i, row)).toArray(BufferedImage[]::new);
-	}
-
-	private static BufferedImage exchangeColor(BufferedImage img, int oldColorRGB, int newColorRGB) {
-		BufferedImage copy = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
-		Graphics2D g = copy.createGraphics();
-		g.drawImage(img, 0, 0, null);
-		for (int x = 0; x < copy.getWidth(); ++x) {
-			for (int y = 0; y < copy.getHeight(); ++y) {
-				if (copy.getRGB(x, y) == oldColorRGB) {
-					copy.setRGB(x, y, newColorRGB);
-				}
-			}
-		}
-		g.dispose();
-		return copy;
-	}
-
-	ArcadeSprites() {
-
-		// debugger told me RGB value of blue color in maze image
+		// Debugger told me RGB value of blue color in maze image
 		imageMazeEmptyWhite = exchangeColor(imageMazeEmpty, -14605825, Color.WHITE.getRGB());
 
-		// Symbols
-		BufferedImage[] symbolImages = tilesHorizontally(8, 2, 3);
+		// Symbols for bonus food
+		BufferedImage[] symbolImages = horizontalTiles(8, 2, 3);
 		for (ArcadeBonus symbol : ArcadeBonus.values()) {
-			imageMapSymbols.put(symbol.name(), symbolImages[symbol.ordinal()]);
+			symbols.put(symbol.name(), symbolImages[symbol.ordinal()]);
 		}
 
 		// Pac-Man
 		imagePacManFull = tile(2, 0);
-		imagePacManDying = tilesHorizontally(11, 3, 0);
+		imagePacManDying = horizontalTiles(11, 3, 0);
 		imagePacManWalking = new BufferedImage[][] {
 			/*@formatter:off*/
 			{ tile(0, 0), tile(1, 0), imagePacManFull }, // RIGHT
@@ -121,21 +87,21 @@ public class ArcadeSprites {
 				imageGhostColored[color][i] = tile(i, 4 + color);
 			}
 		}
-		imageGhostFrightened = tilesHorizontally(2, 8, 4);
-		imageGhostFlashing = tilesHorizontally(4, 8, 4);
-		imageGhostEyes = tilesHorizontally(4, 8, 5);
+		imageGhostFrightened = horizontalTiles(2, 8, 4);
+		imageGhostFlashing = horizontalTiles(4, 8, 4);
+		imageGhostEyes = horizontalTiles(4, 8, 5);
 
 		// Green numbers (200, 400, 800, 1600)
-		imageGreenNumbers = tilesHorizontally(4, 0, 8);
+		imageGreenNumbers = horizontalTiles(4, 0, 8);
 
 		// Pink numbers (100, 300, 500, 700, 1000, 2000, 3000, 5000)
 		imagePinkNumbers = new BufferedImage[] {
 			/*@formatter:off*/
 			tile(0,9), tile(1,9), tile(2,9), tile(3,9), 
-			section(64, 144, 19, 16),
-			section(56, 160, 32, 16),
-			section(56, 176, 32, 16),
-			section(56, 192, 32, 16)
+			region(64, 144, 19, 16),
+			region(56, 160, 32, 16),
+			region(56, 176, 32, 16),
+			region(56, 192, 32, 16)
 			/*@formatter:on*/
 		};
 	}
@@ -165,7 +131,7 @@ public class ArcadeSprites {
 	}
 
 	public Sprite makeSprite_bonusSymbol(String symbol) {
-		return Sprite.of(imageMapSymbols.get(symbol));
+		return Sprite.of(symbols.get(symbol));
 	}
 
 	public Sprite makeSprite_pacManFull() {
@@ -173,7 +139,7 @@ public class ArcadeSprites {
 	}
 
 	public Sprite makeSprite_pacManWalking(Direction dir) {
-		return Sprite.of(imagePacManWalking[index(dir)]).animate(FORWARD_BACKWARDS, 20);
+		return Sprite.of(imagePacManWalking[spriteSheetOrder(dir)]).animate(FORWARD_BACKWARDS, 20);
 	}
 
 	public Sprite makeSprite_pacManCollapsing() {
@@ -181,8 +147,8 @@ public class ArcadeSprites {
 	}
 
 	public Sprite makeSprite_ghostColored(GhostPersonality personality, Direction dir) {
-		BufferedImage[] frames = Arrays.copyOfRange(imageGhostColored[index(personality)], 2 * index(dir),
-				2 * (index(dir) + 1));
+		BufferedImage[] frames = Arrays.copyOfRange(imageGhostColored[personality.ordinal()], 2 * spriteSheetOrder(dir),
+				2 * (spriteSheetOrder(dir) + 1));
 		return Sprite.of(frames).animate(FORWARD_BACKWARDS, 300);
 	}
 
@@ -195,6 +161,6 @@ public class ArcadeSprites {
 	}
 
 	public Sprite makeSprite_ghostEyes(Direction dir) {
-		return Sprite.of(imageGhostEyes[index(dir)]);
+		return Sprite.of(imageGhostEyes[spriteSheetOrder(dir)]);
 	}
 }
