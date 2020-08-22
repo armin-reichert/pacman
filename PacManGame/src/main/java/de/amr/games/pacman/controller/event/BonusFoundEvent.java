@@ -1,17 +1,11 @@
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.model.world.api.TemporaryFood;
+import de.amr.games.pacman.model.world.api.Food;
+import de.amr.games.pacman.model.world.components.Tile;
 
-public class BonusFoundEvent implements PacManGameEvent {
+public class BonusFoundEvent extends FoodFoundEvent {
 
-	public final TemporaryFood food;
-
-	public BonusFoundEvent(TemporaryFood food) {
-		this.food = food;
-	}
-
-	@Override
-	public String toString() {
-		return String.format("BonusFound(%s)", food);
+	public BonusFoundEvent(Tile tile, Food food) {
+		super(tile, food);
 	}
 }

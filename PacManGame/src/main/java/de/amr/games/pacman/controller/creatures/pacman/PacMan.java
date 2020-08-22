@@ -210,16 +210,16 @@ public class PacMan extends SmartGuy<PacManState> {
 			TemporaryFood bonus = world.temporaryFood().get();
 			if (bonus.isActive() && bonus.location().equals(location)) {
 				fat += Game.FAT_ENERGIZER;
-				return Optional.of(new BonusFoundEvent(bonus));
+				return Optional.of(new BonusFoundEvent(location, bonus));
 			}
 		}
 		if (world.hasFood(ArcadeFood.ENERGIZER, location)) {
 			fat += Game.FAT_ENERGIZER;
-			return Optional.of(new FoodFoundEvent(location));
+			return Optional.of(new FoodFoundEvent(location, ArcadeFood.ENERGIZER));
 		}
 		if (world.hasFood(ArcadeFood.PELLET, location)) {
 			fat += Game.FAT_PELLET;
-			return Optional.of(new FoodFoundEvent(location));
+			return Optional.of(new FoodFoundEvent(location, ArcadeFood.PELLET));
 		}
 		return Optional.empty();
 	}
