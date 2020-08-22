@@ -290,12 +290,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public class GettingReadyState extends State<PacManGameState> {
 
-		public GettingReadyState() {
-			setTimer(Timing.sec(6));
-		}
-
-		@Override
-		public void onEntry() {
+		private void startNewGame() {
 			game.setGameLevel(settings.startLevel, world);
 			world.setFrozen(true);
 			world.houses().flatMap(House::doors).forEach(doorMan::closeDoor);
@@ -311,6 +306,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			playView.showMessage(2, "Ready!", Color.YELLOW);
 			currentView = playView;
 			theme.sounds().playMusic(theme.sounds().musicGameReady());
+		}
+
+		public GettingReadyState() {
+			setTimer(Timing.sec(6));
+		}
+
+		@Override
+		public void onEntry() {
+			startNewGame();
 		}
 
 		@Override
