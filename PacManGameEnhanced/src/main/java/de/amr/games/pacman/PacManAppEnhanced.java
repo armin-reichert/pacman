@@ -1,7 +1,5 @@
 package de.amr.games.pacman;
 
-import java.lang.reflect.Method;
-
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.ui.AppShell;
 import de.amr.easy.game.ui.f2dialog.F2Dialog;
@@ -38,21 +36,8 @@ public class PacManAppEnhanced extends PacManApp {
 	@Override
 	public void init() {
 		Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
-		loginfo("Graphviz engine class is '%s'", getGraphvizEngine());
 		setIcon("/images/pacman-icon.png");
 		setController(new EnhancedGameController(Themes.all().toArray(Theme[]::new)));
-	}
-
-	private String getGraphvizEngine() {
-		String engine = "Unknown";
-		try {
-			Method method = Graphviz.class.getDeclaredMethod("getEngine");
-			method.setAccessible(true);
-			engine = String.valueOf(method.invoke(null));
-		} catch (Exception x) {
-			x.printStackTrace();
-		}
-		return engine;
 	}
 
 	@Override
