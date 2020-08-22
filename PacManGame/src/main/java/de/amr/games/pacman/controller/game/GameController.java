@@ -125,6 +125,18 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		//@formatter:on
 	}
 
+	/**
+	 * Returns the typed PLAYING-state such that method references can be used. I found the expression
+	 * {@code this.<PlayingState>state(PLAYING)} too ugly.
+	 */
+	protected PlayingState state_PLAYING() {
+		return state(PLAYING);
+	}
+
+	protected ChangingLevelState state_CHANGING_LEVEL() {
+		return state(CHANGING_LEVEL);
+	}
+
 	private void buildStateMachine() {
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
@@ -137,11 +149,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			.states()
 			
 				.state(LOADING_MUSIC)
-					.onEntry(() -> currentView = createMusicLoadingView())
+					.onEntry(() -> currentView = new MusicLoadingView(theme))
 					.onExit(() -> currentView.exit())
 					
 				.state(INTRO)
-					.onEntry(() -> currentView = createIntroView())
+					.onEntry(() -> currentView = new IntroView(theme))
 					.onExit(() -> currentView.exit())
 				
 				.state(GETTING_READY).customState(new GettingReadyState())
@@ -581,28 +593,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	protected MusicLoadingView createMusicLoadingView() {
-		return new MusicLoadingView(theme);
-	}
-
-	protected IntroView createIntroView() {
-		return new IntroView(theme);
-	}
-
-	protected PlayView createPlayView() {
-		return new PlayView(world, theme, folks, game);
+	@Override
+	public Optional<View> currentView() {
+		return Optional.ofNullable(currentView);
 	}
 
 	/**
-	 * Returns the typed PLAYING-state such that method references can be used. I found the expression
-	 * {@code this.<PlayingState>state(PLAYING)} too ugly.
+	 * Overwritten by subclass.
 	 */
-	protected PlayingState state_PLAYING() {
-		return state(PLAYING);
-	}
-
-	protected ChangingLevelState state_CHANGING_LEVEL() {
-		return state(CHANGING_LEVEL);
+	protected PlayView createPlayView() {
+		return new PlayView(world, theme, folks, game);
 	}
 
 	public void setTheme(String themeName) {
@@ -616,14 +616,5 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (currentView != null) {
 			currentView.setTheme(theme);
 		}
-	}
-
-	public Theme getTheme() {
-		return themes[themeIndex];
-	}
-
-	@Override
-	public Optional<View> currentView() {
-		return Optional.ofNullable(currentView);
 	}
 }
