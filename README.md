@@ -246,51 +246,34 @@ Each ghost has a state machine controlling its "AI" and a two-state machine cont
 
 <img src="PacManDoc/fsm/Ghost Blinky AI.png">
 
-Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/game/BonusControl.java)) which appears at certain scores is controlled by a finite-state machine:
+Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/bonus/BonusFoodController.java)) which appears at certain scores is controlled by a finite-state machine:
 
-<img src="PacManDoc/fsm/Bonus Controller.png">
+<img src="PacManDoc/fsm/Bonus Food Controller.png">
 
 ```java
 beginStateMachine()
-	.description("Bonus Controller")
-	.initialState(ABSENT)
+	.description("Bonus Food Controller")
+	.initialState(BONUS_INACTIVE)
 	.states()
 
-		.state(ABSENT)
-			.onEntry(world::clearBonusFood)
+		.state(BONUS_INACTIVE)
+			.onEntry(world::hideTemporaryFood)
 
-		.state(PRESENT)
-			.timeoutAfter(() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()))
-			.onEntry(() -> {
-					ArcadeBonus bonus = new ArcadeBonus();
-					bonus.symbol = game.level.bonusSymbol;
-					bonus.value = game.level.bonusValue;
-					bonus.setState(PRESENT);
-					world.addBonusFood(bonus);
-					loginfo("Bonus '%s' activated for %.2f sec", bonus, state().getDuration() / 60f);
-			})
+		.state(BONUS_CONSUMABLE)
+			.timeoutAfter(fnActivationTime)
+			.onEntry(() -> activateBonus(world))
 
-		.state(CONSUMED).timeoutAfter(sec(3))
+		.state(BONUS_CONSUMED).timeoutAfter(Timing.sec(3))
 
 	.transitions()
 
-		.when(PRESENT).then(CONSUMED).on(BonusFoundEvent.class)
-			.act(() -> {
-				world.bonusFood().ifPresent(bonusFood -> {
-					bonusFood.setState(CONSUMED);
-					loginfo("Bonus '%s' consumed after %.2f sec",	bonusFood, state().getTicksConsumed() / 60f);
-				});
-			})
+		.when(BONUS_CONSUMABLE).then(BONUS_CONSUMED).on(BonusFoundEvent.class)
+			.act(() -> consumeBonus(world))
 
-		.when(PRESENT).then(ABSENT).onTimeout()
-			.act(() -> {
-				world.bonusFood().ifPresent(bonusFood -> {
-					bonusFood.setState(CONSUMED);
-					loginfo("Bonus '%s' not consumed", bonusFood);
-				});
-			})
+		.when(BONUS_CONSUMABLE).then(BONUS_INACTIVE).onTimeout()
+			.act(() -> deactivateBonus(world))
 
-		.when(CONSUMED).then(ABSENT).onTimeout()
+		.when(BONUS_CONSUMED).then(BONUS_INACTIVE).onTimeout()
 
 .endStateMachine();
 ```
