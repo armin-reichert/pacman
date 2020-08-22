@@ -7,8 +7,6 @@ import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -37,7 +35,7 @@ public class ArcadeSprites extends Spritesheet {
 	private final BufferedImage imageGhostEyes[];
 	private final BufferedImage imageGreenNumbers[];
 	private final BufferedImage imagePinkNumbers[];
-	private final Map<String, BufferedImage> symbols = new HashMap<>();
+	private final BufferedImage imageSymbols[];
 
 	private int spriteSheetOrder(Direction dir) {
 		if (dir == Direction.RIGHT) {
@@ -63,10 +61,7 @@ public class ArcadeSprites extends Spritesheet {
 		imageMazeEmptyWhite = exchangeColor(imageMazeEmpty, -14605825, Color.WHITE.getRGB());
 
 		// Symbols for bonus food
-		BufferedImage[] symbolImages = horizontalTiles(8, 2, 3);
-		for (ArcadeBonus symbol : ArcadeBonus.values()) {
-			symbols.put(symbol.name(), symbolImages[symbol.ordinal()]);
-		}
+		imageSymbols = horizontalTiles(8, 2, 3);
 
 		// Pac-Man
 		imagePacManFull = tile(2, 0);
@@ -131,7 +126,8 @@ public class ArcadeSprites extends Spritesheet {
 	}
 
 	public Sprite makeSprite_bonusSymbol(String symbol) {
-		return Sprite.of(symbols.get(symbol));
+		int index = ArcadeBonus.valueOf(symbol).ordinal();
+		return Sprite.of(imageSymbols[index]);
 	}
 
 	public Sprite makeSprite_pacManFull() {
