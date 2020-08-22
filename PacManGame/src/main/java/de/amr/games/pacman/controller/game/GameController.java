@@ -296,12 +296,20 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onEntry() {
-			startGame();
+			game.setGameLevel(settings.startLevel, world);
 			world.setFrozen(true);
 			world.houses().flatMap(House::doors).forEach(doorMan::closeDoor);
-			currentView = playView = createPlayView();
+			folks.guys().forEach(guy -> {
+				world.include(guy.body);
+				guy.init();
+			});
+			folks.blinky.madness.init();
+			ghostCommand.init();
+			bonusControl.init();
+			playView = createPlayView();
 			playView.init();
 			playView.showMessage(2, "Ready!", Color.YELLOW);
+			currentView = playView;
 			theme.sounds().playMusic(theme.sounds().musicGameReady());
 		}
 
@@ -488,17 +496,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				complete = true;
 			}
 		}
-	}
-
-	protected void startGame() {
-		game.start(settings.startLevel, world);
-		folks.guys().forEach(guy -> {
-			world.include(guy.body);
-			guy.init();
-		});
-		folks.blinky.madness.init();
-		ghostCommand.init();
-		bonusControl.init();
 	}
 
 	@Override
