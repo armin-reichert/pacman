@@ -248,7 +248,7 @@ Each ghost has a state machine controlling its "AI" and a two-state machine cont
 
 Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/bonus/BonusFoodController.java)) which appears at certain scores is controlled by a finite-state machine:
 
-<img src="PacManDoc/fsm/Bonus Controller.png">
+<img src="PacManDoc/fsm/Bonus Food Controller.png">
 
 ```java
 beginStateMachine()
