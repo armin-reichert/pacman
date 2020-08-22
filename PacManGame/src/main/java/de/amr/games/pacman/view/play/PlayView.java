@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
@@ -36,15 +37,23 @@ public class PlayView implements PacManGameView {
 		}
 	}
 
+	public static class SoundState {
+		public boolean gotExtraLife;
+		public boolean ghostEaten;
+		public boolean bonusEaten;
+		public boolean pacManDied;
+		public boolean chasingGhosts;
+		public boolean deadGhosts;
+		public long lastMealAt;
+	}
+
 	protected final World world;
 	protected final Folks folks;
 	protected Game game;
-
 	protected final Message[] messages;
-
 	protected Theme theme;
 	protected MessagesRenderer messagesRenderer;
-
+	public final SoundState sound;
 	protected boolean showingScores = true;
 
 	public PlayView(World world, Theme theme, Folks folks, Game game) {
@@ -52,6 +61,7 @@ public class PlayView implements PacManGameView {
 		this.folks = folks;
 		this.game = game;
 		messages = new Message[] { new Message(15), new Message(21) };
+		sound = new SoundState();
 		setTheme(theme);
 	}
 
@@ -62,6 +72,7 @@ public class PlayView implements PacManGameView {
 
 	@Override
 	public void update() {
+		renderSound();
 	}
 
 	@Override
@@ -168,4 +179,49 @@ public class PlayView implements PacManGameView {
 		theme.levelCounterRenderer().render(g, game);
 		g.translate(-world.width() * Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
 	}
+
+	private void renderSound() {
+		// Pac-Man
+		long starvingMillis = System.currentTimeMillis() - sound.lastMealAt;
+		if (starvingMillis > 300) {
+			theme.sounds().clipCrunching().stop();
+		} else if (!theme.sounds().clipCrunching().isRunning()) {
+			theme.sounds().clipCrunching().loop();
+		}
+		if (!folks.pacMan.ai.is(PacManState.POWERFUL)) {
+			theme.sounds().clipWaza().stop();
+		} else if (!theme.sounds().clipWaza().isRunning()) {
+			theme.sounds().clipWaza().loop();
+		}
+		if (sound.pacManDied) {
+			theme.sounds().clipPacManDies().play();
+			sound.pacManDied = false;
+		}
+		if (sound.bonusEaten) {
+			theme.sounds().clipEatFruit().play();
+			sound.bonusEaten = false;
+		}
+		if (sound.gotExtraLife) {
+			theme.sounds().clipExtraLife().play();
+			sound.gotExtraLife = false;
+		}
+
+		// Ghosts
+		if (!sound.chasingGhosts) {
+			theme.sounds().clipGhostChase().stop();
+		} else if (!theme.sounds().clipGhostChase().isRunning()) {
+			theme.sounds().clipGhostChase().setVolume(0.5f);
+			theme.sounds().clipGhostChase().loop();
+		}
+		if (!sound.deadGhosts) {
+			theme.sounds().clipGhostDead().stop();
+		} else if (!theme.sounds().clipGhostDead().isRunning()) {
+			theme.sounds().clipGhostDead().loop();
+		}
+		if (sound.ghostEaten) {
+			theme.sounds().clipEatGhost().play();
+			sound.ghostEaten = false;
+		}
+	}
+
 }

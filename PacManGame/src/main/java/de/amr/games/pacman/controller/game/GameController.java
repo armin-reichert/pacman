@@ -29,7 +29,6 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -65,32 +64,20 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
-	private static class SoundState {
-		boolean gotExtraLife;
-		boolean ghostEaten;
-		boolean bonusEaten;
-		boolean pacManDied;
-		boolean chasingGhosts;
-		boolean deadGhosts;
-		private long lastMealAt;
-	}
-
 	public final Game game;
 	public final World world;
+
+	public final Folks folks;
+	public final BonusFoodController bonusControl;
+	public final DoorMan doorMan;
+	public final GhostCommand ghostCommand;
 
 	public final Theme[] themes;
 	public Theme theme;
 	public int themeIndex = 0;
-	public final SoundState sound;
 
 	public PacManGameView currentView;
 	public PlayView playView;
-
-	public final Folks folks;
-
-	public final BonusFoodController bonusControl;
-	public final DoorMan doorMan;
-	public final GhostCommand ghostCommand;
 
 	public GameController(Theme... supportedThemes) {
 		super(PacManGameState.class);
@@ -98,8 +85,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		themes = supportedThemes;
 		setTheme(settings.theme);
-
-		sound = new SoundState();
 
 		game = new Game();
 		world = new ArcadeWorld();
@@ -166,7 +151,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(Timing.sec(1))
 					.onEntry(() -> {
 						folks.pacMan.body.visible = false;
-						sound.ghostEaten = true;
+						playView.sound.ghostEaten = true;
 					})
 					.onTick(() -> {
 						bonusControl.update();
@@ -195,7 +180,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							folks.ghostsInWorld().forEach(ghost -> ghost.body.visible = false);
 						}
 						else if (passed == Timing.sec(2.5f)) {
-							sound.pacManDied = true;
+							playView.sound.pacManDied = true;
 						}
 						folks.pacMan.update();
 					})
@@ -361,16 +346,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				if (folks.clyde.hasLeftHouse()) {
 					folks.blinky.madness.clydeExitsHouse();
 				}
-				sound.chasingGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.ai.is(GhostState.CHASING));
-				sound.deadGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.ai.is(GhostState.DEAD));
+				playView.sound.chasingGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.ai.is(GhostState.CHASING));
+				playView.sound.deadGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.ai.is(GhostState.DEAD));
 			}
 		}
 
 		@Override
 		public void onExit() {
 			theme.sounds().clips().forEach(SoundClip::stop);
-			sound.chasingGhosts = false;
-			sound.deadGhosts = false;
+			playView.sound.chasingGhosts = false;
+			playView.sound.deadGhosts = false;
 		}
 
 		private void resumePlaying() {
@@ -397,7 +382,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				int livesBefore = game.level.lives;
 				game.level.scoreGhostKilled();
 				if (game.level.lives > livesBefore) {
-					sound.gotExtraLife = true;
+					playView.sound.gotExtraLife = true;
 				}
 				ghost.ai.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
@@ -406,8 +391,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			else if (!settings.ghostsHarmless) {
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.body.tile());
 				doorMan.onLifeLost();
-				sound.chasingGhosts = false;
-				sound.deadGhosts = false;
+				playView.sound.chasingGhosts = false;
+				playView.sound.deadGhosts = false;
 				folks.pacMan.ai.process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
 			}
@@ -417,9 +402,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			int value = game.level.bonusValue;
 			int livesBefore = game.level.lives;
 			game.level.score(value);
-			sound.bonusEaten = true;
+			playView.sound.bonusEaten = true;
 			if (game.level.lives > livesBefore) {
-				sound.gotExtraLife = true;
+				playView.sound.gotExtraLife = true;
 			}
 			bonusControl.process(event);
 		}
@@ -438,9 +423,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (game.level.isBonusDue()) {
 				bonusControl.setState(BonusFoodState.BONUS_CONSUMABLE);
 			}
-			sound.lastMealAt = System.currentTimeMillis();
+			playView.sound.lastMealAt = System.currentTimeMillis();
 			if (game.level.lives > livesBeforeScoring) {
-				sound.gotExtraLife = true;
+				playView.sound.gotExtraLife = true;
 			}
 			if (game.level.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
@@ -521,9 +506,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		handleInput();
 		super.update();
 		currentView.update();
-		if (currentView == playView) {
-			renderPlayViewSound();
-		}
 	}
 
 	private void handleInput() {
@@ -547,50 +529,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				music.loop();
 			}
 		});
-	}
-
-	private void renderPlayViewSound() {
-		// Pac-Man
-		long starvingMillis = System.currentTimeMillis() - sound.lastMealAt;
-		if (starvingMillis > 300) {
-			theme.sounds().clipCrunching().stop();
-		} else if (!theme.sounds().clipCrunching().isRunning()) {
-			theme.sounds().clipCrunching().loop();
-		}
-		if (!folks.pacMan.ai.is(PacManState.POWERFUL)) {
-			theme.sounds().clipWaza().stop();
-		} else if (!theme.sounds().clipWaza().isRunning()) {
-			theme.sounds().clipWaza().loop();
-		}
-		if (sound.pacManDied) {
-			theme.sounds().clipPacManDies().play();
-			sound.pacManDied = false;
-		}
-		if (sound.bonusEaten) {
-			theme.sounds().clipEatFruit().play();
-			sound.bonusEaten = false;
-		}
-		if (sound.gotExtraLife) {
-			theme.sounds().clipExtraLife().play();
-			sound.gotExtraLife = false;
-		}
-
-		// Ghosts
-		if (!sound.chasingGhosts) {
-			theme.sounds().clipGhostChase().stop();
-		} else if (!theme.sounds().clipGhostChase().isRunning()) {
-			theme.sounds().clipGhostChase().setVolume(0.5f);
-			theme.sounds().clipGhostChase().loop();
-		}
-		if (!sound.deadGhosts) {
-			theme.sounds().clipGhostDead().stop();
-		} else if (!theme.sounds().clipGhostDead().isRunning()) {
-			theme.sounds().clipGhostDead().loop();
-		}
-		if (sound.ghostEaten) {
-			theme.sounds().clipEatGhost().play();
-			sound.ghostEaten = false;
-		}
 	}
 
 	@Override
