@@ -7,8 +7,6 @@ import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.IN_BED;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
-import static de.amr.games.pacman.controller.game.GameController.sec;
-import static de.amr.games.pacman.controller.game.GameController.speed;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
@@ -25,6 +23,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
+import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.controller.steering.common.MovementType;
@@ -80,7 +79,7 @@ public class PacMan extends SmartGuy<PacManState> {
 					.onTick(this::wander)
 					
 				.state(DEAD)
-					.timeoutAfter(sec(2.5f))
+					.timeoutAfter(Timing.sec(2.5f))
 
 				.state(COLLAPSING)
 
@@ -165,9 +164,9 @@ public class PacMan extends SmartGuy<PacManState> {
 		if (ai.is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {
 			return 0;
 		} else if (ai.is(POWERFUL)) {
-			return speed(fat > 0 ? game.level.pacManPowerDotsSpeed : game.level.pacManPowerSpeed);
+			return Timing.speed(fat > 0 ? game.level.pacManPowerDotsSpeed : game.level.pacManPowerSpeed);
 		} else if (ai.is(AWAKE)) {
-			return speed(fat > 0 ? game.level.pacManDotsSpeed : game.level.pacManSpeed);
+			return Timing.speed(fat > 0 ? game.level.pacManDotsSpeed : game.level.pacManSpeed);
 		}
 		throw new IllegalStateException("Illegal Pac-Man state: " + ai.getState());
 	}

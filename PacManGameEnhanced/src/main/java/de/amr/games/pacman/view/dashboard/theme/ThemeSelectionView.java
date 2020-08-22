@@ -52,7 +52,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
-		folks = new Folks(gameController.world(), gameController.world().house(0));
+		folks = new Folks(gameController.world, gameController.world.house(0));
 	}
 
 	public ThemeSelectionView() {
@@ -162,7 +162,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		comboSelectTheme.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				String themeName = comboSelectTheme.getModel().getElementAt(comboSelectTheme.getSelectedIndex());
-				gameController.selectTheme(themeName);
+				gameController.setTheme(themeName);
 				updatePreviewLabels();
 			}
 		});

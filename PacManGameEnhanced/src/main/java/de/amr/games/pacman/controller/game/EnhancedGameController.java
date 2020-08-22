@@ -310,10 +310,8 @@ public class EnhancedGameController extends GameController {
 		world.tiles().filter(location -> world.hasFood(ArcadeFood.PELLET, location)).forEach(tile -> {
 			world.eatFood(tile);
 			game.level.scoreSimplePelletEaten();
-			doorMan().ifPresent(doorMan -> {
-				doorMan.onPacManFoundFood();
-				doorMan.update();
-			});
+			doorMan.onPacManFoundFood();
+			doorMan.update();
 		});
 		loginfo("All simple pellets have been eaten");
 		if (game.level.remainingFoodCount() == 0) {

@@ -56,7 +56,7 @@ public class PacManAppEnhanced extends PacManApp {
 		f2.addCustomTab("State Machines", fsmView, () -> true);
 
 		GameStateView gameStateView = new GameStateView();
-		gameStateView.attachTo(gameController, gameController.folks());
+		gameStateView.attachTo(gameController, gameController.folks);
 		f2.addCustomTab("Game State", gameStateView, () -> gameController.game.level != null);
 
 		GameLevelView gameLevelView = new GameLevelView();

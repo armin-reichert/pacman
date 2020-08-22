@@ -1,7 +1,5 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.games.pacman.controller.game.GameController.sec;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -13,6 +11,7 @@ import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
+import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.components.Tile;
@@ -46,7 +45,7 @@ public class ChasePacManAnimation extends GameObject {
 
 	@Override
 	public void init() {
-		pelletTimer = sec(6 * 0.5f);
+		pelletTimer = Timing.sec(6 * 0.5f);
 		pelletDisplay = PelletDisplay.SIMPLE;
 
 		folks.guys().forEach(SmartGuy::init);
@@ -80,7 +79,7 @@ public class ChasePacManAnimation extends GameObject {
 	public void update() {
 		folks.guys().forEach(c -> c.body.tf.move());
 		if (pelletTimer > 0) {
-			if (pelletTimer % sec(0.5f) == 0)
+			if (pelletTimer % Timing.sec(0.5f) == 0)
 				if (pelletDisplay == PelletDisplay.FIFTY) {
 					pelletDisplay = PelletDisplay.SIMPLE;
 				} else {
@@ -88,7 +87,7 @@ public class ChasePacManAnimation extends GameObject {
 				}
 			pelletTimer--;
 		} else {
-			pelletTimer = sec(6 * 0.5f);
+			pelletTimer = Timing.sec(6 * 0.5f);
 		}
 	}
 

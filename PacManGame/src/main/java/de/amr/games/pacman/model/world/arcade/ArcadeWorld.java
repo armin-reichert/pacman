@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Food;
+import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.Block;
 import de.amr.games.pacman.model.world.components.Door;

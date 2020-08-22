@@ -75,7 +75,7 @@ class GameStateTableModel extends AbstractTableModel {
 
 	public GameStateTableModel(GameController gameController) {
 		this.gameController = gameController;
-		world = gameController.world();
+		world = gameController.world;
 		addTableModelListener(change -> {
 			if (change.getColumn() == ColumnInfo.OnStage.ordinal()) {
 				handleOnStageStatusChange(change.getFirstRow());
@@ -120,16 +120,16 @@ class GameStateTableModel extends AbstractTableModel {
 
 	public void update() {
 		if (hasGame()) {
-			gameController.ghostCommand().ifPresent(ghostCommand -> {
-				Folks folks = gameController.folks();
-				fillGhostRecord(records[ROW_BLINKY], gameController.game, ghostCommand, folks.blinky, folks.pacMan);
-				fillGhostRecord(records[ROW_PINKY], gameController.game, ghostCommand, folks.pinky, folks.pacMan);
-				fillGhostRecord(records[ROW_INKY], gameController.game, ghostCommand, folks.inky, folks.pacMan);
-				fillGhostRecord(records[ROW_CLYDE], gameController.game, ghostCommand, folks.clyde, folks.pacMan);
-				fillPacManRecord(records[ROW_PACMAN], gameController.game, folks.pacMan);
-				fillBonusRecord(records[ROW_BONUS], gameController, world);
-				fireTableDataChanged();
-			});
+			Game game = gameController.game;
+			GhostCommand ghostCommand = gameController.ghostCommand;
+			Folks folks = gameController.folks;
+			fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, folks.blinky, folks.pacMan);
+			fillGhostRecord(records[ROW_PINKY], game, ghostCommand, folks.pinky, folks.pacMan);
+			fillGhostRecord(records[ROW_INKY], game, ghostCommand, folks.inky, folks.pacMan);
+			fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, folks.clyde, folks.pacMan);
+			fillPacManRecord(records[ROW_PACMAN], game, folks.pacMan);
+			fillBonusRecord(records[ROW_BONUS], gameController, world);
+			fireTableDataChanged();
 		}
 	}
 
@@ -169,27 +169,26 @@ class GameStateTableModel extends AbstractTableModel {
 	}
 
 	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {
-		gameController.bonusControl().ifPresent(bonusControl -> {
-			r.included = false;
-			r.name = "Bonus";
-			r.tile = null;
-			r.state = BonusFoodState.BONUS_INACTIVE.name();
-			r.ticksRemaining = r.duration = 0;
-			world.temporaryFood().filter(bonus -> bonus instanceof ArcadeBonus).map(ArcadeBonus.class::cast).ifPresent(bonus -> {
-				r.included = true;
-				r.name = bonus.name();
-				r.state = "";
-				if (bonus.isConsumed()) {
-					r.state = "Consumed";
-				} else if (bonus.isActive()) {
-					r.state = "Present";
-				} else {
-					r.state = "Absent";
-				}
-				r.ticksRemaining = bonusControl.state().getTicksRemaining();
-				r.duration = bonusControl.state().getDuration();
-			});
-		});
+		r.included = false;
+		r.name = "Bonus";
+		r.tile = null;
+		r.state = BonusFoodState.BONUS_INACTIVE.name();
+		r.ticksRemaining = r.duration = 0;
+		world.temporaryFood().filter(bonus -> bonus instanceof ArcadeBonus).map(ArcadeBonus.class::cast)
+				.ifPresent(bonus -> {
+					r.included = true;
+					r.name = bonus.name();
+					r.state = "";
+					if (bonus.isConsumed()) {
+						r.state = "Consumed";
+					} else if (bonus.isActive()) {
+						r.state = "Present";
+					} else {
+						r.state = "Absent";
+					}
+					r.ticksRemaining = gameController.bonusControl.state().getTicksRemaining();
+					r.duration = gameController.bonusControl.state().getDuration();
+				});
 	}
 
 	@Override

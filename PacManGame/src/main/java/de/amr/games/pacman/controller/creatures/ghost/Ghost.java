@@ -7,8 +7,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTEN
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
-import static de.amr.games.pacman.controller.game.GameController.sec;
-import static de.amr.games.pacman.controller.game.GameController.speed;
 
 import java.util.EnumMap;
 import java.util.Optional;
@@ -22,6 +20,7 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
+import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.model.game.GameLevel;
@@ -114,7 +113,7 @@ public class Ghost extends SmartGuy<GhostState> {
 					})
 	
 				.state(DEAD)
-					.timeoutAfter(sec(1))
+					.timeoutAfter(Timing.sec(1))
 					.onEntry(this::computeBounty)
 					.onTick((s, consumed, remaining) -> {
 						if (remaining == 0) {
@@ -208,28 +207,28 @@ public class Ghost extends SmartGuy<GhostState> {
 		boolean tunnel = world.isTunnel(body.tile());
 		switch (ai.getState()) {
 		case LOCKED:
-			return speed(isInsideHouse() ? level.ghostSpeed / 2 : 0);
+			return Timing.speed(isInsideHouse() ? level.ghostSpeed / 2 : 0);
 		case LEAVING_HOUSE:
-			return speed(level.ghostSpeed / 2);
+			return Timing.speed(level.ghostSpeed / 2);
 		case ENTERING_HOUSE:
-			return speed(level.ghostSpeed);
+			return Timing.speed(level.ghostSpeed);
 		case CHASING:
 		case SCATTERING:
 			if (tunnel) {
-				return speed(level.ghostTunnelSpeed);
+				return Timing.speed(level.ghostTunnelSpeed);
 			}
 			GhostMentalState mentalState = getMentalState();
 			if (mentalState == GhostMentalState.ELROY1) {
-				return speed(level.elroy1Speed);
+				return Timing.speed(level.elroy1Speed);
 			}
 			if (mentalState == GhostMentalState.ELROY2) {
-				return speed(level.elroy2Speed);
+				return Timing.speed(level.elroy2Speed);
 			}
-			return speed(level.ghostSpeed);
+			return Timing.speed(level.ghostSpeed);
 		case FRIGHTENED:
-			return speed(tunnel ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
+			return Timing.speed(tunnel ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
 		case DEAD:
-			return speed(2 * level.ghostSpeed);
+			return Timing.speed(2 * level.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s", ai.getState()));
 		}
@@ -249,11 +248,11 @@ public class Ghost extends SmartGuy<GhostState> {
 	}
 
 	private long getFrightenedTicks() {
-		return game != null ? sec(game.level.pacManPowerSeconds) : sec(5);
+		return game != null ? Timing.sec(game.level.pacManPowerSeconds) : Timing.sec(5);
 	}
 
 	private long getFlashTimeTicks() {
-		return game != null ? game.level.numFlashes * sec(0.5f) : 0;
+		return game != null ? game.level.numFlashes * Timing.sec(0.5f) : 0;
 	}
 
 	private void checkPacManCollision() {

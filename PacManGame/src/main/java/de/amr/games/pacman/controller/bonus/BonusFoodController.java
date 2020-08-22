@@ -4,12 +4,12 @@ import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.bonus.BonusFoodState.BONUS_CONSUMABLE;
 import static de.amr.games.pacman.controller.bonus.BonusFoodState.BONUS_CONSUMED;
 import static de.amr.games.pacman.controller.bonus.BonusFoodState.BONUS_INACTIVE;
-import static de.amr.games.pacman.controller.game.GameController.sec;
 
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.World;
@@ -41,7 +41,7 @@ public class BonusFoodController extends StateMachine<BonusFoodState, PacManGame
 					.timeoutAfter(fnActivationTime)
 					.onEntry(() -> activateBonus(world))
 				
-				.state(BONUS_CONSUMED).timeoutAfter(sec(3))
+				.state(BONUS_CONSUMED).timeoutAfter(Timing.sec(3))
 
 			.transitions()
 				

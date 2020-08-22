@@ -15,7 +15,6 @@ import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -66,34 +65,6 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
-	/**
-	 * In Shaun William's <a href="https://github.com/masonicGIT/pacman">Pac-Man remake</a> there is a
-	 * speed table giving the number of steps (=pixels?) which Pac-Man is moving in 16 frames. In level
-	 * 5, he uses 4 * 2 + 12 = 20 steps in 16 frames, which is 1.25 pixels/frame. The table from
-	 * Gamasutra ({@link Game#LEVEL_DATA}) states that this corresponds to 100% base speed for Pac-Man
-	 * at level 5. Therefore I use 1.25 pixel/frame for 100% speed.
-	 */
-	public static final float BASE_SPEED = 1.25f;
-
-	/**
-	 * @param fraction fraction of base speed
-	 * @return speed (pixels/tick) corresponding to given fraction of base speed
-	 */
-	public static float speed(float fraction) {
-		return fraction * BASE_SPEED;
-	}
-
-	/**
-	 * Returns the number of ticks corresponding to the given time (in seconds) for a framerate of 60
-	 * ticks/sec.
-	 * 
-	 * @param seconds seconds
-	 * @return ticks corresponding to given number of seconds
-	 */
-	public static long sec(float seconds) {
-		return Math.round(60 * seconds);
-	}
-
 	private static class SoundState {
 		boolean gotExtraLife;
 		boolean ghostEaten;
@@ -104,23 +75,55 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private long lastMealAt;
 	}
 
-	// model
 	public final Game game;
 	public final World world;
 
-	// view
-	public final SoundState sound = new SoundState();
 	public final Theme[] themes;
 	public Theme theme;
-	public int currentThemeIndex = 0;
+	public int themeIndex = 0;
+	public final SoundState sound;
+
 	public PacManGameView currentView;
 	public PlayView playView;
 
-	// controller
 	public final Folks folks;
-	public final GhostCommand ghostCommand;
-	public final DoorMan doorMan;
+
 	public final BonusFoodController bonusControl;
+	public final DoorMan doorMan;
+	public final GhostCommand ghostCommand;
+
+	public GameController(Theme... supportedThemes) {
+		super(PacManGameState.class);
+		buildStateMachine();
+
+		themes = supportedThemes;
+		setTheme(settings.theme);
+
+		sound = new SoundState();
+
+		game = new Game();
+		world = new ArcadeWorld();
+		folks = new Folks(world, world.house(0));
+
+		folks.guys().forEach(guy -> {
+			guy.ai.addEventListener(this::process);
+			guy.game = game;
+		});
+
+		app().onClose(() -> {
+			if (game.level != null) {
+				game.level.hiscore.save();
+			}
+		});
+
+		doorMan = new DoorMan(world, world.house(0), game, folks);
+		ghostCommand = new GhostCommand(game, folks);
+		//@formatter:off
+		bonusControl = new BonusFoodController(game, world,
+			() -> Timing.sec(Game.BONUS_SECONDS + new Random().nextFloat()),
+			() -> ArcadeBonus.of(game.level.bonusSymbol, game.level.bonusValue, ArcadeWorld.BONUS_LOCATION));
+		//@formatter:on
+	}
 
 	private void buildStateMachine() {
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
@@ -148,7 +151,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(CHANGING_LEVEL).customState(new ChangingLevelState())
 				
 				.state(GHOST_DYING)
-					.timeoutAfter(sec(1))
+					.timeoutAfter(Timing.sec(1))
 					.onEntry(() -> {
 						folks.pacMan.body.visible = false;
 						sound.ghostEaten = true;
@@ -164,7 +167,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 				
 				.state(PACMAN_DYING)
-					.timeoutAfter(sec(5))
+					.timeoutAfter(Timing.sec(5))
 					.onEntry(() -> {
 						if (!settings.pacManImmortable) {
 							game.level.lives -= 1;
@@ -175,11 +178,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						theme.sounds().clips().forEach(SoundClip::stop);
 					})
 					.onTick((state, passed, remaining) -> {
-						if (passed == sec(2)) {
+						if (passed == Timing.sec(2)) {
 							bonusControl.setState(BonusFoodState.BONUS_INACTIVE);
 							folks.ghostsInWorld().forEach(ghost -> ghost.body.visible = false);
 						}
-						else if (passed == sec(2.5f)) {
+						else if (passed == Timing.sec(2.5f)) {
 							sound.pacManDied = true;
 						}
 						folks.pacMan.update();
@@ -291,7 +294,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class GettingReadyState extends State<PacManGameState> {
 
 		public GettingReadyState() {
-			setTimer(sec(6));
+			setTimer(Timing.sec(6));
 		}
 
 		@Override
@@ -307,7 +310,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onTick(State<PacManGameState> state, long passed, long remaining) {
-			if (remaining == sec(1)) {
+			if (remaining == Timing.sec(1)) {
 				world.setFrozen(false);
 			}
 			folks.guysInWorld().forEach(SmartGuy::update);
@@ -321,7 +324,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public class PlayingState extends State<PacManGameState> {
 
-		final long INITIAL_WAIT_TIME = sec(2);
+		final long INITIAL_WAIT_TIME = Timing.sec(2);
 
 		@Override
 		public void onEntry() {
@@ -432,7 +435,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else if (energizer && game.level.pacManPowerSeconds > 0) {
 				ghostCommand.pauseAttacking();
 				folks.guysInWorld()
-						.forEach(guy -> guy.ai.process(new PacManGainsPowerEvent(sec(game.level.pacManPowerSeconds))));
+						.forEach(guy -> guy.ai.process(new PacManGainsPowerEvent(Timing.sec(game.level.pacManPowerSeconds))));
 			}
 		}
 	}
@@ -440,7 +443,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class ChangingLevelState extends State<PacManGameState> {
 
 		private boolean complete;
-		private long flashingStart = sec(2), flashingEnd;
+		private long flashingStart = Timing.sec(2), flashingEnd;
 
 		public boolean isComplete() {
 			return complete;
@@ -454,7 +457,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			doorMan.onLevelChange();
 			folks.ghosts().forEach(ghost -> ghost.enabled = false);
 			theme.sounds().clips().forEach(SoundClip::stop);
-			flashingEnd = flashingStart + game.level.numFlashes * sec(theme.$float("maze-flash-sec"));
+			flashingEnd = flashingStart + game.level.numFlashes * Timing.sec(theme.$float("maze-flash-sec"));
 			complete = false;
 		}
 
@@ -479,46 +482,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			// One second later, let ghosts jump again inside the house
-			if (passed >= flashingEnd + sec(2)) {
+			if (passed >= flashingEnd + Timing.sec(2)) {
 				folks.guysInWorld().forEach(SmartGuy::update);
 			}
 
-			if (passed == flashingEnd + sec(4)) {
+			if (passed == flashingEnd + Timing.sec(4)) {
 				world.setFrozen(false);
 				complete = true;
 			}
 		}
-	}
-
-	public GameController(Theme... supportedThemes) {
-		super(PacManGameState.class);
-		buildStateMachine();
-
-		themes = supportedThemes;
-		selectTheme(settings.theme);
-
-		game = new Game();
-		world = new ArcadeWorld();
-		folks = new Folks(world, world.house(0));
-
-		folks.guys().forEach(guy -> {
-			guy.ai.addEventListener(this::process);
-			guy.game = game;
-		});
-
-		app().onClose(() -> {
-			if (game.level != null) {
-				game.level.hiscore.save();
-			}
-		});
-
-		doorMan = new DoorMan(world, world.house(0), game, folks);
-		ghostCommand = new GhostCommand(game, folks);
-		//@formatter:off
-		bonusControl = new BonusFoodController(game, world,
-			() -> sec(Game.BONUS_SECONDS + new Random().nextFloat()),
-			() -> ArcadeBonus.of(game.level.bonusSymbol, game.level.bonusValue, ArcadeWorld.BONUS_LOCATION));
-		//@formatter:on
 	}
 
 	protected void startGame() {
@@ -550,8 +522,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(80);
 		} else if (Keyboard.keyPressedOnce("z")) {
-			currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-			theme = themes[currentThemeIndex];
+			themeIndex = (themeIndex + 1) % themes.length;
+			theme = themes[themeIndex];
 			currentView.setTheme(theme);
 		}
 	}
@@ -633,42 +605,21 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return state(CHANGING_LEVEL);
 	}
 
-	public Folks folks() {
-		return folks;
-	}
-
-	public void selectTheme(String themeName) {
-		currentThemeIndex = IntStream.range(0, themes.length).filter(i -> themes[i].name().equalsIgnoreCase(themeName))
-				.findFirst().orElse(0);
-		setTheme(themes[currentThemeIndex]);
-	}
-
-	public void setTheme(Theme theme) {
-		this.currentThemeIndex = Arrays.asList(themes).indexOf(theme);
-		this.theme = theme;
+	public void setTheme(String themeName) {
+		//@formatter:off
+		themeIndex = IntStream.range(0, themes.length)
+			.filter(i -> themes[i].name().equalsIgnoreCase(themeName))
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("Illegal theme name: " + themeName));
+		//@formatter:on
+		theme = themes[themeIndex];
 		if (currentView != null) {
 			currentView.setTheme(theme);
 		}
 	}
 
 	public Theme getTheme() {
-		return themes[currentThemeIndex];
-	}
-
-	public World world() {
-		return world;
-	}
-
-	public Optional<GhostCommand> ghostCommand() {
-		return Optional.ofNullable(ghostCommand);
-	}
-
-	public Optional<DoorMan> doorMan() {
-		return Optional.ofNullable(doorMan);
-	}
-
-	public Optional<BonusFoodController> bonusControl() {
-		return Optional.ofNullable(bonusControl);
+		return themes[themeIndex];
 	}
 
 	@Override
@@ -682,5 +633,4 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			loginfo("Clock frequency changed to %d ticks/sec", ticksPerSecond);
 		}
 	}
-
 }

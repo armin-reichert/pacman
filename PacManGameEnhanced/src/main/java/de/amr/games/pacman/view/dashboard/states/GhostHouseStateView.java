@@ -2,7 +2,6 @@ package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
-import static de.amr.games.pacman.view.dashboard.util.Formatting.ticksAndSeconds;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -22,6 +21,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
+import de.amr.games.pacman.view.dashboard.util.Formatting;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSprites;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import net.miginfocom.swing.MigLayout;
@@ -146,24 +146,23 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		if (gameController.game.level != null) {
-			gameController.doorMan().ifPresent(ghostHouseAccess -> {
-				tfPinkyDots.setText(formatDots(ghostHouseAccess, folks.pinky));
-				tfPinkyDots.setEnabled(!ghostHouseAccess.isGlobalDotCounterEnabled());
-				updateTrafficLight(trafficPinky, ghostHouseAccess, folks.pinky);
+			DoorMan doorMan = gameController.doorMan;
+			tfPinkyDots.setText(formatDots(doorMan, folks.pinky));
+			tfPinkyDots.setEnabled(!doorMan.isGlobalDotCounterEnabled());
+			updateTrafficLight(trafficPinky, doorMan, folks.pinky);
 
-				tfInkyDots.setText(formatDots(ghostHouseAccess, folks.inky));
-				tfInkyDots.setEnabled(!ghostHouseAccess.isGlobalDotCounterEnabled());
-				updateTrafficLight(trafficInky, ghostHouseAccess, folks.inky);
+			tfInkyDots.setText(formatDots(doorMan, folks.inky));
+			tfInkyDots.setEnabled(!doorMan.isGlobalDotCounterEnabled());
+			updateTrafficLight(trafficInky, doorMan, folks.inky);
 
-				tfClydeDots.setText(formatDots(ghostHouseAccess, folks.clyde));
-				tfClydeDots.setEnabled(!ghostHouseAccess.isGlobalDotCounterEnabled());
-				updateTrafficLight(trafficClyde, ghostHouseAccess, folks.clyde);
+			tfClydeDots.setText(formatDots(doorMan, folks.clyde));
+			tfClydeDots.setEnabled(!doorMan.isGlobalDotCounterEnabled());
+			updateTrafficLight(trafficClyde, doorMan, folks.clyde);
 
-				tfGlobalDots.setText(String.format("%d", ghostHouseAccess.globalDotCount()));
-				tfGlobalDots.setEnabled(ghostHouseAccess.isGlobalDotCounterEnabled());
+			tfGlobalDots.setText(String.format("%d", doorMan.globalDotCount()));
+			tfGlobalDots.setEnabled(doorMan.isGlobalDotCounterEnabled());
 
-				tfPacManStarvingTime.setText(ticksAndSeconds(ghostHouseAccess.pacManStarvingTicks()));
-			});
+			tfPacManStarvingTime.setText(Formatting.ticksAndSeconds(doorMan.pacManStarvingTicks()));
 		}
 	}
 
