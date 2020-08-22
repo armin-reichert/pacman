@@ -1,5 +1,8 @@
 package de.amr.games.pacman.controller.game;
 
+import static de.amr.easy.game.Application.app;
+import static de.amr.easy.game.Application.loginfo;
+
 import de.amr.games.pacman.model.game.Game;
 
 public interface Timing {
@@ -30,5 +33,12 @@ public interface Timing {
 	 */
 	static long sec(float seconds) {
 		return Math.round(60 * seconds);
+	}
+
+	static void changeClockFrequency(int ticksPerSecond) {
+		if (app().clock().getTargetFramerate() != ticksPerSecond) {
+			app().clock().setTargetFrameRate(ticksPerSecond);
+			loginfo("Clock frequency changed to %d ticks/sec", ticksPerSecond);
+		}
 	}
 }

@@ -95,12 +95,12 @@ public class EnhancedGameController extends GameController {
 	private void handleInput() {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
 			int oldFreq = app().clock().getTargetFramerate();
-			changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
+			Timing.changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
 		}
 
 		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
 			int oldFreq = app().clock().getTargetFramerate();
-			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
+			Timing.changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
 
 		else if (Keyboard.keyPressedOnce("l")) {

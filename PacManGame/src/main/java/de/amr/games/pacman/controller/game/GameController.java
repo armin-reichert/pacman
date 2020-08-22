@@ -516,11 +516,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void handleInput() {
 		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
-			changeClockFrequency(60);
+			Timing.changeClockFrequency(60);
 		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
-			changeClockFrequency(70);
+			Timing.changeClockFrequency(70);
 		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
-			changeClockFrequency(80);
+			Timing.changeClockFrequency(80);
 		} else if (Keyboard.keyPressedOnce("z")) {
 			themeIndex = (themeIndex + 1) % themes.length;
 			theme = themes[themeIndex];
@@ -625,12 +625,5 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	@Override
 	public Optional<View> currentView() {
 		return Optional.ofNullable(currentView);
-	}
-
-	public void changeClockFrequency(int ticksPerSecond) {
-		if (app().clock().getTargetFramerate() != ticksPerSecond) {
-			app().clock().setTargetFrameRate(ticksPerSecond);
-			loginfo("Clock frequency changed to %d ticks/sec", ticksPerSecond);
-		}
 	}
 }
