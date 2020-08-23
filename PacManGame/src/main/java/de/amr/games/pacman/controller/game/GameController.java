@@ -516,7 +516,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			Timing.changeClockFrequency(80);
 		} else if (Keyboard.keyPressedOnce("z")) {
 			themes.next();
-			currentView.setTheme(themes.current());
 		}
 	}
 
