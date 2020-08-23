@@ -233,9 +233,9 @@ public class ExtendedGameController extends GameController {
 	public void setShowingScores(boolean selected) {
 		showingScores = selected;
 		if (selected) {
-			playView().turnScoresOn();
+			this.<ExtendedPlayView>playView().turnScoresOn();
 		} else {
-			playView().turnScoresOff();
+			this.<ExtendedPlayView>playView().turnScoresOff();
 		}
 	}
 

@@ -29,7 +29,6 @@ public class PlayView implements PacManGameView {
 	public final MessagesView messages;
 
 	protected Theme theme;
-	protected boolean showingScores = true;
 
 	public PlayView(Theme theme, Folks folks, Game game, World world) {
 		this.folks = folks;
@@ -73,20 +72,12 @@ public class PlayView implements PacManGameView {
 		drawLevelCounter(g);
 	}
 
-	public void turnScoresOn() {
-		this.showingScores = true;
-	}
-
-	public void turnScoresOff() {
-		this.showingScores = false;
-	}
-
-	public boolean isShowingScores() {
-		return showingScores;
-	}
-
 	protected void drawWorld(Graphics2D g) {
 		theme.worldRenderer(world).render(g, world);
+	}
+
+	protected void drawScores(Graphics2D g) {
+		theme.pointsCounterRenderer().render(g, game);
 	}
 
 	protected void drawPacMan(Graphics2D g, PacMan pacMan) {
@@ -101,12 +92,6 @@ public class PlayView implements PacManGameView {
 		drawPacMan(g, folks.pacMan);
 		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
 		folks.ghostsInWorld().filter(ghost -> !ghost.ai.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
-	}
-
-	protected void drawScores(Graphics2D g) {
-		if (showingScores) {
-			theme.pointsCounterRenderer().render(g, game);
-		}
 	}
 
 	protected void drawLiveCounter(Graphics2D g) {

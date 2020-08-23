@@ -1,7 +1,5 @@
 package de.amr.games.pacman.view.theme.arcade;
 
-import static de.amr.games.pacman.model.world.api.Direction.LEFT;
-
 import java.awt.Graphics2D;
 import java.awt.Image;
 
@@ -15,7 +13,7 @@ class LivesCounterRenderer implements IGameScoreRenderer {
 
 	public LivesCounterRenderer() {
 		ArcadeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
-		pacManLookingLeft = arcadeSprites.makeSprite_pacManWalking(LEFT).frame(1);
+		pacManLookingLeft = arcadeSprites.tile(1, 1);
 	}
 
 	@Override

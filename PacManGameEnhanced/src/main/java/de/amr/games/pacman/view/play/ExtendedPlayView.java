@@ -32,6 +32,7 @@ public class ExtendedPlayView extends PlayView {
 	protected boolean showingGrid;
 	protected boolean showingRoutes;
 	protected boolean showingStates;
+	protected boolean showingScores = true;
 
 	public ExtendedPlayView(Theme theme, Folks folks, GhostCommand ghostCommand, Game game, World world) {
 		super(theme, folks, game, world);
@@ -108,6 +109,14 @@ public class ExtendedPlayView extends PlayView {
 		showingStates = false;
 	}
 
+	public void turnScoresOn() {
+		this.showingScores = true;
+	}
+
+	public void turnScoresOff() {
+		this.showingScores = false;
+	}
+
 	@Override
 	protected void drawWorld(Graphics2D g) {
 		theme.worldRenderer(world).render(g, world);
@@ -117,6 +126,13 @@ public class ExtendedPlayView extends PlayView {
 				g.setColor(color);
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
+		}
+	}
+
+	@Override
+	protected void drawScores(Graphics2D g) {
+		if (showingScores) {
+			theme.pointsCounterRenderer().render(g, game);
 		}
 	}
 
