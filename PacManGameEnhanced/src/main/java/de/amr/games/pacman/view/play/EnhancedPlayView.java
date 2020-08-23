@@ -33,8 +33,8 @@ public class EnhancedPlayView extends PlayView {
 	protected boolean showingRoutes;
 	protected boolean showingStates;
 
-	public EnhancedPlayView(World world, Theme theme, Folks folks, Game game, GhostCommand ghostCommand) {
-		super(world, theme, folks, game);
+	public EnhancedPlayView(Theme theme, Folks folks, GhostCommand ghostCommand, Game game, World world) {
+		super(theme, folks, game, world);
 		this.ghostCommand = ghostCommand;
 		gridRenderer = new GridRenderer(world.width(), world.height());
 		routesRenderer = new RoutesRenderer();

@@ -56,10 +56,10 @@ public class PlayView implements PacManGameView {
 	public final SoundState sound;
 	protected boolean showingScores = true;
 
-	public PlayView(World world, Theme theme, Folks folks, Game game) {
-		this.world = world;
+	public PlayView(Theme theme, Folks folks, Game game, World world) {
 		this.folks = folks;
 		this.game = game;
+		this.world = world;
 		messages = new Message[] { new Message(15), new Message(21) };
 		sound = new SoundState();
 		setTheme(theme);

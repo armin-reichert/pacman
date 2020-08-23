@@ -534,9 +534,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	/**
-	 * Overwritten by subclass.
+	 * Can be overwritten by subclass.
+	 * 
+	 * @return the play view instance
 	 */
 	protected PlayView createPlayView() {
-		return new PlayView(world, themes.current(), folks, game);
+		return new PlayView(themes.current(), folks, game, world);
 	}
 }

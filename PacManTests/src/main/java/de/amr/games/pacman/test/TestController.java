@@ -46,7 +46,7 @@ public class TestController implements VisualController {
 		inky = folks.inky;
 		clyde = folks.clyde;
 		themes = Themes.all().toArray(Theme[]::new);
-		view = new EnhancedPlayView(world, theme(), folks, game, null);
+		view = new EnhancedPlayView(theme(), folks, null, game, world);
 		view.turnScoresOff();
 	}
 
