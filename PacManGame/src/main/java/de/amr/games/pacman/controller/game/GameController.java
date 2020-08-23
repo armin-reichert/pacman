@@ -65,14 +65,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public final Game game;
 	public final World world;
-
 	public final Folks folks;
 	public final BonusFoodController bonusControl;
 	public final DoorMan doorMan;
 	public final GhostCommand ghostCommand;
-
 	public final ThemeSelector themes;
-
 	public PacManGameView currentView;
 	public PlayView playView;
 
