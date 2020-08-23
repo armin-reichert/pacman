@@ -17,7 +17,6 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.IntStream;
 
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.input.Keyboard;
@@ -72,9 +71,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public final DoorMan doorMan;
 	public final GhostCommand ghostCommand;
 
-	public final Theme[] themes;
-	public Theme theme;
-	public int themeIndex = 0;
+	public final ThemeSelector themes;
 
 	public PacManGameView currentView;
 	public PlayView playView;
@@ -83,8 +80,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		super(PacManGameState.class);
 		buildStateMachine();
 
-		themes = supportedThemes;
-		setTheme(settings.theme);
+		themes = new ThemeSelector(supportedThemes);
+		themes.addListener(theme -> {
+			if (currentView != null) {
+				currentView.setTheme(theme);
+			}
+		});
+		themes.select(settings.theme);
 
 		game = new Game();
 		world = new ArcadeWorld();
@@ -134,11 +136,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			.states()
 			
 				.state(LOADING_MUSIC)
-					.onEntry(() -> currentView = new MusicLoadingView(theme))
+					.onEntry(() -> currentView = new MusicLoadingView(themes.current()))
 					.onExit(() -> currentView.exit())
 					
 				.state(INTRO)
-					.onEntry(() -> currentView = new IntroView(theme))
+					.onEntry(() -> currentView = new IntroView(themes.current()))
 					.onExit(() -> currentView.exit())
 				
 				.state(GETTING_READY).customState(new GettingReadyState())
@@ -171,8 +173,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						world.setFrozen(true);
 						folks.blinky.madness.pacManDies();
-						theme.sounds().stopMusic(theme.sounds().musicGameRunning());
-						theme.sounds().clips().forEach(SoundClip::stop);
+						themes.current().sounds().stopMusic(themes.current().sounds().musicGameRunning());
+						themes.current().sounds().clips().forEach(SoundClip::stop);
 					})
 					.onTick((state, passed, remaining) -> {
 						if (passed == Timing.sec(2)) {
@@ -198,26 +200,26 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghost.ai.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
 						playView.showMessage(2, "Game Over!", Color.RED);
-						theme.sounds().stopAll();
-						theme.sounds().playMusic(theme.sounds().musicGameOver());
+						themes.current().sounds().stopAll();
+						themes.current().sounds().playMusic(themes.current().sounds().musicGameOver());
 					})
 					.onTick(() -> {
 						folks.ghostsInWorld().forEach(Ghost::move);
 					})
 					.onExit(() -> {
 						playView.clearMessage(2);
-						theme.sounds().stopMusic(theme.sounds().musicGameOver());
+						themes.current().sounds().stopMusic(themes.current().sounds().musicGameOver());
 						world.restoreFood();
 					})
 	
 			.transitions()
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
-					.condition(() -> theme.sounds().isMusicLoaded()	&& settings.skipIntro)
+					.condition(() -> themes.current().sounds().isMusicLoaded()	&& settings.skipIntro)
 					.annotation("Music loaded, skipping intro")
 					
 				.when(LOADING_MUSIC).then(INTRO)
-					.condition(() -> theme.sounds().isMusicLoaded())
+					.condition(() -> themes.current().sounds().isMusicLoaded())
 					.annotation("Music loaded")
 
 				.when(INTRO).then(GETTING_READY)
@@ -281,7 +283,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.annotation("New game requested by user")
 					
 				.when(GAME_OVER).then(INTRO)
-					.condition(() -> !theme.sounds().isMusicRunning(theme.sounds().musicGameOver()))
+					.condition(() -> !themes.current().sounds().isMusicRunning(themes.current().sounds().musicGameOver()))
 					.annotation("Game over music finished")
 							
 		.endStateMachine();
@@ -302,10 +304,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			ghostCommand.init();
 			bonusControl.init();
 			playView = createPlayView();
-			playView.init();
 			playView.showMessage(2, "Ready!", Color.YELLOW);
 			currentView = playView;
-			theme.sounds().playMusic(theme.sounds().musicGameReady());
+			themes.current().sounds().playMusic(themes.current().sounds().musicGameReady());
 		}
 
 		public GettingReadyState() {
@@ -365,7 +366,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onExit() {
-			theme.sounds().clips().forEach(SoundClip::stop);
+			themes.current().sounds().clips().forEach(SoundClip::stop);
 			playView.sound.chasingGhosts = false;
 			playView.sound.deadGhosts = false;
 		}
@@ -465,8 +466,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			folks.pacMan.fallAsleep();
 			doorMan.onLevelChange();
 			folks.ghosts().forEach(ghost -> ghost.enabled = false);
-			theme.sounds().clips().forEach(SoundClip::stop);
-			flashingEnd = flashingStart + game.level.numFlashes * Timing.sec(theme.$float("maze-flash-sec"));
+			themes.current().sounds().clips().forEach(SoundClip::stop);
+			flashingEnd = flashingStart + game.level.numFlashes * Timing.sec(themes.current().$float("maze-flash-sec"));
 			complete = false;
 		}
 
@@ -517,14 +518,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			Timing.changeClockFrequency(80);
 		} else if (Keyboard.keyPressedOnce("z")) {
-			themeIndex = (themeIndex + 1) % themes.length;
-			theme = themes[themeIndex];
-			currentView.setTheme(theme);
+			themes.next();
+			currentView.setTheme(themes.current());
 		}
 	}
 
 	private void startBackgroundMusicForPlaying() {
-		theme.sounds().musicGameRunning().ifPresent(music -> {
+		themes.current().sounds().musicGameRunning().ifPresent(music -> {
 			if (!music.isRunning()) {
 				music.setVolume(0.4f);
 				music.loop();
@@ -541,19 +541,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 * Overwritten by subclass.
 	 */
 	protected PlayView createPlayView() {
-		return new PlayView(world, theme, folks, game);
-	}
-
-	public void setTheme(String themeName) {
-		//@formatter:off
-		themeIndex = IntStream.range(0, themes.length)
-			.filter(i -> themes[i].name().equalsIgnoreCase(themeName))
-			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("Illegal theme name: " + themeName));
-		//@formatter:on
-		theme = themes[themeIndex];
-		if (currentView != null) {
-			currentView.setTheme(theme);
-		}
+		return new PlayView(world, themes.current(), folks, game);
 	}
 }

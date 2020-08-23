@@ -162,7 +162,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		comboSelectTheme.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				String themeName = comboSelectTheme.getModel().getElementAt(comboSelectTheme.getSelectedIndex());
-				gameController.setTheme(themeName);
+				gameController.themes.select(themeName);
 				updatePreviewLabels();
 			}
 		});
@@ -175,7 +175,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 	private void updateSelectionFromTheme() {
 		currentView().ifPresent(view -> {
 			PacManGameView gameView = (PacManGameView) view;
-			if (!comboSelectTheme.getSelectedItem().equals(gameController.theme.name())) {
+			if (!comboSelectTheme.getSelectedItem().equals(gameController.themes.current().name())) {
 				comboSelectTheme.setSelectedItem(gameView.getTheme().name().toUpperCase());
 				updatePreviewLabels();
 			}
@@ -183,7 +183,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 	}
 
 	private void updatePreviewLabels() {
-		Theme theme = gameController.theme;
+		Theme theme = gameController.themes.current();
 		lblPacMan.setIcon(createPacManIcon(theme, folks.pacMan));
 		lblBlinky.setIcon(createGhostIcon(theme, folks.blinky, GhostState.CHASING, Direction.random(), 0));
 		lblPinky.setIcon(createGhostIcon(theme, folks.pinky, GhostState.CHASING, Direction.random(), 0));
