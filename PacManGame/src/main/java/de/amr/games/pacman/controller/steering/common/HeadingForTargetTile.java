@@ -117,13 +117,15 @@ public class HeadingForTargetTile implements Steering {
 	 * cycle or entering a portal.
 	 */
 	private void updatePath(Tile target) {
-		path.clear();
-		Direction dir = guy.body.moveDir;
-		Tile next = guy.body.tile();
-		while (!next.equals(target) && guy.world.includes(next) && !path.contains(next)) {
-			path.add(next);
-			dir = bestDirTowardsTarget(guy, dir, next, target);
-			next = guy.world.neighbor(next, dir);
+		if (target != null) {
+			path.clear();
+			Direction dir = guy.body.moveDir;
+			Tile next = guy.body.tile();
+			while (!next.equals(target) && guy.world.includes(next) && !path.contains(next)) {
+				path.add(next);
+				dir = bestDirTowardsTarget(guy, dir, next, target);
+				next = guy.world.neighbor(next, dir);
+			}
 		}
 	}
 }
