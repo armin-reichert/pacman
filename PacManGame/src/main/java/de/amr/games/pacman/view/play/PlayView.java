@@ -37,6 +37,10 @@ public class PlayView implements PacManGameView {
 		sound = new SoundState();
 		messages = new MessagesView(theme, world, 15, 21);
 		setTheme(theme);
+		//TODO find a clean solution
+		folks.pacMan.ai.addStateExitListener(PacManState.DEAD, state -> {
+			theme.pacManRenderer(folks.pacMan).resetAnimations();
+		});
 	}
 
 	@Override

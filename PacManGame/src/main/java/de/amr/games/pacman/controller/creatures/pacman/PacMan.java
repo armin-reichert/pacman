@@ -82,6 +82,9 @@ public class PacMan extends SmartGuy<PacManState> {
 					.timeoutAfter(Timing.sec(2.5f))
 
 				.state(COLLAPSING)
+					.onEntry(() -> {
+						enabled = true;
+					})
 
 			.transitions()
 

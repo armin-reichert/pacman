@@ -30,12 +30,14 @@ class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
 	}
 
 	@Override
+	public void resetAnimations() {
+		spriteMap.forEach(sprite -> sprite.resetAnimation());
+	}
+
+	@Override
 	public void render(Graphics2D g, PacMan pacMan) {
 		selectSprite(pacMan).ifPresent(sprite -> {
 			sprite.enableAnimation(pacMan.enabled);
-			if (!pacMan.enabled) {
-				sprite.resetAnimation();
-			}
 			int sw = 2 * pacMan.body.tf.width, sh = 2 * pacMan.body.tf.height;
 			if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
 				sprite.scale(sw, sh);
@@ -50,7 +52,6 @@ class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
 		} else if (pacMan.ai.is(AWAKE, POWERFUL)) {
 			return spriteMap.select("walking-" + pacMan.body.moveDir);
 		} else if (pacMan.ai.is(DEAD)) {
-			spriteMap.get("collapsing").resetAnimation();
 			return spriteMap.select("full");
 		} else if (pacMan.ai.is(PacManState.COLLAPSING)) {
 			return spriteMap.select("collapsing");
