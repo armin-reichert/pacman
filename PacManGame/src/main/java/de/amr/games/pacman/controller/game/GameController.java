@@ -506,7 +506,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		currentView.update();
 	}
 
-	private void handleInput() {
+	protected void handleInput() {
 		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
 			Timing.changeClockFrequency(60);
 		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {

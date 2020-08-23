@@ -83,12 +83,8 @@ public class ExtendedGameController extends GameController {
 	}
 
 	@Override
-	public void update() {
-		handleInput();
-		super.update();
-	}
-
-	private void handleInput() {
+	protected void handleInput() {
+		super.handleInput();
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
 			int oldFreq = app().clock().getTargetFramerate();
 			Timing.changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
