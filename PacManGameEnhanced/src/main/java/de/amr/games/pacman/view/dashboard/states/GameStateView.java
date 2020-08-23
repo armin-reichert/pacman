@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.PacManAppEnhanced;
 import de.amr.games.pacman.controller.creatures.Folks;
-import de.amr.games.pacman.controller.game.EnhancedGameController;
+import de.amr.games.pacman.controller.game.ExtendedGameController;
 import de.amr.games.pacman.controller.game.PacManGameState;
 import de.amr.statemachine.core.State;
 import net.miginfocom.swing.MigLayout;
@@ -29,7 +29,7 @@ import net.miginfocom.swing.MigLayout;
  */
 public class GameStateView extends JPanel implements Lifecycle {
 
-	private EnhancedGameController gameController;
+	private ExtendedGameController gameController;
 	private GameStateTable table;
 	private JCheckBox cbShowRoutes;
 	private JCheckBox cbShowStates;
@@ -89,7 +89,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 	 * 
 	 * @param gameController the game controller
 	 */
-	public void attachTo(EnhancedGameController gameController, Folks folks) {
+	public void attachTo(ExtendedGameController gameController, Folks folks) {
 		this.gameController = gameController;
 		ghostHouseStateView.attachTo(gameController, folks);
 		init();

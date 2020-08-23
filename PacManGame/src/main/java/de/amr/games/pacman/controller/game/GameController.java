@@ -66,12 +66,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public final Game game;
 	public final World world;
 	public final Folks folks;
-	public final BonusFoodController bonusControl;
+	public final BonusFoodController bonusController;
 	public final DoorMan doorMan;
 	public final GhostCommand ghostCommand;
 	public final ThemeSelector themes;
+
 	public PacManGameView currentView;
-	public PlayView playView;
 
 	public GameController(Theme... supportedThemes) {
 		super(PacManGameState.class);
@@ -88,30 +88,30 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		game = new Game();
 		world = new ArcadeWorld();
 		folks = new Folks(world, world.house(0));
-
 		folks.guys().forEach(guy -> {
 			guy.ai.addEventListener(this::process);
 			guy.game = game;
 		});
+
+		doorMan = new DoorMan(world, world.house(0), game, folks);
+		ghostCommand = new GhostCommand(game, folks);
+		//@formatter:off
+		bonusController = new BonusFoodController(game, world,
+			() -> Timing.sec(Game.BONUS_SECONDS + new Random().nextFloat()),
+			() -> ArcadeBonus.of(game.level.bonusSymbol, game.level.bonusValue, ArcadeWorld.BONUS_LOCATION));
+		//@formatter:on
 
 		app().onClose(() -> {
 			if (game.level != null) {
 				game.level.hiscore.save();
 			}
 		});
-
-		doorMan = new DoorMan(world, world.house(0), game, folks);
-		ghostCommand = new GhostCommand(game, folks);
-		//@formatter:off
-		bonusControl = new BonusFoodController(game, world,
-			() -> Timing.sec(Game.BONUS_SECONDS + new Random().nextFloat()),
-			() -> ArcadeBonus.of(game.level.bonusSymbol, game.level.bonusValue, ArcadeWorld.BONUS_LOCATION));
-		//@formatter:on
 	}
 
 	/**
-	 * Returns the typed PLAYING-state such that method references can be used. I found the expression
-	 * {@code this.<PlayingState>state(PLAYING)} too ugly.
+	 * @return A typed reference to the "PLAYING" state instance such that method references like
+	 *         {@code state_PLAYING()::onPacManFoundFood} can be used. <br/>
+	 *         The builtin expression {@code this.<PlayingState>state(PLAYING)} looked too ugly to me.
 	 */
 	protected PlayingState state_PLAYING() {
 		return state(PLAYING);
@@ -150,10 +150,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(Timing.sec(1))
 					.onEntry(() -> {
 						folks.pacMan.body.visible = false;
-						playView.sound.ghostEaten = true;
+						playView().sound.ghostEaten = true;
 					})
 					.onTick(() -> {
-						bonusControl.update();
+						bonusController.update();
 						folks.ghostsInWorld()
 							.filter(ghost -> ghost.ai.is(GhostState.DEAD, GhostState.ENTERING_HOUSE))
 							.forEach(Ghost::update);
@@ -175,11 +175,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick((state, passed, remaining) -> {
 						if (passed == Timing.sec(2)) {
-							bonusControl.setState(BonusFoodState.BONUS_INACTIVE);
+							bonusController.setState(BonusFoodState.BONUS_INACTIVE);
 							folks.ghostsInWorld().forEach(ghost -> ghost.body.visible = false);
 						}
 						else if (passed == Timing.sec(2.5f)) {
-							playView.sound.pacManDied = true;
+							playView().sound.pacManDied = true;
 						}
 						folks.pacMan.update();
 					})
@@ -196,7 +196,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghost.body.wishDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 							ghost.ai.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
-						playView.showMessage(2, "Game Over!", Color.RED);
+						playView().showMessage(2, "Game Over!", Color.RED);
 						themes.current().sounds().stopAll();
 						themes.current().sounds().playMusic(themes.current().sounds().musicGameOver());
 					})
@@ -204,7 +204,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						folks.ghostsInWorld().forEach(Ghost::move);
 					})
 					.onExit(() -> {
-						playView.clearMessage(2);
+						playView().clearMessage(2);
 						themes.current().sounds().stopMusic(themes.current().sounds().musicGameOver());
 						world.restoreFood();
 					})
@@ -230,7 +230,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
-					.act(state_PLAYING()::onPacManFoodFound)
+					.act(state_PLAYING()::onPacManFoundFood)
 					
 				.stay(PLAYING)
 					.on(BonusFoundEvent.class)
@@ -299,10 +299,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			});
 			folks.blinky.madness.init();
 			ghostCommand.init();
-			bonusControl.init();
-			playView = createPlayView();
-			playView.showMessage(2, "Ready!", Color.YELLOW);
-			currentView = playView;
+			bonusController.init();
+			currentView = createPlayView();
+			playView().showMessage(2, "Ready!", Color.YELLOW);
 			themes.current().sounds().playMusic(themes.current().sounds().musicGameReady());
 		}
 
@@ -325,7 +324,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onExit() {
-			playView.clearMessage(2);
+			playView().clearMessage(2);
 		}
 	}
 
@@ -337,9 +336,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		public void onEntry() {
 			startBackgroundMusicForPlaying();
 			if (settings.demoMode) {
-				playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
+				playView().showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 			} else {
-				playView.clearMessage(1);
+				playView().clearMessage(1);
 			}
 		}
 
@@ -352,25 +351,25 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (passed > INITIAL_WAIT_TIME) {
 				ghostCommand.update();
 				doorMan.update();
-				bonusControl.update();
+				bonusController.update();
 				if (folks.clyde.hasLeftHouse()) {
 					folks.blinky.madness.clydeExitsHouse();
 				}
-				playView.sound.chasingGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.ai.is(GhostState.CHASING));
-				playView.sound.deadGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.ai.is(GhostState.DEAD));
+				playView().sound.chasingGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.ai.is(GhostState.CHASING));
+				playView().sound.deadGhosts = folks.ghostsInWorld().anyMatch(ghost -> ghost.ai.is(GhostState.DEAD));
 			}
 		}
 
 		@Override
 		public void onExit() {
 			themes.current().sounds().clips().forEach(SoundClip::stop);
-			playView.sound.chasingGhosts = false;
-			playView.sound.deadGhosts = false;
+			playView().sound.chasingGhosts = false;
+			playView().sound.deadGhosts = false;
 		}
 
 		private void resumePlaying() {
 			world.setFrozen(false);
-			bonusControl.init();
+			bonusController.init();
 			ghostCommand.init();
 			folks.guysInWorld().forEach(SmartGuy::init);
 		}
@@ -392,7 +391,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				int livesBefore = game.level.lives;
 				game.level.scoreGhostKilled();
 				if (game.level.lives > livesBefore) {
-					playView.sound.gotExtraLife = true;
+					playView().sound.gotExtraLife = true;
 				}
 				ghost.ai.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
@@ -401,8 +400,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			else if (!settings.ghostsHarmless) {
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.body.tile());
 				doorMan.onLifeLost();
-				playView.sound.chasingGhosts = false;
-				playView.sound.deadGhosts = false;
+				playView().sound.chasingGhosts = false;
+				playView().sound.deadGhosts = false;
 				folks.pacMan.ai.process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
 			}
@@ -412,14 +411,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			int value = game.level.bonusValue;
 			int livesBefore = game.level.lives;
 			game.level.score(value);
-			playView.sound.bonusEaten = true;
+			playView().sound.bonusEaten = true;
 			if (game.level.lives > livesBefore) {
-				playView.sound.gotExtraLife = true;
+				playView().sound.gotExtraLife = true;
 			}
-			bonusControl.process(event);
+			bonusController.process(event);
 		}
 
-		private void onPacManFoodFound(PacManGameEvent event) {
+		private void onPacManFoundFood(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
 			boolean energizer = world.hasFood(ArcadeFood.ENERGIZER, found.location);
 			world.eatFood(found.location);
@@ -431,11 +430,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 			doorMan.onPacManFoundFood();
 			if (game.level.isBonusDue()) {
-				bonusControl.setState(BonusFoodState.BONUS_CONSUMABLE);
+				bonusController.setState(BonusFoodState.BONUS_CONSUMABLE);
 			}
-			playView.sound.lastMealAt = System.currentTimeMillis();
+			playView().sound.lastMealAt = System.currentTimeMillis();
 			if (game.level.lives > livesBeforeScoring) {
-				playView.sound.gotExtraLife = true;
+				playView().sound.gotExtraLife = true;
 			}
 			if (game.level.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
@@ -485,7 +484,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				game.nextLevel(world);
 				folks.guys().forEach(SmartGuy::init);
 				folks.blinky.madness.init();
-				playView.init();
+				playView().init();
 			}
 
 			// One second later, let ghosts jump again inside the house
@@ -531,6 +530,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	@Override
 	public Optional<View> currentView() {
 		return Optional.ofNullable(currentView);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <V extends PlayView> V playView() {
+		return (V) currentView;
 	}
 
 	/**

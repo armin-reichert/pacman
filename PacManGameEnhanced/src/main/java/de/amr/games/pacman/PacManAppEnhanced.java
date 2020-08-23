@@ -3,7 +3,7 @@ package de.amr.games.pacman;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.ui.AppShell;
 import de.amr.easy.game.ui.f2dialog.F2Dialog;
-import de.amr.games.pacman.controller.game.EnhancedGameController;
+import de.amr.games.pacman.controller.game.ExtendedGameController;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.dashboard.fsm.FsmView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
@@ -37,7 +37,7 @@ public class PacManAppEnhanced extends PacManApp {
 	public void init() {
 		Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
 		setIcon("/images/pacman-icon.png");
-		setController(new EnhancedGameController(Themes.all().toArray(Theme[]::new)));
+		setController(new ExtendedGameController(Themes.all().toArray(Theme[]::new)));
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class PacManAppEnhanced extends PacManApp {
 		f2.setSize(700, shell.getHeight());
 		f2.setRelativeLocation(shell.getWidth(), 0);
 
-		EnhancedGameController gameController = (EnhancedGameController) getController();
+		ExtendedGameController gameController = (ExtendedGameController) getController();
 
 		ThemeSelectionView themeSelectionView = new ThemeSelectionView();
 		themeSelectionView.attachTo(gameController);

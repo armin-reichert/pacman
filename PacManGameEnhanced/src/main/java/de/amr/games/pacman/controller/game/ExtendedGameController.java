@@ -30,15 +30,15 @@ import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.play.EnhancedPlayView;
+import de.amr.games.pacman.view.play.ExtendedPlayView;
 import de.amr.games.pacman.view.play.PlayView;
 
 /**
- * Enhanced game controller with all the bells and whistles.
+ * Game controller with additional functionaliy that is not needed for just playing the game.
  * 
  * @author Armin Reichert
  */
-public class EnhancedGameController extends GameController {
+public class ExtendedGameController extends GameController {
 
 	private boolean showingGrid;
 	private boolean showingRoutes;
@@ -50,7 +50,7 @@ public class EnhancedGameController extends GameController {
 	 * 
 	 * @param themes supported themes
 	 */
-	public EnhancedGameController(Theme... themes) {
+	public ExtendedGameController(Theme... themes) {
 		super(themes);
 		REGISTRY.register(this);
 		addStateEntryListener(INTRO, state -> {
@@ -62,12 +62,12 @@ public class EnhancedGameController extends GameController {
 		addStateEntryListener(GETTING_READY, state -> {
 			REGISTRY.register(currentView.machines());
 			folks.guys().forEach(guy -> REGISTRY.register(guy.machines()));
-			REGISTRY.register(Stream.of(bonusControl, ghostCommand));
+			REGISTRY.register(Stream.of(bonusController, ghostCommand));
 		});
 		addStateEntryListener(GAME_OVER, state -> {
 			REGISTRY.unregister(currentView.machines());
 			folks.guys().forEach(guy -> REGISTRY.unregister(guy.machines()));
-			REGISTRY.unregister(Stream.of(bonusControl, ghostCommand));
+			REGISTRY.unregister(Stream.of(bonusController, ghostCommand));
 		});
 	}
 
@@ -79,11 +79,7 @@ public class EnhancedGameController extends GameController {
 
 	@Override
 	protected PlayView createPlayView() {
-		return new EnhancedPlayView(themes.current(), folks, ghostCommand, game, world);
-	}
-
-	protected EnhancedPlayView playView() {
-		return (EnhancedPlayView) playView;
+		return new ExtendedPlayView(themes.current(), folks, ghostCommand, game, world);
 	}
 
 	@Override
@@ -113,7 +109,7 @@ public class EnhancedGameController extends GameController {
 			}
 		}
 
-		if (currentView == playView) {
+		if (currentView instanceof PlayView) {
 			handlePlayViewInput();
 		}
 	}
@@ -168,10 +164,10 @@ public class EnhancedGameController extends GameController {
 		}
 
 		else if (Keyboard.keyPressedOnce("t")) {
-			if (playView().isShowingFrameRate()) {
-				playView().turnFrameRateOff();
+			if (this.<ExtendedPlayView>playView().isShowingFrameRate()) {
+				this.<ExtendedPlayView>playView().turnFrameRateOff();
 			} else {
-				playView().turnFrameRateOn();
+				this.<ExtendedPlayView>playView().turnFrameRateOn();
 			}
 		}
 
@@ -202,9 +198,9 @@ public class EnhancedGameController extends GameController {
 	public void setShowingRoutes(boolean selected) {
 		showingRoutes = selected;
 		if (selected) {
-			playView().turnRoutesOn();
+			this.<ExtendedPlayView>playView().turnRoutesOn();
 		} else {
-			playView().turnRoutesOff();
+			this.<ExtendedPlayView>playView().turnRoutesOff();
 		}
 	}
 
@@ -215,9 +211,9 @@ public class EnhancedGameController extends GameController {
 	public void setShowingGrid(boolean selected) {
 		showingGrid = selected;
 		if (selected) {
-			playView().turnGridOn();
+			this.<ExtendedPlayView>playView().turnGridOn();
 		} else {
-			playView().turnGridOff();
+			this.<ExtendedPlayView>playView().turnGridOff();
 		}
 	}
 
@@ -228,9 +224,9 @@ public class EnhancedGameController extends GameController {
 	public void setShowingStates(boolean selected) {
 		showingStates = selected;
 		if (selected) {
-			playView().turnStatesOn();
+			this.<ExtendedPlayView>playView().turnStatesOn();
 		} else {
-			playView().turnStatesOff();
+			this.<ExtendedPlayView>playView().turnStatesOff();
 		}
 	}
 
@@ -241,9 +237,9 @@ public class EnhancedGameController extends GameController {
 	public void setShowingScores(boolean selected) {
 		showingScores = selected;
 		if (selected) {
-			playView.turnScoresOn();
+			playView().turnScoresOn();
 		} else {
-			playView.turnScoresOff();
+			playView().turnScoresOff();
 		}
 	}
 
@@ -286,9 +282,9 @@ public class EnhancedGameController extends GameController {
 		settings.demoMode = !settings.demoMode;
 		setDemoMode(settings.demoMode);
 		if (settings.demoMode) {
-			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
+			playView().showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 		} else {
-			playView.clearMessage(1);
+			playView().clearMessage(1);
 		}
 		loginfo("Demo mode is %s", settings.demoMode ? "on" : "off");
 	}

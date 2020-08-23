@@ -186,8 +186,8 @@ class GameStateTableModel extends AbstractTableModel {
 					} else {
 						r.state = "Absent";
 					}
-					r.ticksRemaining = gameController.bonusControl.state().getTicksRemaining();
-					r.duration = gameController.bonusControl.state().getDuration();
+					r.ticksRemaining = gameController.bonusController.state().getTicksRemaining();
+					r.duration = gameController.bonusController.state().getDuration();
 				});
 	}
 

@@ -13,7 +13,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.play.EnhancedPlayView;
+import de.amr.games.pacman.view.play.ExtendedPlayView;
 import de.amr.games.pacman.view.theme.Themes;
 
 /**
@@ -29,7 +29,7 @@ public class TestController implements VisualController {
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
 	protected final Theme[] themes;
-	protected final EnhancedPlayView view;
+	protected final ExtendedPlayView view;
 
 	protected int currentThemeIndex = 0;
 
@@ -46,7 +46,7 @@ public class TestController implements VisualController {
 		inky = folks.inky;
 		clyde = folks.clyde;
 		themes = Themes.all().toArray(Theme[]::new);
-		view = new EnhancedPlayView(theme(), folks, null, game, world);
+		view = new ExtendedPlayView(theme(), folks, null, game, world);
 		view.turnScoresOff();
 	}
 

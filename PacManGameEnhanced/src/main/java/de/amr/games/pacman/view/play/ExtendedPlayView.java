@@ -16,11 +16,11 @@ import de.amr.games.pacman.view.common.RoutesRenderer;
 import de.amr.games.pacman.view.common.StatesRenderer;
 
 /**
- * View where the action is.
+ * Play view with additional functionality like routes display.
  * 
  * @author Armin Reichert
  */
-public class EnhancedPlayView extends PlayView {
+public class ExtendedPlayView extends PlayView {
 
 	protected final GridRenderer gridRenderer;
 	protected final RoutesRenderer routesRenderer;
@@ -33,7 +33,7 @@ public class EnhancedPlayView extends PlayView {
 	protected boolean showingRoutes;
 	protected boolean showingStates;
 
-	public EnhancedPlayView(Theme theme, Folks folks, GhostCommand ghostCommand, Game game, World world) {
+	public ExtendedPlayView(Theme theme, Folks folks, GhostCommand ghostCommand, Game game, World world) {
 		super(theme, folks, game, world);
 		this.ghostCommand = ghostCommand;
 		gridRenderer = new GridRenderer(world.width(), world.height());
