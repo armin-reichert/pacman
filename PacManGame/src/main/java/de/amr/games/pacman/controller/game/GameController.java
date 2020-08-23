@@ -196,7 +196,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghost.body.wishDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 							ghost.ai.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
-						playView().showMessage(2, "Game Over!", Color.RED);
+						playView().messages.showMessage(2, "Game Over!", Color.RED);
 						themes.current().sounds().stopAll();
 						themes.current().sounds().playMusic(themes.current().sounds().musicGameOver());
 					})
@@ -204,7 +204,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						folks.ghostsInWorld().forEach(Ghost::move);
 					})
 					.onExit(() -> {
-						playView().clearMessage(2);
+						playView().messages.clearMessage(2);
 						themes.current().sounds().stopMusic(themes.current().sounds().musicGameOver());
 						world.restoreFood();
 					})
@@ -301,7 +301,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			ghostCommand.init();
 			bonusController.init();
 			currentView = createPlayView();
-			playView().showMessage(2, "Ready!", Color.YELLOW);
+			playView().messages.showMessage(2, "Ready!", Color.YELLOW);
 			themes.current().sounds().playMusic(themes.current().sounds().musicGameReady());
 		}
 
@@ -324,7 +324,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onExit() {
-			playView().clearMessage(2);
+			playView().messages.clearMessage(2);
 		}
 	}
 
@@ -336,9 +336,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		public void onEntry() {
 			startBackgroundMusicForPlaying();
 			if (settings.demoMode) {
-				playView().showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
+				playView().messages.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 			} else {
-				playView().clearMessage(1);
+				playView().messages.clearMessage(1);
 			}
 		}
 

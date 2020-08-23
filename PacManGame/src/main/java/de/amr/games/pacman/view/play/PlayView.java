@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.play;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.creatures.Folks;
@@ -15,7 +14,6 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.common.MessagesRenderer;
 
 /**
  * View where the action is.
@@ -24,50 +22,27 @@ import de.amr.games.pacman.view.common.MessagesRenderer;
  */
 public class PlayView implements PacManGameView {
 
-	static class Message {
-
-		String text;
-		Color color;
-		int row;
-
-		Message(int row) {
-			this.row = row;
-			text = null;
-			color = Color.LIGHT_GRAY;
-		}
-	}
-
-	public static class SoundState {
-		public boolean gotExtraLife;
-		public boolean ghostEaten;
-		public boolean bonusEaten;
-		public boolean pacManDied;
-		public boolean chasingGhosts;
-		public boolean deadGhosts;
-		public long lastMealAt;
-	}
-
-	protected final World world;
-	protected final Folks folks;
-	protected Game game;
-	protected final Message[] messages;
-	protected Theme theme;
-	protected MessagesRenderer messagesRenderer;
+	public final World world;
+	public final Game game;
+	public final Folks folks;
 	public final SoundState sound;
+	public final MessagesView messages;
+
+	protected Theme theme;
 	protected boolean showingScores = true;
 
 	public PlayView(Theme theme, Folks folks, Game game, World world) {
 		this.folks = folks;
 		this.game = game;
 		this.world = world;
-		messages = new Message[] { new Message(15), new Message(21) };
 		sound = new SoundState();
+		messages = new MessagesView(theme, world, 15, 21);
 		setTheme(theme);
 	}
 
 	@Override
 	public void init() {
-		clearMessages();
+		messages.clearMessages();
 	}
 
 	@Override
@@ -79,7 +54,7 @@ public class PlayView implements PacManGameView {
 	public void setTheme(Theme theme) {
 		if (this.theme != theme) {
 			this.theme = theme;
-			messagesRenderer = theme.messagesRenderer();
+			messages.setTheme(theme);
 		}
 	}
 
@@ -98,30 +73,6 @@ public class PlayView implements PacManGameView {
 		drawLevelCounter(g);
 	}
 
-	/**
-	 * @param number message number (1 or 2)
-	 * @param text   message text
-	 * @param color  message color
-	 */
-	public void showMessage(int number, String text, Color color) {
-		messages[number - 1].text = text;
-		messages[number - 1].color = color;
-	}
-
-	public void clearMessages() {
-		clearMessage(1);
-		clearMessage(2);
-	}
-
-	/**
-	 * Clears the message with the given number.
-	 * 
-	 * @param number message number (1 or 2)
-	 */
-	public void clearMessage(int number) {
-		messages[number - 1].text = null;
-	}
-
 	public void turnScoresOn() {
 		this.showingScores = true;
 	}
@@ -136,16 +87,6 @@ public class PlayView implements PacManGameView {
 
 	protected void drawWorld(Graphics2D g) {
 		theme.worldRenderer(world).render(g, world);
-	}
-
-	protected void drawMessages(Graphics2D g) {
-		for (Message message : messages) {
-			if (message.text != null) {
-				messagesRenderer.setRow(message.row);
-				messagesRenderer.setTextColor(message.color);
-				messagesRenderer.drawCentered(g, message.text, world.width());
-			}
-		}
 	}
 
 	protected void drawPacMan(Graphics2D g, PacMan pacMan) {
@@ -178,6 +119,10 @@ public class PlayView implements PacManGameView {
 		g.translate(world.width() * Tile.SIZE, (world.height() - 2) * Tile.SIZE);
 		theme.levelCounterRenderer().render(g, game);
 		g.translate(-world.width() * Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
+	}
+
+	protected void drawMessages(Graphics2D g) {
+		messages.draw(g);
 	}
 
 	private void renderSound() {

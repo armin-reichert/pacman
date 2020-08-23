@@ -55,8 +55,8 @@ class PacManMovementTestUI extends TestController {
 		pacMan.init();
 		pacMan.wakeUp();
 		view.turnGridOn();
-		view.showMessage(1, "SPACE changes steering", Color.WHITE);
-		view.showMessage(2, "Cursor keys", Color.WHITE);
+		view.messages.showMessage(1, "SPACE changes steering", Color.WHITE);
+		view.messages.showMessage(2, "Cursor keys", Color.WHITE);
 	}
 
 	@Override
@@ -71,14 +71,14 @@ class PacManMovementTestUI extends TestController {
 	private void changeSteering() {
 		if (steeringIndex == 0) {
 			you(pacMan).followTheKeys().keys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT).ok();
-			view.showMessage(2, "Cursor keys", Color.WHITE);
+			view.messages.showMessage(2, "Cursor keys", Color.WHITE);
 		} else if (steeringIndex == 1) {
 			you(pacMan).followTheKeys()
 					.keys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4).ok();
-			view.showMessage(2, "Numpad keys", Color.WHITE);
+			view.messages.showMessage(2, "Numpad keys", Color.WHITE);
 		} else if (steeringIndex == 2) {
 			you(pacMan).moveRandomly().ok();
-			view.showMessage(2, "Move randomly", Color.WHITE);
+			view.messages.showMessage(2, "Move randomly", Color.WHITE);
 		}
 	}
 }

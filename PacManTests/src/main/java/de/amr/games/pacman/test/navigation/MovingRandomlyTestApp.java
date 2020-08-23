@@ -53,7 +53,7 @@ class MovingRandomlyTestUI extends TestController {
 		view.turnRoutesOn();
 		view.turnStatesOn();
 		view.turnGridOn();
-		view.showMessage(1, "Press SPACE", Color.WHITE);
+		view.messages.showMessage(1, "Press SPACE", Color.WHITE);
 		started = false;
 	}
 
@@ -61,7 +61,7 @@ class MovingRandomlyTestUI extends TestController {
 	public void update() {
 		if (!started && Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			started = true;
-			view.clearMessage(1);
+			view.messages.clearMessage(1);
 		}
 		if (started) {
 			super.update();
