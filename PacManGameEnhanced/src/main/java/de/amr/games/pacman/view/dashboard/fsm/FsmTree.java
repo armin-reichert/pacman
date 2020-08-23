@@ -48,11 +48,14 @@ public class FsmTree extends DefaultTreeModel {
 		model.data().forEach(data -> {
 			root.add(new FsmTreeNode(data));
 		});
+		nodeStructureChanged(root);
+	}
+
+	public void initSelection() {
 		if (root.getChildCount() > 0) {
 			selectedPath = new TreePath(new Object[] { root, root.getChildAt(0) });
 		} else {
 			selectedPath = new TreePath(root);
 		}
-		nodeStructureChanged(root);
 	}
 }

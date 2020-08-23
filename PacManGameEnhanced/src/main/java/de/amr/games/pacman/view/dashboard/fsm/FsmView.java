@@ -24,6 +24,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -35,41 +37,35 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	static final String GRAPHVIZ_ONLINE_URL = "https://dreampuf.github.io/GraphvizOnline";
 
-	private Action actionViewOnline = new AbstractAction("View Online") {
+	private Action actionViewOnline=new AbstractAction("View Online"){
+
+	@Override public void actionPerformed(ActionEvent e){tree.getSelectedData().ifPresent(data->{try{URI uri=new URI(null,GRAPHVIZ_ONLINE_URL,data.getGraph());Desktop.getDesktop().browse(uri);}catch(Exception x){x.printStackTrace();}});}};
+
+	private Action actionSave=new AbstractAction("Save"){@Override public void actionPerformed(ActionEvent e){tree.getSelectedData().ifPresent(data->{saveFile(data);});}};
+
+	private Action actionOpenDashboard=new AbstractAction("Open Dashboard"){
+
+	@Override public void actionPerformed(ActionEvent e){if(dashboard==null){dashboard=new FsmDashboard(model);dashboard.rebuild();dashboard.setSize(1024,768);}dashboard.setVisible(true);};};
+
+	private TreeModelListener treeSelectionInitializer =		new TreeModelListener() {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			tree.getSelectedData().ifPresent(data -> {
-				try {
-					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, data.getGraph());
-					Desktop.getDesktop().browse(uri);
-				} catch (Exception x) {
-					x.printStackTrace();
-				}
-			});
+		public void treeStructureChanged(TreeModelEvent e) {
+			tree.initSelection();
+			treeView.setSelectionPath(tree.getSelectedPath());
 		}
-	};
 
-	private Action actionSave = new AbstractAction("Save") {
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			tree.getSelectedData().ifPresent(data -> {
-				saveFile(data);
-			});
+		public void treeNodesRemoved(TreeModelEvent e) {
 		}
-	};
-
-	private Action actionOpenDashboard = new AbstractAction("Open Dashboard") {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (dashboard == null) {
-				dashboard = new FsmDashboard(model);
-				dashboard.rebuild();
-				dashboard.setSize(1024, 768);
-			}
-			dashboard.setVisible(true);
-		};
+		public void treeNodesInserted(TreeModelEvent e) {
+		}
+
+		@Override
+		public void treeNodesChanged(TreeModelEvent e) {
+		}
 	};
 
 	private FsmModel model = new FsmModel();
@@ -101,6 +97,8 @@ public class FsmView extends JPanel implements Lifecycle {
 		treeView = new JTree();
 		fsmTreeScrollPane.setViewportView(treeView);
 		tree = new FsmTree();
+
+		tree.addTreeModelListener(treeSelectionInitializer);
 		treeView.setModel(tree);
 		treeView.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		treeView.addTreeSelectionListener(this::onTreeViewSelectionChange);
@@ -153,7 +151,6 @@ public class FsmView extends JPanel implements Lifecycle {
 		model.update();
 		if (model.setOfMachinesChanged()) {
 			tree.rebuild(model);
-			treeView.setSelectionPath(tree.getSelectedPath());
 			if (dashboard != null) {
 				dashboard.rebuild();
 			}
