@@ -71,7 +71,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public final GhostCommand ghostCommand;
 	public final ThemeSelector themes;
 
-	public PacManGameView currentView;
+	protected PacManGameView currentView;
 
 	public GameController(Theme... supportedThemes) {
 		super(PacManGameState.class);
