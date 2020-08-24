@@ -105,9 +105,7 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public IGameScoreRenderer pointsCounterRenderer() {
-		PointsCounterRenderer renderer = new PointsCounterRenderer();
-		renderer.setFont($font("font"));
-		return renderer;
+		return new PointsCounterRenderer($font("font"));
 	}
 
 	@Override

@@ -7,11 +7,13 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTEN
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacman.view.theme.arcade.ArcadeTheme.THEME;
 
 import java.awt.Graphics2D;
 import java.util.Optional;
 
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -24,9 +26,9 @@ import de.amr.games.pacman.view.api.IGhostRenderer;
  */
 class GhostRenderer implements IGhostRenderer {
 
-	private GhostSpriteMap spriteMap;
+	private SpriteMap spriteMap;
 
-	public GhostRenderer(GhostSpriteMap spriteMap) {
+	public GhostRenderer(SpriteMap spriteMap) {
 		this.spriteMap = spriteMap;
 	}
 
@@ -52,15 +54,16 @@ class GhostRenderer implements IGhostRenderer {
 		GhostState state = ghost.ai.getState();
 		Direction dir = ghost.body.moveDir;
 		if (state == null) {
-			return spriteMap.select(spriteMap.keyColor(ghost.personality, dir));
+			return spriteMap.select(THEME.ghostSpriteKeyColor(ghost.personality, dir));
 		} else if (ghost.ai.is(LOCKED, LEAVING_HOUSE, CHASING, SCATTERING)) {
-			return spriteMap.select(spriteMap.keyColor(ghost.personality, dir));
+			return spriteMap.select(THEME.ghostSpriteKeyColor(ghost.personality, dir));
 		} else if (ghost.ai.is(ENTERING_HOUSE)) {
-			return spriteMap.select(spriteMap.keyEyes(dir));
+			return spriteMap.select(THEME.ghostSpriteKeyEyes(dir));
 		} else if (ghost.ai.is(FRIGHTENED)) {
 			return spriteMap.select(ghost.recovering ? "flashing" : "frightened");
 		} else if (ghost.ai.is(DEAD)) {
-			return spriteMap.select(ghost.bounty == 0 ? spriteMap.keyEyes(dir) : spriteMap.keyPoints(ghost.bounty));
+			return spriteMap
+					.select(ghost.bounty == 0 ? THEME.ghostSpriteKeyEyes(dir) : THEME.ghostSpriteKeyPoints(ghost.bounty));
 		}
 		return Optional.empty();
 	}

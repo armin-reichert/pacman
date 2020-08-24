@@ -5,9 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.amr.easy.game.assets.Assets;
+import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.view.api.IGameScoreRenderer;
@@ -31,9 +34,45 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	private ArcadeSprites sprites = new ArcadeSprites();
 	private Map<World, WorldSpriteMap> worldSprites = new HashMap<>();
-	private Map<PacMan, PacManSpriteMap> pacManSprites = new HashMap<>();
-	private Map<Ghost, GhostSpriteMap> ghostSprites = new HashMap<>();
+	private Map<PacMan, SpriteMap> pacManSprites = new HashMap<>();
+	private Map<Ghost, SpriteMap> ghostSprites = new HashMap<>();
 	private MessagesRenderer messagesRenderer;
+
+	private SpriteMap makePacManSpriteMap() {
+		SpriteMap map = new SpriteMap();
+		Direction.dirs().forEach(dir -> map.set("walking-" + dir, sprites.makeSprite_pacManWalking(dir)));
+		map.set("collapsing", sprites.makeSprite_pacManCollapsing());
+		map.set("full", sprites.makeSprite_pacManFull());
+		return map;
+	}
+
+	private SpriteMap makeGhostSpriteMap(Ghost ghost) {
+		SpriteMap map = new SpriteMap();
+		for (Direction dir : Direction.values()) {
+			for (GhostPersonality personality : GhostPersonality.values()) {
+				map.set(ghostSpriteKeyColor(personality, dir), sprites.makeSprite_ghostColored(personality, dir));
+			}
+			map.set(ghostSpriteKeyEyes(dir), sprites.makeSprite_ghostEyes(dir));
+		}
+		map.set("frightened", sprites.makeSprite_ghostFrightened());
+		map.set("flashing", sprites.makeSprite_ghostFlashing());
+		for (int bounty : Game.POINTS_GHOSTS) {
+			map.set(ghostSpriteKeyPoints(bounty), sprites.makeSprite_number(bounty));
+		}
+		return map;
+	}
+
+	public String ghostSpriteKeyColor(GhostPersonality personality, Direction dir) {
+		return String.format("colored-%s-%s", personality, dir);
+	}
+
+	public String ghostSpriteKeyEyes(Direction dir) {
+		return String.format("eyes-%s", dir);
+	}
+
+	public String ghostSpriteKeyPoints(int points) {
+		return String.format("points-%d", points);
+	}
 
 	private ArcadeTheme() {
 		set("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
@@ -65,9 +104,9 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public IPacManRenderer pacManRenderer(PacMan pacMan) {
-		PacManSpriteMap spriteMap = pacManSprites.get(pacMan);
+		SpriteMap spriteMap = pacManSprites.get(pacMan);
 		if (spriteMap == null) {
-			spriteMap = new PacManSpriteMap();
+			spriteMap = makePacManSpriteMap();
 			pacManSprites.put(pacMan, spriteMap);
 		}
 		return new PacManRenderer(spriteMap);
@@ -75,9 +114,9 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public IGhostRenderer ghostRenderer(Ghost ghost) {
-		GhostSpriteMap spriteMap = ghostSprites.get(ghost);
+		SpriteMap spriteMap = ghostSprites.get(ghost);
 		if (spriteMap == null) {
-			spriteMap = new GhostSpriteMap(ghost);
+			spriteMap = makeGhostSpriteMap(ghost);
 			ghostSprites.put(ghost, spriteMap);
 		}
 		return new GhostRenderer(spriteMap);
@@ -104,9 +143,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public IGameScoreRenderer pointsCounterRenderer() {
-		PointsCounterRenderer renderer = new PointsCounterRenderer();
-		renderer.setFont($font("font"));
-		return renderer;
+		return new PointsCounterRenderer($font("font"));
 	}
 
 	@Override

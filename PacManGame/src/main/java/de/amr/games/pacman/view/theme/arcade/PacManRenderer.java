@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.util.Optional;
 
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.view.api.IPacManRenderer;
@@ -21,9 +22,9 @@ import de.amr.games.pacman.view.api.IPacManRenderer;
  */
 class PacManRenderer implements IPacManRenderer {
 
-	private PacManSpriteMap spriteMap;
+	private SpriteMap spriteMap;
 
-	public PacManRenderer(PacManSpriteMap spriteMap) {
+	public PacManRenderer(SpriteMap spriteMap) {
 		this.spriteMap = spriteMap;
 	}
 

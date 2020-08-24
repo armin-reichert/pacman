@@ -12,9 +12,13 @@ import de.amr.games.pacman.view.api.IGameScoreRenderer;
 
 public class PointsCounterRenderer implements IGameScoreRenderer {
 
-	private Font font = new Font(Font.MONOSPACED, Font.PLAIN, Tile.SIZE);
+	private Font font;
 	private int topMargin = 1;
 	private int baselineOffset = Tile.SIZE;
+	
+	public PointsCounterRenderer(Font font) {
+		this.font = font;
+	}
 
 	@Override
 	public void render(Graphics2D g, Game game) {
