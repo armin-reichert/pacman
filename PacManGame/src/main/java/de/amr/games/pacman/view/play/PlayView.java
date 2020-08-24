@@ -32,13 +32,13 @@ public class PlayView implements PacManGameView {
 	protected Theme theme;
 
 	public PlayView(Theme theme, Folks folks, Game game, World world) {
+		this.theme = theme;
 		this.folks = folks;
 		this.game = game;
 		this.world = world;
 		sound = new SoundState();
 		messages = new MessagesView(theme, world, 15, 21);
-		setTheme(theme);
-		//TODO find a clean solution
+		// this is a hack to reset the collapsing animation of Pac-Man. Need clean solution.
 		folks.pacMan.ai.addStateExitListener(PacManState.DEAD, state -> {
 			theme.pacManRenderer(folks.pacMan).resetAnimations();
 		});
@@ -56,10 +56,8 @@ public class PlayView implements PacManGameView {
 
 	@Override
 	public void setTheme(Theme theme) {
-		if (this.theme != theme) {
-			this.theme = theme;
-			messages.setTheme(theme);
-		}
+		this.theme = theme;
+		messages.setTheme(theme);
 	}
 
 	@Override
@@ -94,8 +92,8 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		drawPacMan(g, folks.pacMan);
 		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
+		drawPacMan(g, folks.pacMan);
 		folks.ghostsInWorld().filter(ghost -> !ghost.ai.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
 	}
 
@@ -158,5 +156,4 @@ public class PlayView implements PacManGameView {
 			sound.ghostEaten = false;
 		}
 	}
-
 }
