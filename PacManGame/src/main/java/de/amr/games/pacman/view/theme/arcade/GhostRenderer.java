@@ -26,12 +26,6 @@ import de.amr.games.pacman.view.api.IGhostRenderer;
  */
 class GhostRenderer implements IGhostRenderer {
 
-	private SpriteMap spriteMap;
-
-	public GhostRenderer(SpriteMap spriteMap) {
-		this.spriteMap = spriteMap;
-	}
-
 	@Override
 	public void render(Graphics2D g, Ghost ghost) {
 		if (ghost.body.visible) {
@@ -51,6 +45,7 @@ class GhostRenderer implements IGhostRenderer {
 	}
 
 	private Optional<Sprite> selectSprite(Ghost ghost) {
+		SpriteMap spriteMap = ArcadeTheme.THEME.getSpriteMap(ghost);
 		GhostState state = ghost.ai.getState();
 		Direction dir = ghost.body.moveDir;
 		if (state == null) {

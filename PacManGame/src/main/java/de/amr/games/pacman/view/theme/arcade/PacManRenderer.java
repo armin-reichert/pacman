@@ -22,14 +22,9 @@ import de.amr.games.pacman.view.api.IPacManRenderer;
  */
 class PacManRenderer implements IPacManRenderer {
 
-	private SpriteMap spriteMap;
-
-	public PacManRenderer(SpriteMap spriteMap) {
-		this.spriteMap = spriteMap;
-	}
-
 	@Override
-	public void resetAnimations() {
+	public void resetAnimations(PacMan pacMan) {
+		SpriteMap spriteMap = ArcadeTheme.THEME.getSpriteMap(pacMan);
 		spriteMap.forEach(sprite -> sprite.resetAnimation());
 	}
 
@@ -52,6 +47,7 @@ class PacManRenderer implements IPacManRenderer {
 	}
 
 	private Optional<Sprite> selectSprite(PacMan pacMan) {
+		SpriteMap spriteMap = ArcadeTheme.THEME.getSpriteMap(pacMan);
 		if (pacMan.ai.getState() == null || pacMan.ai.is(IN_BED, SLEEPING)) {
 			return spriteMap.select("full");
 		} else if (pacMan.ai.is(AWAKE, POWERFUL)) {

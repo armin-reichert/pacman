@@ -8,6 +8,6 @@ public interface IPacManRenderer {
 
 	void render(Graphics2D g, PacMan pacMan);
 
-	default void resetAnimations() {
+	default void resetAnimations(PacMan pacMan) {
 	}
 }

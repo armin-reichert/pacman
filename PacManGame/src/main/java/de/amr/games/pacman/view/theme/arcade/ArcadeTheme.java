@@ -62,15 +62,33 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 		return map;
 	}
 
-	public String ghostSpriteKeyColor(GhostPersonality personality, Direction dir) {
+	SpriteMap getSpriteMap(Ghost ghost) {
+		SpriteMap spriteMap = ghostSprites.get(ghost);
+		if (spriteMap == null) {
+			spriteMap = makeGhostSpriteMap(ghost);
+			ghostSprites.put(ghost, spriteMap);
+		}
+		return spriteMap;
+	}
+
+	SpriteMap getSpriteMap(PacMan pacMan) {
+		SpriteMap spriteMap = pacManSprites.get(pacMan);
+		if (spriteMap == null) {
+			spriteMap = makePacManSpriteMap();
+			pacManSprites.put(pacMan, spriteMap);
+		}
+		return spriteMap;
+	}
+
+	String ghostSpriteKeyColor(GhostPersonality personality, Direction dir) {
 		return String.format("colored-%s-%s", personality, dir);
 	}
 
-	public String ghostSpriteKeyEyes(Direction dir) {
+	String ghostSpriteKeyEyes(Direction dir) {
 		return String.format("eyes-%s", dir);
 	}
 
-	public String ghostSpriteKeyPoints(int points) {
+	String ghostSpriteKeyPoints(int points) {
 		return String.format("points-%d", points);
 	}
 
@@ -104,22 +122,12 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public IPacManRenderer pacManRenderer(PacMan pacMan) {
-		SpriteMap spriteMap = pacManSprites.get(pacMan);
-		if (spriteMap == null) {
-			spriteMap = makePacManSpriteMap();
-			pacManSprites.put(pacMan, spriteMap);
-		}
-		return new PacManRenderer(spriteMap);
+		return new PacManRenderer();
 	}
 
 	@Override
 	public IGhostRenderer ghostRenderer(Ghost ghost) {
-		SpriteMap spriteMap = ghostSprites.get(ghost);
-		if (spriteMap == null) {
-			spriteMap = makeGhostSpriteMap(ghost);
-			ghostSprites.put(ghost, spriteMap);
-		}
-		return new GhostRenderer(spriteMap);
+		return new GhostRenderer();
 	}
 
 	@Override
