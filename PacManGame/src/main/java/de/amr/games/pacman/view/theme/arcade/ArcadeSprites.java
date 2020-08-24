@@ -29,6 +29,7 @@ public class ArcadeSprites extends Spritesheet {
 	BufferedImage pacMan_full;
 	BufferedImage pacMan_walking[][];
 	BufferedImage pacMan_dying[];
+	BufferedImage pacMan_lives_counter;
 	BufferedImage ghost_colored[][];
 	BufferedImage ghost_frightened[];
 	BufferedImage ghost_flashing[];
@@ -57,6 +58,7 @@ public class ArcadeSprites extends Spritesheet {
 			{ tile(0, 3), tile(0, 3), tile(0, 3), tile(1, 3), tile(1, 3), tile(2, 0) }  // DOWN
 			/*@formatter:on*/
 		};
+		pacMan_lives_counter = tile(8,1);
 
 		// Ghosts
 		ghost_colored = new BufferedImage[4][8];
@@ -135,6 +137,10 @@ public class ArcadeSprites extends Spritesheet {
 
 	public Sprite makeSprite_pacManCollapsing() {
 		return Sprite.of(pacMan_dying).animate(LINEAR, 100);
+	}
+	
+	public BufferedImage imageLivesCounter() {
+		return pacMan_lives_counter;
 	}
 
 	public Sprite makeSprite_ghostColored(GhostPersonality personality, Direction dir) {
