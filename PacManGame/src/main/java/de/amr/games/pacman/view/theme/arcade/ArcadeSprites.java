@@ -22,7 +22,6 @@ import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
  */
 public class ArcadeSprites extends Spritesheet {
 
-	BufferedImage logo = Assets.readImage("images/logo.png");
 	BufferedImage empty_maze = Assets.readImage("themes/arcade/maze_empty.png");
 	BufferedImage full_maze = Assets.readImage("themes/arcade/maze_full.png");
 	
@@ -107,10 +106,6 @@ public class ArcadeSprites extends Spritesheet {
 			throw new IllegalArgumentException("No sprite found for number" + number);
 		}
 		return Sprite.of(index < 4 ? green_numbers[index] : pink_numbers[index - 4]);
-	}
-
-	public BufferedImage image_logo() {
-		return logo;
 	}
 
 	public Sprite makeSprite_emptyMaze() {
