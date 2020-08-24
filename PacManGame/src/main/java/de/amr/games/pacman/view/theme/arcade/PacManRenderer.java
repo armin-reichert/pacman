@@ -13,7 +13,6 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.view.api.IPacManRenderer;
-import de.amr.games.pacman.view.common.ISpriteRenderer;
 import de.amr.games.pacman.view.theme.PacManSpriteMap;
 
 /**
@@ -21,7 +20,7 @@ import de.amr.games.pacman.view.theme.PacManSpriteMap;
  * 
  * @author Armin Reichert
  */
-class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
+class PacManRenderer implements IPacManRenderer {
 
 	private PacManSpriteMap spriteMap;
 
@@ -36,14 +35,20 @@ class PacManRenderer implements IPacManRenderer, ISpriteRenderer {
 
 	@Override
 	public void render(Graphics2D g, PacMan pacMan) {
-		selectSprite(pacMan).ifPresent(sprite -> {
-			sprite.enableAnimation(pacMan.enabled);
-			int sw = 2 * pacMan.body.tf.width, sh = 2 * pacMan.body.tf.height;
-			if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
-				sprite.scale(sw, sh);
-			}
-			drawEntitySprite(g, pacMan.body, sprite);
-		});
+		if (pacMan.body.visible) {
+			selectSprite(pacMan).ifPresent(sprite -> {
+				sprite.enableAnimation(pacMan.enabled);
+				int sw = 2 * pacMan.body.tf.width, sh = 2 * pacMan.body.tf.height;
+				if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
+					sprite.scale(sw, sh);
+				}
+				Graphics2D g2 = (Graphics2D) g.create();
+				int w = pacMan.body.tf.width, h = pacMan.body.tf.height;
+				float x = pacMan.body.tf.x - (sprite.getWidth() - w) / 2, y = pacMan.body.tf.y - (sprite.getHeight() - h) / 2;
+				sprite.draw(g2, x, y);
+				g2.dispose();
+			});
+		}
 	}
 
 	private Optional<Sprite> selectSprite(PacMan pacMan) {
