@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.play;
+package de.amr.games.pacman.view.common;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -7,7 +7,6 @@ import java.util.List;
 
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.common.MessagesRenderer;
 
 /**
  * Renders the messages inside the play view.

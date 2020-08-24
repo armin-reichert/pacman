@@ -14,6 +14,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.view.common.MessagesView;
 
 /**
  * View where the action is.

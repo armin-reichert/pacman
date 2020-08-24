@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.play;
+package de.amr.games.pacman.view.common;
 
 import java.awt.Color;
 
