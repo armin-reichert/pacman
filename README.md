@@ -516,6 +516,8 @@ However, for a graph of such a small size, the used algorithm doesn't matter ver
 
 ## Theming support
 
+<img src="PacManDoc/theming/theme-selection.png">
+
 The view layer supports theming. The currently implemented themes are 
 
 - ARCADE: uses sprites as in the original Arcade game
