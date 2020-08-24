@@ -13,7 +13,6 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.view.api.IPacManRenderer;
-import de.amr.games.pacman.view.theme.PacManSpriteMap;
 
 /**
  * Renders Pac-Man using animated sprites.

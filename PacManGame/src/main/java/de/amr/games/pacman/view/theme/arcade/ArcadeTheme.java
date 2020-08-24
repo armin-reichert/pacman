@@ -19,7 +19,6 @@ import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.PointsCounterRenderer;
 import de.amr.games.pacman.view.core.ThemeParameters;
-import de.amr.games.pacman.view.theme.PacManSpriteMap;
 
 /**
  * This theme mimics the original Arcade version.

@@ -1,9 +1,7 @@
-package de.amr.games.pacman.view.theme;
+package de.amr.games.pacman.view.theme.arcade;
 
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.view.theme.arcade.ArcadeSprites;
-import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 
 public class PacManSpriteMap extends SpriteMap {
 
