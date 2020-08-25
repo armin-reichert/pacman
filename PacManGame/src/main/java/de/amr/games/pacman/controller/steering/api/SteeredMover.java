@@ -13,15 +13,17 @@ import de.amr.games.pacman.model.world.core.MovingEntity;
  */
 public abstract class SteeredMover extends MovingEntity {
 
+	public final String name;
 	public final MovementController movement;
 
-	public SteeredMover(World world) {
+	public SteeredMover(World world, String name) {
 		super(world);
+		this.name = name;
 		this.movement = new MovementController(world, this);
 	}
 
 	public abstract Steering steering();
-
+	
 	@Override
 	public boolean canCrossBorderTo(Direction dir) {
 		Tile currentTile = tile(), neighbor = world.neighbor(currentTile, dir);

@@ -32,7 +32,7 @@ public class MovementController extends StateMachine<MovementType, Void> {
 		this.guy = guy;
 		//@formatter:off
 		beginStateMachine()
-			.description(guy + " Movement")
+			.description(guy.name + " Movement")
 			.initialState(WALKING)
 			.states()
 				.state(WALKING)

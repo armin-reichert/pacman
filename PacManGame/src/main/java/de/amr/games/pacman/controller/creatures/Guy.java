@@ -22,7 +22,6 @@ import de.amr.statemachine.core.StateMachine;
  */
 public abstract class Guy<STATE> extends SteeredMover implements Lifecycle {
 
-	public final String name;
 	public final StateMachine<STATE, PacManGameEvent> ai;
 	public final Map<STATE, Steering> steeringsMap;
 
@@ -31,8 +30,7 @@ public abstract class Guy<STATE> extends SteeredMover implements Lifecycle {
 	public boolean enabled;
 
 	public Guy(String name, World world, Map<STATE, Steering> steeringsMap) {
-		super(world);
-		this.name = name;
+		super(world, name);
 		this.steeringsMap = steeringsMap;
 		this.ai = buildAI();
 		tf.width = tf.height = Tile.SIZE;
