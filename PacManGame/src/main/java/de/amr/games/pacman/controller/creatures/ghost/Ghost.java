@@ -62,7 +62,7 @@ public class Ghost extends Guy<GhostState> {
 		/*@formatter:off*/
 		StateMachine<GhostState, PacManGameEvent> fsm = StateMachine
 			.beginStateMachine(GhostState.class, PacManGameEvent.class, TransitionMatchStrategy.BY_CLASS)
-				.description("Ghost " + name + " AI")
+				.description(name + " AI")
 				.initialState(LOCKED)
 
 			.states()

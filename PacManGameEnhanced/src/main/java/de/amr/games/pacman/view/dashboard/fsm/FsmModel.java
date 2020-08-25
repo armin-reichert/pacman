@@ -1,11 +1,11 @@
 package de.amr.games.pacman.view.dashboard.fsm;
 
 import static de.amr.easy.game.controller.StateMachineRegistry.REGISTRY;
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,32 +20,39 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class FsmModel {
 
-	private List<FsmData> dataList = new ArrayList<>();
+	public final Map<String, List<FsmData>> data = new HashMap<>();
 	private boolean setChanged;
 
 	public FsmModel() {
 		update();
 	}
 
+	public Stream<FsmData> data() {
+		return data.values().stream().flatMap(List::stream);
+	}
+
 	public void update() {
-		Set<StateMachine<?, ?>> machines = dataList.stream().map(FsmData::getFsm).collect(Collectors.toSet());
+		Set<StateMachine<?, ?>> machines = data().map(FsmData::getFsm).collect(Collectors.toSet());
 		if (!REGISTRY.machines().equals(machines)) {
-			dataList = REGISTRY.machines().stream().sorted(comparing(StateMachine::getDescription)).map(FsmData::new)
-					.collect(toList());
+			data.clear();
+			REGISTRY.categories().forEach(category -> {
+				REGISTRY.machines(category).forEach(machine -> {
+					data.put(category, new ArrayList<>());
+				});
+			});
+			REGISTRY.categories().forEach(category -> {
+				REGISTRY.machines(category).forEach(machine -> {
+					data.get(category).add(new FsmData(machine));
+				});
+			});
 			setChanged = true;
 		} else {
-			for (FsmData data : dataList) {
-				data.updateGraph();
-			}
+			data().forEach(FsmData::updateGraph);
 			setChanged = false;
 		}
 	}
 
 	public boolean setOfMachinesChanged() {
 		return setChanged;
-	}
-
-	public Stream<FsmData> data() {
-		return dataList.stream();
 	}
 }

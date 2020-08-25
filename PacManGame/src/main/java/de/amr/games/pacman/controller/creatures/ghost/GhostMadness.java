@@ -61,7 +61,7 @@ public class GhostMadness extends StateMachine<GhostMentalState, Byte> {
 		//@formatter:off
 		beginStateMachine()
 			.initialState(HEALTHY)
-			.description(() -> String.format("Ghost %s Madness", ghost.name))
+			.description(() -> String.format("%s Madness", ghost.name))
 			.states()
 			
 				.state(HEALTHY).onEntry(this::targetCorner)

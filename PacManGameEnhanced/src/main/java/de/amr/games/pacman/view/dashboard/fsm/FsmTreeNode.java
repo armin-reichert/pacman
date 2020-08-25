@@ -10,19 +10,15 @@ public class FsmTreeNode extends DefaultMutableTreeNode {
 		this.label = label;
 	}
 
-	public FsmTreeNode(FsmData data) {
-		setUserObject(data);
-	}
-
-	public FsmData getData() {
-		return (FsmData) getUserObject();
-	}
-
 	@Override
 	public String toString() {
 		if (label != null) {
 			return label;
 		}
-		return getData() != null ? getData().getFsm().getDescription() : "";
+		if (getUserObject() != null) {
+			FsmData data = (FsmData) getUserObject();
+			return data.getFsm().getDescription();
+		}
+		return super.toString();
 	}
 }

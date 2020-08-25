@@ -21,7 +21,7 @@ public class UniversalFormatter extends DefaultTableCellRenderer {
 	}
 
 	private Context context = new Context();
-	
+
 	public Color hilightColor = new Color(255, 0, 0, 100);
 	public Function<Context, Boolean> fnHilightCondition = context -> false;
 	public Function<Context, String> fnTextFormat = context -> context.value == null ? "" : String.valueOf(context.value);

@@ -37,17 +37,44 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	static final String GRAPHVIZ_ONLINE_URL = "https://dreampuf.github.io/GraphvizOnline";
 
-	private Action actionViewOnline=new AbstractAction("View Online"){
+	private Action actionViewOnline = new AbstractAction("View Online") {
 
-	@Override public void actionPerformed(ActionEvent e){tree.getSelectedData().ifPresent(data->{try{URI uri=new URI(null,GRAPHVIZ_ONLINE_URL,data.getGraph());Desktop.getDesktop().browse(uri);}catch(Exception x){x.printStackTrace();}});}};
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			tree.getSelectedData().ifPresent(data -> {
+				try {
+					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, data.getGraph());
+					Desktop.getDesktop().browse(uri);
+				} catch (Exception x) {
+					x.printStackTrace();
+				}
+			});
+		}
+	};
 
-	private Action actionSave=new AbstractAction("Save"){@Override public void actionPerformed(ActionEvent e){tree.getSelectedData().ifPresent(data->{saveFile(data);});}};
+	private Action actionSave = new AbstractAction("Save") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			tree.getSelectedData().ifPresent(data -> {
+				saveFile(data);
+			});
+		}
+	};
 
-	private Action actionOpenDashboard=new AbstractAction("Open Dashboard"){
+	private Action actionOpenDashboard = new AbstractAction("Open Dashboard") {
 
-	@Override public void actionPerformed(ActionEvent e){if(dashboard==null){dashboard=new FsmDashboard(model);dashboard.rebuild();dashboard.setSize(1024,768);}dashboard.setVisible(true);};};
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (dashboard == null) {
+				dashboard = new FsmDashboard(model);
+				dashboard.rebuild();
+				dashboard.setSize(1024, 768);
+			}
+			dashboard.setVisible(true);
+		};
+	};
 
-	private TreeModelListener treeSelectionInitializer =		new TreeModelListener() {
+	private TreeModelListener treeSelectionInitializer = new TreeModelListener() {
 
 		@Override
 		public void treeStructureChanged(TreeModelEvent e) {

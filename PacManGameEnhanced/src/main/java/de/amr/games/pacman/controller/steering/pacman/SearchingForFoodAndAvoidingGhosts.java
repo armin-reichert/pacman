@@ -86,8 +86,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	private boolean avoidTouchingGhostAhead() {
 		// is dangerous ghost just in front of pacMan and is moving in the same direction?
-		Ghost enemy = dangerousGhostsInRange(2).filter(ghost -> me.moveDir == ghost.moveDir).findAny()
-				.orElse(null);
+		Ghost enemy = dangerousGhostsInRange(2).filter(ghost -> me.moveDir == ghost.moveDir).findAny().orElse(null);
 		if (enemy != null) {
 			me.reverseDirection();
 			return true;
@@ -211,8 +210,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	private double nearestDistanceToDangerousGhost(Tile here) {
-		return dangerousGhosts().map(ghost -> here.distance(ghost.tile())).min(Double::compareTo)
-				.orElse(Double.MAX_VALUE);
+		return dangerousGhosts().map(ghost -> here.distance(ghost.tile())).min(Double::compareTo).orElse(Double.MAX_VALUE);
 	}
 
 	private Stream<Ghost> ghostsInRange(int numTiles) {
