@@ -38,7 +38,7 @@ public class HeadingForTargetTile implements Steering {
 	 * fields of the guy because the {@link #pathTo(Tile)} method also uses this method without actually
 	 * moving the guy along the path.
 	 * 
-	 * @param guy     the guy moving
+	 * @param guy     the steered guy
 	 * @param moveDir current move direction
 	 * @param tile    current tile
 	 * @param target  target tile
@@ -56,14 +56,13 @@ public class HeadingForTargetTile implements Steering {
 	}
 
 	private final Supplier<Tile> fnTargetTile;
-	private final List<Tile> path;
-
+	private List<Tile> path;
 	private boolean pathComputed;
 	private boolean forced;
 
-	public HeadingForTargetTile(SteeredMover guy, Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(Supplier<Tile> fnTargetTile) {
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
-		this.path = new ArrayList<>();
+		path = Collections.emptyList();
 	}
 
 	@Override
@@ -81,6 +80,28 @@ public class HeadingForTargetTile implements Steering {
 			}
 			forced = false;
 		}
+	}
+
+	/**
+	 * Computes the path the guy would traverse until either reaching the target tile, running into a
+	 * cycle or entering a portal.
+	 */
+	private void updatePath(SteeredMover guy, Tile target) {
+		if (target != null) {
+			path = new ArrayList<>();
+			Direction dir = guy.moveDir;
+			Tile next = guy.tile();
+			while (!next.equals(target) && guy.world.includes(next) && !path.contains(next)) {
+				path.add(next);
+				dir = bestDirTowardsTarget(guy, dir, next, target);
+				next = guy.world.neighbor(next, dir);
+			}
+		}
+	}
+
+	@Override
+	public List<Tile> pathToTarget() {
+		return Collections.unmodifiableList(path);
 	}
 
 	@Override
@@ -101,27 +122,5 @@ public class HeadingForTargetTile implements Steering {
 	@Override
 	public void setPathComputed(boolean computed) {
 		pathComputed = computed;
-	}
-
-	@Override
-	public List<Tile> pathToTarget() {
-		return Collections.unmodifiableList(path);
-	}
-
-	/**
-	 * Computes the path the guy would traverse until either reaching the target tile, running into a
-	 * cycle or entering a portal.
-	 */
-	private void updatePath(SteeredMover guy, Tile target) {
-		if (target != null) {
-			path.clear();
-			Direction dir = guy.moveDir;
-			Tile next = guy.tile();
-			while (!next.equals(target) && guy.world.includes(next) && !path.contains(next)) {
-				path.add(next);
-				dir = bestDirTowardsTarget(guy, dir, next, target);
-				next = guy.world.neighbor(next, dir);
-			}
-		}
 	}
 }
