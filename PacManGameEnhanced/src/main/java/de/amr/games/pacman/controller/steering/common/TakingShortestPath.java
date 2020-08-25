@@ -2,13 +2,12 @@ package de.amr.games.pacman.controller.steering.common;
 
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.creatures.SmartGuy;
+import de.amr.games.pacman.controller.steering.api.SteeredMover;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingEntity;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 
 /**
- * Lets a lifeform follow the shortest path (using graph path finding) to the target tile.
+ * Steers a guy following the shortest path (using graph path finding) to the target tile.
  *
  * @author Armin Reichert
  */
@@ -17,17 +16,17 @@ public class TakingShortestPath extends FollowingPath {
 	private final WorldGraph graph;
 	private final Supplier<Tile> fnTargetTile;
 
-	public TakingShortestPath(SmartGuy<?> guy, Supplier<Tile> fnTargetTile) {
+	public TakingShortestPath(SteeredMover guy, Supplier<Tile> fnTargetTile) {
 		super(guy);
 		this.fnTargetTile = fnTargetTile;
 		graph = new WorldGraph(guy.world);
 	}
 
 	@Override
-	public void steer(MovingEntity mover) {
+	public void steer(SteeredMover guy) {
 		if (path.size() == 0 || isComplete()) {
-			setPath(graph.shortestPath(mover.tile(), fnTargetTile.get()));
+			setPath(graph.shortestPath(guy.tile(), fnTargetTile.get()));
 		}
-		super.steer(mover);
+		super.steer(guy);
 	}
 }

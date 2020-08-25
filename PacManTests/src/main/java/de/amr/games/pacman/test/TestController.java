@@ -7,7 +7,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.creatures.Folks;
-import de.amr.games.pacman.controller.creatures.SmartGuy;
+import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.Game;
@@ -52,8 +52,8 @@ public class TestController implements VisualController {
 
 	@Override
 	public void init() {
-		folks.guys().forEach(SmartGuy::init);
-		folks.guys().forEach(guy -> world.exclude(guy.body));
+		folks.guys().forEach(Guy::init);
+		folks.guys().forEach(guy -> world.exclude(guy));
 		view.init();
 	}
 
@@ -84,7 +84,7 @@ public class TestController implements VisualController {
 				view.turnStatesOn();
 			}
 		}
-		folks.guysInWorld().forEach(SmartGuy::update);
+		folks.guysInWorld().forEach(Guy::update);
 		view.update();
 	}
 
@@ -93,8 +93,8 @@ public class TestController implements VisualController {
 		return Optional.of(view);
 	}
 
-	protected void include(SmartGuy<?>... guys) {
-		Stream.of(guys).forEach(guy -> world.include(guy.body));
+	protected void include(Guy<?>... guys) {
+		Stream.of(guys).forEach(guy -> world.include(guy));
 	}
 
 	protected Theme theme() {

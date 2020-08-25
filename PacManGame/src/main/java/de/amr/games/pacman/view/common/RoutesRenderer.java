@@ -32,14 +32,14 @@ public class RoutesRenderer {
 
 	public void renderRoutes(Graphics2D g, Folks folks) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		if (folks.pacMan.body.visible) {
+		if (folks.pacMan.visible) {
 			drawPacManRoute(g, folks.pacMan);
 		}
-		folks.ghostsInWorld().filter(ghost -> ghost.body.visible).forEach(ghost -> drawGhostRoute(g, ghost));
-		if (folks.inky.body.visible) {
+		folks.ghostsInWorld().filter(ghost -> ghost.visible).forEach(ghost -> drawGhostRoute(g, ghost));
+		if (folks.inky.visible) {
 			drawInkyChasing(g, folks);
 		}
-		if (folks.clyde.body.visible) {
+		if (folks.clyde.visible) {
 			drawClydeChasingArea(g, folks);
 		}
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -56,10 +56,10 @@ public class RoutesRenderer {
 			drawTargetTilePath(g, steering.pathToTarget(), ghostColor(ghost));
 			return;
 		}
-		if (ghost.body.wishDir != null) {
-			Vector2f center = ghost.body.tf.getCenter();
-			Vector2f dir_vector = ghost.body.wishDir.vector();
-			drawDirectionIndicator(g, ghostColor(ghost), true, ghost.body.wishDir,
+		if (ghost.wishDir != null) {
+			Vector2f center = ghost.tf.getCenter();
+			Vector2f dir_vector = ghost.wishDir.vector();
+			drawDirectionIndicator(g, ghostColor(ghost), true, ghost.wishDir,
 					(int) (center.x + dir_vector.x * Tile.SIZE), (int) (center.y + dir_vector.y * Tile.SIZE));
 		}
 	}
@@ -73,7 +73,7 @@ public class RoutesRenderer {
 
 		// draw dashed line from ghost position to target tile
 		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
-		int x1 = ghost.body.tf.getCenter().roundedX(), y1 = ghost.body.tf.getCenter().roundedY();
+		int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
 		int x2 = targetTile.get().centerX(), y2 = targetTile.get().centerY();
 		g.setStroke(dashed);
 		g.setColor(alpha(ghostColor(ghost), 200));
@@ -115,18 +115,18 @@ public class RoutesRenderer {
 		PacMan pacMan = folks.pacMan;
 		World world = pacMan.world;
 		Ghost inky = folks.inky, blinky = folks.blinky;
-		if (!inky.ai.is(CHASING) || inky.steering().targetTile().isEmpty() || !world.contains(blinky.body)) {
+		if (!inky.ai.is(CHASING) || inky.steering().targetTile().isEmpty() || !world.contains(blinky)) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
-		x1 = blinky.body.tile().centerX();
-		y1 = blinky.body.tile().centerY();
+		x1 = blinky.tile().centerX();
+		y1 = blinky.tile().centerY();
 		x2 = inky.steering().targetTile().get().centerX();
 		y2 = inky.steering().targetTile().get().centerY();
 		g.setColor(Color.GRAY);
 		g.drawLine(x1, y1, x2, y2);
-		Tile pacManTile = pacMan.body.tile();
-		Direction pacManDir = pacMan.body.moveDir;
+		Tile pacManTile = pacMan.tile();
+		Direction pacManDir = pacMan.moveDir;
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
 		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
@@ -158,7 +158,7 @@ public class RoutesRenderer {
 			return;
 		}
 		Color ghostColor = ghostColor(clyde);
-		int cx = clyde.body.tile().centerX(), cy = clyde.body.tile().centerY();
+		int cx = clyde.tile().centerX(), cy = clyde.tile().centerY();
 		int r = 8 * Tile.SIZE;
 		g.setColor(alpha(ghostColor, 200));
 		g.setStroke(new BasicStroke(0.2f));

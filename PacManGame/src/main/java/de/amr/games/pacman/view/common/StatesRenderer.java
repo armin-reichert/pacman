@@ -19,7 +19,7 @@ import java.awt.Stroke;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.creatures.Folks;
-import de.amr.games.pacman.controller.creatures.SmartGuy;
+import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GhostCommand;
@@ -41,7 +41,7 @@ public class StatesRenderer {
 	}
 
 	private void drawPacManState(Graphics2D g, PacMan pacMan) {
-		if (!pacMan.body.visible || pacMan.ai.getState() == null) {
+		if (!pacMan.visible || pacMan.ai.getState() == null) {
 			return;
 		}
 		String text = pacMan.ai.getState().name();
@@ -54,7 +54,7 @@ public class StatesRenderer {
 		if (settings.pacManImmortable) {
 			text += " lives " + Rendering.INFTY;
 		}
-		drawEntityState(g, pacMan.body, text, Color.YELLOW);
+		drawEntityState(g, pacMan, text, Color.YELLOW);
 	}
 
 	private void drawEntityState(Graphics2D g, Entity entity, String text, Color color) {
@@ -66,7 +66,7 @@ public class StatesRenderer {
 	}
 
 	private void drawGhostState(Graphics2D g, Ghost ghost, GhostCommand ghostCommand) {
-		if (!ghost.body.visible) {
+		if (!ghost.visible) {
 			return;
 		}
 		if (ghost.ai.getState() == null) {
@@ -90,7 +90,7 @@ public class StatesRenderer {
 				text.append(ghost.ai.getState());
 			}
 		}
-		drawEntityState(g, ghost.body, text.toString(), ghostColor(ghost));
+		drawEntityState(g, ghost, text.toString(), ghostColor(ghost));
 	}
 
 	private String formatLargeTicks(long ticks) {
@@ -111,26 +111,26 @@ public class StatesRenderer {
 		folks.ghostsInWorld().forEach(ghost -> drawActorOffTrack(g, ghost));
 	}
 
-	private void drawActorOffTrack(Graphics2D g, SmartGuy<?> creature) {
-		if (!creature.body.visible) {
+	private void drawActorOffTrack(Graphics2D g, Guy<?> creature) {
+		if (!creature.visible) {
 			return;
 		}
 		Stroke normal = g.getStroke();
 		Stroke fine = new BasicStroke(0.2f);
 		g.setStroke(fine);
 		g.setColor(Color.RED);
-		g.translate(creature.body.tf.x, creature.body.tf.y);
-		int w = creature.body.tf.width, h = creature.body.tf.height;
-		Direction moveDir = creature.body.moveDir;
-		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(creature.body.tf.y) % Tile.SIZE != 0) {
+		g.translate(creature.tf.x, creature.tf.y);
+		int w = creature.tf.width, h = creature.tf.height;
+		Direction moveDir = creature.moveDir;
+		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(creature.tf.y) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(creature.body.tf.x) % Tile.SIZE != 0) {
+		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(creature.tf.x) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
-		g.translate(-creature.body.tf.x, -creature.body.tf.y);
+		g.translate(-creature.tf.x, -creature.tf.y);
 		g.setStroke(normal);
 	}
 }

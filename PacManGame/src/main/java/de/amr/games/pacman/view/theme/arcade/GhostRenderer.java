@@ -28,16 +28,16 @@ class GhostRenderer implements IGhostRenderer {
 
 	@Override
 	public void render(Graphics2D g, Ghost ghost) {
-		if (ghost.body.visible) {
+		if (ghost.visible) {
 			selectSprite(ghost).ifPresent(sprite -> {
 				sprite.enableAnimation(ghost.enabled);
-				int sw = 2 * ghost.body.tf.width, sh = 2 * ghost.body.tf.height;
+				int sw = 2 * ghost.tf.width, sh = 2 * ghost.tf.height;
 				if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
 					sprite.scale(sw, sh);
 				}
 				Graphics2D g2 = (Graphics2D) g.create();
-				int w = ghost.body.tf.width, h = ghost.body.tf.height;
-				float x = ghost.body.tf.x - (sprite.getWidth() - w) / 2, y = ghost.body.tf.y - (sprite.getHeight() - h) / 2;
+				int w = ghost.tf.width, h = ghost.tf.height;
+				float x = ghost.tf.x - (sprite.getWidth() - w) / 2, y = ghost.tf.y - (sprite.getHeight() - h) / 2;
 				sprite.draw(g2, x, y);
 				g2.dispose();
 			});
@@ -47,7 +47,7 @@ class GhostRenderer implements IGhostRenderer {
 	private Optional<Sprite> selectSprite(Ghost ghost) {
 		SpriteMap spriteMap = ArcadeTheme.THEME.getSpriteMap(ghost);
 		GhostState state = ghost.ai.getState();
-		Direction dir = ghost.body.moveDir;
+		Direction dir = ghost.moveDir;
 		if (state == null) {
 			return spriteMap.select(THEME.ghostSpriteKeyColor(ghost.personality, dir));
 		} else if (ghost.ai.is(LOCKED, LEAVING_HOUSE, CHASING, SCATTERING)) {

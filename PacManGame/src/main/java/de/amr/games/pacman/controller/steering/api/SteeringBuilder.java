@@ -166,10 +166,10 @@ public class SteeringBuilder {
 		public Steering ok() {
 			if (ghost != null) {
 				ensureGhostState();
-				ghost.behavior(ghostState, new HeadingForTargetTile(ghost, fnTargetTile));
+				ghost.behavior(ghostState, new HeadingForTargetTile(ghost.world, ghost, fnTargetTile));
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.setWalkingBehavior(new HeadingForTargetTile(pacMan, fnTargetTile));
+				pacMan.setWalkingBehavior(new HeadingForTargetTile(pacMan.world, pacMan, fnTargetTile));
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
@@ -198,10 +198,10 @@ public class SteeringBuilder {
 		public Steering ok() {
 			if (ghost != null) {
 				ensureGhostState();
-				ghost.behavior(ghostState, new RandomMovement(ghost));
+				ghost.behavior(ghostState, new RandomMovement());
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.setWalkingBehavior(new RandomMovement(pacMan));
+				pacMan.setWalkingBehavior(new RandomMovement());
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();

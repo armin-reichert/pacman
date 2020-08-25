@@ -2,23 +2,42 @@ package de.amr.games.pacman.model.world.core;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 
 /**
- * An entity that can move through a tile-based world. Guys by default have a body size of exactly
- * one tile but their visual shape normally is larger.
+ * An entity that can move through a tile-based world.
  * 
  * @author Armin Reichert
  */
-public class MovingEntity extends Entity {
+public abstract class MovingEntity extends Entity {
 
+	public World world;
 	public Direction moveDir;
 	public Direction wishDir;
 	public boolean enteredNewTile;
 
-	public MovingEntity() {
-		tf.width = tf.height = Tile.SIZE;
+	public MovingEntity(World world) {
+		this.world = world;
 	}
+
+	/**
+	 * @param tile some tile, not necessary the current tile
+	 * @param a    neighbor tile of the tile
+	 * @return {@code true} if this guy can move between the given tiles
+	 */
+	public abstract boolean canMoveBetween(Tile tile, Tile neighbor);
+
+	/**
+	 * @param dir a direction
+	 * @return {@code true} if this guy can cross the border to the given direction
+	 */
+	public abstract boolean canCrossBorderTo(Direction moveDir);
+
+	/**
+	 * @return speed in pixels/ticks
+	 */
+	public abstract float getSpeed();
 
 	/**
 	 * The tile location is defined as the tile containing the center of the guy's body.

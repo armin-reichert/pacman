@@ -157,7 +157,7 @@ public class DoorMan implements Lifecycle {
 	public Optional<Ghost> preferredLockedGhost() {
 		//@formatter:off
 		return Stream.of(folks.blinky, folks.pinky, folks.inky, folks.clyde)
-				.filter(ghost -> world.contains(ghost.body))
+				.filter(ghost -> world.contains(ghost))
 				.filter(ghost -> ghost.ai.is(LOCKED)).findFirst();
 		//@formatter:on
 	}
@@ -185,9 +185,9 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private boolean isGhostNearDoor(Ghost ghost, Door door) {
-		Tile fromGhostTowardsHouse = world.neighbor(ghost.body.tile(), door.intoHouse);
-		Tile fromGhostAwayFromHouse = world.neighbor(ghost.body.tile(), door.intoHouse.opposite());
-		return door.includes(ghost.body.tile()) || door.includes(fromGhostAwayFromHouse)
+		Tile fromGhostTowardsHouse = world.neighbor(ghost.tile(), door.intoHouse);
+		Tile fromGhostAwayFromHouse = world.neighbor(ghost.tile(), door.intoHouse.opposite());
+		return door.includes(ghost.tile()) || door.includes(fromGhostAwayFromHouse)
 				|| door.includes(fromGhostTowardsHouse);
 	}
 

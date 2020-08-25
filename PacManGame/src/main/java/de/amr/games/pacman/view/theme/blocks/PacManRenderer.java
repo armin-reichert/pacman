@@ -14,12 +14,12 @@ class PacManRenderer implements IPacManRenderer {
 
 	@Override
 	public void render(Graphics2D g, PacMan pacMan) {
-		if (!pacMan.body.visible) {
+		if (!pacMan.visible) {
 			return;
 		}
 		Rendering.smoothOn(g);
 		PacManState state = pacMan.ai.getState();
-		int size = 2 * pacMan.body.tf.width;
+		int size = 2 * pacMan.tf.width;
 		switch (state) {
 		case AWAKE:
 		case POWERFUL:
@@ -40,15 +40,15 @@ class PacManRenderer implements IPacManRenderer {
 	}
 
 	private void drawFull(Graphics2D g, PacMan pacMan, int size) {
-		int x = (int) pacMan.body.tf.x + (pacMan.body.tf.width - size) / 2;
-		int y = (int) pacMan.body.tf.y + (pacMan.body.tf.width - size) / 2;
+		int x = (int) pacMan.tf.x + (pacMan.tf.width - size) / 2;
+		int y = (int) pacMan.tf.y + (pacMan.tf.width - size) / 2;
 		g.setColor(Color.YELLOW);
 		g.fillOval(x, y, size, size);
 	}
 
 	private void drawRunning(Graphics2D g, PacMan pacMan, int size) {
-		int x = (int) pacMan.body.tf.x + (pacMan.body.tf.width - size) / 2;
-		int y = (int) pacMan.body.tf.y + (pacMan.body.tf.width - size) / 2;
+		int x = (int) pacMan.tf.x + (pacMan.tf.width - size) / 2;
+		int y = (int) pacMan.tf.y + (pacMan.tf.width - size) / 2;
 		g.setColor(Color.YELLOW);
 		g.fillOval(x, y, size, size);
 	}
@@ -58,8 +58,8 @@ class PacManRenderer implements IPacManRenderer {
 		float thickness = 1f;
 		g.setColor(Color.YELLOW);
 		for (int d = size; d > size / 8; d = d / 2) {
-			int x = (int) pacMan.body.tf.x + (pacMan.body.tf.width - d) / 2;
-			int y = (int) pacMan.body.tf.y + (pacMan.body.tf.width - d) / 2;
+			int x = (int) pacMan.tf.x + (pacMan.tf.width - d) / 2;
+			int y = (int) pacMan.tf.y + (pacMan.tf.width - d) / 2;
 			g.setStroke(new BasicStroke(thickness));
 			g.drawOval(x, y, d, d);
 			thickness = thickness * 0.5f;

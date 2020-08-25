@@ -14,7 +14,7 @@ import java.util.EnumMap;
 import java.util.Optional;
 
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.SmartGuy;
+import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManFallAsleepEvent;
@@ -25,7 +25,6 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
@@ -43,13 +42,12 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends SmartGuy<PacManState> {
+public class PacMan extends Guy<PacManState> {
 
 	private int fat;
 
 	public PacMan(World world) {
 		super("Pac-Man", world, new EnumMap<>(PacManState.class));
-		movement = new Movement(this, "Pac-Man Movement");
 	}
 
 	@Override
@@ -65,7 +63,7 @@ public class PacMan extends SmartGuy<PacManState> {
 				.state(IN_BED)
 					.onEntry(() -> {
 						putIntoBed(world.pacManBed());
-						body.visible = true;
+						visible = true;
 						enabled = true;
 						fat = 0;
 					})
@@ -152,8 +150,8 @@ public class PacMan extends SmartGuy<PacManState> {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int nTiles) {
-		Tile tileAhead = world.tileToDir(body.tile(), body.moveDir, nTiles);
-		if (body.moveDir == UP && !settings.fixOverflowBug) {
+		Tile tileAhead = world.tileToDir(tile(), moveDir, nTiles);
+		if (moveDir == UP && !settings.fixOverflowBug) {
 			tileAhead = world.tileToDir(tileAhead, LEFT, nTiles);
 		}
 		return tileAhead;
@@ -186,8 +184,8 @@ public class PacMan extends SmartGuy<PacManState> {
 	}
 
 	private void putIntoBed(Bed bed) {
-		body.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-		body.moveDir = body.wishDir = bed.exitDir;
+		placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+		moveDir = wishDir = bed.exitDir;
 	}
 
 	private void setPowerTimer(PacManGameEvent e) {
@@ -197,14 +195,14 @@ public class PacMan extends SmartGuy<PacManState> {
 	}
 
 	private void wander() {
-		steering().steer(body);
+		steering().steer(this);
 		movement.update();
-		enabled = body.tf.vx != 0 || body.tf.vy != 0;
-		if (body.enteredNewTile) {
+		enabled = tf.vx != 0 || tf.vy != 0;
+		if (enteredNewTile) {
 			fat = Math.max(0, fat - 1);
 		}
 		if (!movement.is(MovementType.TELEPORTING)) {
-			searchForFood(body.tile()).ifPresent(ai::publish);
+			searchForFood(tile()).ifPresent(ai::publish);
 		}
 	}
 

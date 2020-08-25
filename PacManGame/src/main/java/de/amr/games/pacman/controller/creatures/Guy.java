@@ -5,41 +5,41 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.controller.steering.api.SteeredMover;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingEntity;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * A moving entity with "artificial intelligence", i.e. he/she can make decisions influencing its
+ * A guy is a steered entity with "artificial intelligence", i.e. he can make decisions changing his
  * behavior.
  * 
  * @param <STATE> state (identifier) type
  * 
  * @author Armin Reichert
  */
-public abstract class SmartGuy<STATE> implements Lifecycle {
+public abstract class Guy<STATE> extends SteeredMover implements Lifecycle {
 
 	public final String name;
-	public final World world;
-	public final MovingEntity body;
 	public final StateMachine<STATE, PacManGameEvent> ai;
 	public final Map<STATE, Steering> steeringsMap;
-	public Movement movement;
+	public final Movement movement;
 	public Steering previousSteering;
 	public Game game;
 	public boolean enabled;
 
-	public SmartGuy(String name, World world, Map<STATE, Steering> steeringsMap) {
+	public Guy(String name, World world, Map<STATE, Steering> steeringsMap) {
+		super(world);
 		this.name = name;
 		this.world = world;
-		this.body = new MovingEntity();
 		this.ai = buildAI();
 		this.steeringsMap = steeringsMap;
+		this.movement = new Movement(world, this, name + " Movement");
+		tf.width = tf.height = Tile.SIZE;
 	}
 
 	@Override
@@ -52,24 +52,9 @@ public abstract class SmartGuy<STATE> implements Lifecycle {
 
 	protected abstract StateMachine<STATE, PacManGameEvent> buildAI();
 
-	/**
-	 * @return speed in pixels/ticks
-	 */
-	public abstract float getSpeed();
-
-	/**
-	 * @param tile some tile, not necessary the current tile
-	 * @param a    neighbor tile of the tile
-	 * @return {@code true} if this guy can move between the given tiles
-	 */
-	public abstract boolean canMoveBetween(Tile tile, Tile neighbor);
-
-	/**
-	 * @param dir a direction
-	 * @return {@code true} if this guy can cross the border to the given direction
-	 */
+	@Override
 	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = body.tile(), neighbor = world.neighbor(currentTile, dir);
+		Tile currentTile = tile(), neighbor = world.neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
 
@@ -80,10 +65,7 @@ public abstract class SmartGuy<STATE> implements Lifecycle {
 		return Stream.of(ai, movement);
 	}
 
-	/**
-	 * @return the current steering of this guy. If the steering has changed since the last access it
-	 *         gets initialized.
-	 */
+	@Override
 	public Steering steering() {
 		Steering currentSteering = steeringsMap.getOrDefault(ai.getState(), guy -> {
 		});
@@ -111,7 +93,7 @@ public abstract class SmartGuy<STATE> implements Lifecycle {
 	 * @param dir direction
 	 */
 	public void forceMoving(Direction dir) {
-		body.wishDir = dir;
+		wishDir = dir;
 		movement.update();
 	}
 
@@ -119,6 +101,6 @@ public abstract class SmartGuy<STATE> implements Lifecycle {
 	 * Forces this guy to reverse its direction.
 	 */
 	public void reverseDirection() {
-		forceMoving(body.moveDir.opposite());
+		forceMoving(moveDir.opposite());
 	}
 }

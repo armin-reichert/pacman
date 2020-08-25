@@ -30,16 +30,16 @@ class PacManRenderer implements IPacManRenderer {
 
 	@Override
 	public void render(Graphics2D g, PacMan pacMan) {
-		if (pacMan.body.visible) {
+		if (pacMan.visible) {
 			selectSprite(pacMan).ifPresent(sprite -> {
 				sprite.enableAnimation(pacMan.enabled);
-				int sw = 2 * pacMan.body.tf.width, sh = 2 * pacMan.body.tf.height;
+				int sw = 2 * pacMan.tf.width, sh = 2 * pacMan.tf.height;
 				if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
 					sprite.scale(sw, sh);
 				}
 				Graphics2D g2 = (Graphics2D) g.create();
-				int w = pacMan.body.tf.width, h = pacMan.body.tf.height;
-				float x = pacMan.body.tf.x - (sprite.getWidth() - w) / 2, y = pacMan.body.tf.y - (sprite.getHeight() - h) / 2;
+				int w = pacMan.tf.width, h = pacMan.tf.height;
+				float x = pacMan.tf.x - (sprite.getWidth() - w) / 2, y = pacMan.tf.y - (sprite.getHeight() - h) / 2;
 				sprite.draw(g2, x, y);
 				g2.dispose();
 			});
@@ -51,7 +51,7 @@ class PacManRenderer implements IPacManRenderer {
 		if (pacMan.ai.getState() == null || pacMan.ai.is(IN_BED, SLEEPING)) {
 			return spriteMap.select("full");
 		} else if (pacMan.ai.is(AWAKE, POWERFUL)) {
-			return spriteMap.select("walking-" + pacMan.body.moveDir);
+			return spriteMap.select("walking-" + pacMan.moveDir);
 		} else if (pacMan.ai.is(DEAD)) {
 			return spriteMap.select("full");
 		} else if (pacMan.ai.is(PacManState.COLLAPSING)) {

@@ -13,11 +13,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.creatures.SmartGuy;
+import de.amr.games.pacman.controller.steering.api.SteeredMover;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingEntity;
 
 /**
  * Steers a guy towards a target tile.
@@ -44,26 +44,29 @@ public class HeadingForTargetTile implements Steering {
 	 * @param tile    current tile
 	 * @param target  target tile
 	 */
-	private static Direction bestDirTowardsTarget(SmartGuy<?> guy, Direction moveDir, Tile tile, Tile target) {
+	private static Direction bestDirTowardsTarget(World world, SteeredMover guy, Direction moveDir, Tile tile,
+			Tile target) {
 		/*@formatter:off*/
 		return Direction.dirs()
 			.filter(dir -> dir != moveDir.opposite())
-			.filter(dir -> guy.canMoveBetween(tile, guy.world.neighbor(tile, dir)))
-			.sorted(comparing((Direction dir) -> guy.world.neighbor(tile, dir).distance(target))
+			.filter(dir -> guy.canMoveBetween(tile, world.neighbor(tile, dir)))
+			.sorted(comparing((Direction dir) -> world.neighbor(tile, dir).distance(target))
 					.thenComparing(DIRECTION_ORDER::indexOf))
 			.findFirst()
 			.orElse(moveDir);
 		/*@formatter:on*/
 	}
 
-	private final SmartGuy<?> guy;
+	private final World world;
+	private final SteeredMover guy;
 	private final Supplier<Tile> fnTargetTile;
 	private final List<Tile> path;
 
 	private boolean pathComputed;
 	private boolean forced;
 
-	public HeadingForTargetTile(SmartGuy<?> guy, Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(World world, SteeredMover guy, Supplier<Tile> fnTargetTile) {
+		this.world = Objects.requireNonNull(world);
 		this.guy = Objects.requireNonNull(guy);
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		this.path = new ArrayList<>();
@@ -75,11 +78,11 @@ public class HeadingForTargetTile implements Steering {
 	}
 
 	@Override
-	public void steer(MovingEntity body) {
-		if (forced || body.enteredNewTile) {
+	public void steer(SteeredMover guy) {
+		if (forced || guy.enteredNewTile) {
 			Tile target = fnTargetTile.get();
 			if (target != null) {
-				body.wishDir = bestDirTowardsTarget(guy, body.moveDir, body.tile(), target);
+				guy.wishDir = bestDirTowardsTarget(world, guy, guy.moveDir, guy.tile(), target);
 				updatePath(target);
 			}
 			forced = false;
@@ -119,12 +122,12 @@ public class HeadingForTargetTile implements Steering {
 	private void updatePath(Tile target) {
 		if (target != null) {
 			path.clear();
-			Direction dir = guy.body.moveDir;
-			Tile next = guy.body.tile();
-			while (!next.equals(target) && guy.world.includes(next) && !path.contains(next)) {
+			Direction dir = guy.moveDir;
+			Tile next = guy.tile();
+			while (!next.equals(target) && world.includes(next) && !path.contains(next)) {
 				path.add(next);
-				dir = bestDirTowardsTarget(guy, dir, next, target);
-				next = guy.world.neighbor(next, dir);
+				dir = bestDirTowardsTarget(world, guy, dir, next, target);
+				next = world.neighbor(next, dir);
 			}
 		}
 	}

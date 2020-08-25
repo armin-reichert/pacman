@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.amr.games.pacman.controller.creatures.SmartGuy;
+import de.amr.games.pacman.controller.steering.api.SteeredMover;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingEntity;
 
 /**
  * Lets a guy follow a path.
@@ -19,26 +18,26 @@ import de.amr.games.pacman.model.world.core.MovingEntity;
  */
 public abstract class FollowingPath implements Steering {
 
-	protected final SmartGuy<?> guy;
+	protected final SteeredMover guy;
 	protected List<Tile> path;
 	protected int pathIndex;
 
-	public FollowingPath(SmartGuy<?> guy) {
+	public FollowingPath(SteeredMover guy) {
 		this(guy, Collections.emptyList());
 	}
 
-	public FollowingPath(SmartGuy<?> guy, List<Tile> initialPath) {
+	public FollowingPath(SteeredMover guy, List<Tile> initialPath) {
 		this.guy = Objects.requireNonNull(guy);
 		setPath(initialPath);
 	}
 
 	@Override
-	public void steer(MovingEntity mover) {
-		if (!guy.canCrossBorderTo(guy.body.moveDir) || mover.enteredNewTile || pathIndex == -1) {
+	public void steer(SteeredMover guy) {
+		if (!guy.canCrossBorderTo(guy.moveDir) || guy.enteredNewTile || pathIndex == -1) {
 			++pathIndex;
 			dirAlongPath().ifPresent(dir -> {
-				if (dir != mover.wishDir) {
-					mover.wishDir = dir;
+				if (dir != guy.wishDir) {
+					guy.wishDir = dir;
 				}
 			});
 		}

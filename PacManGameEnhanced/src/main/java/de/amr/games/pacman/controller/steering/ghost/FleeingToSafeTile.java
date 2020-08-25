@@ -6,6 +6,7 @@ import java.util.List;
 
 import de.amr.datastruct.StreamUtils;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.steering.api.SteeredMover;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
@@ -41,12 +42,12 @@ public class FleeingToSafeTile extends FollowingPath {
 	}
 
 	@Override
-	public void steer(MovingEntity body) {
+	public void steer(SteeredMover guy) {
 		if (path.size() == 0 || isComplete()) {
 			safeTile = computeSafestCorner();
-			setPath(graph.shortestPath(body.tile(), safeTile));
+			setPath(graph.shortestPath(guy.tile(), safeTile));
 		}
-		super.steer(body);
+		super.steer(guy);
 	}
 
 	@Override
@@ -57,7 +58,7 @@ public class FleeingToSafeTile extends FollowingPath {
 
 	@Override
 	public boolean isComplete() {
-		return guy.body.tile().equals(safeTile);
+		return guy.tile().equals(safeTile);
 	}
 
 	@Override
@@ -72,7 +73,7 @@ public class FleeingToSafeTile extends FollowingPath {
 
 	private Comparator<Tile> byTileSafety() {
 		return (t1, t2) -> {
-			Tile refugeeLocation = guy.body.tile();
+			Tile refugeeLocation = guy.tile();
 			Tile attackerLocation = attacker.tile();
 			double d1 = distanceFromPath(graph.shortestPath(refugeeLocation, t1), attackerLocation);
 			double d2 = distanceFromPath(graph.shortestPath(refugeeLocation, t2), attackerLocation);

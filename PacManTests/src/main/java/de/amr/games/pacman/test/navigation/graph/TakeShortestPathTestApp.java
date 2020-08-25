@@ -94,7 +94,7 @@ class TakeShortestPathTestUI extends TestController {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			blinky.ai.setState(blinky.ai.getState() == CHASING ? FRIGHTENED : CHASING);
 		}
-		if (blinky.body.tile().equals(currentTarget())) {
+		if (blinky.tile().equals(currentTarget())) {
 			selectNextTarget();
 		}
 		super.update();

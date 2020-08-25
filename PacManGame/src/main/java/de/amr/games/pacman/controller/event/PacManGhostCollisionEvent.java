@@ -13,7 +13,7 @@ public class PacManGhostCollisionEvent implements PacManGameEvent {
 
 	@Override
 	public String toString() {
-		Tile location = ghost.body.tile();
+		Tile location = ghost.tile();
 		return String.format("PacManGhostCollision(%s, col: %d row: %d)", ghost.name, location.col, location.row);
 	}
 }

@@ -1,9 +1,8 @@
 package de.amr.games.pacman.controller.steering.common;
 
-import de.amr.games.pacman.controller.creatures.SmartGuy;
+import de.amr.games.pacman.controller.steering.api.SteeredMover;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.core.MovingEntity;
 
 /**
  * Lets a creature move randomly but never reverse its direction.
@@ -12,23 +11,17 @@ import de.amr.games.pacman.model.world.core.MovingEntity;
  */
 public class RandomMovement implements Steering {
 
-	private SmartGuy<?> guy;
 	private boolean forced;
 
-	public RandomMovement(SmartGuy<?> guy) {
-		this.guy = guy;
-	}
-
 	@Override
-	public void steer(MovingEntity entity) {
-		if (forced || !guy.canCrossBorderTo(entity.moveDir)
-				|| entity.enteredNewTile && guy.world.isIntersection(entity.tile())) {
+	public void steer(SteeredMover guy) {
+		if (forced || !guy.canCrossBorderTo(guy.moveDir) || guy.enteredNewTile && guy.world.isIntersection(guy.tile())) {
 			/*@formatter:off*/
 			Direction.dirsShuffled()
-				.filter(dir -> dir != entity.moveDir.opposite())
+				.filter(dir -> dir != guy.moveDir.opposite())
 				.filter(guy::canCrossBorderTo)
 				.findFirst()
-				.ifPresent(dir -> entity.wishDir = dir);
+				.ifPresent(dir -> guy.wishDir = dir);
 			/*@formatter:on*/
 			forced = false;
 		}

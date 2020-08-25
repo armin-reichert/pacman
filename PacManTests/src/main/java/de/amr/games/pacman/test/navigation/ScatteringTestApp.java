@@ -38,7 +38,7 @@ class ScatteringTestUI extends TestController {
 	public void init() {
 		super.init();
 		folks.ghosts().forEach(ghost -> {
-			world.include(ghost.body);
+			world.include(ghost);
 			ghost.init();
 			ghost.nextState = SCATTERING;
 		});

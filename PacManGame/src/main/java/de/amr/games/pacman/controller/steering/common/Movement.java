@@ -3,15 +3,14 @@ package de.amr.games.pacman.controller.steering.common;
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.steering.common.MovementType.TELEPORTING;
 import static de.amr.games.pacman.controller.steering.common.MovementType.WALKING;
-import static de.amr.games.pacman.model.world.api.Direction.DOWN;
-import static de.amr.games.pacman.model.world.api.Direction.LEFT;
+import static de.amr.games.pacman.model.world.api.Direction.*;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
-import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.controller.creatures.SmartGuy;
 import de.amr.games.pacman.controller.game.Timing;
+import de.amr.games.pacman.controller.steering.api.SteeredMover;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.statemachine.core.StateMachine;
@@ -23,11 +22,13 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class Movement extends StateMachine<MovementType, Void> {
 
-	private final SmartGuy<?> guy;
+	private final World world;
+	private final SteeredMover guy;
 	private Portal activePortal;
 
-	public Movement(SmartGuy<?> guy, String description) {
+	public Movement(World world, SteeredMover guy, String description) {
 		super(MovementType.class);
+		this.world = world;
 		this.guy = guy;
 		//@formatter:off
 		beginStateMachine()
@@ -38,8 +39,8 @@ public class Movement extends StateMachine<MovementType, Void> {
 					.onTick(() -> move(guy.steering().requiresGridAlignment(), guy.getSpeed()))
 				.state(TELEPORTING)
 					.timeoutAfter(Timing.sec(1.0f))
-					.onEntry(() -> guy.body.visible = false)
-					.onExit(() -> guy.body.visible = true)
+					.onEntry(() -> guy.visible = false)
+					.onExit(() -> guy.visible = true)
 			.transitions()
 				.when(WALKING).then(TELEPORTING)
 					.condition(this::hasEnteredPortal)
@@ -55,9 +56,9 @@ public class Movement extends StateMachine<MovementType, Void> {
 	@Override
 	public void init() {
 		super.init();
-		guy.body.enteredNewTile = true;
-		guy.body.moveDir = RIGHT;
-		guy.body.wishDir = RIGHT;
+		guy.enteredNewTile = true;
+		guy.moveDir = RIGHT;
+		guy.wishDir = RIGHT;
 		activePortal = null;
 	}
 
@@ -69,13 +70,13 @@ public class Movement extends StateMachine<MovementType, Void> {
 		if (activePortal != null) {
 			return; // already entered portal before
 		}
-		Tile tile = guy.body.tile();
-		guy.world.portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
-			if (portal.either.equals(tile) && (guy.body.moveDir == LEFT && guy.body.tileOffsetX() <= 1)
-					|| (guy.body.moveDir == UP && guy.body.tileOffsetY() <= 1)) {
+		Tile tile = guy.tile();
+		world.portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
+			if (portal.either.equals(tile) && (guy.moveDir == LEFT && guy.tileOffsetX() <= 1)
+					|| (guy.moveDir == UP && guy.tileOffsetY() <= 1)) {
 				setActivePortal(portal, tile);
-			} else if (portal.other.equals(tile) && (guy.body.moveDir == RIGHT && guy.body.tileOffsetX() >= 7)
-					|| (guy.body.moveDir == DOWN && guy.body.tileOffsetY() >= 7)) {
+			} else if (portal.other.equals(tile) && (guy.moveDir == RIGHT && guy.tileOffsetX() >= 7)
+					|| (guy.moveDir == DOWN && guy.tileOffsetY() >= 7)) {
 				setActivePortal(portal, tile);
 			}
 		});
@@ -83,40 +84,40 @@ public class Movement extends StateMachine<MovementType, Void> {
 
 	private void setActivePortal(Portal portal, Tile entry) {
 		activePortal = portal;
-		activePortal.setPassageDir(guy.body.moveDir);
-		loginfo("%s enters portal at %s moving %s with offsetX %.2f", guy.name, entry, activePortal.getPassageDir(),
-				guy.body.tileOffsetX());
+		activePortal.setPassageDir(guy.moveDir);
+		loginfo("%s enters portal at %s moving %s with offsetX %.2f", guy, entry, activePortal.getPassageDir(),
+				guy.tileOffsetX());
 	}
 
 	private void teleport() {
 		Tile exit = activePortal.exit();
-		guy.body.tf.setPosition(exit.x(), exit.y());
-		guy.body.enteredNewTile = true;
+		guy.tf.setPosition(exit.x(), exit.y());
+		guy.enteredNewTile = true;
 		activePortal = null;
-		loginfo("%s exits portal at %s", guy.name, guy.body.tile());
+		loginfo("%s exits portal at %s", guy, guy.tile());
 	}
 
 	private void move(boolean aligned, float speed) {
-		final Tile tileBeforeMove = guy.body.tile();
+		final Tile tileBeforeMove = guy.tile();
 
 		// how far can we move?
-		float pixels = possibleMoveDistance(guy.body.moveDir, speed);
-		if (guy.body.wishDir != null && guy.body.wishDir != guy.body.moveDir) {
-			float pixelsWishDir = possibleMoveDistance(guy.body.wishDir, speed);
+		float pixels = possibleMoveDistance(guy.moveDir, speed);
+		if (guy.wishDir != null && guy.wishDir != guy.moveDir) {
+			float pixelsWishDir = possibleMoveDistance(guy.wishDir, speed);
 			if (pixelsWishDir > 0) {
-				if (guy.body.wishDir == guy.body.moveDir.left() || guy.body.wishDir == guy.body.moveDir.right()) {
+				if (guy.wishDir == guy.moveDir.left() || guy.wishDir == guy.moveDir.right()) {
 					if (aligned) {
-						guy.body.placeAt(tileBeforeMove, 0, 0);
+						guy.placeAt(tileBeforeMove, 0, 0);
 					}
 				}
-				guy.body.moveDir = guy.body.wishDir;
+				guy.moveDir = guy.wishDir;
 				pixels = pixelsWishDir;
 			}
 		}
-		Vector2f velocity = guy.body.moveDir.vector().times(pixels);
-		guy.body.tf.setVelocity(velocity);
-		guy.body.tf.move();
-		guy.body.enteredNewTile = !tileBeforeMove.equals(guy.body.tile());
+		Vector2f velocity = guy.moveDir.vector().times(pixels);
+		guy.tf.setVelocity(velocity);
+		guy.tf.move();
+		guy.enteredNewTile = !tileBeforeMove.equals(guy.tile());
 		checkIfJustEnteredPortal();
 	}
 
@@ -130,8 +131,8 @@ public class Movement extends StateMachine<MovementType, Void> {
 		if (guy.canCrossBorderTo(dir)) {
 			return speed;
 		}
-		float availableX = guy.body.tileOffsetX() - Tile.SIZE / 2;
-		float availableY = guy.body.tileOffsetY() - Tile.SIZE / 2;
+		float availableX = guy.tileOffsetX() - Tile.SIZE / 2;
+		float availableY = guy.tileOffsetY() - Tile.SIZE / 2;
 		switch (dir) {
 		case UP:
 			return Math.min(availableY, speed);

@@ -7,7 +7,7 @@ import java.awt.RenderingHints;
 
 import de.amr.easy.game.entity.GameObject;
 import de.amr.games.pacman.controller.creatures.Folks;
-import de.amr.games.pacman.controller.creatures.SmartGuy;
+import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
@@ -48,15 +48,15 @@ public class ChasePacManAnimation extends GameObject {
 		pelletTimer = Timing.sec(6 * 0.5f);
 		pelletDisplay = PelletDisplay.SIMPLE;
 
-		folks.guys().forEach(SmartGuy::init);
+		folks.guys().forEach(Guy::init);
 
-		folks.pacMan.body.tf.vx = -0.55f;
-		folks.pacMan.body.moveDir = Direction.LEFT;
+		folks.pacMan.tf.vx = -0.55f;
+		folks.pacMan.moveDir = Direction.LEFT;
 		folks.pacMan.ai.setState(PacManState.AWAKE);
 
 		folks.ghosts().forEach(ghost -> {
-			ghost.body.moveDir = Direction.LEFT;
-			ghost.body.tf.setVelocity(-0.55f, 0);
+			ghost.moveDir = Direction.LEFT;
+			ghost.tf.setVelocity(-0.55f, 0);
 			ghost.ai.setState(GhostState.CHASING);
 			ghost.ai.state(GhostState.CHASING).removeTimer();
 		});
@@ -69,15 +69,15 @@ public class ChasePacManAnimation extends GameObject {
 		int x = rightBorder;
 		Ghost[] ghosts = folks.ghosts().toArray(Ghost[]::new);
 		for (int i = 0; i < ghosts.length; ++i) {
-			ghosts[i].body.tf.setPosition(x, tf.y);
+			ghosts[i].tf.setPosition(x, tf.y);
 			x -= size;
 		}
-		folks.pacMan.body.tf.setPosition(x, tf.y);
+		folks.pacMan.tf.setPosition(x, tf.y);
 	}
 
 	@Override
 	public void update() {
-		folks.guys().forEach(c -> c.body.tf.move());
+		folks.guys().forEach(c -> c.tf.move());
 		if (pelletTimer > 0) {
 			if (pelletTimer % Timing.sec(0.5f) == 0)
 				if (pelletDisplay == PelletDisplay.FIFTY) {
@@ -104,12 +104,12 @@ public class ChasePacManAnimation extends GameObject {
 	public void stop() {
 		theme.sounds().clipGhostChase().stop();
 		theme.sounds().clipCrunching().stop();
-		folks.guys().forEach(creature -> creature.body.tf.vx = 0);
+		folks.guys().forEach(creature -> creature.tf.vx = 0);
 	}
 
 	@Override
 	public boolean isComplete() {
-		return folks.guys().map(creature -> creature.body.tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
+		return folks.guys().map(creature -> creature.tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
 	}
 
 	@Override
@@ -119,8 +119,8 @@ public class ChasePacManAnimation extends GameObject {
 			theme.ghostRenderer(ghost).render(g, ghost);
 		});
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		int x = (int) folks.pacMan.body.tf.x - Tile.SIZE;
-		int y = (int) folks.pacMan.body.tf.y;
+		int x = (int) folks.pacMan.tf.x - Tile.SIZE;
+		int y = (int) folks.pacMan.tf.y;
 		switch (pelletDisplay) {
 		case SIMPLE:
 			g.setColor(Color.PINK);

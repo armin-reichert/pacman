@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.GameObject;
 import de.amr.games.pacman.controller.creatures.Folks;
-import de.amr.games.pacman.controller.creatures.SmartGuy;
+import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
@@ -41,21 +41,21 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	@Override
 	public boolean isComplete() {
-		return folks.guys().allMatch(creature -> creature.body.tf.x > world.width() * Tile.SIZE);
+		return folks.guys().allMatch(creature -> creature.tf.x > world.width() * Tile.SIZE);
 	}
 
 	@Override
 	public void init() {
 		points = 200;
-		folks.guys().forEach(SmartGuy::init);
+		folks.guys().forEach(Guy::init);
 
-		folks.pacMan.body.moveDir = Direction.RIGHT;
-		folks.pacMan.body.tf.vx = 0.8f;
+		folks.pacMan.moveDir = Direction.RIGHT;
+		folks.pacMan.tf.vx = 0.8f;
 		folks.pacMan.ai.setState(PacManState.AWAKE);
 
 		folks.ghosts().forEach(ghost -> {
-			ghost.body.moveDir = Direction.RIGHT;
-			ghost.body.tf.setVelocity(0.55f, 0);
+			ghost.moveDir = Direction.RIGHT;
+			ghost.tf.setVelocity(0.55f, 0);
 			ghost.ai.setState(GhostState.FRIGHTENED);
 			ghost.ai.state(GhostState.FRIGHTENED).removeTimer();
 		});
@@ -63,10 +63,10 @@ public class ChaseGhostsAnimation extends GameObject {
 	}
 
 	private void initPositions() {
-		folks.pacMan.body.tf.setPosition(tf.x, tf.y);
+		folks.pacMan.tf.setPosition(tf.x, tf.y);
 		Ghost[] ghosts = folks.ghosts().toArray(Ghost[]::new);
 		for (int i = 0; i < ghosts.length; ++i) {
-			ghosts[i].body.tf.setPosition(tf.x + 20 * i, tf.y);
+			ghosts[i].tf.setPosition(tf.x + 20 * i, tf.y);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class ChaseGhostsAnimation extends GameObject {
 		//@formatter:off
 		folks.ghosts()
 			.filter(ghost -> ghost.ai.getState() != GhostState.DEAD)
-			.filter(ghost -> ghost.body.tile().equals(folks.pacMan.body.tile()))
+			.filter(ghost -> ghost.tile().equals(folks.pacMan.tile()))
 			.forEach(ghost -> {
 				ghost.ai.setState(GhostState.DEAD);
 				ghost.bounty = points;
@@ -83,7 +83,7 @@ public class ChaseGhostsAnimation extends GameObject {
 				theme.sounds().clipEatGhost().play();
 			});
 		//@formatter:on
-		folks.guys().forEach(creature -> creature.body.tf.move());
+		folks.guys().forEach(creature -> creature.tf.move());
 	}
 
 	@Override

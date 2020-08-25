@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingEntity;
 
 /**
  * Interface for steering guys through their world.
@@ -20,7 +19,7 @@ public interface Steering {
 	 * 
 	 * @param guy the steered guy
 	 */
-	void steer(MovingEntity guy);
+	void steer(SteeredMover guy);
 
 	/**
 	 * Some steerings needs an initial step.

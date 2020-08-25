@@ -13,14 +13,14 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.steering.api.SteeredMover;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementType;
-import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingEntity;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 
@@ -55,8 +55,8 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	@Override
-	public void steer(MovingEntity pacMan) {
-		if (!me.body.enteredNewTile && me.canCrossBorderTo(me.body.moveDir) || me.movement.is(MovementType.TELEPORTING)) {
+	public void steer(SteeredMover pacMan) {
+		if (!me.enteredNewTile && me.canCrossBorderTo(me.moveDir) || me.movement.is(MovementType.TELEPORTING)) {
 			return;
 		}
 		boolean acted = avoidTouchingGhostAhead() || avoidOncomingGhost() || chaseFrightenedGhost(10);
@@ -81,12 +81,12 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	@Override
 	public List<Tile> pathToTarget() {
-		return target != null ? graph.shortestPath(me.body.tile(), target) : Collections.emptyList();
+		return target != null ? graph.shortestPath(me.tile(), target) : Collections.emptyList();
 	}
 
 	private boolean avoidTouchingGhostAhead() {
 		// is dangerous ghost just in front of pacMan and is moving in the same direction?
-		Ghost enemy = dangerousGhostsInRange(2).filter(ghost -> me.body.moveDir == ghost.body.moveDir).findAny()
+		Ghost enemy = dangerousGhostsInRange(2).filter(ghost -> me.moveDir == ghost.moveDir).findAny()
 				.orElse(null);
 		if (enemy != null) {
 			me.reverseDirection();
@@ -97,7 +97,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	private boolean avoidOncomingGhost() {
 		// is dangerous ghost coming directly towards pacMan?
-		Ghost enemy = dangerousGhostsInRange(4).filter(ghost -> me.body.moveDir == ghost.body.moveDir.opposite()).findAny()
+		Ghost enemy = dangerousGhostsInRange(4).filter(ghost -> me.moveDir == ghost.moveDir.opposite()).findAny()
 				.orElse(null);
 		if (enemy != null) {
 			me.reverseDirection();
@@ -111,8 +111,8 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		if (frightenedGhost.isPresent()) {
 			Optional<Direction> dir = frightenedGhost.flatMap(this::directionTowards);
 			if (dir.isPresent()) {
-				me.body.wishDir = dir.get();
-				target = frightenedGhost.get().body.tile();
+				me.wishDir = dir.get();
+				target = frightenedGhost.get().tile();
 				return true;
 			}
 		}
@@ -128,11 +128,11 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		aheadThenRightThenLeft()
 			.filter(me::canCrossBorderTo)
 			.forEach(dir -> {
-				Tile neighbor = world.tileToDir(me.body.tile(), dir, 1);
+				Tile neighbor = world.tileToDir(me.tile(), dir, 1);
 				preferredFoodLocationFrom(neighbor).ifPresent(foodLocation -> {
 					double d = neighbor.distance(foodLocation);
 					if (d < distance) {
-						me.body.wishDir = dir;
+						me.wishDir = dir;
 						target = foodLocation;
 						distance = d;
 					}
@@ -199,7 +199,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	private boolean isGhostInRange(Ghost ghost, int numTiles) {
-		return shortestPathLength(ghost.body.tile(), me.body.tile()) <= numTiles;
+		return shortestPathLength(ghost.tile(), me.tile()) <= numTiles;
 	}
 
 	private Stream<Ghost> dangerousGhosts() {
@@ -211,7 +211,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	private double nearestDistanceToDangerousGhost(Tile here) {
-		return dangerousGhosts().map(ghost -> here.distance(ghost.body.tile())).min(Double::compareTo)
+		return dangerousGhosts().map(ghost -> here.distance(ghost.tile())).min(Double::compareTo)
 				.orElse(Double.MAX_VALUE);
 	}
 
@@ -220,7 +220,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	private Stream<Direction> aheadThenRightThenLeft() {
-		return Stream.of(me.body.moveDir, me.body.moveDir.right(), me.body.moveDir.left());
+		return Stream.of(me.moveDir, me.moveDir.right(), me.moveDir.left());
 	}
 
 	private int shortestPathLength(Tile from, Tile to) {
@@ -232,7 +232,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		double minDist = Integer.MAX_VALUE;
 		for (Direction dir : Direction.values()) {
 			if (me.canCrossBorderTo(dir)) {
-				List<Tile> path = graph.shortestPath(me.body.tile(), enemy.body.tile());
+				List<Tile> path = graph.shortestPath(me.tile(), enemy.tile());
 				int dist = path.size();
 				if (dist < minDist && path.size() >= 2) {
 					minDist = dist;

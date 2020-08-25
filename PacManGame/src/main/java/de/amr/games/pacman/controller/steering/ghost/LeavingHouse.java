@@ -4,10 +4,10 @@ import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
+import de.amr.games.pacman.controller.steering.api.SteeredMover;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingEntity;
 
 public class LeavingHouse implements Steering {
 
@@ -18,18 +18,18 @@ public class LeavingHouse implements Steering {
 	}
 
 	@Override
-	public void steer(MovingEntity entity) {
+	public void steer(SteeredMover guy) {
 		Tile exit = Tile.at(house.bed(0).col(), house.bed(0).row());
 		int targetX = exit.centerX(), targetY = exit.y();
-		if (entity.tf.y <= targetY) {
-			entity.tf.y = targetY;
-		} else if (Math.round(entity.tf.x) == targetX) {
-			entity.tf.x = targetX;
-			entity.wishDir = UP;
-		} else if (entity.tf.x < targetX) {
-			entity.wishDir = RIGHT;
-		} else if (entity.tf.x > targetX) {
-			entity.wishDir = LEFT;
+		if (guy.tf.y <= targetY) {
+			guy.tf.y = targetY;
+		} else if (Math.round(guy.tf.x) == targetX) {
+			guy.tf.x = targetX;
+			guy.wishDir = UP;
+		} else if (guy.tf.x < targetX) {
+			guy.wishDir = RIGHT;
+		} else if (guy.tf.x > targetX) {
+			guy.wishDir = LEFT;
 		}
 	}
 }

@@ -12,7 +12,7 @@ import java.util.EnumMap;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.creatures.SmartGuy;
+import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -22,7 +22,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.controller.steering.common.Movement;
 import de.amr.games.pacman.model.game.GameLevel;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
@@ -39,7 +38,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends SmartGuy<GhostState> {
+public class Ghost extends Guy<GhostState> {
 
 	public GhostPersonality personality;
 	public PacMan pacMan;
@@ -56,7 +55,6 @@ public class Ghost extends SmartGuy<GhostState> {
 		if (personality == GhostPersonality.SHADOW) {
 			madness = new GhostMadness(this);
 		}
-		movement = new Movement(this, "Ghost " + name + " Movement");
 	}
 
 	@Override
@@ -75,10 +73,10 @@ public class Ghost extends SmartGuy<GhostState> {
 						bounty = 0;
 						nextState = LOCKED;
 						enabled = true;
-						body.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-						body.visible = true;
-						body.moveDir = bed.exitDir;
-						body.wishDir = bed.exitDir;
+						placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+						visible = true;
+						moveDir = bed.exitDir;
+						wishDir = bed.exitDir;
 					})
 					.onTick(this::move)
 	
@@ -204,7 +202,7 @@ public class Ghost extends SmartGuy<GhostState> {
 			return 0;
 		}
 		GameLevel level = game.level;
-		boolean tunnel = world.isTunnel(body.tile());
+		boolean tunnel = world.isTunnel(tile());
 		switch (ai.getState()) {
 		case LOCKED:
 			return Timing.speed(isInsideHouse() ? level.ghostSpeed / 2 : 0);
@@ -256,7 +254,7 @@ public class Ghost extends SmartGuy<GhostState> {
 	}
 
 	private void checkPacManCollision() {
-		if (body.visible && pacMan.body.visible && body.tile().equals(pacMan.body.tile())
+		if (visible && pacMan.visible && tile().equals(pacMan.tile())
 				&& !pacMan.ai.is(PacManState.DEAD, PacManState.COLLAPSING)) {
 			ai.publish(new PacManGhostCollisionEvent(this));
 		}
@@ -279,11 +277,11 @@ public class Ghost extends SmartGuy<GhostState> {
 
 	public void move() {
 		Steering currentSteering = steering();
-		if (!world.isTunnel(body.tile())) {
-			currentSteering.steer(body);
+		if (!world.isTunnel(tile())) {
+			currentSteering.steer(this);
 		}
 		movement.update();
-		enabled = body.tf.vx != 0 || body.tf.vy != 0;
+		enabled = tf.vx != 0 || tf.vy != 0;
 	}
 
 	private void updateMentalHealth() {
@@ -293,15 +291,15 @@ public class Ghost extends SmartGuy<GhostState> {
 	}
 
 	public boolean hasLeftHouse() {
-		Tile location = body.tile();
-		return ai.is(LEAVING_HOUSE) && house.isEntry(location) && body.tf.y == location.row * Tile.SIZE;
+		Tile location = tile();
+		return ai.is(LEAVING_HOUSE) && house.isEntry(location) && tf.y == location.row * Tile.SIZE;
 	}
 
 	public boolean isAtHouseEntry() {
-		return house.isEntry(body.tile()) && (body.tileOffsetX() - Tile.SIZE / 2) <= 1;
+		return house.isEntry(tile()) && (tileOffsetX() - Tile.SIZE / 2) <= 1;
 	}
 
 	public boolean isInsideHouse() {
-		return house.isInsideOrDoor(body.tile());
+		return house.isInsideOrDoor(tile());
 	}
 }

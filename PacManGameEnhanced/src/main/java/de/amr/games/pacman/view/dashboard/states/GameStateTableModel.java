@@ -103,9 +103,9 @@ class GameStateTableModel extends AbstractTableModel {
 		GameStateRecord r = records[row];
 		if (r.creature instanceof Ghost) {
 			if (r.included) {
-				world.include(r.creature.body);
+				world.include(r.creature);
 			} else {
-				world.exclude(r.creature.body);
+				world.exclude(r.creature);
 			}
 		}
 	}
@@ -135,11 +135,11 @@ class GameStateTableModel extends AbstractTableModel {
 
 	void fillPacManRecord(GameStateRecord r, Game game, PacMan pacMan) {
 		r.creature = pacMan;
-		r.included = world.contains(pacMan.body);
+		r.included = world.contains(pacMan);
 		r.name = "Pac-Man";
-		r.tile = pacMan.body.tile();
-		r.moveDir = pacMan.body.moveDir;
-		r.wishDir = pacMan.body.wishDir;
+		r.tile = pacMan.tile();
+		r.moveDir = pacMan.moveDir;
+		r.wishDir = pacMan.wishDir;
 		if (pacMan.ai.getState() != null) {
 			r.speed = pacMan.getSpeed() * app().clock().getTargetFramerate();
 			r.state = pacMan.ai.getState().name();
@@ -150,12 +150,12 @@ class GameStateTableModel extends AbstractTableModel {
 
 	void fillGhostRecord(GameStateRecord r, Game game, GhostCommand ghostCommand, Ghost ghost, PacMan pacMan) {
 		r.creature = ghost;
-		r.included = world.contains(ghost.body);
+		r.included = world.contains(ghost);
 		r.name = ghost.name;
-		r.tile = ghost.body.tile();
+		r.tile = ghost.tile();
 		r.target = ghost.steering().targetTile().orElse(null);
-		r.moveDir = ghost.body.moveDir;
-		r.wishDir = ghost.body.wishDir;
+		r.moveDir = ghost.moveDir;
+		r.wishDir = ghost.wishDir;
 		if (ghost.ai.getState() != null) {
 			r.speed = ghost.getSpeed() * app().clock().getTargetFramerate();
 			r.state = ghost.ai.getState().name();
@@ -165,7 +165,7 @@ class GameStateTableModel extends AbstractTableModel {
 					: ghost.ai.state().getDuration();
 		}
 		r.ghostSanity = ghost.getMentalState();
-		r.pacManCollision = ghost.body.tile().equals(pacMan.body.tile());
+		r.pacManCollision = ghost.tile().equals(pacMan.tile());
 	}
 
 	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {

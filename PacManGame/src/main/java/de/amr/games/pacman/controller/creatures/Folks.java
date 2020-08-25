@@ -69,11 +69,11 @@ public class Folks {
 
 		you(blinky).when(ENTERING_HOUSE).enterDoorAndGoToBed().door(door).bed(pinky.bed).ok();
 		you(blinky).when(SCATTERING).headFor().tile(world.width() - 3, 0).ok();
-		you(blinky).when(CHASING).headFor().tile(pacMan.body::tile).ok();
+		you(blinky).when(CHASING).headFor().tile(pacMan::tile).ok();
 
 		you(inky).when(SCATTERING).headFor().tile(world.width() - 1, world.height() - 1).ok();
 		you(inky).when(CHASING).headFor().tile(() -> {
-			Tile b = blinky.body.tile(), p = pacMan.tilesAhead(2);
+			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}).ok();
 
@@ -82,9 +82,7 @@ public class Folks {
 
 		you(clyde).when(SCATTERING).headFor().tile(0, world.height() - 1).ok();
 		you(clyde).when(CHASING).headFor()
-				.tile(
-						() -> clyde.body.tileDistance(pacMan.body) > 8 ? pacMan.body.tile() : Tile.at(0, world.height() - 1))
-				.ok();
+				.tile(() -> clyde.tileDistance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, world.height() - 1)).ok();
 	}
 
 	public Stream<Ghost> ghosts() {
@@ -92,14 +90,14 @@ public class Folks {
 	}
 
 	public Stream<Ghost> ghostsInWorld() {
-		return ghosts().filter(ghost -> ghost.world.contains(ghost.body));
+		return ghosts().filter(ghost -> ghost.world.contains(ghost));
 	}
 
-	public Stream<SmartGuy<?>> guys() {
+	public Stream<Guy<?>> guys() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 
-	public Stream<SmartGuy<?>> guysInWorld() {
-		return guys().filter(guy -> guy.world.contains(guy.body));
+	public Stream<Guy<?>> guysInWorld() {
+		return guys().filter(guy -> guy.world.contains(guy));
 	}
 }
