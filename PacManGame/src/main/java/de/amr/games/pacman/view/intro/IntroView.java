@@ -24,7 +24,6 @@ import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.api.Theme;
@@ -251,7 +250,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			if (app().clock().getTotalTicks() % Timing.sec(1) < Timing.sec(0.5f)) {
 				messagesRenderer.setRow(18);
 				messagesRenderer.setTextColor(Color.WHITE);
-				messagesRenderer.drawCentered(g, Localized.texts.getString("press_space_to_start"), world.width());
+				messagesRenderer.drawCentered(g, PacManGameView.texts.getString("press_space_to_start"), world.width());
 			}
 			drawSpeedSelectionTexts(g, 22);
 			drawScreenModeText(g, 31);
@@ -281,7 +280,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	}
 
 	private void drawScreenModeText(Graphics2D g, int row) {
-		String text = "F11-" + Localized.texts.getString(app().inFullScreenMode() ? "window_mode" : "fullscreen_mode");
+		String text = "F11-" + PacManGameView.texts.getString(app().inFullScreenMode() ? "window_mode" : "fullscreen_mode");
 		messagesRenderer.setRow(row);
 		messagesRenderer.setTextColor(Color.ORANGE);
 		messagesRenderer.drawCentered(g, text, world.width());
@@ -290,9 +289,9 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	private void drawSpeedSelectionTexts(Graphics2D g, int row) {
 		String[] texts = {
 			//@formatter:off
-			"1-" + Localized.texts.getString("normal"),
-			"2-" + Localized.texts.getString("fast"),
-			"3-" + Localized.texts.getString("insane")
+			"1-" + PacManGameView.texts.getString("normal"),
+			"2-" + PacManGameView.texts.getString("fast"),
+			"3-" + PacManGameView.texts.getString("insane")
 			//@formatter:on
 		};
 		try (Pen pen = new Pen(g)) {

@@ -8,7 +8,7 @@ import com.beust.jcommander.Parameter;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.game.GameController;
-import de.amr.games.pacman.view.Localized;
+import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.theme.Themes;
 
@@ -64,7 +64,7 @@ public class PacManApp extends Application {
 		settings.width = 224;
 		settings.height = 288;
 		settings.scale = 2;
-		settings.title = Localized.texts.getString("app.title");
+		settings.title = PacManGameView.texts.getString("app.title");
 		settings.fullScreenMode = new DisplayMode(800, 600, 32, 50);
 	}
 
@@ -80,7 +80,7 @@ public class PacManApp extends Application {
 		settings.print("Skip Intro", settings.skipIntro);
 		settings.print("Startlevel", settings.startLevel);
 		settings.print("Theme", settings.theme.toUpperCase());
-		settings.print("User Language", Localized.texts.getLocale().getDisplayLanguage());
+		settings.print("User Language", PacManGameView.texts.getLocale().getDisplayLanguage());
 	}
 
 	@Override

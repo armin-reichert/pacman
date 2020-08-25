@@ -70,7 +70,6 @@ public class Game {
 	/*@formatter:on*/
 
 	public GameLevel level;
-
 	public void setGameLevel(int levelNumber, World world) {
 		level = new GameLevel(levelNumber, world.totalFoodCount(), LIVES, levelData(levelNumber));
 		loginfo("Game level %d started", levelNumber);

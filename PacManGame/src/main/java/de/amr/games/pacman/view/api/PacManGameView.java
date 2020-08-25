@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.api;
 
+import java.util.ResourceBundle;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
@@ -12,6 +13,8 @@ import de.amr.statemachine.core.StateMachine;
  * @author Armin Reichert
  */
 public interface PacManGameView extends View, Lifecycle {
+
+	ResourceBundle texts = ResourceBundle.getBundle("texts");
 
 	void setTheme(Theme theme);
 
