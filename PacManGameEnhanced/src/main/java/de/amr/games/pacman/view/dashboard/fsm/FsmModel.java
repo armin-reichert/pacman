@@ -3,10 +3,10 @@ package de.amr.games.pacman.view.dashboard.fsm;
 import static de.amr.easy.game.controller.StateMachineRegistry.REGISTRY;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,7 +20,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class FsmModel {
 
-	public final Map<String, List<FsmData>> data = new HashMap<>();
+	public final Map<String, List<FsmData>> data = new ConcurrentHashMap<>();
 	private boolean setChanged;
 
 	public FsmModel() {
