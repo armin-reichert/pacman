@@ -3,8 +3,10 @@ package de.amr.games.pacman.controller.steering.common;
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.steering.common.MovementType.TELEPORTING;
 import static de.amr.games.pacman.controller.steering.common.MovementType.WALKING;
-import static de.amr.games.pacman.model.world.api.Direction.*;
+import static de.amr.games.pacman.model.world.api.Direction.DOWN;
+import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
+import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.game.Timing;
@@ -16,23 +18,21 @@ import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Controls the movement of a lifeform through the world and the portals.
+ * Controls the movement of a guy through the world and the portals.
  * 
  * @author Armin Reichert
  */
-public class Movement extends StateMachine<MovementType, Void> {
+public class MovementController extends StateMachine<MovementType, Void> {
 
-	private final World world;
 	private final SteeredMover guy;
 	private Portal activePortal;
 
-	public Movement(World world, SteeredMover guy, String description) {
+	public MovementController(World world, SteeredMover guy) {
 		super(MovementType.class);
-		this.world = world;
 		this.guy = guy;
 		//@formatter:off
 		beginStateMachine()
-			.description(description)
+			.description(guy + " Movement")
 			.initialState(WALKING)
 			.states()
 				.state(WALKING)
@@ -71,7 +71,7 @@ public class Movement extends StateMachine<MovementType, Void> {
 			return; // already entered portal before
 		}
 		Tile tile = guy.tile();
-		world.portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
+		guy.world.portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
 			if (portal.either.equals(tile) && (guy.moveDir == LEFT && guy.tileOffsetX() <= 1)
 					|| (guy.moveDir == UP && guy.tileOffsetY() <= 1)) {
 				setActivePortal(portal, tile);
