@@ -14,6 +14,13 @@ import de.amr.games.pacman.model.world.components.Tile;
 @FunctionalInterface
 public interface Steering {
 
+	static Steering STANDING_STILL = new Steering() {
+
+		@Override
+		public void steer(SteeredMover guy) {
+		}
+	};
+
 	/**
 	 * Steers the guy.
 	 * 

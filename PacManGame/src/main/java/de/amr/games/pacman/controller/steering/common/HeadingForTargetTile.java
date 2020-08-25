@@ -55,7 +55,6 @@ public class HeadingForTargetTile implements Steering {
 		/*@formatter:on*/
 	}
 
-	private final SteeredMover guy;
 	private final Supplier<Tile> fnTargetTile;
 	private final List<Tile> path;
 
@@ -63,7 +62,6 @@ public class HeadingForTargetTile implements Steering {
 	private boolean forced;
 
 	public HeadingForTargetTile(SteeredMover guy, Supplier<Tile> fnTargetTile) {
-		this.guy = Objects.requireNonNull(guy);
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		this.path = new ArrayList<>();
 	}
@@ -79,7 +77,7 @@ public class HeadingForTargetTile implements Steering {
 			Tile target = fnTargetTile.get();
 			if (target != null) {
 				guy.wishDir = bestDirTowardsTarget(guy, guy.moveDir, guy.tile(), target);
-				updatePath(target);
+				updatePath(guy, target);
 			}
 			forced = false;
 		}
@@ -103,7 +101,6 @@ public class HeadingForTargetTile implements Steering {
 	@Override
 	public void setPathComputed(boolean computed) {
 		pathComputed = computed;
-		updatePath(fnTargetTile.get());
 	}
 
 	@Override
@@ -115,7 +112,7 @@ public class HeadingForTargetTile implements Steering {
 	 * Computes the path the guy would traverse until either reaching the target tile, running into a
 	 * cycle or entering a portal.
 	 */
-	private void updatePath(Tile target) {
+	private void updatePath(SteeredMover guy, Tile target) {
 		if (target != null) {
 			path.clear();
 			Direction dir = guy.moveDir;

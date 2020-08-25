@@ -57,7 +57,7 @@ public abstract class Guy<STATE> extends SteeredMover implements Lifecycle {
 
 	@Override
 	public Steering steering() {
-		Steering currentSteering = steeringsMap.get(ai.getState());
+		Steering currentSteering = steeringsMap.getOrDefault(ai.getState(), Steering.STANDING_STILL);
 		if (previousSteering != currentSteering) {
 			currentSteering.init();
 			currentSteering.force();
