@@ -32,7 +32,6 @@ class PacManRenderer implements IPacManRenderer {
 	public void render(Graphics2D g, PacMan pacMan) {
 		if (pacMan.visible) {
 			selectSprite(pacMan).ifPresent(sprite -> {
-				sprite.enableAnimation(pacMan.enabled);
 				int sw = 2 * pacMan.tf.width, sh = 2 * pacMan.tf.height;
 				if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
 					sprite.scale(sw, sh);
@@ -51,7 +50,8 @@ class PacManRenderer implements IPacManRenderer {
 		if (pacMan.ai.getState() == null || pacMan.ai.is(IN_BED, SLEEPING)) {
 			return spriteMap.select("full");
 		} else if (pacMan.ai.is(AWAKE, POWERFUL)) {
-			return spriteMap.select("walking-" + pacMan.moveDir);
+			boolean blocked = !pacMan.canCrossBorderTo(pacMan.moveDir);
+			return spriteMap.select((blocked ? "blocked-" : "walking-") + pacMan.moveDir);
 		} else if (pacMan.ai.is(DEAD)) {
 			return spriteMap.select("full");
 		} else if (pacMan.ai.is(PacManState.COLLAPSING)) {

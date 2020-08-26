@@ -64,7 +64,6 @@ public class PacMan extends Guy<PacManState> {
 					.onEntry(() -> {
 						putIntoBed(world.pacManBed());
 						visible = true;
-						enabled = true;
 						fat = 0;
 					})
 
@@ -80,9 +79,6 @@ public class PacMan extends Guy<PacManState> {
 					.timeoutAfter(Timing.sec(2.5f))
 
 				.state(COLLAPSING)
-					.onEntry(() -> {
-						enabled = true;
-					})
 
 			.transitions()
 
@@ -197,7 +193,6 @@ public class PacMan extends Guy<PacManState> {
 	private void wander() {
 		steering().steer(this);
 		movement.update();
-		enabled = tf.vx != 0 || tf.vy != 0;
 		if (enteredNewTile) {
 			fat = Math.max(0, fat - 1);
 		}

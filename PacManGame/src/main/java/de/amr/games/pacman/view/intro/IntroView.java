@@ -65,7 +65,12 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 	public IntroView(Theme theme) {
 		super(IntroState.class);
-		world = new ArcadeWorld();
+		world = new ArcadeWorld() {
+			@Override
+			public boolean isAccessible(Tile tile) {
+				return true;
+			}
+		};
 		this.theme = theme;
 		this.messagesRenderer = theme.messagesRenderer();
 		this.sounds = theme.sounds();

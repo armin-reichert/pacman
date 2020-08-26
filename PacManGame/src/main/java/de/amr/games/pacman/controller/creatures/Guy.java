@@ -27,7 +27,6 @@ public abstract class Guy<STATE> extends SteeredMover implements Lifecycle {
 
 	public Steering previousSteering;
 	public Game game;
-	public boolean enabled;
 
 	public Guy(World world, String name, Map<STATE, Steering> steeringsMap) {
 		super(world, name);
@@ -39,7 +38,6 @@ public abstract class Guy<STATE> extends SteeredMover implements Lifecycle {
 	@Override
 	public void init() {
 		previousSteering = null;
-		enabled = true;
 		movement.init();
 		ai.init();
 	}

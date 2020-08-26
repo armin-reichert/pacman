@@ -462,7 +462,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			world.setFrozen(true);
 			folks.pacMan.fallAsleep();
 			doorMan.onLevelChange();
-			folks.ghosts().forEach(ghost -> ghost.enabled = false);
 			themes.current().sounds().clips().forEach(SoundClip::stop);
 			flashingEnd = flashingStart + game.level.numFlashes * Timing.sec(themes.current().$float("maze-flash-sec"));
 			complete = false;

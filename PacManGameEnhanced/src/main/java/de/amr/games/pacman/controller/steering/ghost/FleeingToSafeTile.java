@@ -10,7 +10,7 @@ import de.amr.games.pacman.controller.steering.api.SteeredMover;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MovingEntity;
+import de.amr.games.pacman.model.world.core.TileWorldEntity;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 
@@ -24,14 +24,14 @@ import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
  */
 public class FleeingToSafeTile extends FollowingPath {
 
-	private final MovingEntity attacker;
+	private final TileWorldEntity attacker;
 	private final World world;
 	private final WorldGraph graph;
 	private final List<Tile> capes;
 	private final List<Tile> safeTiles;
 	private Tile safeTile;
 
-	public FleeingToSafeTile(Ghost refugee, MovingEntity attacker) {
+	public FleeingToSafeTile(Ghost refugee, TileWorldEntity attacker) {
 		super(refugee);
 		world = refugee.world;
 		this.attacker = attacker;

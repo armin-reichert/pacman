@@ -72,7 +72,6 @@ public class Ghost extends Guy<GhostState> {
 						recovering = false;
 						bounty = 0;
 						nextState = LOCKED;
-						enabled = true;
 						placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 						visible = true;
 						moveDir = bed.exitDir;
@@ -281,7 +280,6 @@ public class Ghost extends Guy<GhostState> {
 			currentSteering.steer(this);
 		}
 		movement.update();
-		enabled = tf.vx != 0 || tf.vy != 0;
 	}
 
 	private void updateMentalHealth() {

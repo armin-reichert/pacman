@@ -40,7 +40,10 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	private SpriteMap makePacManSpriteMap() {
 		SpriteMap map = new SpriteMap();
-		Direction.dirs().forEach(dir -> map.set("walking-" + dir, sprites.makeSprite_pacManWalking(dir)));
+		Direction.dirs().forEach(dir -> {
+			map.set("walking-" + dir, sprites.makeSprite_pacManWalking(dir));
+			map.set("blocked-" + dir, sprites.makeSprite_pacManBlocked(dir));
+		});
 		map.set("collapsing", sprites.makeSprite_pacManCollapsing());
 		map.set("full", sprites.makeSprite_pacManFull());
 		return map;

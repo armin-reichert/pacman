@@ -24,9 +24,10 @@ public class ArcadeSprites extends Spritesheet {
 
 	BufferedImage empty_maze = Assets.readImage("themes/arcade/maze_empty.png");
 	BufferedImage full_maze = Assets.readImage("themes/arcade/maze_full.png");
-	
+
 	BufferedImage empty_white_maze;
 	BufferedImage pacMan_full;
+	BufferedImage pacMan_blocked[];
 	BufferedImage pacMan_walking[][];
 	BufferedImage pacMan_dying[];
 	BufferedImage pacMan_lives_counter;
@@ -52,13 +53,14 @@ public class ArcadeSprites extends Spritesheet {
 		pacMan_dying = horizontalTiles(11, 3, 0);
 		pacMan_walking = new BufferedImage[][] {
 			/*@formatter:off*/
-			{ tile(0, 0), tile(0, 0), tile(0, 0), tile(0, 0), tile(0, 0), tile(1, 0), tile(1, 0), tile(2, 0) }, // RIGHT
-			{ tile(0, 1), tile(0, 1), tile(0, 1), tile(0, 1), tile(0, 1), tile(1, 1), tile(1, 1), tile(2, 0) }, // LEFT
-			{ tile(0, 2), tile(0, 2), tile(0, 2), tile(0, 2), tile(0, 2), tile(1, 2), tile(1, 2), tile(2, 0) }, // UP
-			{ tile(0, 3), tile(0, 3), tile(0, 3), tile(0, 3), tile(0, 3), tile(1, 3), tile(1, 3), tile(2, 0) }  // DOWN
+			{ tile(0, 0), tile(0, 0), tile(0, 0), tile(0, 0), tile(1, 0), tile(1, 0), tile(2, 0) }, // RIGHT
+			{ tile(0, 1), tile(0, 1), tile(0, 1), tile(0, 1), tile(1, 1), tile(1, 1), tile(2, 0) }, // LEFT
+			{ tile(0, 2), tile(0, 2), tile(0, 2), tile(0, 2), tile(1, 2), tile(1, 2), tile(2, 0) }, // UP
+			{ tile(0, 3), tile(0, 3), tile(0, 3), tile(0, 3), tile(1, 3), tile(1, 3), tile(2, 0) }  // DOWN
 			/*@formatter:on*/
 		};
-		pacMan_lives_counter = tile(8,1);
+		pacMan_blocked = new BufferedImage[] { tile(0, 0), tile(0, 1), tile(0, 2), tile(0, 3) };
+		pacMan_lives_counter = tile(8, 1);
 
 		// Ghosts
 		ghost_colored = new BufferedImage[4][8];
@@ -131,14 +133,18 @@ public class ArcadeSprites extends Spritesheet {
 		return Sprite.of(pacMan_full);
 	}
 
+	public Sprite makeSprite_pacManBlocked(Direction dir) {
+		return Sprite.of(pacMan_blocked[spriteSheetOrder(dir)]);
+	}
+
 	public Sprite makeSprite_pacManWalking(Direction dir) {
-		return Sprite.of(pacMan_walking[spriteSheetOrder(dir)]).animate(FORWARD_BACKWARDS, 15);
+		return Sprite.of(pacMan_walking[spriteSheetOrder(dir)]).animate(FORWARD_BACKWARDS, 5);
 	}
 
 	public Sprite makeSprite_pacManCollapsing() {
 		return Sprite.of(pacMan_dying).animate(LINEAR, 100);
 	}
-	
+
 	public BufferedImage imageLivesCounter() {
 		return pacMan_lives_counter;
 	}

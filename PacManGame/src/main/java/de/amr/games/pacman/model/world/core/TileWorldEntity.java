@@ -1,43 +1,21 @@
 package de.amr.games.pacman.model.world.core;
 
 import de.amr.easy.game.entity.Entity;
-import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 
 /**
- * An entity that can move through a tile-based world.
+ * An entity in a tile-based world.
  * 
  * @author Armin Reichert
  */
-public abstract class MovingEntity extends Entity {
+public abstract class TileWorldEntity extends Entity {
 
-	public World world;
-	public Direction moveDir;
-	public Direction wishDir;
-	public boolean enteredNewTile;
+	public final World world;
 
-	public MovingEntity(World world) {
+	public TileWorldEntity(World world) {
 		this.world = world;
 	}
-
-	/**
-	 * @param tile some tile, not necessary the current tile
-	 * @param a    neighbor tile of the tile
-	 * @return {@code true} if this guy can move between the given tiles
-	 */
-	public abstract boolean canMoveBetween(Tile tile, Tile neighbor);
-
-	/**
-	 * @param dir a direction
-	 * @return {@code true} if this guy can cross the border to the given direction
-	 */
-	public abstract boolean canCrossBorderTo(Direction moveDir);
-
-	/**
-	 * @return speed in pixels/ticks
-	 */
-	public abstract float getSpeed();
 
 	/**
 	 * The tile location is defined as the tile containing the center of the guy's body.
@@ -96,9 +74,7 @@ public abstract class MovingEntity extends Entity {
 	 * @param dy   additional pixels in y-direction
 	 */
 	public void placeAt(Tile tile, float dx, float dy) {
-		Tile oldTile = tile();
 		tf.setPosition(tile.x() + dx, tile.y() + dy);
-		enteredNewTile = !tile().equals(oldTile);
 	}
 
 	/**
@@ -107,7 +83,7 @@ public abstract class MovingEntity extends Entity {
 	 * @param other other guy
 	 * @return Euclidean distance measured in tiles
 	 */
-	public double tileDistance(MovingEntity other) {
+	public double tileDistance(TileWorldEntity other) {
 		return tile().distance(other.tile());
 	}
 }
