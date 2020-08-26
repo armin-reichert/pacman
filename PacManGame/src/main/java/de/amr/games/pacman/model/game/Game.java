@@ -70,14 +70,15 @@ public class Game {
 	/*@formatter:on*/
 
 	public GameLevel level;
-	public void setGameLevel(int levelNumber, World world) {
-		level = new GameLevel(levelNumber, world.totalFoodCount(), LIVES, levelData(levelNumber));
-		loginfo("Game level %d started", levelNumber);
+
+	public void newGame(int startLevelNumber, World world) {
+		level = new GameLevel(startLevelNumber, world.totalFoodCount(), LIVES, levelData(startLevelNumber));
+		loginfo("Started new game at level %d", startLevelNumber);
 	}
 
 	public void nextLevel(World world) {
 		if (level == null) {
-			setGameLevel(1, world);
+			newGame(1, world);
 		} else {
 			int next = level.number + 1;
 			level = new GameLevel(next, world.totalFoodCount(), level, levelData(next));
