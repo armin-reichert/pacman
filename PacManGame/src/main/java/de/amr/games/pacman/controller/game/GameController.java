@@ -17,6 +17,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.input.Keyboard;
@@ -73,11 +74,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	protected PacManGameView currentView;
 
-	public GameController(Theme... supportedThemes) {
+	public GameController(Stream<Theme> supportedThemes) {
 		super(PacManGameState.class);
 		buildStateMachine();
 
-		themes = new ThemeSelector(supportedThemes);
+		themes = new ThemeSelector(supportedThemes.toArray(Theme[]::new));
 		themes.addListener(theme -> {
 			if (currentView != null) {
 				currentView.setTheme(theme);

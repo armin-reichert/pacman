@@ -9,7 +9,6 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.view.api.PacManGameView;
-import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.theme.Themes;
 
 /**
@@ -86,6 +85,6 @@ public class PacManApp extends Application {
 	@Override
 	public void init() {
 		setIcon("/images/pacman-icon.png");
-		setController(new GameController(Themes.all().toArray(Theme[]::new)));
+		setController(new GameController(Themes.all()));
 	}
 }

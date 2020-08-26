@@ -4,14 +4,12 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.ui.AppShell;
 import de.amr.easy.game.ui.f2dialog.F2Dialog;
 import de.amr.games.pacman.controller.game.ExtendedGameController;
-import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.dashboard.fsm.FsmView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
 import de.amr.games.pacman.view.dashboard.theme.ThemeSelectionView;
 import de.amr.games.pacman.view.theme.Themes;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.engine.GraphvizJdkEngine;
 import guru.nidi.graphviz.engine.GraphvizV8Engine;
 
 /**
@@ -35,9 +33,9 @@ public class PacManAppEnhanced extends PacManApp {
 
 	@Override
 	public void init() {
-		Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
+		Graphviz.useEngine(new GraphvizV8Engine());
 		setIcon("/images/pacman-icon.png");
-		setController(new ExtendedGameController(Themes.all().toArray(Theme[]::new)));
+		setController(new ExtendedGameController(Themes.all()));
 	}
 
 	@Override

@@ -45,12 +45,7 @@ public class ExtendedGameController extends GameController {
 	private boolean showingStates;
 	private boolean showingScores = true;
 
-	/**
-	 * Creates a new game controller.
-	 * 
-	 * @param themes supported themes
-	 */
-	public ExtendedGameController(Theme... themes) {
+	public ExtendedGameController(Stream<Theme> themes) {
 		super(themes);
 		REGISTRY.register("Game", this);
 		addStateEntryListener(INTRO, state -> {
