@@ -35,12 +35,12 @@ public class Folks {
 
 	public Folks(World world, House ghostHouse) {
 
-		pacMan = new PacMan(world);
+		pacMan = new PacMan(world, "Pac-Man");
 
-		blinky = new Ghost("Blinky", GhostPersonality.SHADOW, world);
-		inky = new Ghost("Inky", GhostPersonality.BASHFUL, world);
-		pinky = new Ghost("Pinky", GhostPersonality.SPEEDY, world);
-		clyde = new Ghost("Clyde", GhostPersonality.POKEY, world);
+		blinky = new Ghost(world, "Blinky", GhostPersonality.SHADOW);
+		inky = new Ghost(world, "Inky", GhostPersonality.BASHFUL);
+		pinky = new Ghost(world, "Pinky", GhostPersonality.SPEEDY);
+		clyde = new Ghost(world, "Clyde", GhostPersonality.POKEY);
 
 		ghosts().forEach(ghost -> {
 			ghost.house = ghostHouse;

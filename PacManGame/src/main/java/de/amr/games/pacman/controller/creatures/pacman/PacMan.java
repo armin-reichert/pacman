@@ -46,8 +46,8 @@ public class PacMan extends Guy<PacManState> {
 
 	private int fat;
 
-	public PacMan(World world) {
-		super("Pac-Man", world, new EnumMap<>(PacManState.class));
+	public PacMan(World world, String name) {
+		super(world, name, new EnumMap<>(PacManState.class));
 	}
 
 	@Override

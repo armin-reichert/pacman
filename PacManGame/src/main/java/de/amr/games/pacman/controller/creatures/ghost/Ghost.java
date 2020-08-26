@@ -49,8 +49,8 @@ public class Ghost extends Guy<GhostState> {
 	public int bounty;
 	public boolean recovering;
 
-	public Ghost(String name, GhostPersonality personality, World world) {
-		super(name, world, new EnumMap<>(GhostState.class));
+	public Ghost(World world, String name, GhostPersonality personality) {
+		super(world, name, new EnumMap<>(GhostState.class));
 		this.personality = personality;
 		if (personality == GhostPersonality.SHADOW) {
 			madness = new GhostMadness(this);

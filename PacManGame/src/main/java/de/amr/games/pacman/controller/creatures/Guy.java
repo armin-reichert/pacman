@@ -29,7 +29,7 @@ public abstract class Guy<STATE> extends SteeredMover implements Lifecycle {
 	public Game game;
 	public boolean enabled;
 
-	public Guy(String name, World world, Map<STATE, Steering> steeringsMap) {
+	public Guy(World world, String name, Map<STATE, Steering> steeringsMap) {
 		super(world, name);
 		this.steeringsMap = steeringsMap;
 		this.ai = buildAI();
