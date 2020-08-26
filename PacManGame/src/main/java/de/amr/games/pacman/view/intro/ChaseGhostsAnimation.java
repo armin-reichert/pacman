@@ -65,6 +65,7 @@ public class ChaseGhostsAnimation extends GameObject {
 		points = 200;
 		guys().forEach(Guy::init);
 
+		pacMan.tf.setPosition(tf.x, tf.y);
 		pacMan.moveDir = Direction.RIGHT;
 		pacMan.tf.vx = 0.8f;
 		pacMan.ai.setState(PacManState.AWAKE);
@@ -75,11 +76,6 @@ public class ChaseGhostsAnimation extends GameObject {
 			ghost.ai.setState(GhostState.FRIGHTENED);
 			ghost.ai.state(GhostState.FRIGHTENED).removeTimer();
 		});
-		initPositions();
-	}
-
-	private void initPositions() {
-		pacMan.tf.setPosition(tf.x, tf.y);
 		Ghost[] ghosts = ghosts().toArray(Ghost[]::new);
 		for (int i = 0; i < ghosts.length; ++i) {
 			ghosts[i].tf.setPosition(tf.x + 20 * i, tf.y);
@@ -99,7 +95,7 @@ public class ChaseGhostsAnimation extends GameObject {
 				theme.sounds().clipEatGhost().play();
 			});
 		//@formatter:on
-		guys().forEach(creature -> creature.tf.move());
+		guys().forEach(guy -> guy.tf.move());
 	}
 
 	@Override
