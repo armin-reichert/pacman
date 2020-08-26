@@ -23,8 +23,8 @@ public abstract class AbstractWorld extends Block implements World {
 	protected boolean changing;
 	protected boolean frozen;
 
-	public AbstractWorld(int width, int height) {
-		super(0, 0, width, height);
+	public AbstractWorld(int horizontalTiles, int verticalTiles) {
+		super(0, 0, horizontalTiles, verticalTiles);
 	}
 
 	private int distFromCornerNW(Tile t1, Tile t2) {

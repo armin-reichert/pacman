@@ -13,8 +13,8 @@ import de.amr.games.pacman.model.world.components.Tile;
 
 public class EmptyWorld extends AbstractWorld {
 
-	public EmptyWorld(int width, int height) {
-		super(width, height);
+	public EmptyWorld(int horizontalTiles, int verticalTiles) {
+		super(horizontalTiles, verticalTiles);
 	}
 
 	@Override
