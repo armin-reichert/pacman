@@ -1,33 +1,49 @@
 package de.amr.games.pacman.view.intro;
 
 import java.awt.Graphics2D;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.Theme;
 
+/**
+ * Pac-Man chasing ghosts.
+ * 
+ * @author Armin Reichert
+ */
 public class ChaseGhostsAnimation extends GameObject {
 
-	private final ArcadeWorld world;
-	private final Folks folks;
+	private final World world;
+	private final PacMan pacMan;
+	private final Ghost blinky, inky, pinky, clyde;
 	private Theme theme;
 	private int points;
 
-	public ChaseGhostsAnimation(Theme theme, ArcadeWorld world) {
+	public ChaseGhostsAnimation(Theme theme, World world) {
 		this.world = world;
-		folks = new Folks(world, world.house(0));
+		pacMan = new PacMan(world, "Pac-Man");
+		blinky = new Ghost(world, "Blinky", GhostPersonality.SHADOW);
+		inky = new Ghost(world, "Inky", GhostPersonality.BASHFUL);
+		pinky = new Ghost(world, "Pinky", GhostPersonality.SPEEDY);
+		clyde = new Ghost(world, "Clyde", GhostPersonality.POKEY);
 		setTheme(theme);
 	}
 
-	public Folks getFolks() {
-		return folks;
+	public Stream<Guy<?>> guys() {
+		return Stream.of(pacMan, blinky, inky, pinky, clyde);
+	}
+
+	public Stream<Ghost> ghosts() {
+		return Stream.of(blinky, inky, pinky, clyde);
 	}
 
 	public void setTheme(Theme theme) {
@@ -41,19 +57,19 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	@Override
 	public boolean isComplete() {
-		return folks.guys().allMatch(creature -> creature.tf.x > world.width() * Tile.SIZE);
+		return guys().allMatch(guy -> guy.tf.x > world.width() * Tile.SIZE);
 	}
 
 	@Override
 	public void init() {
 		points = 200;
-		folks.guys().forEach(Guy::init);
+		guys().forEach(Guy::init);
 
-		folks.pacMan.moveDir = Direction.RIGHT;
-		folks.pacMan.tf.vx = 0.8f;
-		folks.pacMan.ai.setState(PacManState.AWAKE);
+		pacMan.moveDir = Direction.RIGHT;
+		pacMan.tf.vx = 0.8f;
+		pacMan.ai.setState(PacManState.AWAKE);
 
-		folks.ghosts().forEach(ghost -> {
+		ghosts().forEach(ghost -> {
 			ghost.moveDir = Direction.RIGHT;
 			ghost.tf.setVelocity(0.55f, 0);
 			ghost.ai.setState(GhostState.FRIGHTENED);
@@ -63,8 +79,8 @@ public class ChaseGhostsAnimation extends GameObject {
 	}
 
 	private void initPositions() {
-		folks.pacMan.tf.setPosition(tf.x, tf.y);
-		Ghost[] ghosts = folks.ghosts().toArray(Ghost[]::new);
+		pacMan.tf.setPosition(tf.x, tf.y);
+		Ghost[] ghosts = ghosts().toArray(Ghost[]::new);
 		for (int i = 0; i < ghosts.length; ++i) {
 			ghosts[i].tf.setPosition(tf.x + 20 * i, tf.y);
 		}
@@ -73,9 +89,9 @@ public class ChaseGhostsAnimation extends GameObject {
 	@Override
 	public void update() {
 		//@formatter:off
-		folks.ghosts()
+		ghosts()
 			.filter(ghost -> ghost.ai.getState() != GhostState.DEAD)
-			.filter(ghost -> ghost.tile().equals(folks.pacMan.tile()))
+			.filter(ghost -> ghost.tile().equals(pacMan.tile()))
 			.forEach(ghost -> {
 				ghost.ai.setState(GhostState.DEAD);
 				ghost.bounty = points;
@@ -83,13 +99,13 @@ public class ChaseGhostsAnimation extends GameObject {
 				theme.sounds().clipEatGhost().play();
 			});
 		//@formatter:on
-		folks.guys().forEach(creature -> creature.tf.move());
+		guys().forEach(creature -> creature.tf.move());
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		theme.pacManRenderer(folks.pacMan).render(g, folks.pacMan);
-		folks.ghosts().forEach(ghost -> {
+		theme.pacManRenderer(pacMan).render(g, pacMan);
+		ghosts().forEach(ghost -> {
 			theme.ghostRenderer(ghost).render(g, ghost);
 		});
 	}

@@ -180,8 +180,10 @@ public class PacMan extends Guy<PacManState> {
 	}
 
 	private void putIntoBed(Bed bed) {
-		placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-		moveDir = wishDir = bed.exitDir;
+		if (bed != null) {
+			placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+			moveDir = wishDir = bed.exitDir;
+		}
 	}
 
 	private void setPowerTimer(PacManGameEvent e) {

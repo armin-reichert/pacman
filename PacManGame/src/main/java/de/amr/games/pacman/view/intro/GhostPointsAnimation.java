@@ -7,12 +7,14 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.BitSet;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -28,8 +30,8 @@ import de.amr.games.pacman.view.api.Theme;
  */
 public class GhostPointsAnimation extends GameObject {
 
-	private final Folks folks;
-	private final Ghost[] ghosts;
+	private final PacMan pacMan;
+	private final Ghost blinky, inky, pinky, clyde;
 	private final BitSet killed = new BitSet(5);
 	private Theme theme;
 	private int ghostToKill;
@@ -41,9 +43,20 @@ public class GhostPointsAnimation extends GameObject {
 	public GhostPointsAnimation(Theme theme, World world) {
 		tf.width = 6 * dx;
 		tf.height = 2 * Tile.SIZE;
-		folks = new Folks(world, world.house(0));
-		ghosts = folks.ghosts().toArray(Ghost[]::new);
+		pacMan = new PacMan(world, "Pac-Man");
+		blinky = new Ghost(world, "Blinky", GhostPersonality.SHADOW);
+		inky = new Ghost(world, "Inky", GhostPersonality.BASHFUL);
+		pinky = new Ghost(world, "Pinky", GhostPersonality.SPEEDY);
+		clyde = new Ghost(world, "Clyde", GhostPersonality.POKEY);
 		setTheme(theme);
+	}
+
+	public Stream<Guy<?>> guys() {
+		return Stream.of(pacMan, blinky, inky, pinky, clyde);
+	}
+
+	public Stream<Ghost> ghosts() {
+		return Stream.of(blinky, inky, pinky, clyde);
 	}
 
 	public void setTheme(Theme theme) {
@@ -52,8 +65,8 @@ public class GhostPointsAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
-		theme.pacManRenderer(folks.pacMan).render(g, folks.pacMan);
-		folks.ghosts().forEach(ghost -> {
+		theme.pacManRenderer(pacMan).render(g, pacMan);
+		ghosts().forEach(ghost -> {
 			theme.ghostRenderer(ghost).render(g, ghost);
 		});
 		g.translate(tf.x + dx, tf.y);
@@ -82,10 +95,10 @@ public class GhostPointsAnimation extends GameObject {
 		killed.clear();
 		ghostToKill = 0;
 		energizer = true;
-		folks.guys().forEach(Guy::init);
-		folks.pacMan.moveDir = Direction.RIGHT;
-		folks.pacMan.ai.setState(PacManState.AWAKE);
-		folks.ghosts().forEach(ghost -> {
+		guys().forEach(Guy::init);
+		pacMan.moveDir = Direction.RIGHT;
+		pacMan.ai.setState(PacManState.AWAKE);
+		ghosts().forEach(ghost -> {
 			ghost.ai.setState(GhostState.FRIGHTENED);
 			ghost.ai.state().removeTimer();
 		});
@@ -94,8 +107,9 @@ public class GhostPointsAnimation extends GameObject {
 
 	private void initPositions() {
 		float x = tf.x;
-		folks.pacMan.tf.setPosition(x, tf.y);
+		pacMan.tf.setPosition(x, tf.y);
 		x += 2 * dx; // space for drawing pellet
+		Ghost[] ghosts = ghosts().toArray(Ghost[]::new);
 		for (int i = 0; i < ghosts.length; ++i) {
 			ghosts[i].tf.setPosition(x, tf.y);
 			x += dx;
@@ -135,6 +149,7 @@ public class GhostPointsAnimation extends GameObject {
 				if (ghostToKill == 4) {
 					stop();
 				} else {
+					Ghost[] ghosts = ghosts().toArray(Ghost[]::new);
 					theme.sounds().clipEatGhost().play();
 					ghosts[ghostToKill].ai.setState(GhostState.DEAD);
 					ghosts[ghostToKill].bounty = POINTS_GHOSTS[ghostToKill];

@@ -69,13 +69,11 @@ public class Ghost extends Guy<GhostState> {
 
 				.state(LOCKED)
 					.onEntry(() -> {
+						visible = true;
 						recovering = false;
 						bounty = 0;
 						nextState = LOCKED;
-						placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-						visible = true;
-						moveDir = bed.exitDir;
-						wishDir = bed.exitDir;
+						placeIntoBed();
 					})
 					.onTick(this::move)
 	
@@ -185,6 +183,14 @@ public class Ghost extends Guy<GhostState> {
 		/*@formatter:on*/
 		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		return fsm;
+	}
+
+	private void placeIntoBed() {
+		if (bed != null) {
+			placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+			moveDir = bed.exitDir;
+			wishDir = bed.exitDir;
+		}
 	}
 
 	@Override

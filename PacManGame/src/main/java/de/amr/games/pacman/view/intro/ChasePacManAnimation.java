@@ -4,16 +4,18 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.Theme;
 
@@ -23,20 +25,29 @@ public class ChasePacManAnimation extends GameObject {
 		SIMPLE, TEN, ENERGIZER, FIFTY
 	}
 
-	private final ArcadeWorld world;
-	private final Folks folks;
+	private final World world;
+	private final PacMan pacMan;
+	private final Ghost blinky, inky, pinky, clyde;
 	private Theme theme;
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
 
-	public ChasePacManAnimation(Theme theme, ArcadeWorld world) {
+	public ChasePacManAnimation(Theme theme, World world) {
 		this.world = world;
-		folks = new Folks(world, world.house(0));
+		pacMan = new PacMan(world, "Pac-Man");
+		blinky = new Ghost(world, "Blinky", GhostPersonality.SHADOW);
+		inky = new Ghost(world, "Inky", GhostPersonality.BASHFUL);
+		pinky = new Ghost(world, "Pinky", GhostPersonality.SPEEDY);
+		clyde = new Ghost(world, "Clyde", GhostPersonality.POKEY);
 		setTheme(theme);
 	}
 
-	public Folks getFolks() {
-		return folks;
+	public Stream<Guy<?>> guys() {
+		return Stream.of(pacMan, blinky, inky, pinky, clyde);
+	}
+
+	public Stream<Ghost> ghosts() {
+		return Stream.of(blinky, inky, pinky, clyde);
 	}
 
 	public void setTheme(Theme theme) {
@@ -47,37 +58,33 @@ public class ChasePacManAnimation extends GameObject {
 	public void init() {
 		pelletTimer = Timing.sec(6 * 0.5f);
 		pelletDisplay = PelletDisplay.SIMPLE;
-
-		folks.guys().forEach(Guy::init);
-
-		folks.pacMan.tf.vx = -0.55f;
-		folks.pacMan.moveDir = Direction.LEFT;
-		folks.pacMan.ai.setState(PacManState.AWAKE);
-
-		folks.ghosts().forEach(ghost -> {
+		guys().forEach(Guy::init);
+		pacMan.tf.vx = -0.55f;
+		pacMan.moveDir = Direction.LEFT;
+		pacMan.ai.setState(PacManState.AWAKE);
+		ghosts().forEach(ghost -> {
 			ghost.moveDir = Direction.LEFT;
 			ghost.tf.setVelocity(-0.55f, 0);
 			ghost.ai.setState(GhostState.CHASING);
 			ghost.ai.state(GhostState.CHASING).removeTimer();
 		});
-
 		initPositions(world.width() * Tile.SIZE);
 	}
 
 	public void initPositions(int rightBorder) {
 		int size = 2 * Tile.SIZE;
 		int x = rightBorder;
-		Ghost[] ghosts = folks.ghosts().toArray(Ghost[]::new);
+		Ghost[] ghosts = Stream.of(blinky, inky, pinky, clyde).toArray(Ghost[]::new);
 		for (int i = 0; i < ghosts.length; ++i) {
 			ghosts[i].tf.setPosition(x, tf.y);
 			x -= size;
 		}
-		folks.pacMan.tf.setPosition(x, tf.y);
+		pacMan.tf.setPosition(x, tf.y);
 	}
 
 	@Override
 	public void update() {
-		folks.guys().forEach(c -> c.tf.move());
+		Stream.of(pacMan, blinky, inky, pinky, clyde).forEach(c -> c.tf.move());
 		if (pelletTimer > 0) {
 			if (pelletTimer % Timing.sec(0.5f) == 0)
 				if (pelletDisplay == PelletDisplay.FIFTY) {
@@ -104,23 +111,23 @@ public class ChasePacManAnimation extends GameObject {
 	public void stop() {
 		theme.sounds().clipGhostChase().stop();
 		theme.sounds().clipCrunching().stop();
-		folks.guys().forEach(creature -> creature.tf.vx = 0);
+		guys().forEach(creature -> creature.tf.vx = 0);
 	}
 
 	@Override
 	public boolean isComplete() {
-		return folks.guys().map(creature -> creature.tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
+		return guys().map(creature -> creature.tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		theme.pacManRenderer(folks.pacMan).render(g, folks.pacMan);
-		folks.ghosts().forEach(ghost -> {
+		theme.pacManRenderer(pacMan).render(g, pacMan);
+		ghosts().forEach(ghost -> {
 			theme.ghostRenderer(ghost).render(g, ghost);
 		});
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		int x = (int) folks.pacMan.tf.x - Tile.SIZE;
-		int y = (int) folks.pacMan.tf.y;
+		int x = (int) pacMan.tf.x - Tile.SIZE;
+		int y = (int) pacMan.tf.y;
 		switch (pelletDisplay) {
 		case SIMPLE:
 			g.setColor(Color.PINK);

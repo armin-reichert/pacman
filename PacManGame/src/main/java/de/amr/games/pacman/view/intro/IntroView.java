@@ -22,8 +22,9 @@ import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.model.world.core.EmptyWorld;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.api.Theme;
@@ -47,9 +48,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 	private static final Color ORANGE = new Color(255, 163, 71);
 	private static final Color RED = new Color(171, 19, 0);
-//	PINK = (248, 120, 88);
 
-	private final ArcadeWorld world;
+	private final World world;
 	private final PacManSounds sounds;
 	private final int width;
 	private final int height;
@@ -65,17 +65,12 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 	public IntroView(Theme theme) {
 		super(IntroState.class);
-		world = new ArcadeWorld() {
-			@Override
-			public boolean isAccessible(Tile tile) {
-				return true;
-			}
-		};
+		this.width = PacManApp.settings.width;
+		this.height = PacManApp.settings.height;
+		world = new EmptyWorld(width / Tile.SIZE, height / Tile.SIZE);
 		this.theme = theme;
 		this.messagesRenderer = theme.messagesRenderer();
 		this.sounds = theme.sounds();
-		this.width = PacManApp.settings.width;
-		this.height = PacManApp.settings.height;
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("IntroView")
@@ -228,7 +223,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			ghostPointsAnimation.start();
 			chasePacMan.tf.centerHorizontally(0, width);
 			chasePacMan.initPositions(width / 2 + 5 * Tile.SIZE);
-			chasePacMan.getFolks().guys().forEach(creature -> creature.tf.vx = 0);
+			chasePacMan.guys().forEach(creature -> creature.tf.vx = 0);
 			gitHubLink.visible = true;
 		}
 
