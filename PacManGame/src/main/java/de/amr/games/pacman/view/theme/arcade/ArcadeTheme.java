@@ -102,7 +102,6 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 			set("points-" + points, sprites.makeSprite_number(points).frame(0));
 		}
 		set("sprites", sprites);
-		set("sounds", ArcadeSounds.SOUNDS);
 	}
 
 	@Override
@@ -156,6 +155,6 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public PacManSounds sounds() {
-		return $value("sounds");
+		return ArcadeSounds.SOUNDS;
 	}
 }
