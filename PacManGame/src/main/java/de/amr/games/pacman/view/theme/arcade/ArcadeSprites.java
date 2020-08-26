@@ -52,10 +52,10 @@ public class ArcadeSprites extends Spritesheet {
 		pacMan_dying = horizontalTiles(11, 3, 0);
 		pacMan_walking = new BufferedImage[][] {
 			/*@formatter:off*/
-			{ tile(0, 0), tile(0, 0), tile(0, 0), tile(1, 0), tile(1, 0), tile(2, 0) }, // RIGHT
-			{ tile(0, 1), tile(0, 1), tile(0, 1), tile(1, 1), tile(1, 1), tile(2, 0) }, // LEFT
-			{ tile(0, 2), tile(0, 2), tile(0, 2), tile(1, 2), tile(1, 2), tile(2, 0) }, // UP
-			{ tile(0, 3), tile(0, 3), tile(0, 3), tile(1, 3), tile(1, 3), tile(2, 0) }  // DOWN
+			{ tile(0, 0), tile(0, 0), tile(0, 0), tile(0, 0), tile(0, 0), tile(1, 0), tile(1, 0), tile(2, 0) }, // RIGHT
+			{ tile(0, 1), tile(0, 1), tile(0, 1), tile(0, 1), tile(0, 1), tile(1, 1), tile(1, 1), tile(2, 0) }, // LEFT
+			{ tile(0, 2), tile(0, 2), tile(0, 2), tile(0, 2), tile(0, 2), tile(1, 2), tile(1, 2), tile(2, 0) }, // UP
+			{ tile(0, 3), tile(0, 3), tile(0, 3), tile(0, 3), tile(0, 3), tile(1, 3), tile(1, 3), tile(2, 0) }  // DOWN
 			/*@formatter:on*/
 		};
 		pacMan_lives_counter = tile(8,1);
