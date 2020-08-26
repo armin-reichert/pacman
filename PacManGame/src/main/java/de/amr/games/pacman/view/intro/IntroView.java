@@ -40,40 +40,141 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class IntroView extends StateMachine<IntroState, Void> implements PacManGameView {
 
-	static final String GITHUB_URL = "https://github.com/armin-reichert/pacman";
-
 	public enum IntroState {
 		SCROLLING_LOGO_ANIMATION, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
 	};
 
+	private static final String GITHUB_URL = "https://github.com/armin-reichert/pacman";
 	private static final Color ORANGE = new Color(255, 163, 71);
 	private static final Color RED = new Color(171, 19, 0);
 
 	private final World world;
-	private final PacManSounds sounds;
 	private final int width;
 	private final int height;
+	private final PacManSounds sounds;
 
 	private Theme theme;
+	private MessagesRenderer messagesRenderer;
 	private ImageWidget pacManLogo;
 	private LinkWidget gitHubLink;
 	private ChasePacManAnimation chasePacMan;
 	private ChaseGhostsAnimation chaseGhosts;
 	private GhostPointsAnimation ghostPointsAnimation;
 
-	private MessagesRenderer messagesRenderer;
-
 	public IntroView(Theme theme) {
 		super(IntroState.class);
 		this.width = PacManApp.settings.width;
 		this.height = PacManApp.settings.height;
-		world = new EmptyWorld(width / Tile.SIZE, height / Tile.SIZE);
+		this.world = new EmptyWorld(width / Tile.SIZE, height / Tile.SIZE);
 		this.theme = theme;
 		this.messagesRenderer = theme.messagesRenderer();
 		this.sounds = theme.sounds();
+		createController();
+		pacManLogo = new ImageWidget(Assets.readImage("images/logo.png"));
+		chasePacMan = new ChasePacManAnimation(theme, world);
+		chaseGhosts = new ChaseGhostsAnimation(theme, world);
+		ghostPointsAnimation = new GhostPointsAnimation(theme, world);
+		init();
+	}
+
+	@Override
+	public void init() {
+		pacManLogo.tf.centerHorizontally(0, width);
+		pacManLogo.tf.y = 20;
+		chasePacMan.tf.centerHorizontally(0, width);
+		chasePacMan.tf.y = 100;
+		gitHubLink = LinkWidget.create()
+		/*@formatter:off*/
+			.text(GITHUB_URL)
+			.url(GITHUB_URL)
+			.font(new Font(Font.MONOSPACED, Font.BOLD, 6))
+			.color(Color.LIGHT_GRAY)
+			.build();
+		/*@formatter:on*/
+		gitHubLink.tf.y = (height - 16);
+		gitHubLink.tf.centerHorizontally(0, width);
+		super.init();
+	}
+
+	@Override
+	public void exit() {
+		theme.sounds().stopAll();
+	}
+
+	@Override
+	public Stream<StateMachine<?, ?>> machines() {
+		return Stream.of(this);
+	}
+
+	@Override
+	public Theme getTheme() {
+		return theme;
+	}
+
+	@Override
+	public void setTheme(Theme theme) {
+		this.theme = theme;
+		chaseGhosts.setTheme(theme);
+		chasePacMan.setTheme(theme);
+		ghostPointsAnimation.setTheme(theme);
+		messagesRenderer = theme.messagesRenderer();
+	}
+
+	@Override
+	public boolean isComplete() {
+		return is(READY_TO_PLAY);
+	}
+
+	@Override
+	public void update() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
+			setState(READY_TO_PLAY); // shortcut for skipping intro
+		}
+		super.update();
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		g.setColor(new Color(0, 23, 61));
+		g.fillRect(0, 0, width, height);
+		if (state() instanceof View) {
+			((View) state()).draw(g);
+		}
+	}
+
+	private void drawScreenModeText(Graphics2D g, int row) {
+		String text = "F11-" + texts.getString(app().inFullScreenMode() ? "window_mode" : "fullscreen_mode");
+		messagesRenderer.setRow(row);
+		messagesRenderer.setTextColor(Color.ORANGE);
+		messagesRenderer.drawCentered(g, text, world.width());
+	}
+
+	private void drawSpeedSelectionTexts(Graphics2D g, int row) {
+		String[] speedTexts = {
+			//@formatter:off
+			"1-" + texts.getString("normal"),
+			"2-" + texts.getString("fast"),
+			"3-" + texts.getString("insane")
+			//@formatter:on
+		};
+		try (Pen pen = new Pen(g)) {
+			pen.font(messagesRenderer.getFont());
+			FontMetrics fm = pen.getFontMetrics();
+			int[] w = { fm.stringWidth(speedTexts[0]), fm.stringWidth(speedTexts[1]), fm.stringWidth(speedTexts[2]) };
+			float s = (width - (w[0] + w[1] + w[2])) / 4f;
+			float[] x = { s, s + w[0] + s, s + w[0] + s + w[1] + s };
+			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate());
+			for (int i = 0; i < 3; ++i) {
+				pen.color(selectedSpeed == i ? ORANGE : RED);
+				pen.draw(speedTexts[i], x[i], row * Tile.SIZE);
+			}
+		}
+	}
+
+	private void createController() {
 		/*@formatter:off*/
 		beginStateMachine()
-			.description("IntroView")
+			.description("IntroViewController")
 			.initialState(SCROLLING_LOGO_ANIMATION)
 			.states()
 				
@@ -108,54 +209,6 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	
 		.endStateMachine();
 	  /*@formatter:on*/
-		init();
-	}
-
-	@Override
-	public Stream<StateMachine<?, ?>> machines() {
-		return Stream.of(this);
-	}
-
-	@Override
-	public void init() {
-		pacManLogo = new ImageWidget(Assets.readImage("images/logo.png"));
-		pacManLogo.tf.centerHorizontally(0, width);
-		pacManLogo.tf.y = 20;
-		chasePacMan = new ChasePacManAnimation(theme, world);
-		chasePacMan.tf.centerHorizontally(0, width);
-		chasePacMan.tf.y = 100;
-		chaseGhosts = new ChaseGhostsAnimation(theme, world);
-		ghostPointsAnimation = new GhostPointsAnimation(theme, world);
-		gitHubLink = LinkWidget.create()
-		/*@formatter:off*/
-			.text(GITHUB_URL)
-			.url(GITHUB_URL)
-			.font(new Font(Font.MONOSPACED, Font.BOLD, 6))
-			.color(Color.LIGHT_GRAY)
-			.build();
-		/*@formatter:on*/
-		gitHubLink.tf.y = (height - 16);
-		gitHubLink.tf.centerHorizontally(0, width);
-		super.init();
-	}
-
-	@Override
-	public void exit() {
-		theme.sounds().stopAll();
-	}
-
-	@Override
-	public Theme getTheme() {
-		return theme;
-	}
-
-	@Override
-	public void setTheme(Theme theme) {
-		this.theme = theme;
-		chaseGhosts.setTheme(theme);
-		chasePacMan.setTheme(theme);
-		ghostPointsAnimation.setTheme(theme);
-		messagesRenderer = theme.messagesRenderer();
 	}
 
 	private class ScrollingLogoAnimation extends State<IntroState> implements View {
@@ -250,61 +303,10 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			if (app().clock().getTotalTicks() % Timing.sec(1) < Timing.sec(0.5f)) {
 				messagesRenderer.setRow(18);
 				messagesRenderer.setTextColor(Color.WHITE);
-				messagesRenderer.drawCentered(g, PacManGameView.texts.getString("press_space_to_start"), world.width());
+				messagesRenderer.drawCentered(g, texts.getString("press_space_to_start"), world.width());
 			}
 			drawSpeedSelectionTexts(g, 22);
 			drawScreenModeText(g, 31);
-		}
-	}
-
-	@Override
-	public boolean isComplete() {
-		return is(READY_TO_PLAY);
-	}
-
-	@Override
-	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
-			setState(READY_TO_PLAY); // shortcut for skipping intro
-		}
-		super.update();
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		g.setColor(new Color(0, 23, 61));
-		g.fillRect(0, 0, width, height);
-		if (state() instanceof View) {
-			((View) state()).draw(g);
-		}
-	}
-
-	private void drawScreenModeText(Graphics2D g, int row) {
-		String text = "F11-" + PacManGameView.texts.getString(app().inFullScreenMode() ? "window_mode" : "fullscreen_mode");
-		messagesRenderer.setRow(row);
-		messagesRenderer.setTextColor(Color.ORANGE);
-		messagesRenderer.drawCentered(g, text, world.width());
-	}
-
-	private void drawSpeedSelectionTexts(Graphics2D g, int row) {
-		String[] texts = {
-			//@formatter:off
-			"1-" + PacManGameView.texts.getString("normal"),
-			"2-" + PacManGameView.texts.getString("fast"),
-			"3-" + PacManGameView.texts.getString("insane")
-			//@formatter:on
-		};
-		try (Pen pen = new Pen(g)) {
-			pen.font(messagesRenderer.getFont());
-			FontMetrics fm = pen.getFontMetrics();
-			int[] w = { fm.stringWidth(texts[0]), fm.stringWidth(texts[1]), fm.stringWidth(texts[2]) };
-			float s = (width - (w[0] + w[1] + w[2])) / 4f;
-			float[] x = { s, s + w[0] + s, s + w[0] + s + w[1] + s };
-			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate());
-			for (int i = 0; i < 3; ++i) {
-				pen.color(selectedSpeed == i ? ORANGE : RED);
-				pen.draw(texts[i], x[i], row * Tile.SIZE);
-			}
 		}
 	}
 }
