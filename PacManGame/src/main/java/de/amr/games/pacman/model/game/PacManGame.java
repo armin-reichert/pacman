@@ -22,7 +22,7 @@ public class PacManGame {
 	/**
 	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
 	 */
-	private static List<Object> levelData(int level) {
+	private static List<?> levelData(int level) {
 		if (level > 21) {
 			level = 21;
 		}
@@ -77,19 +77,16 @@ public class PacManGame {
 	}
 
 	public static void startNewGame(int startLevelNumber, World world) {
-		level = new PacManGame(startLevelNumber, world.totalFoodCount(), LIVES, 0, new Hiscore(), new ArrayList<>(),
-				levelData(startLevelNumber));
+		level = new PacManGame(startLevelNumber, world.totalFoodCount(), LIVES, 0, new Hiscore(), new ArrayList<>());
 		level.hiscore.load();
 		level.counter.add(level.bonusSymbol);
 		loginfo("Game started at level %d", startLevelNumber);
 	}
 
 	public void next() {
-		int next = level.number + 1;
-		level = new PacManGame(next, level.foodCount, level.lives, level.score, level.hiscore, level.counter,
-				levelData(next));
+		level = new PacManGame(level.number + 1, level.foodCount, level.lives, level.score, level.hiscore, level.counter);
 		level.counter.add(level.bonusSymbol);
-		loginfo("Game level %d started", next);
+		loginfo("Game level %d started", level.number);
 	}
 
 	private static float percent(Object value) {
@@ -129,8 +126,7 @@ public class PacManGame {
 
 	private ScoreResult scored = new ScoreResult(0, false);
 
-	private PacManGame(int levelNumber, int foodCount, int lives, int score, Hiscore hiscore, List<String> counter,
-			List<Object> data) {
+	private PacManGame(int levelNumber, int foodCount, int lives, int score, Hiscore hiscore, List<String> counter) {
 		this.number = levelNumber;
 		this.foodCount = foodCount;
 		this.lives = lives;
@@ -138,6 +134,7 @@ public class PacManGame {
 		this.hiscore = hiscore;
 		this.counter = counter;
 		int i = 0;
+		List<?> data = levelData(levelNumber);
 		bonusSymbol = (String) data.get(i++);
 		bonusValue = integer(data.get(i++));
 		pacManSpeed = percent(data.get(i++));
