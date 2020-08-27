@@ -203,7 +203,7 @@ public class Ghost extends Guy<GhostState> {
 		if (ai.getState() == null) {
 			throw new IllegalStateException(String.format("Ghost %s is not initialized.", name));
 		}
-		if (PacManGame.level == null) {
+		if (!PacManGame.started()) {
 			return 0;
 		}
 		boolean tunnel = world.isTunnel(tile());
@@ -246,15 +246,15 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	private void computeBounty() {
-		bounty = PacManGame.level != null ? PacManGame.level.ghostBounty() : 0;
+		bounty = PacManGame.started() ? PacManGame.level.ghostBounty() : 0;
 	}
 
 	private long getFrightenedTicks() {
-		return PacManGame.level != null ? Timing.sec(PacManGame.level.pacManPowerSeconds) : Timing.sec(5);
+		return PacManGame.started() ? Timing.sec(PacManGame.level.pacManPowerSeconds) : Timing.sec(5);
 	}
 
 	private long getFlashTimeTicks() {
-		return PacManGame.level != null ? PacManGame.level.numFlashes * Timing.sec(0.5f) : 0;
+		return PacManGame.started() ? PacManGame.level.numFlashes * Timing.sec(0.5f) : 0;
 	}
 
 	private void checkPacManCollision() {

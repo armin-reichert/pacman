@@ -102,7 +102,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		if (gameController != null) {
-			if (PacManGame.level != null) {
+			if (PacManGame.started()) {
 				GameStateTableModel tableModel = (GameStateTableModel) table.getModel();
 				if (tableModel.isDummy()) {
 					table.setModel(new GameStateTableModel(gameController));

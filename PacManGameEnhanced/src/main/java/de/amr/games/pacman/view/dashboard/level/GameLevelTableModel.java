@@ -41,13 +41,9 @@ public class GameLevelTableModel extends AbstractTableModel {
 		};
 		//@formatter:on
 
-	public boolean hasGame() {
-		return PacManGame.level != null;
-	}
-
 	@Override
 	public int getRowCount() {
-		return PacManGame.level != null ? LEVEL_PARAMS.length : 0;
+		return PacManGame.started() ? LEVEL_PARAMS.length : 0;
 	}
 
 	@Override
@@ -66,7 +62,7 @@ public class GameLevelTableModel extends AbstractTableModel {
 			return LEVEL_PARAMS[row];
 		}
 		if (col == 1) {
-			return PacManGame.level != null ? levelValue(PacManGame.level, row) : null;
+			return PacManGame.started() ? levelValue(PacManGame.level, row) : null;
 		}
 		throw new IllegalArgumentException("Illegal column index; " + col);
 	}

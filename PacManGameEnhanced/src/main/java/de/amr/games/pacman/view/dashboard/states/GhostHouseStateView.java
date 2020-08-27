@@ -146,7 +146,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (PacManGame.level != null) {
+		if (PacManGame.started()) {
 			DoorMan doorMan = gameController.doorMan;
 			tfPinkyDots.setText(formatDots(doorMan, folks.pinky));
 			tfPinkyDots.setEnabled(!doorMan.isGlobalDotCounterEnabled());

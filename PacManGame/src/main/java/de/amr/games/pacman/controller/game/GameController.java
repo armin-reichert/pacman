@@ -101,7 +101,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		//@formatter:on
 
 		app().onClose(() -> {
-			if (PacManGame.level != null) {
+			if (PacManGame.started()) {
 				PacManGame.level.hiscore.save();
 			}
 		});
@@ -270,7 +270,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTimeout()
 					.condition(() -> PacManGame.level.lives > 0)
 					.act(state_PLAYING()::resumePlaying)
-					.annotation(() -> PacManGame.level != null ?
+					.annotation(() -> PacManGame.started() ?
 							String.format("Lives remaining = %d, resume game", PacManGame.level.lives) : "Lives remaining, resume game"
 					)
 			

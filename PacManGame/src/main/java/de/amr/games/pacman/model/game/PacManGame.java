@@ -87,6 +87,10 @@ public class PacManGame {
 		}
 	}
 
+	public static boolean started() {
+		return level != null;
+	}
+
 	private static float percent(Object value) {
 		return (int) value / 100f;
 	}

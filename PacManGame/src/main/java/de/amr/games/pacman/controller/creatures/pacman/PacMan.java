@@ -155,7 +155,7 @@ public class PacMan extends Guy<PacManState> {
 
 	@Override
 	public float getSpeed() {
-		if (ai.getState() == null || PacManGame.level == null) {
+		if (ai.getState() == null || !PacManGame.started()) {
 			return 0;
 		}
 		if (ai.is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {

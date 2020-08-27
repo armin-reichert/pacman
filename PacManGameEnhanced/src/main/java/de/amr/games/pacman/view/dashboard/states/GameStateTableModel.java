@@ -122,12 +122,8 @@ class GameStateTableModel extends AbstractTableModel {
 		return gameController;
 	}
 
-	public boolean hasGame() {
-		return PacManGame.level != null;
-	}
-
 	public void update() {
-		if (hasGame()) {
+		if (PacManGame.started()) {
 			GhostCommand ghostCommand = gameController.ghostCommand;
 			Folks folks = gameController.folks;
 			fillGhostRecord(records[ROW_BLINKY], ghostCommand, folks.blinky, folks.pacMan);

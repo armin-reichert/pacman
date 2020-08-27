@@ -49,9 +49,9 @@ public class GameLevelView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (PacManGame.level != null) {
+		if (PacManGame.started()) {
 			GameLevelTableModel tableModel = (GameLevelTableModel) table.getModel();
-			if (!tableModel.hasGame()) {
+			if (!PacManGame.started()) {
 				init();
 			}
 			tableModel.fireTableDataChanged();
