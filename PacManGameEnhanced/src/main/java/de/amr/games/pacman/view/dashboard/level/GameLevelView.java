@@ -8,12 +8,12 @@ import javax.swing.JTable;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.game.GameController;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.view.dashboard.util.UniversalFormatter;
 import net.miginfocom.swing.MigLayout;
 
 public class GameLevelView extends JPanel implements Lifecycle {
 
-	private GameController controller;
 	private JTable table;
 
 	public GameLevelView() {
@@ -34,17 +34,12 @@ public class GameLevelView extends JPanel implements Lifecycle {
 	}
 
 	public void attachTo(GameController controller) {
-		this.controller = controller;
 		init();
 	}
 
 	@Override
 	public void init() {
-		if (controller.game.level != null) {
-			table.setModel(new GameLevelTableModel(controller.game));
-		} else {
-			table.setModel(new GameLevelTableModel());
-		}
+		table.setModel(new GameLevelTableModel());
 		UniversalFormatter fmt = new UniversalFormatter();
 		fmt.fnBoldCondition = c -> c.row < 6;
 		table.getColumnModel().getColumns().asIterator().forEachRemaining(column -> column.setCellRenderer(fmt));
@@ -54,7 +49,7 @@ public class GameLevelView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (controller.game.level != null) {
+		if (PacManGame.level != null) {
 			GameLevelTableModel tableModel = (GameLevelTableModel) table.getModel();
 			if (!tableModel.hasGame()) {
 				init();

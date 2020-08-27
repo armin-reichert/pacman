@@ -13,7 +13,7 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostMentalState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.GhostCommand;
-import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
@@ -36,6 +36,7 @@ class GameStateTableModel extends AbstractTableModel {
 	public static final int NUM_ROWS = 6;
 
 	public enum ColumnInfo {
+
 		//@formatter:off
 		OnStage(null, Boolean.class, true), 
 		Name("Actor", String.class, false), 
@@ -68,9 +69,11 @@ class GameStateTableModel extends AbstractTableModel {
 	private GameController gameController;
 	private World world;
 	private GameStateRecord[] records;
+	private boolean dummy;
 
 	public GameStateTableModel() {
 		createEmptyRecords();
+		dummy = true;
 	}
 
 	public GameStateTableModel(GameController gameController) {
@@ -83,6 +86,11 @@ class GameStateTableModel extends AbstractTableModel {
 		});
 		createEmptyRecords();
 		update();
+		dummy = false;
+	}
+
+	public boolean isDummy() {
+		return dummy;
 	}
 
 	private void createEmptyRecords() {
@@ -115,25 +123,24 @@ class GameStateTableModel extends AbstractTableModel {
 	}
 
 	public boolean hasGame() {
-		return gameController != null && gameController.game.level != null;
+		return PacManGame.level != null;
 	}
 
 	public void update() {
 		if (hasGame()) {
-			Game game = gameController.game;
 			GhostCommand ghostCommand = gameController.ghostCommand;
 			Folks folks = gameController.folks;
-			fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, folks.blinky, folks.pacMan);
-			fillGhostRecord(records[ROW_PINKY], game, ghostCommand, folks.pinky, folks.pacMan);
-			fillGhostRecord(records[ROW_INKY], game, ghostCommand, folks.inky, folks.pacMan);
-			fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, folks.clyde, folks.pacMan);
-			fillPacManRecord(records[ROW_PACMAN], game, folks.pacMan);
+			fillGhostRecord(records[ROW_BLINKY], ghostCommand, folks.blinky, folks.pacMan);
+			fillGhostRecord(records[ROW_PINKY], ghostCommand, folks.pinky, folks.pacMan);
+			fillGhostRecord(records[ROW_INKY], ghostCommand, folks.inky, folks.pacMan);
+			fillGhostRecord(records[ROW_CLYDE], ghostCommand, folks.clyde, folks.pacMan);
+			fillPacManRecord(records[ROW_PACMAN], folks.pacMan);
 			fillBonusRecord(records[ROW_BONUS], gameController, world);
 			fireTableDataChanged();
 		}
 	}
 
-	void fillPacManRecord(GameStateRecord r, Game game, PacMan pacMan) {
+	void fillPacManRecord(GameStateRecord r, PacMan pacMan) {
 		r.creature = pacMan;
 		r.included = world.contains(pacMan);
 		r.name = "Pac-Man";
@@ -148,7 +155,7 @@ class GameStateTableModel extends AbstractTableModel {
 		}
 	}
 
-	void fillGhostRecord(GameStateRecord r, Game game, GhostCommand ghostCommand, Ghost ghost, PacMan pacMan) {
+	void fillGhostRecord(GameStateRecord r, GhostCommand ghostCommand, Ghost ghost, PacMan pacMan) {
 		r.creature = ghost;
 		r.included = world.contains(ghost);
 		r.name = ghost.name;

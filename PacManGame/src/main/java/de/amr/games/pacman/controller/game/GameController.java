@@ -40,7 +40,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.steering.common.MovementType;
-import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.game.ScoreResult;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
@@ -65,7 +65,6 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
-	public final Game game;
 	public final World world;
 	public final Folks folks;
 	public final BonusFoodController bonusController;
@@ -87,25 +86,23 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		});
 		themes.select(settings.theme);
 
-		game = new Game();
 		world = new ArcadeWorld();
 		folks = new Folks(world, world.house(0));
 		folks.guys().forEach(guy -> {
 			guy.ai.addEventListener(this::process);
-			guy.game = game;
 		});
 
-		doorMan = new DoorMan(world, world.house(0), game, folks);
-		ghostCommand = new GhostCommand(game, folks);
+		doorMan = new DoorMan(world, world.house(0), folks);
+		ghostCommand = new GhostCommand(folks);
 		//@formatter:off
-		bonusController = new BonusFoodController(game, world,
-			() -> Timing.sec(Game.BONUS_SECONDS + new Random().nextFloat()),
-			() -> ArcadeBonus.of(game.level.bonusSymbol, game.level.bonusValue, ArcadeWorld.BONUS_LOCATION));
+		bonusController = new BonusFoodController(world,
+			() -> Timing.sec(PacManGame.BONUS_SECONDS + new Random().nextFloat()),
+			() -> ArcadeBonus.of(PacManGame.level.bonusSymbol, PacManGame.level.bonusValue, ArcadeWorld.BONUS_LOCATION));
 		//@formatter:on
 
 		app().onClose(() -> {
-			if (game.level != null) {
-				game.level.hiscore.save();
+			if (PacManGame.level != null) {
+				PacManGame.level.hiscore.save();
 			}
 		});
 	}
@@ -168,7 +165,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(Timing.sec(5))
 					.onEntry(() -> {
 						if (!settings.pacManImmortable) {
-							game.level.lives -= 1;
+							PacManGame.level.lives -= 1;
 						}
 						world.setFrozen(true);
 						folks.blinky.madness.pacManDies();
@@ -266,15 +263,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
 					.onTimeout()
-					.condition(() -> game.level.lives == 0)
+					.condition(() -> PacManGame.level.lives == 0)
 					.annotation("No lives left, game over")
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
-					.condition(() -> game.level.lives > 0)
+					.condition(() -> PacManGame.level.lives > 0)
 					.act(state_PLAYING()::resumePlaying)
-					.annotation(() -> game.level != null ?
-							String.format("Lives remaining = %d, resume game", game.level.lives) : "Lives remaining, resume game"
+					.annotation(() -> PacManGame.level != null ?
+							String.format("Lives remaining = %d, resume game", PacManGame.level.lives) : "Lives remaining, resume game"
 					)
 			
 				.when(GAME_OVER).then(GETTING_READY)
@@ -292,7 +289,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class GettingReadyState extends State<PacManGameState> {
 
 		private void startNewGame() {
-			game.newGame(settings.startLevel, world);
+			PacManGame.newGame(settings.startLevel, world);
 			world.setFrozen(true);
 			world.houses().flatMap(House::doors).forEach(doorMan::closeDoor);
 			folks.guys().forEach(guy -> {
@@ -390,7 +387,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			if (ghost.ai.is(FRIGHTENED)) {
-				ScoreResult scored = game.level.scoreGhostKilled();
+				ScoreResult scored = PacManGame.level.scoreGhostKilled();
 				playView().sound.gotExtraLife = scored.extraLife;
 				ghost.ai.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
@@ -407,7 +404,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onPacManFoundBonus(PacManGameEvent event) {
-			ScoreResult scored = game.level.scoreBonus();
+			ScoreResult scored = PacManGame.level.scoreBonus();
 			playView().sound.bonusEaten = true;
 			playView().sound.gotExtraLife = scored.extraLife;
 			bonusController.process(event);
@@ -417,8 +414,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			FoodFoundEvent found = (FoodFoundEvent) event;
 
 			boolean energizer = found.food == ArcadeFood.ENERGIZER;
-			ScoreResult scored = energizer ? game.level.scoreEnergizerEaten() : game.level.scoreSimplePelletEaten();
-			if (game.level.isBonusDue()) {
+			ScoreResult scored = energizer ? PacManGame.level.scoreEnergizerEaten() : PacManGame.level.scoreSimplePelletEaten();
+			if (PacManGame.level.isBonusDue()) {
 				bonusController.setState(BonusFoodState.BONUS_CONSUMABLE);
 			}
 			playView().sound.lastMealAt = System.currentTimeMillis();
@@ -426,17 +423,17 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 			doorMan.onPacManFoundFood();
 			world.removeFood(found.location);
-			if (game.level.remainingFoodCount() == 0) {
+			if (PacManGame.level.remainingFoodCount() == 0) {
 				// enter next level
 				enqueue(new LevelCompletedEvent());
 				return;
 			}
 
-			if (energizer && game.level.pacManPowerSeconds > 0) {
+			if (energizer && PacManGame.level.pacManPowerSeconds > 0) {
 				// restart attack timer
 				ghostCommand.pauseAttacking();
 				folks.guysInWorld()
-						.forEach(guy -> guy.ai.process(new PacManGainsPowerEvent(Timing.sec(game.level.pacManPowerSeconds))));
+						.forEach(guy -> guy.ai.process(new PacManGainsPowerEvent(Timing.sec(PacManGame.level.pacManPowerSeconds))));
 			}
 		}
 	}
@@ -452,12 +449,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onEntry() {
-			loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilledInLevel);
+			loginfo("Ghosts killed in level %d: %d", PacManGame.level.number, PacManGame.level.ghostsKilledInLevel);
 			world.setFrozen(true);
 			folks.pacMan.fallAsleep();
 			doorMan.onLevelChange();
 			themes.current().sounds().clips().forEach(SoundClip::stop);
-			flashingEnd = flashingStart + game.level.numFlashes * Timing.sec(themes.current().$float("maze-flash-sec"));
+			flashingEnd = flashingStart + PacManGame.level.numFlashes * Timing.sec(themes.current().$float("maze-flash-sec"));
 			complete = false;
 		}
 
@@ -475,7 +472,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (passed == flashingEnd) {
 				world.setChanging(false);
 				world.restoreFood();
-				game.nextLevel(world);
+				PacManGame.nextLevel(world);
 				folks.guys().forEach(Guy::init);
 				folks.blinky.madness.init();
 				playView().init();
@@ -537,6 +534,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 * @return the play view instance
 	 */
 	protected PlayView createPlayView() {
-		return new PlayView(themes.current(), folks, game, world);
+		return new PlayView(themes.current(), folks, world);
 	}
 }

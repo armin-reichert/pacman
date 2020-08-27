@@ -9,7 +9,7 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
@@ -59,7 +59,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 		}
 		map.set("frightened", sprites.makeSprite_ghostFrightened());
 		map.set("flashing", sprites.makeSprite_ghostFlashing());
-		for (int bounty : Game.POINTS_GHOSTS) {
+		for (int bounty : PacManGame.POINTS_GHOSTS) {
 			map.set(ghostSpriteKeyPoints(bounty), sprites.makeSprite_number(bounty));
 		}
 		return map;
@@ -101,7 +101,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 		for (ArcadeBonus symbol : ArcadeBonus.values()) {
 			set("symbol-" + symbol.name(), sprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
 		}
-		for (int points : Game.POINTS_BONUS) {
+		for (int points : PacManGame.POINTS_BONUS) {
 			set("points-" + points, sprites.makeSprite_number(points).frame(0));
 		}
 		set("sprites", sprites);

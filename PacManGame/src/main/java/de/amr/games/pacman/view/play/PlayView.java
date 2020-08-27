@@ -9,7 +9,7 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
-import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.PacManGameView;
@@ -24,17 +24,15 @@ import de.amr.games.pacman.view.common.MessagesView;
 public class PlayView implements PacManGameView {
 
 	public final World world;
-	public final Game game;
 	public final Folks folks;
 	public final SoundState sound;
 	public final MessagesView messages;
 
 	protected Theme theme;
 
-	public PlayView(Theme theme, Folks folks, Game game, World world) {
+	public PlayView(Theme theme, Folks folks, World world) {
 		this.theme = theme;
 		this.folks = folks;
-		this.game = game;
 		this.world = world;
 		sound = new SoundState();
 		messages = new MessagesView(theme, world, 15, 21);
@@ -80,7 +78,7 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawScores(Graphics2D g) {
-		theme.pointsCounterRenderer().render(g, game);
+		theme.pointsCounterRenderer().render(g, PacManGame.level);
 	}
 
 	protected void drawPacMan(Graphics2D g, PacMan pacMan) {
@@ -99,13 +97,13 @@ public class PlayView implements PacManGameView {
 
 	protected void drawLiveCounter(Graphics2D g) {
 		g.translate(Tile.SIZE, (world.height() - 2) * Tile.SIZE);
-		theme.livesCounterRenderer().render(g, game);
+		theme.livesCounterRenderer().render(g, PacManGame.level);
 		g.translate(-Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		g.translate(world.width() * Tile.SIZE, (world.height() - 2) * Tile.SIZE);
-		theme.levelCounterRenderer().render(g, game);
+		theme.levelCounterRenderer().render(g, PacManGame.level);
 		g.translate(-world.width() * Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
 	}
 

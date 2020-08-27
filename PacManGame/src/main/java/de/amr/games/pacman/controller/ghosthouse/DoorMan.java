@@ -16,7 +16,7 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
@@ -35,16 +35,14 @@ public class DoorMan implements Lifecycle {
 
 	private final House house;
 	private final Folks folks;
-	private final Game game;
 	private final World world;
 	private final DotCounter globalCounter;
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
 
-	public DoorMan(World world, House house, Game game, Folks folks) {
+	public DoorMan(World world, House house, Folks folks) {
 		this.house = house;
 		this.folks = folks;
-		this.game = game;
 		this.world = world;
 		globalCounter = new DotCounter();
 		ghostCounters = new int[4];
@@ -129,10 +127,10 @@ public class DoorMan implements Lifecycle {
 			return 0;
 		}
 		if (ghost == folks.inky) {
-			return game.level.number == 1 ? 30 : 0;
+			return PacManGame.level.number == 1 ? 30 : 0;
 		}
 		if (ghost == folks.clyde) {
-			return game.level.number == 1 ? 60 : game.level.number == 2 ? 50 : 0;
+			return PacManGame.level.number == 1 ? 60 : PacManGame.level.number == 2 ? 50 : 0;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
@@ -187,12 +185,11 @@ public class DoorMan implements Lifecycle {
 	private boolean isGhostNearDoor(Ghost ghost, Door door) {
 		Tile fromGhostTowardsHouse = world.neighbor(ghost.tile(), door.intoHouse);
 		Tile fromGhostAwayFromHouse = world.neighbor(ghost.tile(), door.intoHouse.opposite());
-		return door.includes(ghost.tile()) || door.includes(fromGhostAwayFromHouse)
-				|| door.includes(fromGhostTowardsHouse);
+		return door.includes(ghost.tile()) || door.includes(fromGhostAwayFromHouse) || door.includes(fromGhostTowardsHouse);
 	}
 
 	private long pacManStarvingTimeLimit() {
-		return game.level.number < 5 ? Timing.sec(4) : Timing.sec(3);
+		return PacManGame.level.number < 5 ? Timing.sec(4) : Timing.sec(3);
 	}
 
 	/**

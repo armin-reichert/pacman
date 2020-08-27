@@ -10,7 +10,7 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.play.ExtendedPlayView;
@@ -23,7 +23,6 @@ import de.amr.games.pacman.view.theme.Themes;
  */
 public class TestController implements VisualController {
 
-	protected final Game game;
 	protected final ArcadeWorld world;
 	protected final Folks folks;
 	protected final PacMan pacMan;
@@ -36,17 +35,15 @@ public class TestController implements VisualController {
 	public TestController() {
 		world = new ArcadeWorld();
 		world.tiles().forEach(world::removeFood);
-		game = new Game();
-		game.nextLevel(world);
+		PacManGame.nextLevel(world);
 		folks = new Folks(world, world.house(0));
-		folks.guys().forEach(guy -> guy.game = game);
 		pacMan = folks.pacMan;
 		blinky = folks.blinky;
 		pinky = folks.pinky;
 		inky = folks.inky;
 		clyde = folks.clyde;
 		themes = Themes.all().toArray(Theme[]::new);
-		view = new ExtendedPlayView(theme(), folks, null, game, world);
+		view = new ExtendedPlayView(theme(), folks, null, world);
 		view.turnScoresOff();
 	}
 

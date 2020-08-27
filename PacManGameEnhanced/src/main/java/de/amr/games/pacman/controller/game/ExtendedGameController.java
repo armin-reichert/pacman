@@ -28,6 +28,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.play.ExtendedPlayView;
@@ -75,7 +76,7 @@ public class ExtendedGameController extends GameController {
 
 	@Override
 	protected PlayView createPlayView() {
-		return new ExtendedPlayView(themes.current(), folks, ghostCommand, game, world);
+		return new ExtendedPlayView(themes.current(), folks, ghostCommand, world);
 	}
 
 	@Override
@@ -287,7 +288,7 @@ public class ExtendedGameController extends GameController {
 	}
 
 	private void switchToNextLevel() {
-		loginfo("Switching to level %d", game.level.number + 1);
+		loginfo("Switching to level %d", PacManGame.level.number + 1);
 		enqueue(new LevelCompletedEvent());
 	}
 
@@ -297,12 +298,12 @@ public class ExtendedGameController extends GameController {
 		}
 		world.tiles().filter(location -> world.hasFood(ArcadeFood.PELLET, location)).forEach(tile -> {
 			world.removeFood(tile);
-			game.level.scoreSimplePelletEaten();
+			PacManGame.level.scoreSimplePelletEaten();
 			doorMan.onPacManFoundFood();
 			doorMan.update();
 		});
 		loginfo("All simple pellets have been eaten");
-		if (game.level.remainingFoodCount() == 0) {
+		if (PacManGame.level.remainingFoodCount() == 0) {
 			enqueue(new LevelCompletedEvent());
 			return;
 		}
@@ -312,9 +313,9 @@ public class ExtendedGameController extends GameController {
 		if (getState() != PLAYING) {
 			return;
 		}
-		game.level.ghostsKilledByEnergizer = 0;
+		PacManGame.level.ghostsKilledByEnergizer = 0;
 		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
-			game.level.scoreGhostKilled();
+			PacManGame.level.scoreGhostKilled();
 			ghost.ai.process(new GhostKilledEvent(ghost));
 		});
 		loginfo("All ghosts have been killed");

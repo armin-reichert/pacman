@@ -18,6 +18,7 @@ import de.amr.games.pacman.PacManAppEnhanced;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.ExtendedGameController;
 import de.amr.games.pacman.controller.game.PacManGameState;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.statemachine.core.State;
 import net.miginfocom.swing.MigLayout;
 
@@ -92,37 +93,28 @@ public class GameStateView extends JPanel implements Lifecycle {
 	public void attachTo(ExtendedGameController gameController, Folks folks) {
 		this.gameController = gameController;
 		ghostHouseStateView.attachTo(gameController, folks);
-		init();
 	}
 
 	@Override
 	public void init() {
-		createTableModel();
-	}
-
-	private void createTableModel() {
-		if (gameController.game.level != null) {
-			GameStateTableModel model = new GameStateTableModel(gameController);
-			table.setModel(model);
-		}
 	}
 
 	@Override
 	public void update() {
 		if (gameController != null) {
-			GameStateTableModel tableModel = (GameStateTableModel) table.getModel();
-			if (!tableModel.hasGame()) {
-				createTableModel();
+			if (PacManGame.level != null) {
+				GameStateTableModel tableModel = (GameStateTableModel) table.getModel();
+				if (tableModel.isDummy()) {
+					table.setModel(new GameStateTableModel(gameController));
+				}
 			}
-			if (gameController.game.level != null) {
-				table.update();
-				ghostHouseStateView.update();
-				setStateLabel();
-				cbShowRoutes.setSelected(gameController.isShowingRoutes());
-				cbShowGrid.setSelected(gameController.isShowingGrid());
-				cbShowStates.setSelected(gameController.isShowingStates());
-				cbDemoMode.setSelected(PacManAppEnhanced.settings.demoMode);
-			}
+			table.update();
+			ghostHouseStateView.update();
+			setStateLabel();
+			cbShowRoutes.setSelected(gameController.isShowingRoutes());
+			cbShowGrid.setSelected(gameController.isShowingGrid());
+			cbShowStates.setSelected(gameController.isShowingStates());
+			cbDemoMode.setSelected(PacManAppEnhanced.settings.demoMode);
 		}
 	}
 

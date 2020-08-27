@@ -3,8 +3,6 @@ package de.amr.games.pacman.controller.game;
 import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
 
-import de.amr.games.pacman.model.game.Game;
-
 public interface Timing {
 
 	/**

@@ -5,7 +5,7 @@ import java.awt.Image;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.IGameScoreRenderer;
@@ -22,13 +22,13 @@ class LevelCounterRenderer implements IGameScoreRenderer {
 	}
 
 	@Override
-	public void render(Graphics2D g, Game game) {
+	public void render(Graphics2D g, PacManGame level) {
 		int max = 7;
-		int first = Math.max(0, game.level.counter.size() - max);
-		int n = Math.min(max, game.level.counter.size());
+		int first = Math.max(0, level.counter.size() - max);
+		int n = Math.min(max, level.counter.size());
 		int size = 2 * Tile.SIZE; // image size
 		for (int i = 0, x = -2 * size; i < n; ++i, x -= size) {
-			ArcadeBonus symbol = ArcadeBonus.valueOf(game.level.counter.get(first + i));
+			ArcadeBonus symbol = ArcadeBonus.valueOf(level.counter.get(first + i));
 			g.drawImage(bonusImages.get(symbol), x, 0, size, size, null);
 		}
 	}

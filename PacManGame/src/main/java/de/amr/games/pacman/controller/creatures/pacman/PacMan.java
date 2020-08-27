@@ -26,7 +26,7 @@ import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementType;
-import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
@@ -155,15 +155,15 @@ public class PacMan extends Guy<PacManState> {
 
 	@Override
 	public float getSpeed() {
-		if (ai.getState() == null || game == null) {
+		if (ai.getState() == null || PacManGame.level == null) {
 			return 0;
 		}
 		if (ai.is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {
 			return 0;
 		} else if (ai.is(POWERFUL)) {
-			return Timing.speed(fat > 0 ? game.level.pacManPowerDotsSpeed : game.level.pacManPowerSpeed);
+			return Timing.speed(fat > 0 ? PacManGame.level.pacManPowerDotsSpeed : PacManGame.level.pacManPowerSpeed);
 		} else if (ai.is(AWAKE)) {
-			return Timing.speed(fat > 0 ? game.level.pacManDotsSpeed : game.level.pacManSpeed);
+			return Timing.speed(fat > 0 ? PacManGame.level.pacManDotsSpeed : PacManGame.level.pacManSpeed);
 		}
 		throw new IllegalStateException("Illegal Pac-Man state: " + ai.getState());
 	}
@@ -207,16 +207,16 @@ public class PacMan extends Guy<PacManState> {
 		if (world.temporaryFood().filter(bonusFood -> !bonusFood.isConsumed()).isPresent()) {
 			TemporaryFood bonus = world.temporaryFood().get();
 			if (bonus.isActive() && bonus.location().equals(location)) {
-				fat += Game.FAT_ENERGIZER;
+				fat += PacManGame.FAT_ENERGIZER;
 				return Optional.of(new BonusFoundEvent(location, bonus));
 			}
 		}
 		if (world.hasFood(ArcadeFood.ENERGIZER, location)) {
-			fat += Game.FAT_ENERGIZER;
+			fat += PacManGame.FAT_ENERGIZER;
 			return Optional.of(new FoodFoundEvent(location, ArcadeFood.ENERGIZER));
 		}
 		if (world.hasFood(ArcadeFood.PELLET, location)) {
-			fat += Game.FAT_PELLET;
+			fat += PacManGame.FAT_PELLET;
 			return Optional.of(new FoodFoundEvent(location, ArcadeFood.PELLET));
 		}
 		return Optional.empty();

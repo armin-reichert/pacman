@@ -4,6 +4,7 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.ui.AppShell;
 import de.amr.easy.game.ui.f2dialog.F2Dialog;
 import de.amr.games.pacman.controller.game.ExtendedGameController;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.view.dashboard.fsm.FsmView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
@@ -55,10 +56,10 @@ public class PacManAppEnhanced extends PacManApp {
 
 		GameStateView gameStateView = new GameStateView();
 		gameStateView.attachTo(gameController, gameController.folks);
-		f2.addCustomTab("Game State", gameStateView, () -> gameController.game.level != null);
+		f2.addCustomTab("Game State", gameStateView, () -> PacManGame.level != null);
 
 		GameLevelView gameLevelView = new GameLevelView();
 		gameLevelView.attachTo(gameController);
-		f2.addCustomTab("Game Level", gameLevelView, () -> gameController.game.level != null);
+		f2.addCustomTab("Game Level", gameLevelView, () -> PacManGame.level != null);
 	}
 }

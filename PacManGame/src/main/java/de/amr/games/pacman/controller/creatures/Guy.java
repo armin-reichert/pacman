@@ -7,7 +7,6 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.steering.api.SteeredMover;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.statemachine.core.StateMachine;
@@ -26,7 +25,6 @@ public abstract class Guy<STATE> extends SteeredMover implements Lifecycle {
 	public final Map<STATE, Steering> steeringsMap;
 
 	public Steering previousSteering;
-	public Game game;
 
 	public Guy(World world, String name, Map<STATE, Steering> steeringsMap) {
 		super(world, name);

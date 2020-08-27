@@ -9,6 +9,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.test.TestController;
 
@@ -45,10 +46,10 @@ class PacManMovementTestUI extends TestController {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				world.removeFood(foodFound.location);
-				game.level.eatenFoodCount++;
-				if (game.level.remainingFoodCount() == 0) {
+				PacManGame.level.eatenFoodCount++;
+				if (PacManGame.level.remainingFoodCount() == 0) {
 					world.restoreFood();
-					game.level.eatenFoodCount = 0;
+					PacManGame.level.eatenFoodCount = 0;
 				}
 			}
 		});

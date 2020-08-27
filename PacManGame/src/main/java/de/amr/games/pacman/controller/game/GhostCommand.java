@@ -8,7 +8,7 @@ import static de.amr.games.pacman.controller.game.GhostCommand.Phase.SCATTER;
 
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.GhostCommand.Phase;
-import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
 
@@ -29,6 +29,7 @@ public class GhostCommand extends StateMachine<Phase, String> {
 	}
 
 	private static class Times {
+
 		long scatter, chase;
 	}
 
@@ -83,7 +84,7 @@ public class GhostCommand extends StateMachine<Phase, String> {
 		return level >= 5 ? L5[round] : level >= 2 ? L2[round] : L1[round];
 	}
 
-	public GhostCommand(Game game, Folks folks) {
+	public GhostCommand(Folks folks) {
 		super(Phase.class, TransitionMatchStrategy.BY_VALUE);
 		this.folks = folks;
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
@@ -93,11 +94,11 @@ public class GhostCommand extends StateMachine<Phase, String> {
 			.initialState(SCATTER)
 		.states()
 			.state(SCATTER)
-				.timeoutAfter(() -> times(game.level.number).scatter)
+				.timeoutAfter(() -> times(PacManGame.level.number).scatter)
 				.onTick(this::notifyGhosts)
 				.annotation(() -> "Round " + (round + 1))
 			.state(CHASE)
-				.timeoutAfter(() -> times(game.level.number).chase)
+				.timeoutAfter(() -> times(PacManGame.level.number).chase)
 				.onTick(this::notifyGhosts)
 				.annotation(() -> "Round " + (round + 1))
 			.state(PAUSED)

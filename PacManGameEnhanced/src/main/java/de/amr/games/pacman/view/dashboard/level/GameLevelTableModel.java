@@ -5,8 +5,7 @@ import static de.amr.games.pacman.view.dashboard.util.Formatting.percent;
 
 import javax.swing.table.AbstractTableModel;
 
-import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.game.GameLevel;
+import de.amr.games.pacman.model.game.PacManGame;
 
 /**
  * Model of the table displaying all level-dependent parameters.
@@ -42,23 +41,13 @@ public class GameLevelTableModel extends AbstractTableModel {
 		};
 		//@formatter:on
 
-	private Game game;
-
-	public GameLevelTableModel() {
-		// no game, empty model
-	}
-
-	public GameLevelTableModel(Game game) {
-		this.game = game;
-	}
-
 	public boolean hasGame() {
-		return game != null;
+		return PacManGame.level != null;
 	}
 
 	@Override
 	public int getRowCount() {
-		return game != null ? LEVEL_PARAMS.length : 0;
+		return PacManGame.level != null ? LEVEL_PARAMS.length : 0;
 	}
 
 	@Override
@@ -77,12 +66,12 @@ public class GameLevelTableModel extends AbstractTableModel {
 			return LEVEL_PARAMS[row];
 		}
 		if (col == 1) {
-			return game != null ? levelValue(game.level, row) : null;
+			return PacManGame.level != null ? levelValue(PacManGame.level, row) : null;
 		}
 		throw new IllegalArgumentException("Illegal column index; " + col);
 	}
 
-	private String levelValue(GameLevel level, int row) {
+	private String levelValue(PacManGame level, int row) {
 		switch (row) {
 		case 0:
 			return integer(level.number);

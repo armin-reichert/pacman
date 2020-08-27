@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.games.pacman.model.game.Game.POINTS_GHOSTS;
+import static de.amr.games.pacman.model.game.PacManGame.POINTS_GHOSTS;
 
 import java.awt.Color;
 import java.awt.Font;

@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.statemachine.core.StateMachine;
@@ -24,8 +23,7 @@ public class BonusFoodController extends StateMachine<BonusFoodState, PacManGame
 
 	private Supplier<TemporaryFood> fnBonusSupplier;
 
-	public BonusFoodController(Game game, World world, Supplier<Long> fnActivationTime,
-			Supplier<TemporaryFood> fnBonusSupplier) {
+	public BonusFoodController(World world, Supplier<Long> fnActivationTime, Supplier<TemporaryFood> fnBonusSupplier) {
 		super(BonusFoodState.class);
 		this.fnBonusSupplier = fnBonusSupplier;
 		/*@formatter:off*/

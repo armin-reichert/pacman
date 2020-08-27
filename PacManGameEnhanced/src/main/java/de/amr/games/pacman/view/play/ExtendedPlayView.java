@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.GhostCommand;
-import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.Theme;
@@ -34,8 +34,8 @@ public class ExtendedPlayView extends PlayView {
 	protected boolean showingStates;
 	protected boolean showingScores = true;
 
-	public ExtendedPlayView(Theme theme, Folks folks, GhostCommand ghostCommand, Game game, World world) {
-		super(theme, folks, game, world);
+	public ExtendedPlayView(Theme theme, Folks folks, GhostCommand ghostCommand, World world) {
+		super(theme, folks, world);
 		this.ghostCommand = ghostCommand;
 		gridRenderer = new GridRenderer(world.width(), world.height());
 		routesRenderer = new RoutesRenderer();
@@ -132,7 +132,7 @@ public class ExtendedPlayView extends PlayView {
 	@Override
 	protected void drawScores(Graphics2D g) {
 		if (showingScores) {
-			theme.pointsCounterRenderer().render(g, game);
+			theme.pointsCounterRenderer().render(g, PacManGame.level);
 		}
 	}
 

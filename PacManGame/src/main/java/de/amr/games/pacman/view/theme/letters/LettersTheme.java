@@ -110,10 +110,10 @@ public class LettersTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public IGameScoreRenderer levelCounterRenderer() {
-		return (g, game) -> {
+		return (g, level) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
-			String text = String.format("Level: %d (%s)", game.level.number, game.level.bonusSymbol);
+			String text = String.format("Level: %d (%s)", level.number, level.bonusSymbol);
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
 			g.drawString(text, -15 * Tile.SIZE, Tile.SIZE + offset_baseline);
@@ -122,25 +122,26 @@ public class LettersTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public IGameScoreRenderer livesCounterRenderer() {
-		return (g, game) -> {
+		return (g, level) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
-			g.drawString(String.format("Lives: %d", game.level.lives), 0, Tile.SIZE + offset_baseline);
+			g.drawString(String.format("Lives: %d", level.lives), 0, Tile.SIZE + offset_baseline);
 		};
 	}
 
 	@Override
 	public IGameScoreRenderer pointsCounterRenderer() {
-		return (g, game) -> {
+		return (g, level) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
 			g.drawString(" Score          Highscore        Pellets", 0, offset_baseline);
-			g.drawString(String.format(" %08d       %08d         %03d", game.level.score, game.level.hiscore.points,
-					game.level.remainingFoodCount()), 0, Tile.SIZE + offset_baseline);
+			g.drawString(
+					String.format(" %08d       %08d         %03d", level.score, level.hiscore.points, level.remainingFoodCount()),
+					0, Tile.SIZE + offset_baseline);
 		};
 	}
 
