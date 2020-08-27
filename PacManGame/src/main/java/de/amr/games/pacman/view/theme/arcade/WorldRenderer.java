@@ -3,6 +3,7 @@ package de.amr.games.pacman.view.theme.arcade;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.World;
@@ -22,6 +23,9 @@ class WorldRenderer implements IWorldRenderer {
 
 	@Override
 	public void render(Graphics2D g, World world) {
+		// no anti-aliasing for maze image for better performance
+		Graphics2D g2 = (Graphics2D) g.create();
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		if (world.isChanging()) {
 			String selectedKey = spriteMap.selectedKey();
 			if (!"maze-flashing".equals(selectedKey)) {
@@ -29,10 +33,10 @@ class WorldRenderer implements IWorldRenderer {
 				spriteMap.current().get().resetAnimation();
 				spriteMap.current().get().enableAnimation(true);
 			}
-			spriteMap.current().get().draw(g, 0, 3 * Tile.SIZE);
+			spriteMap.current().get().draw(g2, 0, 3 * Tile.SIZE);
 		} else {
 			spriteMap.select("maze-full");
-			spriteMap.current().get().draw(g, 0, 3 * Tile.SIZE);
+			spriteMap.current().get().draw(g2, 0, 3 * Tile.SIZE);
 			drawContent(g, world);
 			world.house(0).doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
 				g.setColor(Color.BLACK);
@@ -41,6 +45,7 @@ class WorldRenderer implements IWorldRenderer {
 		}
 		spriteMap.getEnergizerAnimation().setEnabled(!world.isFrozen());
 		spriteMap.getEnergizerAnimation().update();
+		g2.dispose();
 	}
 
 	private void drawContent(Graphics2D g, World world) {
