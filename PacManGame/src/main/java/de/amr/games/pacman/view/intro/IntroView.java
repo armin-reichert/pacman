@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.CHASING_ANIMATIONS;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.SCROLLING_LOGO_ANIMATION;
@@ -20,13 +21,11 @@ import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.core.EmptyWorld;
 import de.amr.games.pacman.view.api.PacManGameView;
-import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
@@ -51,29 +50,35 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	private final World world;
 	private final int width;
 	private final int height;
-	private final PacManSounds sounds;
+	private final ImageWidget pacManLogo;
+	private final ChasePacManAnimation chasePacMan;
+	private final ChaseGhostsAnimation chaseGhosts;
+	private final GhostPointsAnimation ghostPointsAnimation;
+	private final LinkWidget gitHubLink;
 
 	private Theme theme;
 	private MessagesRenderer messagesRenderer;
-	private ImageWidget pacManLogo;
-	private LinkWidget gitHubLink;
-	private ChasePacManAnimation chasePacMan;
-	private ChaseGhostsAnimation chaseGhosts;
-	private GhostPointsAnimation ghostPointsAnimation;
 
 	public IntroView(Theme theme) {
 		super(IntroState.class);
-		this.width = PacManApp.settings.width;
-		this.height = PacManApp.settings.height;
-		this.world = new EmptyWorld(width / Tile.SIZE, height / Tile.SIZE);
 		this.theme = theme;
-		this.messagesRenderer = theme.messagesRenderer();
-		this.sounds = theme.sounds();
-		createController();
+		width = settings.width;
+		height = settings.height;
+		world = new EmptyWorld(width / Tile.SIZE, height / Tile.SIZE);
+		messagesRenderer = theme.messagesRenderer();
 		pacManLogo = new ImageWidget(Assets.readImage("images/logo.png"));
 		chasePacMan = new ChasePacManAnimation(theme, world);
 		chaseGhosts = new ChaseGhostsAnimation(theme, world);
 		ghostPointsAnimation = new GhostPointsAnimation(theme, world);
+		gitHubLink = LinkWidget.create()
+		/*@formatter:off*/
+			.text(GITHUB_URL)
+			.url(GITHUB_URL)
+			.font(new Font(Font.MONOSPACED, Font.BOLD, 6))
+			.color(Color.LIGHT_GRAY)
+			.build();
+		/*@formatter:on*/
+		createController();
 		init();
 	}
 
@@ -83,17 +88,22 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		pacManLogo.tf.y = 20;
 		chasePacMan.tf.centerHorizontally(0, width);
 		chasePacMan.tf.y = 100;
-		gitHubLink = LinkWidget.create()
-		/*@formatter:off*/
-			.text(GITHUB_URL)
-			.url(GITHUB_URL)
-			.font(new Font(Font.MONOSPACED, Font.BOLD, 6))
-			.color(Color.LIGHT_GRAY)
-			.build();
-		/*@formatter:on*/
-		gitHubLink.tf.y = (height - 16);
 		gitHubLink.tf.centerHorizontally(0, width);
+		gitHubLink.tf.y = -16 + height;
 		super.init();
+	}
+
+	@Override
+	public void update() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
+			setState(READY_TO_PLAY); // shortcut for skipping intro
+		}
+		super.update();
+	}
+
+	@Override
+	public boolean isComplete() {
+		return is(READY_TO_PLAY);
 	}
 
 	@Override
@@ -114,23 +124,10 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
+		messagesRenderer = theme.messagesRenderer();
 		chaseGhosts.setTheme(theme);
 		chasePacMan.setTheme(theme);
 		ghostPointsAnimation.setTheme(theme);
-		messagesRenderer = theme.messagesRenderer();
-	}
-
-	@Override
-	public boolean isComplete() {
-		return is(READY_TO_PLAY);
-	}
-
-	@Override
-	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
-			setState(READY_TO_PLAY); // shortcut for skipping intro
-		}
-		super.update();
 	}
 
 	@Override
@@ -142,21 +139,17 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		}
 	}
 
-	private void drawScreenModeText(Graphics2D g, int row) {
-		String text = "F11-" + texts.getString(app().inFullScreenMode() ? "window_mode" : "fullscreen_mode");
+	private void drawToggleScreenModeText(Graphics2D g, int row) {
+		boolean isFullscreen = app().inFullScreenMode();
+		String text = "F11-" + texts.getString(isFullscreen ? "window_mode" : "fullscreen_mode");
 		messagesRenderer.setRow(row);
 		messagesRenderer.setTextColor(Color.ORANGE);
 		messagesRenderer.drawCentered(g, text, world.width());
 	}
 
 	private void drawSpeedSelectionTexts(Graphics2D g, int row) {
-		String[] speedTexts = {
-			//@formatter:off
-			"1-" + texts.getString("normal"),
-			"2-" + texts.getString("fast"),
-			"3-" + texts.getString("insane")
-			//@formatter:on
-		};
+		String[] speedTexts = { "1-" + texts.getString("normal"), "2-" + texts.getString("fast"),
+				"3-" + texts.getString("insane") };
 		try (Pen pen = new Pen(g)) {
 			pen.font(messagesRenderer.getFont());
 			FontMetrics fm = pen.getFontMetrics();
@@ -186,7 +179,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 				
 				.state(WAITING_FOR_INPUT)
 					.customState(new WaitingForInput())
-					.timeoutAfter(Timing.sec(15))
+					.timeoutAfter(Timing.sec(10))
 					
 				.state(READY_TO_PLAY)
 					
@@ -215,12 +208,12 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 		@Override
 		public void onEntry() {
-			sounds.clipInsertCoin().play();
 			pacManLogo.tf.y = height;
 			pacManLogo.tf.vy = -2f;
 			pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
 			pacManLogo.visible = true;
 			pacManLogo.start();
+			theme.sounds().clipInsertCoin().play();
 		}
 
 		@Override
@@ -235,6 +228,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	}
 
 	private class ChasingAnimation extends State<IntroState> implements View {
+
 		@Override
 		public void onEntry() {
 			chasePacMan.tf.width = 88;
@@ -263,7 +257,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			pacManLogo.draw(g);
 			chaseGhosts.draw(g);
 			chasePacMan.draw(g);
-			drawScreenModeText(g, 31);
+			drawToggleScreenModeText(g, 31);
 		}
 	}
 
@@ -276,7 +270,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			ghostPointsAnimation.start();
 			chasePacMan.tf.centerHorizontally(0, width);
 			chasePacMan.initPositions(width / 2 + 5 * Tile.SIZE);
-			chasePacMan.guys().forEach(creature -> creature.tf.vx = 0);
+			chasePacMan.guys().forEach(guy -> guy.tf.vx = 0);
 			gitHubLink.visible = true;
 		}
 
@@ -306,7 +300,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 				messagesRenderer.drawCentered(g, texts.getString("press_space_to_start"), world.width());
 			}
 			drawSpeedSelectionTexts(g, 22);
-			drawScreenModeText(g, 31);
+			drawToggleScreenModeText(g, 31);
 		}
 	}
 }
