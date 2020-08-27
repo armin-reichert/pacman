@@ -6,10 +6,10 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.HE
 import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.TRANQUILIZED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
+import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.util.Objects;
 
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
 
@@ -77,11 +77,11 @@ public class GhostMadness extends StateMachine<GhostMentalState, Byte> {
 			
 				.when(HEALTHY).then(ELROY2)
 					.condition(this::reachedElroy2Score)
-					.annotation(() -> String.format("Pellets left <= %d", PacManGame.game.elroy2DotsLeft))
+					.annotation(() -> String.format("Pellets left <= %d", game.elroy2DotsLeft))
 			
 				.when(HEALTHY).then(ELROY1)
 					.condition(this::reachedElroy1Score)
-					.annotation(() -> String.format("Pellets left <= %d", PacManGame.game.elroy1DotsLeft))
+					.annotation(() -> String.format("Pellets left <= %d", game.elroy1DotsLeft))
 
 				.when(TRANQUILIZED).then(ELROY2)
 					.on(CLYDE_EXITS_HOUSE)
@@ -95,7 +95,7 @@ public class GhostMadness extends StateMachine<GhostMentalState, Byte> {
 					
 				.when(ELROY1).then(ELROY2)
 					.condition(this::reachedElroy2Score)
-					.annotation(() -> String.format("Remaining pellets <= %d", PacManGame.game.elroy2DotsLeft))
+					.annotation(() -> String.format("Remaining pellets <= %d", game.elroy2DotsLeft))
 
 				.when(ELROY1).then(TRANQUILIZED).on(PACMAN_DIES)
 					.annotation("Suspend Elroy when Pac-Man dies")
@@ -109,11 +109,11 @@ public class GhostMadness extends StateMachine<GhostMentalState, Byte> {
 	}
 
 	private boolean reachedElroy1Score() {
-		return PacManGame.game.remainingFoodCount() <= PacManGame.game.elroy1DotsLeft;
+		return game.remainingFoodCount() <= game.elroy1DotsLeft;
 	}
 
 	private boolean reachedElroy2Score() {
-		return PacManGame.game.remainingFoodCount() <= PacManGame.game.elroy2DotsLeft;
+		return game.remainingFoodCount() <= game.elroy2DotsLeft;
 	}
 
 	private void targetCorner() {

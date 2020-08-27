@@ -7,6 +7,7 @@ import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.IN_BED;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
+import static de.amr.games.pacman.model.game.PacManGame.game;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
@@ -161,9 +162,9 @@ public class PacMan extends Guy<PacManState> {
 		if (ai.is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {
 			return 0;
 		} else if (ai.is(POWERFUL)) {
-			return Timing.speed(fat > 0 ? PacManGame.game.pacManPowerDotsSpeed : PacManGame.game.pacManPowerSpeed);
+			return Timing.speed(fat > 0 ? game.pacManPowerDotsSpeed : game.pacManPowerSpeed);
 		} else if (ai.is(AWAKE)) {
-			return Timing.speed(fat > 0 ? PacManGame.game.pacManDotsSpeed : PacManGame.game.pacManSpeed);
+			return Timing.speed(fat > 0 ? game.pacManDotsSpeed : game.pacManSpeed);
 		}
 		throw new IllegalStateException("Illegal Pac-Man state: " + ai.getState());
 	}

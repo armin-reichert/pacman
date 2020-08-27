@@ -6,6 +6,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.confirmed;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.rejected;
+import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -16,7 +17,6 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
@@ -127,10 +127,10 @@ public class DoorMan implements Lifecycle {
 			return 0;
 		}
 		if (ghost == folks.inky) {
-			return PacManGame.game.level == 1 ? 30 : 0;
+			return game.level == 1 ? 30 : 0;
 		}
 		if (ghost == folks.clyde) {
-			return PacManGame.game.level == 1 ? 60 : PacManGame.game.level == 2 ? 50 : 0;
+			return game.level == 1 ? 60 : game.level == 2 ? 50 : 0;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
@@ -189,7 +189,7 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private long pacManStarvingTimeLimit() {
-		return PacManGame.game.level < 5 ? Timing.sec(4) : Timing.sec(3);
+		return game.level < 5 ? Timing.sec(4) : Timing.sec(3);
 	}
 
 	/**
