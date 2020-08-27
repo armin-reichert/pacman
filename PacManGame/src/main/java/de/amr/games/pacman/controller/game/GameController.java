@@ -289,7 +289,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class GettingReadyState extends State<PacManGameState> {
 
 		private void startNewGame() {
-			PacManGame.newGame(settings.startLevel, world);
+			PacManGame.startNewGame(settings.startLevel, world);
 			world.setFrozen(true);
 			world.houses().flatMap(House::doors).forEach(doorMan::closeDoor);
 			folks.guys().forEach(guy -> {
@@ -414,7 +414,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			FoodFoundEvent found = (FoodFoundEvent) event;
 
 			boolean energizer = found.food == ArcadeFood.ENERGIZER;
-			ScoreResult scored = energizer ? PacManGame.level.scoreEnergizerEaten() : PacManGame.level.scoreSimplePelletEaten();
+			ScoreResult scored = energizer ? PacManGame.level.scoreEnergizerEaten()
+					: PacManGame.level.scoreSimplePelletEaten();
 			if (PacManGame.level.isBonusDue()) {
 				bonusController.setState(BonusFoodState.BONUS_CONSUMABLE);
 			}
@@ -472,7 +473,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (passed == flashingEnd) {
 				world.setChanging(false);
 				world.restoreFood();
-				PacManGame.nextLevel(world);
+				PacManGame.level.next();
 				folks.guys().forEach(Guy::init);
 				folks.blinky.madness.init();
 				playView().init();

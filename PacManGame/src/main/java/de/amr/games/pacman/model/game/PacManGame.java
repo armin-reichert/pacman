@@ -72,23 +72,24 @@ public class PacManGame {
 
 	public static PacManGame level;
 
-	public static void newGame(int startLevelNumber, World world) {
-		level = new PacManGame(startLevelNumber, world.totalFoodCount(), LIVES, levelData(startLevelNumber));
-		loginfo("Started new game at level %d", startLevelNumber);
-	}
-
-	public static void nextLevel(World world) {
-		if (level == null) {
-			newGame(1, world);
-		} else {
-			int next = level.number + 1;
-			level = new PacManGame(next, world.totalFoodCount(), level, levelData(next));
-			loginfo("Game level %d started", next);
-		}
-	}
-
 	public static boolean started() {
 		return level != null;
+	}
+
+	public static void startNewGame(int startLevelNumber, World world) {
+		level = new PacManGame(startLevelNumber, world.totalFoodCount(), LIVES, 0, new Hiscore(), new ArrayList<>(),
+				levelData(startLevelNumber));
+		level.hiscore.load();
+		level.counter.add(level.bonusSymbol);
+		loginfo("Game started at level %d", startLevelNumber);
+	}
+
+	public void next() {
+		int next = level.number + 1;
+		level = new PacManGame(next, level.foodCount, level.lives, level.score, level.hiscore, level.counter,
+				levelData(next));
+		level.counter.add(level.bonusSymbol);
+		loginfo("Game level %d started", next);
 	}
 
 	private static float percent(Object value) {
@@ -128,15 +129,6 @@ public class PacManGame {
 
 	private ScoreResult scored = new ScoreResult(0, false);
 
-	public PacManGame(int levelNumber, int foodCount, int lives, List<Object> data) {
-		this(levelNumber, foodCount, lives, 0, new Hiscore(), new ArrayList<>(), data);
-		hiscore.load();
-	}
-
-	public PacManGame(int levelNumber, int foodCount, PacManGame previous, List<Object> data) {
-		this(levelNumber, foodCount, previous.lives, previous.score, previous.hiscore, previous.counter, data);
-	}
-
 	private PacManGame(int levelNumber, int foodCount, int lives, int score, Hiscore hiscore, List<String> counter,
 			List<Object> data) {
 		this.number = levelNumber;
@@ -161,7 +153,6 @@ public class PacManGame {
 		ghostFrightenedSpeed = percent(data.get(i++));
 		pacManPowerSeconds = integer(data.get(i++));
 		numFlashes = integer(data.get(i++));
-		counter.add(bonusSymbol);
 	}
 
 	public int remainingFoodCount() {
