@@ -79,13 +79,13 @@ public class PacManGame {
 	public static void startNewGame(int startLevel, World world) {
 		game = new PacManGame(startLevel, world.totalFoodCount(), LIVES, 0, new Hiscore(), new ArrayList<>());
 		game.hiscore.load();
-		game.counter.add(game.bonusSymbol);
+		game.levelCounter.add(game.bonusSymbol);
 		loginfo("Game started at level %d", startLevel);
 	}
 
 	public void nextLevel() {
-		game = new PacManGame(game.level + 1, game.foodCount, game.lives, game.score, game.hiscore, game.counter);
-		game.counter.add(game.bonusSymbol);
+		game = new PacManGame(game.level + 1, game.foodCount, game.lives, game.score, game.hiscore, game.levelCounter);
+		game.levelCounter.add(game.bonusSymbol);
 		loginfo("Game level %d started", game.level);
 	}
 
@@ -122,7 +122,7 @@ public class PacManGame {
 	public int lives;
 	public int score;
 	public Hiscore hiscore;
-	public List<String> counter;
+	public List<String> levelCounter;
 
 	private ScoreResult scored = new ScoreResult(0, false);
 
@@ -132,7 +132,7 @@ public class PacManGame {
 		this.lives = lives;
 		this.score = score;
 		this.hiscore = hiscore;
-		this.counter = counter;
+		this.levelCounter = counter;
 		int i = 0;
 		List<?> data = levelData(level);
 		bonusSymbol = (String) data.get(i++);
