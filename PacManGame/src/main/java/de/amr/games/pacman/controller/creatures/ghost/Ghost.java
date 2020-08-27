@@ -209,28 +209,28 @@ public class Ghost extends Guy<GhostState> {
 		boolean tunnel = world.isTunnel(tile());
 		switch (ai.getState()) {
 		case LOCKED:
-			return Timing.speed(isInsideHouse() ? PacManGame.level.ghostSpeed / 2 : 0);
+			return Timing.speed(isInsideHouse() ? PacManGame.game.ghostSpeed / 2 : 0);
 		case LEAVING_HOUSE:
-			return Timing.speed(PacManGame.level.ghostSpeed / 2);
+			return Timing.speed(PacManGame.game.ghostSpeed / 2);
 		case ENTERING_HOUSE:
-			return Timing.speed(PacManGame.level.ghostSpeed);
+			return Timing.speed(PacManGame.game.ghostSpeed);
 		case CHASING:
 		case SCATTERING:
 			if (tunnel) {
-				return Timing.speed(PacManGame.level.ghostTunnelSpeed);
+				return Timing.speed(PacManGame.game.ghostTunnelSpeed);
 			}
 			GhostMentalState mentalState = getMentalState();
 			if (mentalState == GhostMentalState.ELROY1) {
-				return Timing.speed(PacManGame.level.elroy1Speed);
+				return Timing.speed(PacManGame.game.elroy1Speed);
 			}
 			if (mentalState == GhostMentalState.ELROY2) {
-				return Timing.speed(PacManGame.level.elroy2Speed);
+				return Timing.speed(PacManGame.game.elroy2Speed);
 			}
-			return Timing.speed(PacManGame.level.ghostSpeed);
+			return Timing.speed(PacManGame.game.ghostSpeed);
 		case FRIGHTENED:
-			return Timing.speed(tunnel ? PacManGame.level.ghostTunnelSpeed : PacManGame.level.ghostFrightenedSpeed);
+			return Timing.speed(tunnel ? PacManGame.game.ghostTunnelSpeed : PacManGame.game.ghostFrightenedSpeed);
 		case DEAD:
-			return Timing.speed(2 * PacManGame.level.ghostSpeed);
+			return Timing.speed(2 * PacManGame.game.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s", ai.getState()));
 		}
@@ -246,15 +246,15 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	private void computeBounty() {
-		bounty = PacManGame.started() ? PacManGame.level.ghostBounty() : 0;
+		bounty = PacManGame.started() ? PacManGame.game.ghostBounty() : 0;
 	}
 
 	private long getFrightenedTicks() {
-		return PacManGame.started() ? Timing.sec(PacManGame.level.pacManPowerSeconds) : Timing.sec(5);
+		return PacManGame.started() ? Timing.sec(PacManGame.game.pacManPowerSeconds) : Timing.sec(5);
 	}
 
 	private long getFlashTimeTicks() {
-		return PacManGame.started() ? PacManGame.level.numFlashes * Timing.sec(0.5f) : 0;
+		return PacManGame.started() ? PacManGame.game.numFlashes * Timing.sec(0.5f) : 0;
 	}
 
 	private void checkPacManCollision() {

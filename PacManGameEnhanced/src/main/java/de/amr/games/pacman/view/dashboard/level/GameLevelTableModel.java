@@ -62,55 +62,55 @@ public class GameLevelTableModel extends AbstractTableModel {
 			return LEVEL_PARAMS[row];
 		}
 		if (col == 1) {
-			return PacManGame.started() ? levelValue(PacManGame.level, row) : null;
+			return PacManGame.started() ? levelValue(PacManGame.game, row) : null;
 		}
 		throw new IllegalArgumentException("Illegal column index; " + col);
 	}
 
-	private String levelValue(PacManGame level, int row) {
+	private String levelValue(PacManGame game, int row) {
 		switch (row) {
 		case 0:
-			return integer(level.number);
+			return integer(game.level);
 		case 1:
-			return integer(level.foodCount);
+			return integer(game.foodCount);
 		case 2:
-			return integer(level.eatenFoodCount);
+			return integer(game.eatenFoodCount);
 		case 3:
-			return integer(level.remainingFoodCount());
+			return integer(game.remainingFoodCount());
 		case 4:
-			return integer(level.ghostsKilledByEnergizer);
+			return integer(game.ghostsKilledByEnergizer);
 		case 5:
-			return integer(level.ghostsKilledInLevel);
+			return integer(game.ghostsKilledInLevel);
 		case 6:
-			return level.bonusSymbol;
+			return game.bonusSymbol;
 		case 7:
-			return integer(level.bonusValue);
+			return integer(game.bonusValue);
 		case 8:
-			return percent(level.pacManSpeed);
+			return percent(game.pacManSpeed);
 		case 9:
-			return percent(level.pacManDotsSpeed);
+			return percent(game.pacManDotsSpeed);
 		case 10:
-			return percent(level.ghostSpeed);
+			return percent(game.ghostSpeed);
 		case 11:
-			return percent(level.ghostTunnelSpeed);
+			return percent(game.ghostTunnelSpeed);
 		case 12:
-			return integer(level.elroy1DotsLeft);
+			return integer(game.elroy1DotsLeft);
 		case 13:
-			return percent(level.elroy1Speed);
+			return percent(game.elroy1Speed);
 		case 14:
-			return integer(level.elroy2DotsLeft);
+			return integer(game.elroy2DotsLeft);
 		case 15:
-			return percent(level.elroy2Speed);
+			return percent(game.elroy2Speed);
 		case 16:
-			return percent(level.pacManPowerSpeed);
+			return percent(game.pacManPowerSpeed);
 		case 17:
-			return percent(level.pacManPowerDotsSpeed);
+			return percent(game.pacManPowerDotsSpeed);
 		case 18:
-			return percent(level.ghostFrightenedSpeed);
+			return percent(game.ghostFrightenedSpeed);
 		case 19:
-			return integer(level.pacManPowerSeconds);
+			return integer(game.pacManPowerSeconds);
 		case 20:
-			return integer(level.numFlashes);
+			return integer(game.numFlashes);
 		default:
 			return null;
 		}

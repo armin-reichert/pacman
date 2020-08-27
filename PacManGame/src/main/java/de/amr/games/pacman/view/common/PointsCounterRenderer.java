@@ -21,7 +21,7 @@ public class PointsCounterRenderer implements IGameScoreRenderer {
 	}
 
 	@Override
-	public void render(Graphics2D g, PacManGame level) {
+	public void render(Graphics2D g, PacManGame game) {
 		g.translate(0, topMargin);
 		try (Pen pen = new Pen(g)) {
 			Color hilight = Color.YELLOW;
@@ -38,7 +38,7 @@ public class PointsCounterRenderer implements IGameScoreRenderer {
 
 			pen.color(Color.WHITE);
 			pen.down(interlineSpacing);
-			pen.drawAtGridPosition(String.format("%7d", level.score), col, 1);
+			pen.drawAtGridPosition(String.format("%7d", game.score), col, 1);
 			pen.up(interlineSpacing);
 
 			// Highscore
@@ -47,9 +47,9 @@ public class PointsCounterRenderer implements IGameScoreRenderer {
 			pen.drawAtGridPosition("High Score".toUpperCase(), col, 0);
 			pen.color(Color.WHITE);
 			pen.down(interlineSpacing);
-			pen.drawAtGridPosition(String.format("%7d", level.hiscore.points), col, 1);
+			pen.drawAtGridPosition(String.format("%7d", game.hiscore.points), col, 1);
 			pen.color(Color.LIGHT_GRAY);
-			pen.drawAtGridPosition(String.format("L%02d", level.hiscore.levelNumber), col + 7, 1);
+			pen.drawAtGridPosition(String.format("L%02d", game.hiscore.level), col + 7, 1);
 			pen.up(interlineSpacing);
 
 			col = 21;
@@ -58,7 +58,7 @@ public class PointsCounterRenderer implements IGameScoreRenderer {
 			// Level number
 			pen.color(Color.WHITE);
 			pen.down(interlineSpacing);
-			pen.drawAtGridPosition(String.format("%02d", level.number), col, 1);
+			pen.drawAtGridPosition(String.format("%02d", game.level), col, 1);
 			pen.up(interlineSpacing);
 
 			// Number of remaining pellets
@@ -73,7 +73,7 @@ public class PointsCounterRenderer implements IGameScoreRenderer {
 
 			pen.color(Color.WHITE);
 			pen.down(interlineSpacing);
-			pen.drawAtGridPosition(String.format("%03d", level.remainingFoodCount()), col + 3, 1);
+			pen.drawAtGridPosition(String.format("%03d", game.remainingFoodCount()), col + 3, 1);
 			pen.up(interlineSpacing);
 		}
 		g.translate(0, -topMargin);

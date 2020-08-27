@@ -113,7 +113,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 		return (g, level) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
-			String text = String.format("Level: %d (%s)", level.number, level.bonusSymbol);
+			String text = String.format("Level: %d (%s)", level.level, level.bonusSymbol);
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
 			g.drawString(text, -15 * Tile.SIZE, Tile.SIZE + offset_baseline);

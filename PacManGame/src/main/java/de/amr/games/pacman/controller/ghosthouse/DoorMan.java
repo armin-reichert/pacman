@@ -127,10 +127,10 @@ public class DoorMan implements Lifecycle {
 			return 0;
 		}
 		if (ghost == folks.inky) {
-			return PacManGame.level.number == 1 ? 30 : 0;
+			return PacManGame.game.level == 1 ? 30 : 0;
 		}
 		if (ghost == folks.clyde) {
-			return PacManGame.level.number == 1 ? 60 : PacManGame.level.number == 2 ? 50 : 0;
+			return PacManGame.game.level == 1 ? 60 : PacManGame.game.level == 2 ? 50 : 0;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
@@ -189,7 +189,7 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private long pacManStarvingTimeLimit() {
-		return PacManGame.level.number < 5 ? Timing.sec(4) : Timing.sec(3);
+		return PacManGame.game.level < 5 ? Timing.sec(4) : Timing.sec(3);
 	}
 
 	/**

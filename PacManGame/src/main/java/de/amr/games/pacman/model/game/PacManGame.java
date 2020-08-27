@@ -70,23 +70,23 @@ public class PacManGame {
 	public static final int BONUS_SECONDS      = 9;
 	/*@formatter:on*/
 
-	public static PacManGame level;
+	public static PacManGame game;
 
 	public static boolean started() {
-		return level != null;
+		return game != null;
 	}
 
-	public static void startNewGame(int startLevelNumber, World world) {
-		level = new PacManGame(startLevelNumber, world.totalFoodCount(), LIVES, 0, new Hiscore(), new ArrayList<>());
-		level.hiscore.load();
-		level.counter.add(level.bonusSymbol);
-		loginfo("Game started at level %d", startLevelNumber);
+	public static void startNewGame(int startLevel, World world) {
+		game = new PacManGame(startLevel, world.totalFoodCount(), LIVES, 0, new Hiscore(), new ArrayList<>());
+		game.hiscore.load();
+		game.counter.add(game.bonusSymbol);
+		loginfo("Game started at level %d", startLevel);
 	}
 
-	public void next() {
-		level = new PacManGame(level.number + 1, level.foodCount, level.lives, level.score, level.hiscore, level.counter);
-		level.counter.add(level.bonusSymbol);
-		loginfo("Game level %d started", level.number);
+	public void nextLevel() {
+		game = new PacManGame(game.level + 1, game.foodCount, game.lives, game.score, game.hiscore, game.counter);
+		game.counter.add(game.bonusSymbol);
+		loginfo("Game level %d started", game.level);
 	}
 
 	private static float percent(Object value) {
@@ -113,7 +113,7 @@ public class PacManGame {
 	public final int pacManPowerSeconds;
 	public final int numFlashes;
 
-	public final int number;
+	public final int level;
 	public final int foodCount;
 
 	public int eatenFoodCount;
@@ -126,15 +126,15 @@ public class PacManGame {
 
 	private ScoreResult scored = new ScoreResult(0, false);
 
-	private PacManGame(int levelNumber, int foodCount, int lives, int score, Hiscore hiscore, List<String> counter) {
-		this.number = levelNumber;
+	private PacManGame(int level, int foodCount, int lives, int score, Hiscore hiscore, List<String> counter) {
+		this.level = level;
 		this.foodCount = foodCount;
 		this.lives = lives;
 		this.score = score;
 		this.hiscore = hiscore;
 		this.counter = counter;
 		int i = 0;
-		List<?> data = levelData(levelNumber);
+		List<?> data = levelData(level);
 		bonusSymbol = (String) data.get(i++);
 		bonusValue = integer(data.get(i++));
 		pacManSpeed = percent(data.get(i++));
@@ -167,7 +167,7 @@ public class PacManGame {
 		scored.extraLife = score < POINTS_EXTRA_LIFE && score + points >= POINTS_EXTRA_LIFE;
 		score += scored.points;
 		lives += scored.extraLife ? 1 : 0;
-		hiscore.check(number, score);
+		hiscore.check(level, score);
 		return scored;
 	}
 

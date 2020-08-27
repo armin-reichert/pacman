@@ -37,7 +37,7 @@ public class Hiscore extends Score {
 		try {
 			data.loadFromXML(new FileInputStream(FILE));
 			points = Integer.valueOf(data.getProperty("score"));
-			levelNumber = Integer.valueOf(data.getProperty("level"));
+			level = Integer.valueOf(data.getProperty("level"));
 			if (data.getProperty("time") != null) {
 				time = ZonedDateTime.parse(data.getProperty("time"), DATE_FORMAT);
 			} else {
@@ -58,7 +58,7 @@ public class Hiscore extends Score {
 	public void save() {
 		if (needsUpdate) {
 			data.setProperty("score", Integer.toString(points));
-			data.setProperty("level", Integer.toString(levelNumber));
+			data.setProperty("level", Integer.toString(level));
 			if (time == null) {
 				time = ZonedDateTime.now();
 			}
@@ -83,7 +83,7 @@ public class Hiscore extends Score {
 	public void check(int levelNumber, int points) {
 		if (points > this.points) {
 			this.points = points;
-			this.levelNumber = levelNumber;
+			this.level = levelNumber;
 			time = ZonedDateTime.now();
 			needsUpdate = true;
 		}

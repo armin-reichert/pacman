@@ -132,7 +132,7 @@ public class ExtendedPlayView extends PlayView {
 	@Override
 	protected void drawScores(Graphics2D g) {
 		if (showingScores) {
-			theme.pointsCounterRenderer().render(g, PacManGame.level);
+			theme.pointsCounterRenderer().render(g, PacManGame.game);
 		}
 	}
 

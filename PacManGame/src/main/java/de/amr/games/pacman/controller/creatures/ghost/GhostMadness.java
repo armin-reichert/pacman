@@ -77,11 +77,11 @@ public class GhostMadness extends StateMachine<GhostMentalState, Byte> {
 			
 				.when(HEALTHY).then(ELROY2)
 					.condition(this::reachedElroy2Score)
-					.annotation(() -> String.format("Pellets left <= %d", PacManGame.level.elroy2DotsLeft))
+					.annotation(() -> String.format("Pellets left <= %d", PacManGame.game.elroy2DotsLeft))
 			
 				.when(HEALTHY).then(ELROY1)
 					.condition(this::reachedElroy1Score)
-					.annotation(() -> String.format("Pellets left <= %d", PacManGame.level.elroy1DotsLeft))
+					.annotation(() -> String.format("Pellets left <= %d", PacManGame.game.elroy1DotsLeft))
 
 				.when(TRANQUILIZED).then(ELROY2)
 					.on(CLYDE_EXITS_HOUSE)
@@ -95,7 +95,7 @@ public class GhostMadness extends StateMachine<GhostMentalState, Byte> {
 					
 				.when(ELROY1).then(ELROY2)
 					.condition(this::reachedElroy2Score)
-					.annotation(() -> String.format("Remaining pellets <= %d", PacManGame.level.elroy2DotsLeft))
+					.annotation(() -> String.format("Remaining pellets <= %d", PacManGame.game.elroy2DotsLeft))
 
 				.when(ELROY1).then(TRANQUILIZED).on(PACMAN_DIES)
 					.annotation("Suspend Elroy when Pac-Man dies")
@@ -109,11 +109,11 @@ public class GhostMadness extends StateMachine<GhostMentalState, Byte> {
 	}
 
 	private boolean reachedElroy1Score() {
-		return PacManGame.level.remainingFoodCount() <= PacManGame.level.elroy1DotsLeft;
+		return PacManGame.game.remainingFoodCount() <= PacManGame.game.elroy1DotsLeft;
 	}
 
 	private boolean reachedElroy2Score() {
-		return PacManGame.level.remainingFoodCount() <= PacManGame.level.elroy2DotsLeft;
+		return PacManGame.game.remainingFoodCount() <= PacManGame.game.elroy2DotsLeft;
 	}
 
 	private void targetCorner() {

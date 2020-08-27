@@ -161,9 +161,9 @@ public class PacMan extends Guy<PacManState> {
 		if (ai.is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {
 			return 0;
 		} else if (ai.is(POWERFUL)) {
-			return Timing.speed(fat > 0 ? PacManGame.level.pacManPowerDotsSpeed : PacManGame.level.pacManPowerSpeed);
+			return Timing.speed(fat > 0 ? PacManGame.game.pacManPowerDotsSpeed : PacManGame.game.pacManPowerSpeed);
 		} else if (ai.is(AWAKE)) {
-			return Timing.speed(fat > 0 ? PacManGame.level.pacManDotsSpeed : PacManGame.level.pacManSpeed);
+			return Timing.speed(fat > 0 ? PacManGame.game.pacManDotsSpeed : PacManGame.game.pacManSpeed);
 		}
 		throw new IllegalStateException("Illegal Pac-Man state: " + ai.getState());
 	}

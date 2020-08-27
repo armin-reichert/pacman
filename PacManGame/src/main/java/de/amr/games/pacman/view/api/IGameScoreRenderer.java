@@ -6,5 +6,5 @@ import de.amr.games.pacman.model.game.PacManGame;
 
 public interface IGameScoreRenderer {
 
-	void render(Graphics2D g, PacManGame level);
+	void render(Graphics2D g, PacManGame game);
 }

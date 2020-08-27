@@ -288,7 +288,7 @@ public class ExtendedGameController extends GameController {
 	}
 
 	private void switchToNextLevel() {
-		loginfo("Switching to level %d", PacManGame.level.number + 1);
+		loginfo("Switching to level %d", PacManGame.game.level + 1);
 		enqueue(new LevelCompletedEvent());
 	}
 
@@ -298,12 +298,12 @@ public class ExtendedGameController extends GameController {
 		}
 		world.tiles().filter(location -> world.hasFood(ArcadeFood.PELLET, location)).forEach(tile -> {
 			world.removeFood(tile);
-			PacManGame.level.scoreSimplePelletEaten();
+			PacManGame.game.scoreSimplePelletEaten();
 			doorMan.onPacManFoundFood();
 			doorMan.update();
 		});
 		loginfo("All simple pellets have been eaten");
-		if (PacManGame.level.remainingFoodCount() == 0) {
+		if (PacManGame.game.remainingFoodCount() == 0) {
 			enqueue(new LevelCompletedEvent());
 			return;
 		}
@@ -313,9 +313,9 @@ public class ExtendedGameController extends GameController {
 		if (getState() != PLAYING) {
 			return;
 		}
-		PacManGame.level.ghostsKilledByEnergizer = 0;
+		PacManGame.game.ghostsKilledByEnergizer = 0;
 		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
-			PacManGame.level.scoreGhostKilled();
+			PacManGame.game.scoreGhostKilled();
 			ghost.ai.process(new GhostKilledEvent(ghost));
 		});
 		loginfo("All ghosts have been killed");

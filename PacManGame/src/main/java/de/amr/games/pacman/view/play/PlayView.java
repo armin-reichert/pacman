@@ -78,7 +78,7 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawScores(Graphics2D g) {
-		theme.pointsCounterRenderer().render(g, PacManGame.level);
+		theme.pointsCounterRenderer().render(g, PacManGame.game);
 	}
 
 	protected void drawPacMan(Graphics2D g, PacMan pacMan) {
@@ -97,13 +97,13 @@ public class PlayView implements PacManGameView {
 
 	protected void drawLiveCounter(Graphics2D g) {
 		g.translate(Tile.SIZE, (world.height() - 2) * Tile.SIZE);
-		theme.livesCounterRenderer().render(g, PacManGame.level);
+		theme.livesCounterRenderer().render(g, PacManGame.game);
 		g.translate(-Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		g.translate(world.width() * Tile.SIZE, (world.height() - 2) * Tile.SIZE);
-		theme.levelCounterRenderer().render(g, PacManGame.level);
+		theme.levelCounterRenderer().render(g, PacManGame.game);
 		g.translate(-world.width() * Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
 	}
 
