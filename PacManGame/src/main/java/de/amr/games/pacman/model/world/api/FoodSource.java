@@ -17,7 +17,7 @@ public interface FoodSource {
 
 	Optional<Food> foodAt(Tile location);
 
-	void eatFood(Tile location);
+	void removeFood(Tile location);
 
 	default boolean hasFood(Tile location) {
 		return foodAt(location).isPresent();

@@ -44,7 +44,7 @@ class PacManMovementTestUI extends TestController {
 		pacMan.ai.addEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				world.eatFood(foodFound.location);
+				world.removeFood(foodFound.location);
 				game.level.eatenFoodCount++;
 				if (game.level.remainingFoodCount() == 0) {
 					world.restoreFood();

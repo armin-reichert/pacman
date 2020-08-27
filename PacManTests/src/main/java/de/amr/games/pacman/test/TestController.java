@@ -35,7 +35,7 @@ public class TestController implements VisualController {
 
 	public TestController() {
 		world = new ArcadeWorld();
-		world.tiles().forEach(world::eatFood);
+		world.tiles().forEach(world::removeFood);
 		game = new Game();
 		game.nextLevel(world);
 		folks = new Folks(world, world.house(0));

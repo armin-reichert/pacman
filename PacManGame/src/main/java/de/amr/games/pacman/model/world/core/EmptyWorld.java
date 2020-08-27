@@ -72,7 +72,7 @@ public class EmptyWorld extends AbstractWorld {
 	}
 
 	@Override
-	public void eatFood(Tile location) {
+	public void removeFood(Tile location) {
 	}
 
 	@Override

@@ -41,6 +41,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.ScoreResult;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
@@ -389,11 +390,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			if (ghost.ai.is(FRIGHTENED)) {
-				int livesBefore = game.level.lives;
-				game.level.scoreGhostKilled();
-				if (game.level.lives > livesBefore) {
-					playView().sound.gotExtraLife = true;
-				}
+				ScoreResult scored = game.level.scoreGhostKilled();
+				playView().sound.gotExtraLife = scored.extraLife;
 				ghost.ai.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
 			}
@@ -409,37 +407,33 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onPacManFoundBonus(PacManGameEvent event) {
-			int value = game.level.bonusValue;
-			int livesBefore = game.level.lives;
-			game.level.score(value);
+			ScoreResult scored = game.level.scoreBonus();
 			playView().sound.bonusEaten = true;
-			if (game.level.lives > livesBefore) {
-				playView().sound.gotExtraLife = true;
-			}
+			playView().sound.gotExtraLife = scored.extraLife;
 			bonusController.process(event);
 		}
 
 		private void onPacManFoundFood(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
-			boolean energizer = world.hasFood(ArcadeFood.ENERGIZER, found.location);
-			world.eatFood(found.location);
-			int livesBeforeScoring = game.level.lives;
-			if (energizer) {
-				game.level.scoreEnergizerEaten();
-			} else {
-				game.level.scoreSimplePelletEaten();
-			}
-			doorMan.onPacManFoundFood();
+
+			boolean energizer = found.food == ArcadeFood.ENERGIZER;
+			ScoreResult scored = energizer ? game.level.scoreEnergizerEaten() : game.level.scoreSimplePelletEaten();
 			if (game.level.isBonusDue()) {
 				bonusController.setState(BonusFoodState.BONUS_CONSUMABLE);
 			}
 			playView().sound.lastMealAt = System.currentTimeMillis();
-			if (game.level.lives > livesBeforeScoring) {
-				playView().sound.gotExtraLife = true;
-			}
+			playView().sound.gotExtraLife = scored.extraLife;
+
+			doorMan.onPacManFoundFood();
+			world.removeFood(found.location);
 			if (game.level.remainingFoodCount() == 0) {
+				// enter next level
 				enqueue(new LevelCompletedEvent());
-			} else if (energizer && game.level.pacManPowerSeconds > 0) {
+				return;
+			}
+
+			if (energizer && game.level.pacManPowerSeconds > 0) {
+				// restart attack timer
 				ghostCommand.pauseAttacking();
 				folks.guysInWorld()
 						.forEach(guy -> guy.ai.process(new PacManGainsPowerEvent(Timing.sec(game.level.pacManPowerSeconds))));
@@ -458,7 +452,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onEntry() {
-			loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
+			loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilledInLevel);
 			world.setFrozen(true);
 			folks.pacMan.fallAsleep();
 			doorMan.onLevelChange();

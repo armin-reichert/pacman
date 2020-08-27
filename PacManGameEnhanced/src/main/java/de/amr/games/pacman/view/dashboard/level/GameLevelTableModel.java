@@ -95,7 +95,7 @@ public class GameLevelTableModel extends AbstractTableModel {
 		case 4:
 			return integer(level.ghostsKilledByEnergizer);
 		case 5:
-			return integer(level.ghostsKilled);
+			return integer(level.ghostsKilledInLevel);
 		case 6:
 			return level.bonusSymbol;
 		case 7:

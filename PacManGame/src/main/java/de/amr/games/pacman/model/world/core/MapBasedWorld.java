@@ -78,7 +78,7 @@ public abstract class MapBasedWorld extends AbstractWorld {
 	}
 
 	@Override
-	public void eatFood(Tile tile) {
+	public void removeFood(Tile tile) {
 		if (is(tile, B_FOOD)) {
 			map.set1(tile.row, tile.col, B_EATEN);
 		}

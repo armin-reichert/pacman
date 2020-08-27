@@ -296,7 +296,7 @@ public class ExtendedGameController extends GameController {
 			return;
 		}
 		world.tiles().filter(location -> world.hasFood(ArcadeFood.PELLET, location)).forEach(tile -> {
-			world.eatFood(tile);
+			world.removeFood(tile);
 			game.level.scoreSimplePelletEaten();
 			doorMan.onPacManFoundFood();
 			doorMan.update();

@@ -247,7 +247,7 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	private void computeBounty() {
-		bounty = game != null ? game.level.killedGhostPoints() : 0;
+		bounty = game != null ? game.level.ghostBounty() : 0;
 	}
 
 	private long getFrightenedTicks() {

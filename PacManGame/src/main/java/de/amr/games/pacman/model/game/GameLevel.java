@@ -41,11 +41,13 @@ public class GameLevel {
 
 	public int eatenFoodCount;
 	public int ghostsKilledByEnergizer;
-	public int ghostsKilled;
+	public int ghostsKilledInLevel;
 	public int lives;
 	public int score;
 	public Hiscore hiscore;
 	public List<String> counter;
+
+	private ScoreResult scored = new ScoreResult(0, false);
 
 	public GameLevel(int levelNumber, int foodCount, int lives, List<Object> data) {
 		this(levelNumber, foodCount, lives, 0, new Hiscore(), new ArrayList<>(), data);
@@ -88,19 +90,27 @@ public class GameLevel {
 	}
 
 	/**
-	 * Score the given number of points and handles high score, extra life etc.
+	 * Score the given number of points and handles high score and extra life.
 	 * 
 	 * @param points points to score
-	 * @return points scored
+	 * @return score result
 	 */
-	public int score(int points) {
-		int oldScore = score;
-		score += points;
-		if (oldScore < Game.POINTS_EXTRA_LIFE && Game.POINTS_EXTRA_LIFE <= score) {
-			lives += 1;
-		}
+	private ScoreResult score(int points) {
+		scored.points = points;
+		scored.extraLife = score < Game.POINTS_EXTRA_LIFE && score + points >= Game.POINTS_EXTRA_LIFE;
+		score += scored.points;
+		lives += scored.extraLife ? 1 : 0;
 		hiscore.check(number, score);
-		return points;
+		return scored;
+	}
+
+	/**
+	 * Score eaten bonus.
+	 * 
+	 * @return score result
+	 */
+	public ScoreResult scoreBonus() {
+		return score(bonusValue);
 	}
 
 	/**
@@ -108,7 +118,7 @@ public class GameLevel {
 	 * 
 	 * @return points scored
 	 */
-	public int scoreEnergizerEaten() {
+	public ScoreResult scoreEnergizerEaten() {
 		eatenFoodCount += 1;
 		ghostsKilledByEnergizer = 0;
 		return score(Game.POINTS_ENERGIZER);
@@ -119,7 +129,7 @@ public class GameLevel {
 	 * 
 	 * @return points scored
 	 */
-	public int scoreSimplePelletEaten() {
+	public ScoreResult scoreSimplePelletEaten() {
 		eatenFoodCount += 1;
 		return score(Game.POINTS_PELLET);
 	}
@@ -128,23 +138,24 @@ public class GameLevel {
 	 * Scores for killing a ghost. Value of a killed ghost doubles if killed in series using the same
 	 * energizer.
 	 */
-	public int scoreGhostKilled() {
+	public ScoreResult scoreGhostKilled() {
+		int points = 0;
 		ghostsKilledByEnergizer += 1;
-		ghostsKilled += 1;
-		if (ghostsKilled == 16) {
-			score(Game.POINTS_ALL_GHOSTS);
+		ghostsKilledInLevel += 1;
+		if (ghostsKilledInLevel == 16) {
+			points += Game.POINTS_ALL_GHOSTS;
 		}
-		int points = killedGhostPoints();
-		loginfo("Scored %d points for killing %s ghost", points,
+		int ghostBounty = ghostBounty();
+		loginfo("Got %d points for killing %s ghost", ghostBounty,
 				new String[] { "", "first", "2nd", "3rd", "4th" }[ghostsKilledByEnergizer]);
+		points += ghostBounty;
 		return score(points);
 	}
 
 	/**
-	 * @return current value of a killed ghost. Value doubles for each ghost killed by the same
-	 *         energizer.
+	 * @return value of killed ghost. Value doubles for each ghost killed by the same energizer.
 	 */
-	public int killedGhostPoints() {
+	public int ghostBounty() {
 		return Game.POINTS_GHOSTS[ghostsKilledByEnergizer > 0 ? ghostsKilledByEnergizer - 1 : 0];
 	}
 
