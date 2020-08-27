@@ -27,7 +27,7 @@ public class FsmDashboard extends JFrame {
 	static class FsmSelectionModel extends DefaultComboBoxModel<String> {
 
 		public FsmSelectionModel(FsmModel model) {
-			model.data().forEach(data -> {
+			model.data().sorted().forEach(data -> {
 				addElement(data.getFsm().getDescription());
 			});
 		}
