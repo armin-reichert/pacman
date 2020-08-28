@@ -2,6 +2,7 @@ package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.awt.Graphics2D;
@@ -90,9 +91,11 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
+		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(DEAD, ENTERING_HOUSE, FRIGHTENED))
+				.forEach(ghost -> drawGhost(g, ghost));
 		drawPacMan(g, folks.pacMan);
-		folks.ghostsInWorld().filter(ghost -> !ghost.ai.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> drawGhost(g, ghost));
+		folks.ghostsInWorld().filter(ghost -> !ghost.ai.is(DEAD, ENTERING_HOUSE, FRIGHTENED))
+				.forEach(ghost -> drawGhost(g, ghost));
 	}
 
 	protected void drawLiveCounter(Graphics2D g) {
