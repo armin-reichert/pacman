@@ -133,23 +133,22 @@ public class PacManGame {
 		this.foodCount = foodCount;
 		this.lives = lives;
 		this.score = score;
-		int i = 0;
 		List<?> data = levelData(level);
-		bonusSymbol = (String) data.get(i++);
-		bonusValue = integer(data.get(i++));
-		pacManSpeed = percent(data.get(i++));
-		pacManDotsSpeed = percent(data.get(i++));
-		ghostSpeed = percent(data.get(i++));
-		ghostTunnelSpeed = percent(data.get(i++));
-		elroy1DotsLeft = integer(data.get(i++));
-		elroy1Speed = percent(data.get(i++));
-		elroy2DotsLeft = integer(data.get(i++));
-		elroy2Speed = percent(data.get(i++));
-		pacManPowerSpeed = percent(data.get(i++));
-		pacManPowerDotsSpeed = percent(data.get(i++));
-		ghostFrightenedSpeed = percent(data.get(i++));
-		pacManPowerSeconds = integer(data.get(i++));
-		numFlashes = integer(data.get(i++));
+		bonusSymbol = (String) data.get(0);
+		bonusValue = integer(data.get(1));
+		pacManSpeed = percent(data.get(2));
+		pacManDotsSpeed = percent(data.get(3));
+		ghostSpeed = percent(data.get(4));
+		ghostTunnelSpeed = percent(data.get(5));
+		elroy1DotsLeft = integer(data.get(6));
+		elroy1Speed = percent(data.get(7));
+		elroy2DotsLeft = integer(data.get(8));
+		elroy2Speed = percent(data.get(9));
+		pacManPowerSpeed = percent(data.get(10));
+		pacManPowerDotsSpeed = percent(data.get(11));
+		ghostFrightenedSpeed = percent(data.get(12));
+		pacManPowerSeconds = integer(data.get(13));
+		numFlashes = integer(data.get(14));
 	}
 
 	public int remainingFoodCount() {
