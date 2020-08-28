@@ -53,6 +53,7 @@ import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.PacManGameView;
+import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.MusicLoadingView;
@@ -110,19 +111,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		});
 	}
 
-	/**
-	 * @return A typed reference to the "PLAYING" state instance such that method references like
-	 *         {@code state_PLAYING()::onPacManFoundFood} can be used. <br/>
-	 *         The builtin expression {@code this.<PlayingState>state(PLAYING)} looked too ugly to me.
-	 */
-	protected PlayingState state_PLAYING() {
-		return state(PLAYING);
-	}
-
-	protected ChangingLevelState state_CHANGING_LEVEL() {
-		return state(CHANGING_LEVEL);
-	}
-
 	private void buildStateMachine() {
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
@@ -172,8 +160,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						world.setFrozen(true);
 						folks.blinky.madness.pacManDies();
-						themes.current().sounds().stopMusic(themes.current().sounds().musicGameRunning());
-						themes.current().sounds().clips().forEach(SoundClip::stop);
+						sounds().stopAll();
 					})
 					.onTick((state, passed, remaining) -> {
 						if (passed == sec(2)) {
@@ -199,26 +186,26 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghost.ai.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
 						playView().messages.showMessage(2, "Game Over!", Color.RED);
-						themes.current().sounds().stopAll();
-						themes.current().sounds().playMusic(themes.current().sounds().musicGameOver());
+						sounds().stopAll();
+						sounds().playMusic(sounds().musicGameOver());
 					})
 					.onTick(() -> {
 						folks.ghostsInWorld().forEach(Ghost::move);
 					})
 					.onExit(() -> {
 						playView().messages.clearMessage(2);
-						themes.current().sounds().stopMusic(themes.current().sounds().musicGameOver());
+						sounds().stopMusic(sounds().musicGameOver());
 						world.restoreFood();
 					})
 	
 			.transitions()
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
-					.condition(() -> themes.current().sounds().isMusicLoaded()	&& settings.skipIntro)
+					.condition(() -> sounds().isMusicLoaded()	&& settings.skipIntro)
 					.annotation("Music loaded, skipping intro")
 					
 				.when(LOADING_MUSIC).then(INTRO)
-					.condition(() -> themes.current().sounds().isMusicLoaded())
+					.condition(() -> sounds().isMusicLoaded())
 					.annotation("Music loaded")
 
 				.when(INTRO).then(GETTING_READY)
@@ -282,7 +269,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.annotation("New game requested by user")
 					
 				.when(GAME_OVER).then(INTRO)
-					.condition(() -> !themes.current().sounds().isMusicRunning(themes.current().sounds().musicGameOver()))
+					.condition(() -> !sounds().isMusicRunning(sounds().musicGameOver()))
 					.annotation("Game over music finished")
 							
 		.endStateMachine();
@@ -304,7 +291,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			bonusController.init();
 			currentView = createPlayView();
 			playView().messages.showMessage(2, "Ready!", Color.YELLOW);
-			themes.current().sounds().playMusic(themes.current().sounds().musicGameReady());
+			sounds().playMusic(sounds().musicGameReady());
 		}
 
 		public GettingReadyState() {
@@ -364,7 +351,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onExit() {
-			themes.current().sounds().clips().forEach(SoundClip::stop);
+			sounds().clips().forEach(SoundClip::stop);
 			playView().sound.chasingGhosts = false;
 			playView().sound.deadGhosts = false;
 		}
@@ -455,7 +442,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			world.setFrozen(true);
 			folks.pacMan.fallAsleep();
 			doorMan.onLevelChange();
-			themes.current().sounds().clips().forEach(SoundClip::stop);
+			sounds().clips().forEach(SoundClip::stop);
 			flashingEnd = flashingStart + game.numFlashes * sec(themes.current().$float("maze-flash-sec"));
 			complete = false;
 		}
@@ -511,8 +498,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
+	protected PacManSounds sounds() {
+		return themes.current().sounds();
+	}
+
 	private void startBackgroundMusicForPlaying() {
-		themes.current().sounds().musicGameRunning().ifPresent(music -> {
+		sounds().musicGameRunning().ifPresent(music -> {
 			if (!music.isRunning()) {
 				music.setVolume(0.4f);
 				music.loop();
@@ -537,5 +528,18 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 */
 	protected PlayView createPlayView() {
 		return new PlayView(themes.current(), folks, world);
+	}
+
+	/**
+	 * @return A typed reference to the "PLAYING" state instance such that method references like
+	 *         {@code state_PLAYING()::onPacManFoundFood} can be used. <br/>
+	 *         The builtin expression {@code this.<PlayingState>state(PLAYING)} looked too ugly to me.
+	 */
+	protected PlayingState state_PLAYING() {
+		return state(PLAYING);
+	}
+
+	protected ChangingLevelState state_CHANGING_LEVEL() {
+		return state(CHANGING_LEVEL);
 	}
 }
