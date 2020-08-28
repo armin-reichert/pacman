@@ -14,8 +14,6 @@ import de.amr.games.pacman.model.world.api.World;
  * 
  * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
- *      specifications</a>
  */
 public class PacManGame {
 
@@ -157,7 +155,7 @@ public class PacManGame {
 	}
 
 	/**
-	 * Score the given number of points and handles high score and extra life.
+	 * Scores the given number of points and handles high score and extra life.
 	 * 
 	 * @param points points to score
 	 * @return score result
@@ -172,7 +170,7 @@ public class PacManGame {
 	}
 
 	/**
-	 * Score eaten bonus.
+	 * Scores an eaten bonus.
 	 * 
 	 * @return score result
 	 */
@@ -181,7 +179,7 @@ public class PacManGame {
 	}
 
 	/**
-	 * Score points for eating an energizer.
+	 * Scores eating an energizer.
 	 * 
 	 * @return points scored
 	 */
@@ -192,7 +190,7 @@ public class PacManGame {
 	}
 
 	/**
-	 * Score points for eating a simple pellet
+	 * Scores eating a simple pellet
 	 * 
 	 * @return points scored
 	 */
@@ -202,25 +200,24 @@ public class PacManGame {
 	}
 
 	/**
-	 * Scores for killing a ghost. Value of a killed ghost doubles if killed in series using the same
+	 * Scores killing a ghost. Value of a killed ghost doubles if killed in series using the same
 	 * energizer.
 	 */
 	public ScoreResult scoreGhostKilled() {
-		int points = 0;
 		ghostsKilledByEnergizer += 1;
 		ghostsKilledInLevel += 1;
-		if (ghostsKilledInLevel == 16) {
-			points += POINTS_ALL_GHOSTS;
-		}
 		int ghostBounty = ghostBounty();
 		loginfo("Got %d points for killing %s ghost", ghostBounty,
 				new String[] { "", "first", "2nd", "3rd", "4th" }[ghostsKilledByEnergizer]);
-		points += ghostBounty;
+		int points = ghostBounty;
+		if (ghostsKilledInLevel == 16) {
+			points += POINTS_ALL_GHOSTS;
+		}
 		return score(points);
 	}
 
 	/**
-	 * @return value of killed ghost. Value doubles for each ghost killed by the same energizer.
+	 * @return value of killed ghost (doubles for each ghost killed by the same energizer)
 	 */
 	public int ghostBounty() {
 		return POINTS_GHOSTS[ghostsKilledByEnergizer > 0 ? ghostsKilledByEnergizer - 1 : 0];
