@@ -5,6 +5,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERI
 import static de.amr.games.pacman.controller.game.GhostCommand.Phase.CHASE;
 import static de.amr.games.pacman.controller.game.GhostCommand.Phase.PAUSED;
 import static de.amr.games.pacman.controller.game.GhostCommand.Phase.SCATTER;
+import static de.amr.games.pacman.controller.game.Timing.sec;
 import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import de.amr.games.pacman.controller.creatures.Folks;
@@ -51,30 +52,30 @@ public class GhostCommand extends StateMachine<Phase, String> {
 
 	/*@formatter:off*/
 	{
-		L1[0].scatter = Timing.sec(7);
-		L1[0].chase   = Timing.sec(20);
-		L1[1].scatter = Timing.sec(7);
-		L1[1].chase   = Timing.sec(20);
-		L1[2].scatter = Timing.sec(5);
-		L1[2].chase   = Timing.sec(20);
-		L1[3].scatter = Timing.sec(5);
+		L1[0].scatter = sec(7);
+		L1[0].chase   = sec(20);
+		L1[1].scatter = sec(7);
+		L1[1].chase   = sec(20);
+		L1[2].scatter = sec(5);
+		L1[2].chase   = sec(20);
+		L1[3].scatter = sec(5);
 		L1[3].chase   = Long.MAX_VALUE;
 
-		L2[0].scatter = Timing.sec(7);
-		L2[0].chase   = Timing.sec(20);
-		L2[1].scatter = Timing.sec(7);
-		L2[1].chase   = Timing.sec(20);
-		L2[2].scatter = Timing.sec(5);
-		L2[2].chase   = Timing.sec(1033);
+		L2[0].scatter = sec(7);
+		L2[0].chase   = sec(20);
+		L2[1].scatter = sec(7);
+		L2[1].chase   = sec(20);
+		L2[2].scatter = sec(5);
+		L2[2].chase   = sec(1033);
 		L2[3].scatter = 1;
 		L2[3].chase   = Long.MAX_VALUE;
 
-		L5[0].scatter = Timing.sec(5);
-		L5[0].chase   = Timing.sec(20);
-		L5[1].scatter = Timing.sec(5);
-		L5[1].chase   = Timing.sec(20);
-		L5[2].scatter = Timing.sec(5);
-		L5[2].chase   = Timing.sec(1037);
+		L5[0].scatter = sec(5);
+		L5[0].chase   = sec(20);
+		L5[1].scatter = sec(5);
+		L5[1].chase   = sec(20);
+		L5[2].scatter = sec(5);
+		L5[2].chase   = sec(1037);
 		L5[3].scatter = 1;
 		L5[3].chase   = Long.MAX_VALUE;
 	}
