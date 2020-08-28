@@ -79,33 +79,40 @@ public class PacManGame {
 	}
 
 	public static void startNewGame(int startLevel, int totalFoodCount) {
-		game = new PacManGame(startLevel, totalFoodCount, LIVES, 0, new Hiscore(), new ArrayList<>());
+		game = new PacManGame(startLevel, totalFoodCount, LIVES, 0);
+		game.hiscore = new Hiscore();
 		game.hiscore.load();
+		game.levelCounter = new ArrayList<>();
 		game.levelCounter.add(game.bonusSymbol);
 		loginfo("Game started at level %d", startLevel);
 	}
 
 	public void nextLevel() {
-		game = new PacManGame(game.level + 1, game.foodCount, game.lives, game.score, game.hiscore, game.levelCounter);
-		game.levelCounter.add(game.bonusSymbol);
-		loginfo("Game level %d started", game.level);
+		PacManGame next = new PacManGame(game.level + 1, game.foodCount, game.lives, game.score);
+		next.hiscore = game.hiscore;
+		next.levelCounter = game.levelCounter;
+		next.levelCounter.add(next.bonusSymbol);
+		game = next;
+		loginfo("Game level %d started", next.level);
 	}
 
+	//@formatter:off
 	public final String bonusSymbol;
-	public final int bonusValue;
-	public final float pacManSpeed;
-	public final float pacManDotsSpeed;
-	public final float ghostSpeed;
-	public final float ghostTunnelSpeed;
-	public final int elroy1DotsLeft;
-	public final float elroy1Speed;
-	public final int elroy2DotsLeft;
-	public final float elroy2Speed;
-	public final float pacManPowerSpeed;
-	public final float pacManPowerDotsSpeed;
-	public final float ghostFrightenedSpeed;
-	public final int pacManPowerSeconds;
-	public final int numFlashes;
+	public final int    bonusValue;
+	public final float  pacManSpeed;
+	public final float  pacManDotsSpeed;
+	public final float  ghostSpeed;
+	public final float  ghostTunnelSpeed;
+	public final int    elroy1DotsLeft;
+	public final float  elroy1Speed;
+	public final int    elroy2DotsLeft;
+	public final float  elroy2Speed;
+	public final float  pacManPowerSpeed;
+	public final float  pacManPowerDotsSpeed;
+	public final float  ghostFrightenedSpeed;
+	public final int    pacManPowerSeconds;
+	public final int    numFlashes;
+	//@formatter:on
 
 	public final int level;
 	public final int foodCount;
@@ -115,18 +122,17 @@ public class PacManGame {
 	public int ghostsKilledInLevel;
 	public int lives;
 	public int score;
+
 	public Hiscore hiscore;
 	public List<String> levelCounter;
 
-	private ScoreResult scored = new ScoreResult(0, false);
+	private final ScoreResult scored = new ScoreResult(0, false);
 
-	private PacManGame(int level, int foodCount, int lives, int score, Hiscore hiscore, List<String> counter) {
+	private PacManGame(int level, int foodCount, int lives, int score) {
 		this.level = level;
 		this.foodCount = foodCount;
 		this.lives = lives;
 		this.score = score;
-		this.hiscore = hiscore;
-		this.levelCounter = counter;
 		int i = 0;
 		List<?> data = levelData(level);
 		bonusSymbol = (String) data.get(i++);
