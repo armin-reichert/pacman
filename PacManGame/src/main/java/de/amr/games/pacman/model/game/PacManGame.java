@@ -5,8 +5,6 @@ import static de.amr.easy.game.Application.loginfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.model.world.api.World;
-
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
  * 
@@ -21,8 +19,8 @@ public class PacManGame {
 	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
 	 */
 	private static List<?> levelData(int level) {
-		if (level > 21) {
-			level = 21;
+		if (level < 1) {
+			throw new IllegalArgumentException("Illegal game level number: " + level);
 		}
 		switch (level) {
 		/*@formatter:off*/
@@ -46,11 +44,17 @@ public class PacManGame {
 		case 18: return List.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,   0, 0, 1, 0);
 		case 19: return List.of("KEY",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
 		case 20: return List.of("KEY",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
-		case 21: return List.of("KEY",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
+		default: return List.of("KEY",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
 		/*@formatter:on*/
-		default:
-			throw new IllegalArgumentException("Illegal game level number: " + level);
 		}
+	}
+
+	private static float percent(Object value) {
+		return (int) value / 100f;
+	}
+
+	private static int integer(Object value) {
+		return (int) value;
 	}
 
 	/*@formatter:off*/
@@ -74,8 +78,8 @@ public class PacManGame {
 		return game != null;
 	}
 
-	public static void startNewGame(int startLevel, World world) {
-		game = new PacManGame(startLevel, world.totalFoodCount(), LIVES, 0, new Hiscore(), new ArrayList<>());
+	public static void startNewGame(int startLevel, int totalFoodCount) {
+		game = new PacManGame(startLevel, totalFoodCount, LIVES, 0, new Hiscore(), new ArrayList<>());
 		game.hiscore.load();
 		game.levelCounter.add(game.bonusSymbol);
 		loginfo("Game started at level %d", startLevel);
@@ -85,14 +89,6 @@ public class PacManGame {
 		game = new PacManGame(game.level + 1, game.foodCount, game.lives, game.score, game.hiscore, game.levelCounter);
 		game.levelCounter.add(game.bonusSymbol);
 		loginfo("Game level %d started", game.level);
-	}
-
-	private static float percent(Object value) {
-		return (int) value / 100f;
-	}
-
-	private static int integer(Object value) {
-		return (int) value;
 	}
 
 	public final String bonusSymbol;
