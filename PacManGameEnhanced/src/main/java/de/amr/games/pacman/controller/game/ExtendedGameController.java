@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
+import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
@@ -63,7 +64,6 @@ public class ExtendedGameController extends GameController {
 		});
 		addStateEntryListener(GAME_OVER, state -> {
 			REGISTRY.unregister(currentView.machines());
-			folks.guys().forEach(guy -> REGISTRY.unregister(guy.machines()));
 			REGISTRY.unregister(Stream.of(bonusController, ghostCommand));
 		});
 	}
@@ -181,7 +181,7 @@ public class ExtendedGameController extends GameController {
 	protected void setDemoMode(boolean demoMode) {
 		if (demoMode) {
 			settings.pacManImmortable = true;
-			folks.pacMan.setWalkingBehavior(new SearchingForFoodAndAvoidingGhosts(folks));
+			folks.pacMan.behavior(PacManState.AWAKE, new SearchingForFoodAndAvoidingGhosts(folks));
 		} else {
 			settings.pacManImmortable = false;
 			you(folks.pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();

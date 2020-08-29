@@ -1,5 +1,6 @@
 package de.amr.games.pacman.controller.steering.api;
 
+import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.steering.common.MovementController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
@@ -7,11 +8,11 @@ import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.core.TileWorldEntity;
 
 /**
- * A moving entity with steering and movement controller.
+ * Guys can move through the world in a controlled way.
  * 
  * @author Armin Reichert
  */
-public abstract class SteeredMover extends TileWorldEntity {
+public abstract class Guy extends TileWorldEntity implements Lifecycle {
 
 	public final String name;
 	public final MovementController movement;
@@ -19,7 +20,7 @@ public abstract class SteeredMover extends TileWorldEntity {
 	public Direction wishDir;
 	public boolean enteredNewTile;
 
-	public SteeredMover(World world, String name) {
+	public Guy(World world, String name) {
 		super(world);
 		this.name = name;
 		this.movement = new MovementController(world, this);

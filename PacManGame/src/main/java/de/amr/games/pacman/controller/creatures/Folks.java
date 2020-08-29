@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.House;
@@ -93,11 +94,11 @@ public class Folks {
 		return ghosts().filter(ghost -> ghost.world.contains(ghost));
 	}
 
-	public Stream<Guy<?>> guys() {
+	public Stream<Guy> guys() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 
-	public Stream<Guy<?>> guysInWorld() {
+	public Stream<Guy> guysInWorld() {
 		return guys().filter(guy -> guy.world.contains(guy));
 	}
 }

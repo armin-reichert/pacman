@@ -10,7 +10,7 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.controller.steering.api.SteeredMover;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Portal;
@@ -24,10 +24,10 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class MovementController extends StateMachine<MovementType, Void> {
 
-	private final SteeredMover guy;
+	private final Guy guy;
 	private Portal activePortal;
 
-	public MovementController(World world, SteeredMover guy) {
+	public MovementController(World world, Guy guy) {
 		super(MovementType.class);
 		this.guy = guy;
 		//@formatter:off

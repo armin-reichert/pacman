@@ -3,13 +3,14 @@ package de.amr.games.pacman.test;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.creatures.Folks;
-import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.api.Theme;
@@ -49,7 +50,7 @@ public class TestController implements VisualController {
 
 	@Override
 	public void init() {
-		folks.guys().forEach(Guy::init);
+		folks.guys().forEach(Lifecycle::init);
 		folks.guys().forEach(guy -> world.exclude(guy));
 		view.init();
 	}
@@ -81,7 +82,7 @@ public class TestController implements VisualController {
 				view.turnStatesOn();
 			}
 		}
-		folks.guysInWorld().forEach(Guy::update);
+		folks.guysInWorld().forEach(Lifecycle::update);
 		view.update();
 	}
 
@@ -90,7 +91,7 @@ public class TestController implements VisualController {
 		return Optional.of(view);
 	}
 
-	protected void include(Guy<?>... guys) {
+	protected void include(Guy... guys) {
 		Stream.of(guys).forEach(guy -> world.include(guy));
 	}
 

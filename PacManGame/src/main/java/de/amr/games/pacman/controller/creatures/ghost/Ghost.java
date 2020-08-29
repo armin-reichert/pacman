@@ -10,10 +10,11 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERI
 import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.creatures.Guy;
+import de.amr.games.pacman.controller.creatures.Behavior;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -22,6 +23,7 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.game.Timing;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -39,7 +41,11 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Guy<GhostState> {
+public class Ghost extends Guy implements Behavior<GhostState> {
+
+	public final StateMachine<GhostState, PacManGameEvent> ai;
+	private final Map<GhostState, Steering> behaviors;
+	private Steering previousSteering;
 
 	public GhostPersonality personality;
 	public PacMan pacMan;
@@ -51,15 +57,17 @@ public class Ghost extends Guy<GhostState> {
 	public boolean recovering;
 
 	public Ghost(World world, String name, GhostPersonality personality) {
-		super(world, name, new EnumMap<>(GhostState.class));
+		super(world, name);
+		behaviors = new EnumMap<>(GhostState.class);
+		ai = buildAI();
 		this.personality = personality;
 		if (personality == GhostPersonality.SHADOW) {
 			madness = new GhostMadness(this);
 		}
+		tf.width = tf.height = Tile.SIZE;
 	}
 
-	@Override
-	protected StateMachine<GhostState, PacManGameEvent> buildAI() {
+	private StateMachine<GhostState, PacManGameEvent> buildAI() {
 		/*@formatter:off*/
 		StateMachine<GhostState, PacManGameEvent> fsm = StateMachine
 			.beginStateMachine(GhostState.class, PacManGameEvent.class, TransitionMatchStrategy.BY_CLASS)
@@ -195,8 +203,31 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	@Override
+	public void init() {
+		previousSteering = null;
+		movement.init();
+		ai.init();
+	}
+
+	@Override
 	public void update() {
 		ai.update();
+	}
+
+	@Override
+	public Steering steering() {
+		Steering currentSteering = behaviors.getOrDefault(ai.getState(), Steering.STANDING_STILL);
+		if (previousSteering != currentSteering) {
+			currentSteering.init();
+			currentSteering.force();
+			previousSteering = currentSteering;
+		}
+		return currentSteering;
+	}
+
+	@Override
+	public void behavior(GhostState state, Steering steering) {
+		behaviors.put(state, steering);
 	}
 
 	@Override

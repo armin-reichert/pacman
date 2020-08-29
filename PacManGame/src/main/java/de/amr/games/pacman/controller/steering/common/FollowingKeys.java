@@ -5,7 +5,7 @@ import static de.amr.games.pacman.model.world.api.Direction.dirs;
 import java.util.EnumMap;
 
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.steering.api.SteeredMover;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 
@@ -26,7 +26,7 @@ public class FollowingKeys implements Steering {
 	}
 
 	@Override
-	public void steer(SteeredMover guy) {
+	public void steer(Guy guy) {
 		dirs().filter(dir -> Keyboard.keyDown(keys.get(dir))).findAny().ifPresent(dir -> guy.wishDir = dir);
 	}
 

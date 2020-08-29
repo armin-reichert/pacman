@@ -19,10 +19,10 @@ import java.awt.Stroke;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.creatures.Folks;
-import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GhostCommand;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.components.Tile;
 
@@ -111,26 +111,26 @@ public class StatesRenderer {
 		folks.ghostsInWorld().forEach(ghost -> drawActorOffTrack(g, ghost));
 	}
 
-	private void drawActorOffTrack(Graphics2D g, Guy<?> creature) {
-		if (!creature.visible) {
+	private void drawActorOffTrack(Graphics2D g, Guy guy) {
+		if (!guy.visible) {
 			return;
 		}
 		Stroke normal = g.getStroke();
 		Stroke fine = new BasicStroke(0.2f);
 		g.setStroke(fine);
 		g.setColor(Color.RED);
-		g.translate(creature.tf.x, creature.tf.y);
-		int w = creature.tf.width, h = creature.tf.height;
-		Direction moveDir = creature.moveDir;
-		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(creature.tf.y) % Tile.SIZE != 0) {
+		g.translate(guy.tf.x, guy.tf.y);
+		int w = guy.tf.width, h = guy.tf.height;
+		Direction moveDir = guy.moveDir;
+		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(guy.tf.y) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(creature.tf.x) % Tile.SIZE != 0) {
+		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(guy.tf.x) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
-		g.translate(-creature.tf.x, -creature.tf.y);
+		g.translate(-guy.tf.x, -guy.tf.y);
 		g.setStroke(normal);
 	}
 }

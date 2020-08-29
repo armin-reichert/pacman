@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.steering.common.FollowingKeys;
 import de.amr.games.pacman.controller.steering.common.HeadingForTargetTile;
 import de.amr.games.pacman.controller.steering.common.RandomMovement;
@@ -169,7 +170,7 @@ public class SteeringBuilder {
 				ghost.behavior(ghostState, new HeadingForTargetTile(fnTargetTile));
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.setWalkingBehavior(new HeadingForTargetTile(fnTargetTile));
+				pacMan.behavior(PacManState.AWAKE, new HeadingForTargetTile(fnTargetTile));
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
@@ -201,7 +202,7 @@ public class SteeringBuilder {
 				ghost.behavior(ghostState, new RandomMovement());
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.setWalkingBehavior(new RandomMovement());
+				pacMan.behavior(PacManState.AWAKE, new RandomMovement());
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();
@@ -226,7 +227,7 @@ public class SteeringBuilder {
 				ghost.behavior(ghostState, new FollowingKeys(up, right, down, left));
 				return ghost.steering();
 			} else if (pacMan != null) {
-				pacMan.setWalkingBehavior(new FollowingKeys(up, right, down, left));
+				pacMan.behavior(PacManState.AWAKE, new FollowingKeys(up, right, down, left));
 				return pacMan.steering();
 			}
 			throw new IllegalStateException();

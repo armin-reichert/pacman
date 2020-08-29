@@ -8,7 +8,7 @@ import static de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoing
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.steering.api.SteeredMover;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoingToBed.State;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -85,7 +85,7 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 	}
 
 	@Override
-	public void steer(SteeredMover guy) {
+	public void steer(Guy guy) {
 		update();
 	}
 

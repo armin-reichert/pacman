@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.controller.steering.api.SteeredMover;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -55,7 +55,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	@Override
-	public void steer(SteeredMover pacMan) {
+	public void steer(Guy pacMan) {
 		if (!me.enteredNewTile && me.canCrossBorderTo(me.moveDir) || me.movement.is(MovementType.TELEPORTING)) {
 			return;
 		}

@@ -11,11 +11,11 @@ import static de.amr.games.pacman.model.game.PacManGame.game;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
-import java.util.EnumMap;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.Guy;
+import de.amr.games.pacman.controller.creatures.Behavior;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManFallAsleepEvent;
@@ -25,6 +25,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
 import de.amr.games.pacman.controller.game.Timing;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.PacManGame;
@@ -43,16 +44,19 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Guy<PacManState> {
+public class PacMan extends Guy implements Behavior<PacManState> {
 
+	public final StateMachine<PacManState, PacManGameEvent> ai;
+	private Steering walkingBehavior;
 	private int fat;
 
 	public PacMan(World world, String name) {
-		super(world, name, new EnumMap<>(PacManState.class));
+		super(world, name);
+		ai = buildAI();
+		tf.width = tf.height = Tile.SIZE;
 	}
 
-	@Override
-	protected StateMachine<PacManState, PacManGameEvent> buildAI() {
+	private StateMachine<PacManState, PacManGameEvent> buildAI() {
 		StateMachine<PacManState, PacManGameEvent> fsm = StateMachine
 		/*@formatter:off*/
 		.beginStateMachine(PacManState.class, PacManGameEvent.class, TransitionMatchStrategy.BY_CLASS)
@@ -116,6 +120,29 @@ public class PacMan extends Guy<PacManState> {
 	}
 
 	@Override
+	public Stream<StateMachine<?, ?>> machines() {
+		return Stream.of(ai, movement);
+	}
+
+	@Override
+	public void behavior(PacManState state, Steering steering) {
+		if (state == AWAKE || state == POWERFUL) {
+			walkingBehavior = steering;
+		}
+	}
+
+	@Override
+	public Steering steering() {
+		return ai.is(AWAKE) || ai.is(POWERFUL) ? walkingBehavior : Steering.STANDING_STILL;
+	}
+
+	@Override
+	public void init() {
+		ai.init();
+		movement.init();
+	}
+
+	@Override
 	public void update() {
 		ai.update();
 	}
@@ -167,17 +194,6 @@ public class PacMan extends Guy<PacManState> {
 			return Timing.speed(fat > 0 ? game.pacManDotsSpeed : game.pacManSpeed);
 		}
 		throw new IllegalStateException("Illegal Pac-Man state: " + ai.getState());
-	}
-
-	/**
-	 * Defines the steering used in the {@link PacManState#AWAKE} and {@link PacManState#POWERFUL}
-	 * states.
-	 * 
-	 * @param steering steering to use
-	 */
-	public void setWalkingBehavior(Steering steering) {
-		behavior(AWAKE, steering);
-		behavior(POWERFUL, steering);
 	}
 
 	private void putIntoBed(Bed bed) {

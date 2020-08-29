@@ -6,7 +6,7 @@ import java.util.List;
 
 import de.amr.datastruct.StreamUtils;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.steering.api.SteeredMover;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
@@ -42,7 +42,7 @@ public class FleeingToSafeTile extends FollowingPath {
 	}
 
 	@Override
-	public void steer(SteeredMover guy) {
+	public void steer(Guy guy) {
 		if (path.size() == 0 || isComplete()) {
 			safeTile = computeSafestCorner();
 			setPath(graph.shortestPath(guy.tile(), safeTile));

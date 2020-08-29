@@ -22,13 +22,13 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.SoundClip;
+import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.bonus.BonusFoodController;
 import de.amr.games.pacman.controller.bonus.BonusFoodState;
 import de.amr.games.pacman.controller.creatures.Folks;
-import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -92,9 +92,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		world = new ArcadeWorld();
 
 		folks = new Folks(world, world.house(0));
-		folks.guys().forEach(guy -> {
-			guy.ai.addEventListener(this::process);
-		});
+		folks.pacMan.ai.addEventListener(this::process);
+		folks.ghosts().forEach(ghost -> ghost.ai.addEventListener(this::process));
 
 		doorMan = new DoorMan(world, world.house(0), folks);
 		ghostCommand = new GhostCommand(folks);
@@ -308,7 +307,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (remaining == sec(1)) {
 				world.setFrozen(false);
 			}
-			folks.guysInWorld().forEach(Guy::update);
+			folks.guysInWorld().forEach(Lifecycle::update);
 		}
 
 		@Override
@@ -333,7 +332,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onTick(State<PacManGameState> state, long passed, long remaining) {
-			folks.guysInWorld().forEach(Guy::update);
+			folks.guysInWorld().forEach(Lifecycle::update);
 			if (passed == INITIAL_WAIT_TIME) {
 				folks.pacMan.wakeUp();
 			}
@@ -360,7 +359,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			world.setFrozen(false);
 			bonusController.init();
 			ghostCommand.init();
-			folks.guysInWorld().forEach(Guy::init);
+			folks.guysInWorld().forEach(Lifecycle::init);
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
@@ -422,7 +421,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (energizer && game.pacManPowerSeconds > 0) {
 				// restart attack timer
 				ghostCommand.pauseAttacking();
-				folks.guysInWorld().forEach(guy -> guy.ai.process(new PacManGainsPowerEvent(sec(game.pacManPowerSeconds))));
+				PacManGameEvent pacManGainsPower = new PacManGainsPowerEvent(sec(game.pacManPowerSeconds));
+				folks.pacMan.ai.process(pacManGainsPower);
+				folks.ghostsInWorld().forEach(ghost -> ghost.ai.process(pacManGainsPower));
 			}
 		}
 	}
@@ -462,14 +463,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				world.setChanging(false);
 				world.restoreFood();
 				game.nextLevel();
-				folks.guys().forEach(Guy::init);
+				folks.guys().forEach(Lifecycle::init);
 				folks.blinky.madness.init();
 				playView().init();
 			}
 
 			// One second later, let ghosts jump again inside the house
 			if (passed >= flashingEnd + sec(2)) {
-				folks.guysInWorld().forEach(Guy::update);
+				folks.guysInWorld().forEach(Lifecycle::update);
 			}
 
 			if (passed == flashingEnd + sec(4)) {

@@ -6,14 +6,15 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.game.Timing;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
@@ -42,7 +43,7 @@ public class ChasePacManAnimation extends GameObject {
 		setTheme(theme);
 	}
 
-	public Stream<Guy<?>> guys() {
+	public Stream<Guy> guys() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 
@@ -58,7 +59,7 @@ public class ChasePacManAnimation extends GameObject {
 	public void init() {
 		pelletTimer = Timing.sec(6 * 0.5f);
 		pelletDisplay = PelletDisplay.SIMPLE;
-		guys().forEach(Guy::init);
+		guys().forEach(Lifecycle::init);
 		pacMan.tf.vx = -0.55f;
 		pacMan.moveDir = Direction.LEFT;
 		pacMan.ai.setState(PacManState.AWAKE);

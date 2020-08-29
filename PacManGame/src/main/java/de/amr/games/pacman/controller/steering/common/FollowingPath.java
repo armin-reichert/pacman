@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.amr.games.pacman.controller.steering.api.SteeredMover;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.components.Tile;
@@ -18,21 +18,21 @@ import de.amr.games.pacman.model.world.components.Tile;
  */
 public abstract class FollowingPath implements Steering {
 
-	protected final SteeredMover guy;
+	protected final Guy guy;
 	protected List<Tile> path;
 	protected int pathIndex;
 
-	public FollowingPath(SteeredMover guy) {
+	public FollowingPath(Guy guy) {
 		this(guy, Collections.emptyList());
 	}
 
-	public FollowingPath(SteeredMover guy, List<Tile> initialPath) {
+	public FollowingPath(Guy guy, List<Tile> initialPath) {
 		this.guy = Objects.requireNonNull(guy);
 		setPath(initialPath);
 	}
 
 	@Override
-	public void steer(SteeredMover guy) {
+	public void steer(Guy guy) {
 		if (!guy.canCrossBorderTo(guy.moveDir) || guy.enteredNewTile || pathIndex == -1) {
 			++pathIndex;
 			dirAlongPath().ifPresent(dir -> {

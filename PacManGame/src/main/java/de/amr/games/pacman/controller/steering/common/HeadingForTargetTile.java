@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.steering.api.SteeredMover;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.components.Tile;
@@ -43,7 +43,7 @@ public class HeadingForTargetTile implements Steering {
 	 * @param tile    current tile
 	 * @param target  target tile
 	 */
-	private static Direction bestDirTowardsTarget(SteeredMover guy, Direction moveDir, Tile tile, Tile target) {
+	private static Direction bestDirTowardsTarget(Guy guy, Direction moveDir, Tile tile, Tile target) {
 		/*@formatter:off*/
 		return Direction.dirs()
 			.filter(dir -> dir != moveDir.opposite())
@@ -71,7 +71,7 @@ public class HeadingForTargetTile implements Steering {
 	}
 
 	@Override
-	public void steer(SteeredMover guy) {
+	public void steer(Guy guy) {
 		if (forced || guy.enteredNewTile) {
 			Tile target = fnTargetTile.get();
 			if (target != null) {
@@ -86,7 +86,7 @@ public class HeadingForTargetTile implements Steering {
 	 * Computes the path the guy would traverse until either reaching the target tile, running into a
 	 * cycle or entering a portal.
 	 */
-	private void updatePath(SteeredMover guy, Tile target) {
+	private void updatePath(Guy guy, Tile target) {
 		if (target != null) {
 			path = new ArrayList<>();
 			Direction dir = guy.moveDir;

@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.steering.common;
 
-import de.amr.games.pacman.controller.steering.api.SteeredMover;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 
@@ -14,7 +14,7 @@ public class RandomMovement implements Steering {
 	private boolean forced;
 
 	@Override
-	public void steer(SteeredMover guy) {
+	public void steer(Guy guy) {
 		if (forced || !guy.canCrossBorderTo(guy.moveDir) || guy.enteredNewTile && guy.world.isIntersection(guy.tile())) {
 			/*@formatter:off*/
 			Direction.dirsShuffled()

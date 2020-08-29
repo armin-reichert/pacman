@@ -4,7 +4,7 @@ import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
-import de.amr.games.pacman.controller.steering.api.SteeredMover;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Tile;
@@ -18,7 +18,7 @@ public class LeavingHouse implements Steering {
 	}
 
 	@Override
-	public void steer(SteeredMover guy) {
+	public void steer(Guy guy) {
 		Tile exit = Tile.at(house.bed(0).col(), house.bed(0).row());
 		int targetX = exit.centerX(), targetY = exit.y();
 		if (guy.tf.y <= targetY) {

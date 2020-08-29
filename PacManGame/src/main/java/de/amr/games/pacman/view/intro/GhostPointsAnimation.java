@@ -9,14 +9,15 @@ import java.awt.RenderingHints;
 import java.util.BitSet;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.game.Timing;
+import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
@@ -51,7 +52,7 @@ public class GhostPointsAnimation extends GameObject {
 		setTheme(theme);
 	}
 
-	public Stream<Guy<?>> guys() {
+	public Stream<Guy> guys() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 
@@ -95,7 +96,7 @@ public class GhostPointsAnimation extends GameObject {
 		killed.clear();
 		ghostToKill = 0;
 		energizer = true;
-		guys().forEach(Guy::init);
+		guys().forEach(Lifecycle::init);
 		pacMan.moveDir = Direction.RIGHT;
 		pacMan.ai.setState(PacManState.AWAKE);
 		ghosts().forEach(ghost -> {
