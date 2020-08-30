@@ -369,9 +369,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private void onPacManGhostCollision(PacManGameEvent event) {
 			PacManGhostCollisionEvent collision = (PacManGhostCollisionEvent) event;
 			Ghost ghost = collision.ghost;
-			loginfo("%s got killed at %s", ghost.name, ghost.tile());
 
-			if (folks.pacMan.movement.is(MovementType.TELEPORTING)) {
+			if (folks.pacMan.movement.is(MovementType.INSIDE_PORTAL)) {
 				return;
 			}
 
@@ -380,6 +379,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				playView().sound.gotExtraLife = scored.extraLife;
 				ghost.ai.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
+				loginfo("%s got killed at %s", ghost.name, ghost.tile());
 			}
 
 			else if (!settings.ghostsHarmless) {
