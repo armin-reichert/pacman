@@ -84,7 +84,7 @@ public class MovementController extends StateMachine<MovementType, Void> {
 	}
 
 	private void teleport() {
-		guy.tf.setPosition(portalExitTile.x(), portalExitTile.y());
+		guy.placeAt(portalExitTile, 0, 0);
 		guy.enteredNewTile = true;
 		portalEntered = null;
 		loginfo("%s left portal at %s", guy.name, guy.tile());
