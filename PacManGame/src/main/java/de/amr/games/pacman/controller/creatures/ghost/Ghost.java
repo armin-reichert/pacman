@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.creatures.Behavior;
+import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -23,7 +24,6 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -43,16 +43,15 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Guy implements Behavior<GhostState> {
 
-	public final StateMachine<GhostState, PacManGameEvent> ai;
 	private final Map<GhostState, Steering> behaviors;
 	private Steering previousSteering;
-
+	public final StateMachine<GhostState, PacManGameEvent> ai;
+	public GhostState nextState;
+	public GhostMadness madness;
 	public GhostPersonality personality;
 	public PacMan pacMan;
 	public House house;
 	public Bed bed;
-	public GhostState nextState;
-	public GhostMadness madness;
 	public int bounty;
 	public boolean recovering;
 

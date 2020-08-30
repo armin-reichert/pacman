@@ -5,7 +5,7 @@ import static de.amr.games.pacman.model.world.api.Direction.dirs;
 import java.util.EnumMap;
 
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.steering.api.Guy;
+import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 

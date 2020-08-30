@@ -9,8 +9,8 @@ import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Portal;

@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import de.amr.datastruct.StreamUtils;
+import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.steering.api.Guy;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;

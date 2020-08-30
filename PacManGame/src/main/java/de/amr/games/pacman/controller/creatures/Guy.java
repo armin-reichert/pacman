@@ -1,6 +1,7 @@
-package de.amr.games.pacman.controller.steering.api;
+package de.amr.games.pacman.controller.creatures;
 
 import de.amr.easy.game.controller.Lifecycle;
+import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;

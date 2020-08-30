@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller.steering.ghost;
 import static de.amr.games.pacman.model.world.api.Direction.DOWN;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
-import de.amr.games.pacman.controller.steering.api.Guy;
+import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.components.Bed;
 
