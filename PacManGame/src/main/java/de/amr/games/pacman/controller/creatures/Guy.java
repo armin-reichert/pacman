@@ -1,6 +1,7 @@
 package de.amr.games.pacman.controller.creatures;
 
 import de.amr.easy.game.controller.Lifecycle;
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementController;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -60,5 +61,56 @@ public abstract class Guy extends TileWorldEntity implements Lifecycle {
 	 */
 	public void reverseDirection() {
 		forceMoving(moveDir.opposite());
+	}
+
+	public void makeStep() {
+		final boolean aligned = steering().requiresGridAlignment();
+		final float speed = getSpeed();
+		final Tile tileBeforeMove = tile();
+
+		// how far can we move?
+		float pixels = possibleMoveDistance(moveDir, speed);
+		if (wishDir != null && wishDir != moveDir) {
+			float pixelsWishDir = possibleMoveDistance(wishDir, speed);
+			if (pixelsWishDir > 0) {
+				if (wishDir == moveDir.left() || wishDir == moveDir.right()) {
+					if (aligned) {
+						placeAt(tileBeforeMove, 0, 0);
+					}
+				}
+				moveDir = wishDir;
+				pixels = pixelsWishDir;
+			}
+		}
+		Vector2f velocity = moveDir.vector().times(pixels);
+		tf.setVelocity(velocity);
+		tf.move();
+		enteredNewTile = !tileBeforeMove.equals(tile());
+	}
+
+	/**
+	 * Computes how many pixels this creature can move towards the given direction.
+	 * 
+	 * @param dir a direction
+	 * @return speed the creature's max. possible speed towards this direction
+	 */
+	private float possibleMoveDistance(Direction dir, float speed) {
+		if (canCrossBorderTo(dir)) {
+			return speed;
+		}
+		float availableX = tileOffsetX() - Tile.SIZE / 2;
+		float availableY = tileOffsetY() - Tile.SIZE / 2;
+		switch (dir) {
+		case UP:
+			return Math.min(availableY, speed);
+		case DOWN:
+			return Math.min(-availableY, speed);
+		case LEFT:
+			return Math.min(availableX, speed);
+		case RIGHT:
+			return Math.min(-availableX, speed);
+		default:
+			throw new IllegalArgumentException("Illegal move direction: " + dir);
+		}
 	}
 }

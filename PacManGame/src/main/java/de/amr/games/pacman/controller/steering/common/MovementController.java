@@ -8,10 +8,8 @@ import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.components.Tile;
@@ -36,7 +34,10 @@ public class MovementController extends StateMachine<MovementType, Void> {
 			.initialState(WALKING)
 			.states()
 				.state(WALKING)
-					.onTick(() -> move(guy.steering().requiresGridAlignment(), guy.getSpeed()))
+					.onTick(() -> { 
+						guy.makeStep();
+						checkIfJustEnteredPortal();
+					})
 				.state(TELEPORTING)
 					.timeoutAfter(Timing.sec(1.0f))
 					.onEntry(() -> guy.visible = false)
@@ -56,9 +57,6 @@ public class MovementController extends StateMachine<MovementType, Void> {
 	@Override
 	public void init() {
 		super.init();
-		guy.enteredNewTile = true;
-		guy.moveDir = RIGHT;
-		guy.wishDir = RIGHT;
 		activePortal = null;
 	}
 
@@ -95,55 +93,5 @@ public class MovementController extends StateMachine<MovementType, Void> {
 		guy.enteredNewTile = true;
 		activePortal = null;
 		loginfo("%s exits portal at %s", guy, guy.tile());
-	}
-
-	private void move(boolean aligned, float speed) {
-		final Tile tileBeforeMove = guy.tile();
-
-		// how far can we move?
-		float pixels = possibleMoveDistance(guy.moveDir, speed);
-		if (guy.wishDir != null && guy.wishDir != guy.moveDir) {
-			float pixelsWishDir = possibleMoveDistance(guy.wishDir, speed);
-			if (pixelsWishDir > 0) {
-				if (guy.wishDir == guy.moveDir.left() || guy.wishDir == guy.moveDir.right()) {
-					if (aligned) {
-						guy.placeAt(tileBeforeMove, 0, 0);
-					}
-				}
-				guy.moveDir = guy.wishDir;
-				pixels = pixelsWishDir;
-			}
-		}
-		Vector2f velocity = guy.moveDir.vector().times(pixels);
-		guy.tf.setVelocity(velocity);
-		guy.tf.move();
-		guy.enteredNewTile = !tileBeforeMove.equals(guy.tile());
-		checkIfJustEnteredPortal();
-	}
-
-	/**
-	 * Computes how many pixels this creature can move towards the given direction.
-	 * 
-	 * @param dir a direction
-	 * @return speed the creature's max. possible speed towards this direction
-	 */
-	private float possibleMoveDistance(Direction dir, float speed) {
-		if (guy.canCrossBorderTo(dir)) {
-			return speed;
-		}
-		float availableX = guy.tileOffsetX() - Tile.SIZE / 2;
-		float availableY = guy.tileOffsetY() - Tile.SIZE / 2;
-		switch (dir) {
-		case UP:
-			return Math.min(availableY, speed);
-		case DOWN:
-			return Math.min(-availableY, speed);
-		case LEFT:
-			return Math.min(availableX, speed);
-		case RIGHT:
-			return Math.min(-availableX, speed);
-		default:
-			throw new IllegalArgumentException("Illegal move direction: " + dir);
-		}
 	}
 }
