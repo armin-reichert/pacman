@@ -1,7 +1,5 @@
 package de.amr.games.pacman.model.world.components;
 
-import de.amr.games.pacman.model.world.api.Direction;
-
 /**
  * A portal.
  * <p>
@@ -21,33 +19,13 @@ public class Portal {
 	/** If this is a horizontal or vertical portal */
 	public final boolean vertical;
 
-	private Direction passageDir;
-
 	public Portal(Tile either, Tile other, boolean vertical) {
 		this.either = either;
 		this.other = other;
 		this.vertical = vertical;
 	}
 
-	public Direction getPassageDir() {
-		return passageDir;
-	}
-
-	public void setPassageDir(Direction dir) {
-		this.passageDir = dir;
-	}
-
 	public boolean includes(Tile tile) {
 		return tile.equals(either) || tile.equals(other);
-	}
-
-	public Tile exit() {
-		if (passageDir == Direction.RIGHT || passageDir == Direction.DOWN) {
-			return either;
-		}
-		if (passageDir == Direction.LEFT || passageDir == Direction.UP) {
-			return other;
-		}
-		throw new IllegalArgumentException("Illegal passage direction: " + passageDir);
 	}
 }

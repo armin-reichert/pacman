@@ -23,6 +23,7 @@ public class MovementController extends StateMachine<MovementType, Void> {
 
 	private final Guy guy;
 	private Portal portalEntered;
+	private Tile portalExitTile;
 
 	public MovementController(Guy guy) {
 		super(MovementType.class);
@@ -56,6 +57,7 @@ public class MovementController extends StateMachine<MovementType, Void> {
 	@Override
 	public void init() {
 		portalEntered = null;
+		portalExitTile = null;
 		super.init();
 	}
 
@@ -69,22 +71,20 @@ public class MovementController extends StateMachine<MovementType, Void> {
 			if (portal.either.equals(tile) && (guy.moveDir == LEFT && guy.tileOffsetX() <= 1)
 					|| (guy.moveDir == UP && guy.tileOffsetY() <= 1)) {
 				portalEntered = portal;
-				portalEntered.setPassageDir(guy.moveDir);
+				portalExitTile = portal.other;
 			} else if (portal.other.equals(tile) && (guy.moveDir == RIGHT && guy.tileOffsetX() >= 7)
 					|| (guy.moveDir == DOWN && guy.tileOffsetY() >= 7)) {
 				portalEntered = portal;
-				portalEntered.setPassageDir(guy.moveDir);
+				portalExitTile = portal.either;
 			}
 		});
 		if (portalEntered != null) {
-			loginfo("%s entered portal at %s moving %s with offsetX %.2f", guy.name, tile, portalEntered.getPassageDir(),
-					guy.tileOffsetX());
+			loginfo("%s entered portal at %s moving %s with offsetX %.2f", guy.name, tile, guy.moveDir, guy.tileOffsetX());
 		}
 	}
 
 	private void teleport() {
-		Tile portalExit = portalEntered.exit();
-		guy.tf.setPosition(portalExit.x(), portalExit.y());
+		guy.tf.setPosition(portalExitTile.x(), portalExitTile.y());
 		guy.enteredNewTile = true;
 		portalEntered = null;
 		loginfo("%s left portal at %s", guy.name, guy.tile());
