@@ -25,7 +25,7 @@ public abstract class Guy extends TileWorldEntity implements Lifecycle {
 	public Guy(World world, String name) {
 		super(world);
 		this.name = name;
-		this.movement = new MovementController(world, this);
+		this.movement = new MovementController(this);
 	}
 
 	public abstract Steering steering();

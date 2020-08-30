@@ -215,7 +215,7 @@ public class PacMan extends Guy implements Behavior<PacManState> {
 		if (enteredNewTile) {
 			fat = Math.max(0, fat - 1);
 		}
-		if (!movement.is(MovementType.TELEPORTING)) {
+		if (!movement.is(MovementType.INSIDE_PORTAL)) {
 			searchForFood(tile()).ifPresent(ai::publish);
 		}
 	}

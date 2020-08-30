@@ -56,7 +56,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	@Override
 	public void steer(Guy pacMan) {
-		if (!me.enteredNewTile && me.canCrossBorderTo(me.moveDir) || me.movement.is(MovementType.TELEPORTING)) {
+		if (!me.enteredNewTile && me.canCrossBorderTo(me.moveDir) || me.movement.is(MovementType.INSIDE_PORTAL)) {
 			return;
 		}
 		boolean acted = avoidTouchingGhostAhead() || avoidOncomingGhost() || chaseFrightenedGhost(10);
