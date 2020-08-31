@@ -46,11 +46,11 @@ public class RoutesRenderer {
 	}
 
 	public void drawPacManRoute(Graphics2D g, PacMan pacMan) {
-		drawTargetTilePath(g, pacMan.steering().pathToTarget(), Color.YELLOW);
+		drawTargetTilePath(g, pacMan.getSteering().pathToTarget(), Color.YELLOW);
 	}
 
 	public void drawGhostRoute(Graphics2D g, Ghost ghost) {
-		Steering steering = ghost.steering();
+		Steering steering = ghost.getSteering();
 		if (steering.targetTile().isPresent()) {
 			drawTargetTileRubberband(g, ghost, steering.targetTile());
 			drawTargetTilePath(g, steering.pathToTarget(), ghostColor(ghost));
@@ -115,14 +115,14 @@ public class RoutesRenderer {
 		PacMan pacMan = folks.pacMan;
 		World world = pacMan.world;
 		Ghost inky = folks.inky, blinky = folks.blinky;
-		if (!inky.ai.is(CHASING) || inky.steering().targetTile().isEmpty() || !world.contains(blinky)) {
+		if (!inky.ai.is(CHASING) || inky.getSteering().targetTile().isEmpty() || !world.contains(blinky)) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
 		x1 = blinky.tile().centerX();
 		y1 = blinky.tile().centerY();
-		x2 = inky.steering().targetTile().get().centerX();
-		y2 = inky.steering().targetTile().get().centerY();
+		x2 = inky.getSteering().targetTile().get().centerX();
+		y2 = inky.getSteering().targetTile().get().centerY();
 		g.setColor(Color.GRAY);
 		g.drawLine(x1, y1, x2, y2);
 		Tile pacManTile = pacMan.tile();

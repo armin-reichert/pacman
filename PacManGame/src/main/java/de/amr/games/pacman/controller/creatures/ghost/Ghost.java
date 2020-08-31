@@ -141,7 +141,7 @@ public class Ghost extends Guy<GhostState> {
 					.annotation("Outside house")
 	
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
-					.condition(() -> steering().isComplete())
+					.condition(() -> getSteering().isComplete())
 					.annotation("Reached bed")
 	
 				.when(CHASING).then(FRIGHTENED)
@@ -213,7 +213,7 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	@Override
-	public Steering steering() {
+	public Steering getSteering() {
 		Steering currentSteering = behaviors.getOrDefault(ai.getState(), Steering.STANDING_STILL);
 		if (previousSteering != currentSteering) {
 			currentSteering.init();
@@ -224,7 +224,7 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	@Override
-	public void behavior(GhostState state, Steering steering) {
+	public void setSteering(GhostState state, Steering steering) {
 		behaviors.put(state, steering);
 	}
 
@@ -310,7 +310,7 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	public void move() {
-		Steering currentSteering = steering();
+		Steering currentSteering = getSteering();
 		if (!world.isTunnel(tile()) || ai.is(DEAD)) {
 			currentSteering.steer(this);
 		}

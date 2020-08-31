@@ -124,14 +124,14 @@ public class PacMan extends Guy<PacManState> {
 	}
 
 	@Override
-	public void behavior(PacManState state, Steering steering) {
+	public void setSteering(PacManState state, Steering steering) {
 		if (state == AWAKE || state == POWERFUL) {
 			walkingBehavior = steering;
 		}
 	}
 
 	@Override
-	public Steering steering() {
+	public Steering getSteering() {
 		return ai.is(AWAKE) || ai.is(POWERFUL) ? walkingBehavior : Steering.STANDING_STILL;
 	}
 
@@ -209,7 +209,7 @@ public class PacMan extends Guy<PacManState> {
 	}
 
 	private void wander() {
-		steering().steer(this);
+		getSteering().steer(this);
 		movement.update();
 		if (enteredNewTile) {
 			fat = Math.max(0, fat - 1);

@@ -112,7 +112,7 @@ public class SteeringBuilder {
 			ensureGhost();
 			ensureGhostState();
 			Steering steering = new BouncingOnBed(bed != null ? bed : ghost.bed);
-			ghost.behavior(ghostState, steering);
+			ghost.setSteering(ghostState, steering);
 			return steering;
 		}
 	}
@@ -142,7 +142,7 @@ public class SteeringBuilder {
 				throw new IllegalStateException(String.format("Which bed should %s go into", ghost.name));
 			}
 			Steering steering = new EnteringDoorAndGoingToBed(ghost, door, bed);
-			ghost.behavior(ghostState, steering);
+			ghost.setSteering(ghostState, steering);
 			return steering;
 		}
 	}
@@ -167,11 +167,11 @@ public class SteeringBuilder {
 		public Steering ok() {
 			if (ghost != null) {
 				ensureGhostState();
-				ghost.behavior(ghostState, new HeadingForTargetTile(fnTargetTile));
-				return ghost.steering();
+				ghost.setSteering(ghostState, new HeadingForTargetTile(fnTargetTile));
+				return ghost.getSteering();
 			} else if (pacMan != null) {
-				pacMan.behavior(PacManState.AWAKE, new HeadingForTargetTile(fnTargetTile));
-				return pacMan.steering();
+				pacMan.setSteering(PacManState.AWAKE, new HeadingForTargetTile(fnTargetTile));
+				return pacMan.getSteering();
 			}
 			throw new IllegalStateException();
 		}
@@ -189,8 +189,8 @@ public class SteeringBuilder {
 		public Steering ok() {
 			ensureGhost();
 			ensureGhostState();
-			ghost.behavior(ghostState, new LeavingHouse(house));
-			return ghost.steering();
+			ghost.setSteering(ghostState, new LeavingHouse(house));
+			return ghost.getSteering();
 		}
 	}
 
@@ -199,11 +199,11 @@ public class SteeringBuilder {
 		public Steering ok() {
 			if (ghost != null) {
 				ensureGhostState();
-				ghost.behavior(ghostState, new RandomMovement());
-				return ghost.steering();
+				ghost.setSteering(ghostState, new RandomMovement());
+				return ghost.getSteering();
 			} else if (pacMan != null) {
-				pacMan.behavior(PacManState.AWAKE, new RandomMovement());
-				return pacMan.steering();
+				pacMan.setSteering(PacManState.AWAKE, new RandomMovement());
+				return pacMan.getSteering();
 			}
 			throw new IllegalStateException();
 		}
@@ -224,11 +224,11 @@ public class SteeringBuilder {
 		public Steering ok() {
 			if (ghost != null) {
 				ensureGhostState();
-				ghost.behavior(ghostState, new FollowingKeys(up, right, down, left));
-				return ghost.steering();
+				ghost.setSteering(ghostState, new FollowingKeys(up, right, down, left));
+				return ghost.getSteering();
 			} else if (pacMan != null) {
-				pacMan.behavior(PacManState.AWAKE, new FollowingKeys(up, right, down, left));
-				return pacMan.steering();
+				pacMan.setSteering(PacManState.AWAKE, new FollowingKeys(up, right, down, left));
+				return pacMan.getSteering();
 			}
 			throw new IllegalStateException();
 		}

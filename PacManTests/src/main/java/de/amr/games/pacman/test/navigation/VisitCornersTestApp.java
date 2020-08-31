@@ -50,7 +50,7 @@ class FollowTargetTilesTestUI extends TestController {
 		blinky.placeAt(targets.get(0), 0, 0);
 		you(blinky).when(CHASING).headFor().tile(() -> targets.get(current)).ok();
 		blinky.ai.setState(CHASING);
-		blinky.steering().force();
+		blinky.getSteering().force();
 		view.turnRoutesOn();
 		view.turnGridOn();
 	}

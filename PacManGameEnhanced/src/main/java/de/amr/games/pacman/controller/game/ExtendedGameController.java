@@ -180,7 +180,7 @@ public class ExtendedGameController extends GameController {
 	protected void setDemoMode(boolean demoMode) {
 		if (demoMode) {
 			settings.pacManImmortable = true;
-			folks.pacMan.behavior(PacManState.AWAKE, new SearchingForFoodAndAvoidingGhosts(folks));
+			folks.pacMan.setSteering(PacManState.AWAKE, new SearchingForFoodAndAvoidingGhosts(folks));
 		} else {
 			settings.pacManImmortable = false;
 			you(folks.pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
@@ -260,7 +260,7 @@ public class ExtendedGameController extends GameController {
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;
-			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, new FleeingToSafeTile(ghost, folks.pacMan)));
+			folks.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, new FleeingToSafeTile(ghost, folks.pacMan)));
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}

@@ -41,17 +41,17 @@ public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle {
 	public abstract float getSpeed();
 
 	/**
-	 * Defines the behavior for the given state.
+	 * Defines the steering for the given state.
 	 * 
-	 * @param state    state
+	 * @param state    current state of this guy
 	 * @param steering steering for given state
 	 */
-	public abstract void behavior(STATE state, Steering steering);
+	public abstract void setSteering(STATE state, Steering steering);
 
 	/**
 	 * @return current steering of this guy
 	 */
-	public abstract Steering steering();
+	public abstract Steering getSteering();
 
 	/**
 	 * @param currentTile some tile
@@ -98,7 +98,7 @@ public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle {
 	 * Moves guy one step.
 	 */
 	public void makeStep() {
-		final boolean aligned = steering().requiresGridAlignment();
+		final boolean aligned = getSteering().requiresGridAlignment();
 		final float speed = getSpeed();
 		final Tile tileBeforeMove = tile();
 

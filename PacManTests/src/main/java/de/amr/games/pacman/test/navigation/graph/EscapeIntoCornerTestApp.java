@@ -37,7 +37,7 @@ class EscapeIntoCornerTestUI extends TestController {
 	public void init() {
 		super.init();
 		include(pacMan, blinky, inky);
-		Stream.of(blinky, inky).forEach(ghost -> ghost.behavior(FRIGHTENED, new FleeingToSafeTile(ghost, pacMan)));
+		Stream.of(blinky, inky).forEach(ghost -> ghost.setSteering(FRIGHTENED, new FleeingToSafeTile(ghost, pacMan)));
 		blinky.ai.setState(FRIGHTENED);
 		inky.ai.setState(GhostState.LEAVING_HOUSE);
 		inky.nextState = FRIGHTENED;

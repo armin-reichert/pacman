@@ -68,8 +68,8 @@ class TakeShortestPathTestUI extends TestController {
 		targetIndex = 0;
 
 		FollowingPath visitNextTarget = new TakingShortestPath(blinky, () -> targets.get(targetIndex));
-		blinky.behavior(CHASING, visitNextTarget);
-		blinky.behavior(FRIGHTENED, visitNextTarget);
+		blinky.setSteering(CHASING, visitNextTarget);
+		blinky.setSteering(FRIGHTENED, visitNextTarget);
 		blinky.ai.setState(CHASING);
 		include(blinky);
 

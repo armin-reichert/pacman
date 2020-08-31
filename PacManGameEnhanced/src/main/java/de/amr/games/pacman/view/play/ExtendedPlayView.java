@@ -89,12 +89,12 @@ public class ExtendedPlayView extends PlayView {
 
 	public void turnRoutesOn() {
 		showingRoutes = true;
-		folks.ghosts().forEach(ghost -> ghost.steering().setPathComputed(showingRoutes));
+		folks.ghosts().forEach(ghost -> ghost.getSteering().setPathComputed(showingRoutes));
 	}
 
 	public void turnRoutesOff() {
 		showingRoutes = false;
-		folks.ghosts().forEach(ghost -> ghost.steering().setPathComputed(showingRoutes));
+		folks.ghosts().forEach(ghost -> ghost.getSteering().setPathComputed(showingRoutes));
 	}
 
 	public boolean isShowingStates() {
