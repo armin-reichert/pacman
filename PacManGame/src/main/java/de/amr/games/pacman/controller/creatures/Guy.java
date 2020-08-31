@@ -1,7 +1,6 @@
 package de.amr.games.pacman.controller.creatures;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementController;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -28,12 +27,28 @@ public abstract class Guy extends TileWorldEntity implements Lifecycle {
 		this.movement = new MovementController(this);
 	}
 
-	public abstract Steering steering();
-
-	public abstract boolean canMoveBetween(Tile currentTile, Tile neighbor);
-
+	/**
+	 * @return pixels this guy can move on the next tick.
+	 */
 	public abstract float getSpeed();
 
+	/**
+	 * @return current steering of this guy
+	 */
+	public abstract Steering steering();
+
+	/**
+	 * @param currentTile some tile
+	 * @param neighbor    neighbor of tile
+	 * @return if this guy can move from tile to neighbor
+	 */
+	public abstract boolean canMoveBetween(Tile currentTile, Tile neighbor);
+
+	/**
+	 * @param dir some direction
+	 * @return if this guy can cross the border between its current tile and the neighbor to the given
+	 *         direction
+	 */
 	public boolean canCrossBorderTo(Direction dir) {
 		Tile currentTile = tile(), neighbor = world.neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
@@ -63,27 +78,29 @@ public abstract class Guy extends TileWorldEntity implements Lifecycle {
 		forceMoving(moveDir.opposite());
 	}
 
+	/**
+	 * Moves guy one step.
+	 */
 	public void makeStep() {
 		final boolean aligned = steering().requiresGridAlignment();
 		final float speed = getSpeed();
 		final Tile tileBeforeMove = tile();
 
 		// how far can we move?
-		float pixels = possibleMoveDistance(moveDir, speed);
+		float possibleDistance = possibleMoveDistance(moveDir, speed);
 		if (wishDir != null && wishDir != moveDir) {
-			float pixelsWishDir = possibleMoveDistance(wishDir, speed);
-			if (pixelsWishDir > 0) {
+			float possibleWishDirDistance = possibleMoveDistance(wishDir, speed);
+			if (possibleWishDirDistance > 0) {
 				if (wishDir == moveDir.left() || wishDir == moveDir.right()) {
 					if (aligned) {
 						placeAt(tileBeforeMove, 0, 0);
 					}
 				}
 				moveDir = wishDir;
-				pixels = pixelsWishDir;
+				possibleDistance = possibleWishDirDistance;
 			}
 		}
-		Vector2f velocity = moveDir.vector().times(pixels);
-		tf.setVelocity(velocity);
+		tf.setVelocity(moveDir.vector().times(possibleDistance));
 		tf.move();
 		enteredNewTile = !tileBeforeMove.equals(tile());
 	}
