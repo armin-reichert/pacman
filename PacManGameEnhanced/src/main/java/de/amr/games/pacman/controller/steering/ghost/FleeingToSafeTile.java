@@ -42,7 +42,7 @@ public class FleeingToSafeTile extends FollowingPath {
 	}
 
 	@Override
-	public void steer(Guy guy) {
+	public void steer(Guy<?> guy) {
 		if (path.size() == 0 || isComplete()) {
 			safeTile = computeSafestCorner();
 			setPath(graph.shortestPath(guy.tile(), safeTile));

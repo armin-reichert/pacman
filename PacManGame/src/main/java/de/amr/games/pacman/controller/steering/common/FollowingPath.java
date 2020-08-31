@@ -18,21 +18,21 @@ import de.amr.games.pacman.model.world.components.Tile;
  */
 public abstract class FollowingPath implements Steering {
 
-	protected final Guy guy;
+	protected final Guy<?> guy;
 	protected List<Tile> path;
 	protected int pathIndex;
 
-	public FollowingPath(Guy guy) {
+	public FollowingPath(Guy<?> guy) {
 		this(guy, Collections.emptyList());
 	}
 
-	public FollowingPath(Guy guy, List<Tile> initialPath) {
+	public FollowingPath(Guy<?> guy, List<Tile> initialPath) {
 		this.guy = Objects.requireNonNull(guy);
 		setPath(initialPath);
 	}
 
 	@Override
-	public void steer(Guy guy) {
+	public void steer(Guy<?> guy) {
 		if (!guy.canCrossBorderTo(guy.moveDir) || guy.enteredNewTile || pathIndex == -1) {
 			++pathIndex;
 			dirAlongPath().ifPresent(dir -> {

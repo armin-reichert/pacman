@@ -85,7 +85,7 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 	}
 
 	@Override
-	public void steer(Guy guy) {
+	public void steer(Guy<?> guy) {
 		update();
 	}
 

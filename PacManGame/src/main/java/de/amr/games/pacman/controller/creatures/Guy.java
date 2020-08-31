@@ -1,5 +1,7 @@
 package de.amr.games.pacman.controller.creatures;
 
+import java.util.stream.Stream;
+
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementController;
@@ -7,13 +9,14 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.core.TileWorldEntity;
+import de.amr.statemachine.core.StateMachine;
 
 /**
  * Guys can move through the world in a controlled way.
  * 
  * @author Armin Reichert
  */
-public abstract class Guy extends TileWorldEntity implements Lifecycle {
+public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle {
 
 	public final String name;
 	public final MovementController movement;
@@ -28,9 +31,22 @@ public abstract class Guy extends TileWorldEntity implements Lifecycle {
 	}
 
 	/**
+	 * @return state machines controlling this entity
+	 */
+	public abstract Stream<StateMachine<?, ?>> machines();
+
+	/**
 	 * @return pixels this guy can move on the next tick.
 	 */
 	public abstract float getSpeed();
+
+	/**
+	 * Defines the behavior for the given state.
+	 * 
+	 * @param state    state
+	 * @param steering steering for given state
+	 */
+	public abstract void behavior(STATE state, Steering steering);
 
 	/**
 	 * @return current steering of this guy

@@ -93,11 +93,11 @@ public class Folks {
 		return ghosts().filter(ghost -> ghost.world.contains(ghost));
 	}
 
-	public Stream<Guy> guys() {
+	public Stream<Guy<?>> guys() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 
-	public Stream<Guy> guysInWorld() {
+	public Stream<Guy<?>> guysInWorld() {
 		return guys().filter(guy -> guy.world.contains(guy));
 	}
 }

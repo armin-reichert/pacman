@@ -21,11 +21,11 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class MovementController extends StateMachine<MovementType, Void> {
 
-	private final Guy guy;
+	private final Guy<?> guy;
 	private Portal portalEntered;
 	private Tile portalExitTile;
 
-	public MovementController(Guy guy) {
+	public MovementController(Guy<?> guy) {
 		super(MovementType.class);
 		this.guy = guy;
 		//@formatter:off

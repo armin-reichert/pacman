@@ -39,7 +39,7 @@ public class ChaseGhostsAnimation extends GameObject {
 		setTheme(theme);
 	}
 
-	public Stream<Guy> guys() {
+	public Stream<Guy<?>> guys() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 

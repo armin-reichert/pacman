@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.controller.creatures.Behavior;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -44,7 +43,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Guy implements Behavior<PacManState> {
+public class PacMan extends Guy<PacManState> {
 
 	public final StateMachine<PacManState, PacManGameEvent> ai;
 	private Steering walkingBehavior;

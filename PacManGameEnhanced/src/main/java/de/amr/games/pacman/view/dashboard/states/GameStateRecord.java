@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.world.components.Tile;
  */
 class GameStateRecord {
 
-	public Guy creature;
+	public Guy<?> creature;
 	public boolean included;
 	public String name;
 	public Tile tile;

@@ -21,7 +21,7 @@ public class BouncingOnBed implements Steering {
 	}
 
 	@Override
-	public void steer(Guy guy) {
+	public void steer(Guy<?> guy) {
 		float dy = guy.tf.y + guy.tf.height / 2 - bedCenterY;
 		if (dy < -4) {
 			guy.wishDir = DOWN;

@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.creatures.Behavior;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
@@ -41,7 +40,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Guy implements Behavior<GhostState> {
+public class Ghost extends Guy<GhostState> {
 
 	private final Map<GhostState, Steering> behaviors;
 	private Steering previousSteering;
