@@ -50,6 +50,7 @@ public class ExtendedGameController extends GameController {
 	public ExtendedGameController(Stream<Theme> themes) {
 		super(themes);
 		REGISTRY.register("Game", this);
+		REGISTRY.register("Game", Stream.of(bonusController, ghostCommand));
 		addStateEntryListener(INTRO, state -> {
 			REGISTRY.register(currentView.getClass().getSimpleName(), currentView.machines());
 		});
@@ -60,11 +61,9 @@ public class ExtendedGameController extends GameController {
 			REGISTRY.register(currentView.getClass().getSimpleName(), currentView.machines());
 			REGISTRY.register(folks.pacMan.name, folks.pacMan.machines());
 			folks.ghosts().forEach(ghost -> REGISTRY.register("Ghosts", ghost.machines()));
-			REGISTRY.register("Game", Stream.of(bonusController, ghostCommand));
 		});
 		addStateEntryListener(GAME_OVER, state -> {
 			REGISTRY.unregister(currentView.machines());
-			REGISTRY.unregister(Stream.of(bonusController, ghostCommand));
 		});
 	}
 
