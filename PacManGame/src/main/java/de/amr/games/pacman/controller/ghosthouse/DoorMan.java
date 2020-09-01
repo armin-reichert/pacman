@@ -17,7 +17,6 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
@@ -35,15 +34,13 @@ public class DoorMan implements Lifecycle {
 
 	private final House house;
 	private final Folks folks;
-	private final World world;
 	private final DotCounter globalCounter;
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
 
-	public DoorMan(World world, House house, Folks folks) {
+	public DoorMan(House house, Folks folks) {
 		this.house = house;
 		this.folks = folks;
-		this.world = world;
 		globalCounter = new DotCounter();
 		ghostCounters = new int[4];
 	}
@@ -155,7 +152,7 @@ public class DoorMan implements Lifecycle {
 	public Optional<Ghost> preferredLockedGhost() {
 		//@formatter:off
 		return Stream.of(folks.blinky, folks.pinky, folks.inky, folks.clyde)
-				.filter(ghost -> world.contains(ghost))
+				.filter(ghost -> ghost.world.contains(ghost))
 				.filter(ghost -> ghost.ai.is(LOCKED)).findFirst();
 		//@formatter:on
 	}
@@ -183,8 +180,8 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private boolean isGhostNearDoor(Ghost ghost, Door door) {
-		Tile fromGhostTowardsHouse = world.neighbor(ghost.tile(), door.intoHouse);
-		Tile fromGhostAwayFromHouse = world.neighbor(ghost.tile(), door.intoHouse.opposite());
+		Tile fromGhostTowardsHouse = ghost.world.neighbor(ghost.tile(), door.intoHouse);
+		Tile fromGhostAwayFromHouse = ghost.world.neighbor(ghost.tile(), door.intoHouse.opposite());
 		return door.includes(ghost.tile()) || door.includes(fromGhostAwayFromHouse) || door.includes(fromGhostTowardsHouse);
 	}
 

@@ -94,7 +94,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		folks.pacMan.ai.addEventListener(this::process);
 		folks.ghosts().forEach(ghost -> ghost.ai.addEventListener(this::process));
 
-		doorMan = new DoorMan(world, world.house(0), folks);
+		doorMan = new DoorMan(world.house(0), folks);
 		ghostCommand = new GhostCommand(folks);
 		//@formatter:off
 		bonusController = new BonusFoodController(world,
