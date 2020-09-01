@@ -26,7 +26,6 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.World;
@@ -214,12 +213,11 @@ public class PacMan extends Guy<PacManState> {
 		if (enteredNewTile) {
 			fat = Math.max(0, fat - 1);
 		}
-		if (movement.is(MovementType.OUTSIDE_PORTAL)) {
-			searchForFood(tile()).ifPresent(ai::publish);
-		}
+		searchForFood().ifPresent(ai::publish);
 	}
 
-	private Optional<PacManGameEvent> searchForFood(Tile location) {
+	private Optional<PacManGameEvent> searchForFood() {
+		Tile location = tile();
 		if (world.temporaryFood().filter(bonusFood -> !bonusFood.isConsumed()).isPresent()) {
 			TemporaryFood bonus = world.temporaryFood().get();
 			if (bonus.isActive() && bonus.location().equals(location)) {

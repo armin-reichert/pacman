@@ -323,10 +323,7 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	public void move() {
-		Steering currentSteering = getSteering();
-		if (!world.isTunnel(tile()) || ai.is(DEAD)) {
-			currentSteering.steer(this);
-		}
+		getSteering().steer(this);
 		movement.update();
 	}
 
