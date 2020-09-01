@@ -79,7 +79,7 @@ public class DoorMan implements Lifecycle {
 			}
 		} else {
 			preferredLockedGhost().ifPresent(ghost -> {
-				ghostCounters[number(ghost)] += 1;
+				ghostCounters[index(ghost)] += 1;
 			});
 		}
 	}
@@ -117,7 +117,7 @@ public class DoorMan implements Lifecycle {
 	}
 
 	public int ghostDotCount(Ghost ghost) {
-		return ghostCounters[number(ghost)];
+		return ghostCounters[index(ghost)];
 	}
 
 	public int personalDotLimit(Ghost ghost) {
@@ -217,7 +217,7 @@ public class DoorMan implements Lifecycle {
 			}
 		} else {
 			int personalLimit = personalDotLimit(ghost);
-			if (ghostCounters[number(ghost)] >= personalLimit) {
+			if (ghostCounters[index(ghost)] >= personalLimit) {
 				return confirmed("%s can leave house: ghost's dot limit (%d) reached", ghost.name, personalLimit);
 			}
 		}
@@ -229,7 +229,7 @@ public class DoorMan implements Lifecycle {
 		loginfo("Ghost dot counters have been reset to zero");
 	}
 
-	private int number(Ghost ghost) {
+	private int index(Ghost ghost) {
 		if (ghost == folks.blinky) {
 			return 0;
 		}
@@ -240,7 +240,7 @@ public class DoorMan implements Lifecycle {
 			return 2;
 		}
 		if (ghost == folks.clyde) {
-			return 2;
+			return 3;
 		}
 		throw new IllegalArgumentException();
 	}
