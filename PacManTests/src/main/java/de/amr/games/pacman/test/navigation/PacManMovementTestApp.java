@@ -71,7 +71,7 @@ class PacManMovementTestUI extends TestController {
 
 	private void changeSteering() {
 		if (steeringIndex == 0) {
-			you(pacMan).followTheKeys().keys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT).ok();
+			you(pacMan).followTheCursorKeys().ok();
 			view.messages.showMessage(2, "Cursor keys", Color.WHITE);
 		} else if (steeringIndex == 1) {
 			you(pacMan).followTheKeys()

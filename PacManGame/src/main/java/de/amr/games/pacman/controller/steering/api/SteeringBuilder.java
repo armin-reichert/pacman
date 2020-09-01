@@ -1,5 +1,6 @@
 package de.amr.games.pacman.controller.steering.api;
 
+import java.awt.event.KeyEvent;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -97,6 +98,11 @@ public class SteeringBuilder {
 	public FollowsKeysBuilder followTheKeys() {
 		ensureAny();
 		return new FollowsKeysBuilder();
+	}
+
+	public FollowsKeysBuilder followTheCursorKeys() {
+		ensureAny();
+		return new FollowsKeysBuilder().keys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 	}
 
 	public class BouncesOnBedBuilder {

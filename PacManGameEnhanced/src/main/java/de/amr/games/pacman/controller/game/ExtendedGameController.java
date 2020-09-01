@@ -12,10 +12,6 @@ import static de.amr.games.pacman.controller.game.PacManGameState.GETTING_READY;
 import static de.amr.games.pacman.controller.game.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
-import static java.awt.event.KeyEvent.VK_UP;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -183,7 +179,7 @@ public class ExtendedGameController extends GameController {
 			folks.pacMan.setSteering(PacManState.AWAKE, new SearchingForFoodAndAvoidingGhosts(folks));
 		} else {
 			settings.pacManImmortable = false;
-			you(folks.pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
+			you(folks.pacMan).followTheCursorKeys().ok();
 		}
 	}
 

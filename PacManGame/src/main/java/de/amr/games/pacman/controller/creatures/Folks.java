@@ -8,10 +8,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
-import static java.awt.event.KeyEvent.VK_UP;
 
 import java.util.stream.Stream;
 
@@ -54,7 +50,7 @@ public class Folks {
 
 		// define behavior
 
-		you(pacMan).followTheKeys().keys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT).ok();
+		you(pacMan).followTheCursorKeys().ok();
 
 		Door door = ghostHouse.door(0);
 		Tile houseEntry = world.neighbor(door.tiles().findFirst().get(), door.intoHouse.opposite());
