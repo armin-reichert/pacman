@@ -21,22 +21,24 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class MovementController extends StateMachine<MovementType, Void> {
 
-	private final Guy<?> guy;
 	private Portal portalEntered;
 	private Tile portalExitTile;
 
 	public MovementController(Guy<?> guy) {
 		super(MovementType.class);
-		this.guy = guy;
 		//@formatter:off
 		beginStateMachine()
 			.description(guy.name + " Movement")
 			.initialState(OUTSIDE_PORTAL)
 			.states()
 				.state(OUTSIDE_PORTAL)
+					.onEntry(() -> {
+						portalEntered = null;
+						portalExitTile = null;
+					})
 					.onTick(() -> { 
 						guy.makeStep();
-						checkPortalEntered();
+						checkPortalEnteredBy(guy);
 					})
 				.state(INSIDE_PORTAL)
 					.timeoutAfter(sec(1.0f))
@@ -44,28 +46,17 @@ public class MovementController extends StateMachine<MovementType, Void> {
 					.onExit(() -> guy.visible = true)
 			.transitions()
 				.when(OUTSIDE_PORTAL).then(INSIDE_PORTAL)
-					.condition(this::insidePortal)
+					.condition(() -> portalEntered != null)
 					.annotation("Entered portal")
 				.when(INSIDE_PORTAL).then(OUTSIDE_PORTAL)
 					.onTimeout()
-					.act(this::teleport)
+					.act(() -> teleport(guy))
 					.annotation("Teleporting")
 		.endStateMachine();
 		//@formatter:on
 	}
 
-	@Override
-	public void init() {
-		portalEntered = null;
-		portalExitTile = null;
-		super.init();
-	}
-
-	private boolean insidePortal() {
-		return portalEntered != null;
-	}
-
-	private void checkPortalEntered() {
+	private void checkPortalEnteredBy(Guy<?> guy) {
 		Tile tile = guy.tile();
 		guy.world.portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
 			if (portal.either.equals(tile) && (guy.moveDir == LEFT && guy.tileOffsetX() <= 1)
@@ -83,9 +74,8 @@ public class MovementController extends StateMachine<MovementType, Void> {
 		}
 	}
 
-	private void teleport() {
+	private void teleport(Guy<?> guy) {
 		guy.placeAt(portalExitTile, 0, 0);
-		guy.enteredNewTile = true;
 		portalEntered = null;
 		loginfo("%s left portal at %s", guy.name, guy.tile());
 	}
