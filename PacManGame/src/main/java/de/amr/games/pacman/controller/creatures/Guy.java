@@ -19,10 +19,11 @@ import de.amr.statemachine.core.StateMachine;
 public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle {
 
 	public final String name;
-	public final MovementController movement;
 	public Direction moveDir;
 	public Direction wishDir;
 	public boolean enteredNewTile;
+
+	protected final MovementController movement;
 
 	public Guy(World world, String name) {
 		super(world);

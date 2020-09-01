@@ -214,7 +214,7 @@ public class PacMan extends Guy<PacManState> {
 		if (enteredNewTile) {
 			fat = Math.max(0, fat - 1);
 		}
-		if (!movement.is(MovementType.INSIDE_PORTAL)) {
+		if (movement.is(MovementType.OUTSIDE_PORTAL)) {
 			searchForFood(tile()).ifPresent(ai::publish);
 		}
 	}

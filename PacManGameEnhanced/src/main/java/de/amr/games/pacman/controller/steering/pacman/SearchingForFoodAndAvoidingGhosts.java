@@ -15,7 +15,6 @@ import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.World;
@@ -57,7 +56,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	@Override
 	public void steer(Guy<?> pacMan) {
-		if (!me.enteredNewTile && me.canCrossBorderTo(me.moveDir) || me.movement.is(MovementType.INSIDE_PORTAL)) {
+		if (!me.enteredNewTile && me.canCrossBorderTo(me.moveDir)) {
 			return;
 		}
 		boolean acted = avoidTouchingGhostAhead() || avoidOncomingGhost() || chaseFrightenedGhost(10);

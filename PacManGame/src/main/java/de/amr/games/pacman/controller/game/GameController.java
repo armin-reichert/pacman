@@ -41,7 +41,6 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
-import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.game.ScoreResult;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -369,10 +368,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private void onPacManGhostCollision(PacManGameEvent event) {
 			PacManGhostCollisionEvent collision = (PacManGhostCollisionEvent) event;
 			Ghost ghost = collision.ghost;
-
-			if (folks.pacMan.movement.is(MovementType.INSIDE_PORTAL)) {
-				return;
-			}
 
 			if (ghost.ai.is(FRIGHTENED)) {
 				ScoreResult scored = game.scoreGhostKilled();

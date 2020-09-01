@@ -24,6 +24,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.controller.steering.api.Steering;
+import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
@@ -288,10 +289,22 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	private void checkPacManCollision() {
-		if (visible && pacMan.visible && tile().equals(pacMan.tile())
-				&& !pacMan.ai.is(PacManState.DEAD, PacManState.COLLAPSING)) {
-			ai.publish(new PacManGhostCollisionEvent(this));
+		if (!visible || !pacMan.visible) {
+			return;
 		}
+		if (!tile().equals(pacMan.tile())) {
+			return;
+		}
+		if (!ai.is(CHASING, SCATTERING, FRIGHTENED)) {
+			return;
+		}
+		if (!pacMan.ai.is(PacManState.AWAKE, PacManState.POWERFUL)) {
+			return;
+		}
+		if (movement.is(MovementType.INSIDE_PORTAL)) {
+			return;
+		}
+		ai.publish(new PacManGhostCollisionEvent(this));
 	}
 
 	@Override
