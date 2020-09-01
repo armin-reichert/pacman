@@ -4,19 +4,18 @@ import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
+import static de.amr.games.pacman.controller.game.Timing.sec;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.confirmed;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.rejected;
 import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
-import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
@@ -34,6 +33,7 @@ public class DoorMan implements Lifecycle {
 
 	private final House house;
 	private final Folks folks;
+	private final Ghost[] ghost_preference;
 	private final DotCounter globalCounter;
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
@@ -41,6 +41,7 @@ public class DoorMan implements Lifecycle {
 	public DoorMan(House house, Folks folks) {
 		this.house = house;
 		this.folks = folks;
+		ghost_preference = new Ghost[] { folks.blinky, folks.pinky, folks.inky, folks.clyde };
 		globalCounter = new DotCounter();
 		ghostCounters = new int[4];
 	}
@@ -50,7 +51,7 @@ public class DoorMan implements Lifecycle {
 		globalCounter.enabled = false;
 		globalCounter.dots = 0;
 		resetGhostDotCounters();
-		closeDoor(house.door(0));
+		house.doors().forEach(this::closeDoor);
 	}
 
 	@Override
@@ -63,7 +64,6 @@ public class DoorMan implements Lifecycle {
 			}
 		});
 		pacManStarvingTicks += 1;
-
 		house.doors().forEach(this::closeDoor);
 		house.doors().filter(this::isOpeningRequested).forEach(this::openDoor);
 	}
@@ -152,9 +152,10 @@ public class DoorMan implements Lifecycle {
 
 	public Optional<Ghost> preferredLockedGhost() {
 		//@formatter:off
-		return Stream.of(folks.blinky, folks.pinky, folks.inky, folks.clyde)
-				.filter(ghost -> ghost.world.contains(ghost))
-				.filter(ghost -> ghost.ai.is(LOCKED)).findFirst();
+		return Arrays.stream(ghost_preference)
+			.filter(ghost -> ghost.world.contains(ghost))
+			.filter(ghost -> ghost.ai.is(LOCKED))
+			.findFirst();
 		//@formatter:on
 	}
 
@@ -166,6 +167,10 @@ public class DoorMan implements Lifecycle {
 		door.state = DoorState.OPEN;
 	}
 
+	private int index(Ghost ghost) {
+		return ghost.personality.ordinal();
+	}
+
 	private void unlock(Ghost ghost) {
 		ghost.ai.process(new GhostUnlockedEvent());
 	}
@@ -173,10 +178,10 @@ public class DoorMan implements Lifecycle {
 	private boolean isOpeningRequested(Door door) {
 		//@formatter:off
 		return folks.ghostsInWorld()
-				.filter(ghost -> ghost.ai.is(ENTERING_HOUSE, LEAVING_HOUSE))
-				.filter(ghost -> isGhostNearDoor(ghost, door))
-				.findAny()
-				.isPresent();
+			.filter(ghost -> ghost.ai.is(ENTERING_HOUSE, LEAVING_HOUSE))
+			.filter(ghost -> isGhostNearDoor(ghost, door))
+			.findAny()
+			.isPresent();
 		//@formatter:on
 	}
 
@@ -187,7 +192,7 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private long pacManStarvingTimeLimit() {
-		return game.level < 5 ? Timing.sec(4) : Timing.sec(3);
+		return game.level < 5 ? sec(4) : sec(3);
 	}
 
 	/**
@@ -227,21 +232,5 @@ public class DoorMan implements Lifecycle {
 	private void resetGhostDotCounters() {
 		Arrays.fill(ghostCounters, 0);
 		loginfo("Ghost dot counters have been reset to zero");
-	}
-
-	private int index(Ghost ghost) {
-		if (ghost == folks.blinky) {
-			return 0;
-		}
-		if (ghost == folks.inky) {
-			return 1;
-		}
-		if (ghost == folks.pinky) {
-			return 2;
-		}
-		if (ghost == folks.clyde) {
-			return 3;
-		}
-		throw new IllegalArgumentException();
 	}
 }

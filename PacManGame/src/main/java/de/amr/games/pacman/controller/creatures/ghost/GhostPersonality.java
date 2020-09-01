@@ -6,5 +6,12 @@ package de.amr.games.pacman.controller.creatures.ghost;
  * @author Armin Reichert
  */
 public enum GhostPersonality {
-	SHADOW, SPEEDY, BASHFUL, POKEY;
+	/** Blinky, the red ghost */
+	SHADOW,
+	/** Pinky, the pink ghost */
+	SPEEDY,
+	/** Inky, the cyan ghost */
+	BASHFUL,
+	/** Clyde, the orange ghost */
+	POKEY;
 }
