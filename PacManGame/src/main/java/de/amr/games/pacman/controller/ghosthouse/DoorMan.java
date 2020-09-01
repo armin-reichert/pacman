@@ -50,6 +50,7 @@ public class DoorMan implements Lifecycle {
 		globalCounter.enabled = false;
 		globalCounter.dots = 0;
 		resetGhostDotCounters();
+		closeDoor(house.door(0));
 	}
 
 	@Override
