@@ -9,7 +9,7 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 
 /**
- * Steers a mover using the keyboard keys for UP, RIGHT, DOWN, LEFT.
+ * Steers a mover using keyboard keys.
  * 
  * @author Armin Reichert
  */
