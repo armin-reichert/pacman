@@ -104,19 +104,15 @@ public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle {
 	 * Moves guy one step.
 	 */
 	public void makeStep() {
-		final boolean aligned = getSteering().requiresGridAlignment();
+		final boolean gridAligned = getSteering().requiresGridAlignment();
 		final float speed = getSpeed();
 		final Tile tileBeforeMove = tile();
-
-		// how far can we move?
 		float possibleDistance = possibleMoveDistance(moveDir, speed);
 		if (wishDir != null && wishDir != moveDir) {
 			float possibleWishDirDistance = possibleMoveDistance(wishDir, speed);
 			if (possibleWishDirDistance > 0) {
-				if (wishDir == moveDir.left() || wishDir == moveDir.right()) {
-					if (aligned) {
-						placeAt(tileBeforeMove, 0, 0);
-					}
+				if (gridAligned && (wishDir == moveDir.left() || wishDir == moveDir.right())) {
+					placeAt(tileBeforeMove, 0, 0);
 				}
 				moveDir = wishDir;
 				possibleDistance = possibleWishDirDistance;
@@ -124,7 +120,7 @@ public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle {
 		}
 		tf.setVelocity(moveDir.vector().times(possibleDistance));
 		tf.move();
-		enteredNewTile = !tileBeforeMove.equals(tile());
+		enteredNewTile = !tile().equals(tileBeforeMove);
 	}
 
 	/**
