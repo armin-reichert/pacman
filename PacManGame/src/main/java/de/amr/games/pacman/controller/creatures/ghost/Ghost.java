@@ -322,11 +322,6 @@ public class Ghost extends Guy<GhostState> {
 		return world.isAccessible(neighbor);
 	}
 
-	public void move() {
-		getSteering().steer(this);
-		movement.update();
-	}
-
 	private void updateMentalHealth() {
 		if (madness != null) {
 			madness.update();

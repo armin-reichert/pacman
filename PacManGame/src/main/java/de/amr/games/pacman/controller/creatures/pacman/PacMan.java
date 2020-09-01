@@ -68,15 +68,22 @@ public class PacMan extends Guy<PacManState> {
 						putIntoBed(world.pacManBed());
 						visible = true;
 						fat = 0;
+						movement.init();
 					})
 
 				.state(SLEEPING)
 
 				.state(AWAKE)
-					.onTick(this::wander)
+					.onTick(() -> {
+						move();
+						searchForFood().ifPresent(ai::publish);
+					})
 					
 				.state(POWERFUL)
-					.onTick(this::wander)
+					.onTick(() -> {
+						move();
+						searchForFood().ifPresent(ai::publish);
+					})
 					
 				.state(DEAD)
 					.timeoutAfter(Timing.sec(2.5f))
@@ -137,7 +144,6 @@ public class PacMan extends Guy<PacManState> {
 	@Override
 	public void init() {
 		ai.init();
-		movement.init();
 	}
 
 	@Override
@@ -207,23 +213,15 @@ public class PacMan extends Guy<PacManState> {
 		ai.state(POWERFUL).resetTimer();
 	}
 
-	private void wander() {
-		getSteering().steer(this);
-		movement.update();
-		if (enteredNewTile) {
-			fat = Math.max(0, fat - 1);
-		}
-		searchForFood().ifPresent(ai::publish);
-	}
-
 	private Optional<PacManGameEvent> searchForFood() {
+		if (fat > 0 && enteredNewTile) {
+			fat -= 1;
+		}
 		Tile location = tile();
-		if (world.temporaryFood().filter(bonusFood -> !bonusFood.isConsumed()).isPresent()) {
-			TemporaryFood bonus = world.temporaryFood().get();
-			if (bonus.isActive() && bonus.location().equals(location)) {
-				fat += PacManGame.FAT_ENERGIZER;
-				return Optional.of(new BonusFoundEvent(location, bonus));
-			}
+		TemporaryFood consumableBonus = world.temporaryFood().filter(bonus -> bonus.isActive() && !bonus.isConsumed())
+				.filter(bonus -> bonus.location().equals(location)).orElse(null);
+		if (consumableBonus != null) {
+			return Optional.of(new BonusFoundEvent(location, consumableBonus));
 		}
 		if (world.hasFood(ArcadeFood.ENERGIZER, location)) {
 			fat += PacManGame.FAT_ENERGIZER;

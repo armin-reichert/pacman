@@ -71,6 +71,11 @@ public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle {
 		return canMoveBetween(currentTile, neighbor);
 	}
 
+	public void move() {
+		getSteering().steer(this);
+		movement.update();
+	}
+
 	@Override
 	public void placeAt(Tile tile, float dx, float dy) {
 		Tile oldTile = tile();
