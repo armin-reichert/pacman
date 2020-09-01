@@ -1,7 +1,6 @@
 package de.amr.games.pacman.controller.steering.common;
 
-import static de.amr.games.pacman.model.world.api.Direction.dirs;
-
+import java.awt.event.KeyEvent;
 import java.util.EnumMap;
 
 import de.amr.easy.game.input.Keyboard;
@@ -18,16 +17,24 @@ public class FollowingKeys implements Steering {
 
 	private EnumMap<Direction, Integer> keys = new EnumMap<>(Direction.class);
 
-	public FollowingKeys(int upKey, int rightKey, int downKey, int leftKey) {
-		keys.put(Direction.UP, upKey);
-		keys.put(Direction.RIGHT, rightKey);
-		keys.put(Direction.DOWN, downKey);
-		keys.put(Direction.LEFT, leftKey);
+	/**
+	 * Defines a steering using the virtual key codes as defined in class {@link KeyEvent}.
+	 * 
+	 * @param up    key code for moving up
+	 * @param right key code for moving right
+	 * @param down  key code for moving down
+	 * @param left  key code for moving left
+	 */
+	public FollowingKeys(int up, int right, int down, int left) {
+		keys.put(Direction.UP, up);
+		keys.put(Direction.RIGHT, right);
+		keys.put(Direction.DOWN, down);
+		keys.put(Direction.LEFT, left);
 	}
 
 	@Override
 	public void steer(Guy<?> guy) {
-		dirs().filter(dir -> Keyboard.keyDown(keys.get(dir))).findAny().ifPresent(dir -> guy.wishDir = dir);
+		Direction.dirs().filter(dir -> Keyboard.keyDown(keys.get(dir))).findAny().ifPresent(dir -> guy.wishDir = dir);
 	}
 
 	@Override
