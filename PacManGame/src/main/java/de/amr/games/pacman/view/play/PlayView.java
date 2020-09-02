@@ -18,7 +18,7 @@ import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesView;
 
 /**
- * View where the action is.
+ * Displays the maze and the game play.
  * 
  * @author Armin Reichert
  */
@@ -68,9 +68,9 @@ public class PlayView implements PacManGameView {
 	public void draw(Graphics2D g) {
 		drawWorld(g);
 		drawMessages(g);
-		drawActors(g);
+		drawFolks(g);
 		drawScores(g);
-		drawLiveCounter(g);
+		drawLivesCounter(g);
 		drawLevelCounter(g);
 	}
 
@@ -90,7 +90,7 @@ public class PlayView implements PacManGameView {
 		theme.ghostRenderer(ghost).render(g, ghost);
 	}
 
-	protected void drawActors(Graphics2D g) {
+	protected void drawFolks(Graphics2D g) {
 		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(DEAD, ENTERING_HOUSE, FRIGHTENED))
 				.forEach(ghost -> drawGhost(g, ghost));
 		drawPacMan(g, folks.pacMan);
@@ -98,7 +98,7 @@ public class PlayView implements PacManGameView {
 				.forEach(ghost -> drawGhost(g, ghost));
 	}
 
-	protected void drawLiveCounter(Graphics2D g) {
+	protected void drawLivesCounter(Graphics2D g) {
 		g.translate(Tile.SIZE, (world.height() - 2) * Tile.SIZE);
 		theme.livesCounterRenderer().render(g, game);
 		g.translate(-Tile.SIZE, -(world.height() - 2) * Tile.SIZE);

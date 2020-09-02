@@ -51,11 +51,11 @@ public class ExtendedPlayView extends PlayView {
 		drawOneWayTiles(g);
 		drawFrameRate(g);
 		drawMessages(g);
-		drawActors(g);
+		drawFolks(g);
 		drawRoutes(g);
 		drawStates(g);
 		drawScores(g);
-		drawLiveCounter(g);
+		drawLivesCounter(g);
 		drawLevelCounter(g);
 	}
 
