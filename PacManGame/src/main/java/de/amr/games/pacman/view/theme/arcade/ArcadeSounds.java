@@ -26,8 +26,8 @@ public class ArcadeSounds implements PacManSounds {
 
 	@Override
 	public Stream<SoundClip> clips() {
-		return Stream.of(clipCrunching(), clipEatFruit(), clipEatGhost(), clipExtraLife(), clipGhostChase(), clipGhostDead(),
-				clipInsertCoin(), clipPacManDies(), clipWaza());
+		return Stream.of(clipCrunching(), clipEatFruit(), clipEatGhost(), clipExtraLife(), clipGhostChase(),
+				clipGhostDead(), clipInsertCoin(), clipPacManDies(), clipWaza());
 	}
 
 	@Override

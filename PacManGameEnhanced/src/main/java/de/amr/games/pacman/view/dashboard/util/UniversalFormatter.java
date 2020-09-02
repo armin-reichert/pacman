@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class UniversalFormatter extends DefaultTableCellRenderer {
 
 	public static class Context {
+
 		public JTable table;
 		public Object value;
 		public boolean isSelected;

@@ -53,6 +53,7 @@ public class FsmView extends JPanel implements Lifecycle {
 	};
 
 	private Action actionSave = new AbstractAction("Save") {
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			tree.getSelectedData().ifPresent(data -> {

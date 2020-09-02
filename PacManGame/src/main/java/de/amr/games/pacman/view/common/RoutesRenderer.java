@@ -59,8 +59,8 @@ public class RoutesRenderer {
 		if (ghost.wishDir != null) {
 			Vector2f center = ghost.tf.getCenter();
 			Vector2f dir_vector = ghost.wishDir.vector();
-			drawDirectionIndicator(g, ghostColor(ghost), true, ghost.wishDir,
-					(int) (center.x + dir_vector.x * Tile.SIZE), (int) (center.y + dir_vector.y * Tile.SIZE));
+			drawDirectionIndicator(g, ghostColor(ghost), true, ghost.wishDir, (int) (center.x + dir_vector.x * Tile.SIZE),
+					(int) (center.y + dir_vector.y * Tile.SIZE));
 		}
 	}
 

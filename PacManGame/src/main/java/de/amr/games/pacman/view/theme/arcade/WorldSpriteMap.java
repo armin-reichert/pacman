@@ -16,7 +16,7 @@ class WorldSpriteMap extends SpriteMap {
 		energizerAnimation = new CyclicAnimation(2);
 		energizerAnimation.setFrameDuration(150);
 	}
-	
+
 	public SpriteAnimation getEnergizerAnimation() {
 		return energizerAnimation;
 	}

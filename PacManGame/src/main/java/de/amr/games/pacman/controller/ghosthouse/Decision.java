@@ -1,6 +1,7 @@
 package de.amr.games.pacman.controller.ghosthouse;
 
 class Decision {
+
 	public boolean confirmed;
 	public String reason;
 
