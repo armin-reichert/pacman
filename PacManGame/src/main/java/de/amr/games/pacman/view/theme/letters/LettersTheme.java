@@ -43,10 +43,10 @@ public class LettersTheme extends ThemeParameters implements Theme {
 		set("offset-baseline", Tile.SIZE - 1);
 		set("ghost-colors", Map.of(
 		//@formatter:off
-			GhostPersonality.SHADOW, Color.RED,
+			GhostPersonality.SHADOW,  Color.RED,
 			GhostPersonality.SPEEDY,  Color.PINK,
-			GhostPersonality.BASHFUL,   Color.CYAN,
-			GhostPersonality.POKEY,  Color.ORANGE
+			GhostPersonality.BASHFUL, Color.CYAN,
+			GhostPersonality.POKEY,   Color.ORANGE
 		//@formatter:on
 		));
 		set("sounds", ArcadeSounds.SOUNDS);
@@ -173,13 +173,12 @@ public class LettersTheme extends ThemeParameters implements Theme {
 					g.setColor(Color.GREEN);
 					String text = "";
 					int col = tile.col;
-					if (bonus.isActive()) {
-						text = "WIN " + bonus.value();
+					if (bonus.isActive() && !bonus.isConsumed()) {
+						text = "BONUS " + bonus.value();
 						col = tile.col - 1;
 					} else if (bonus.isConsumed()) {
 						text = "WON " + bonus.value() + " POINTS!";
 						col = tile.col - 3;
-						;
 					}
 					g.drawString(text, col * Tile.SIZE, tile.row * Tile.SIZE + offset_baseline - 1);
 				});
