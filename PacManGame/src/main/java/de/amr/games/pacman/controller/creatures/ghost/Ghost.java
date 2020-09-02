@@ -237,7 +237,8 @@ public class Ghost extends Guy<GhostState> {
 		if (!PacManGame.started()) {
 			return 0;
 		}
-		boolean tunnel = world.isTunnel(tile());
+		Tile tile = tile();
+		boolean tunnel = world.isTunnel(tile) || world.isPortal(tile);
 		switch (ai.getState()) {
 		case LOCKED:
 			return Timing.speed(isInsideHouse() ? game.ghostSpeed / 2 : 0);
