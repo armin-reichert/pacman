@@ -4,12 +4,12 @@ import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.bonus.BonusFoodState.BONUS_CONSUMABLE;
 import static de.amr.games.pacman.controller.bonus.BonusFoodState.BONUS_CONSUMED;
 import static de.amr.games.pacman.controller.bonus.BonusFoodState.BONUS_INACTIVE;
+import static de.amr.games.pacman.controller.game.Timing.sec;
 
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.statemachine.core.StateMachine;
@@ -21,11 +21,8 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class BonusFoodController extends StateMachine<BonusFoodState, PacManGameEvent> {
 
-	private Supplier<TemporaryFood> fnBonusSupplier;
-
 	public BonusFoodController(World world, Supplier<Long> fnActivationTime, Supplier<TemporaryFood> fnBonusSupplier) {
 		super(BonusFoodState.class);
-		this.fnBonusSupplier = fnBonusSupplier;
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("Bonus Food Controller")
@@ -37,9 +34,9 @@ public class BonusFoodController extends StateMachine<BonusFoodState, PacManGame
 			
 				.state(BONUS_CONSUMABLE)
 					.timeoutAfter(fnActivationTime)
-					.onEntry(() -> activateBonus(world))
+					.onEntry(() -> activateBonus(world, fnBonusSupplier.get()))
 				
-				.state(BONUS_CONSUMED).timeoutAfter(Timing.sec(3))
+				.state(BONUS_CONSUMED).timeoutAfter(sec(3))
 
 			.transitions()
 				
@@ -55,21 +52,20 @@ public class BonusFoodController extends StateMachine<BonusFoodState, PacManGame
 		/*@formatter:on*/
 	}
 
-	public void activateBonus(World world) {
-		TemporaryFood bonus = fnBonusSupplier.get();
+	private void activateBonus(World world, TemporaryFood bonus) {
 		world.showTemporaryFood(bonus);
 		loginfo("Bonus %s activated for %.2f sec", bonus, state().getDuration() / 60f);
 
 	}
 
-	public void consumeBonus(World world) {
+	private void consumeBonus(World world) {
 		world.temporaryFood().ifPresent(food -> {
 			food.consume();
 			loginfo("Bonus %s consumed after %.2f sec", food, state().getTicksConsumed() / 60f);
 		});
 	}
 
-	public void deactivateBonus(World world) {
+	private void deactivateBonus(World world) {
 		world.temporaryFood().ifPresent(food -> {
 			food.deactivate();
 			loginfo("Bonus %s has not been consumed and gets deactivated", food);
