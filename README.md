@@ -503,7 +503,7 @@ are allowed to leave (following the rules described in the references cited belo
 The original Pac-Man game did not use any graph-based pathfinding. To still give an example how graph-based pathfinding can be useful, there is an additional implementation of the *frightened* behavior: when Pac-Man eats a power-pill each frightened ghost choses the "safest" corner to flee to. It computes the shortest path to each corner and selects the one with the largest distance to Pac-Man's current position. Here, the distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position. The code to set this behavior for a ghost reads as:
 
 ```java
-you(ghost).when(FRIGHTENED).fleeToSafeTile().from(folks.pacMan()).ok();
+ghost.setSteering(FRIGHTENED, new FleeingToSafeTile(ghost, ghost.pacMan));
 ```
 
 The wrapper class [WorldGraph](PacManGameEnhanced/src/main/java/de/amr/games/pacman/model/world/graph/WorldGraph.java) adds a (grid) graph structure to the maze. This allows running the generic graph algorithms from my [graph library](https://github.com/armin-reichert/graph) on the maze. For example, shortest paths in the maze can then be computed by just calling the *findPath(Tile source, Tile target)* method on the maze graph. This method runs either an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html), a Breadth-First Search or a Best-First Search on the underlying graph, see configuration options below. The graph library provides a whole number of search algorithms like BFS or Dijkstra. The code to compute a shortest path between two tiles using the A* algorithm with Manhattan distance heuristics looks like this:
