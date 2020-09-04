@@ -8,4 +8,9 @@ public class BonusFoundEvent extends FoodFoundEvent {
 	public BonusFoundEvent(Tile tile, Food food) {
 		super(tile, food);
 	}
+
+	@Override
+	public String toString() {
+		return String.format("BonusFoundEvent(%s,%s)", location, food);
+	}
 }

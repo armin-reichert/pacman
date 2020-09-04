@@ -7,4 +7,9 @@ public class PacManGainsPowerEvent implements PacManGameEvent {
 	public PacManGainsPowerEvent(long ticks) {
 		this.duration = ticks;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("PacManGainsPowerEvent(%d ticks)", duration);
+	}
 }
