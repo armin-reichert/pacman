@@ -12,6 +12,7 @@ import static de.amr.games.pacman.controller.game.PacManGameState.GETTING_READY;
 import static de.amr.games.pacman.controller.game.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
+import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -25,7 +26,6 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.play.ExtendedPlayView;
@@ -283,7 +283,7 @@ public class ExtendedGameController extends GameController {
 	}
 
 	private void switchToNextLevel() {
-		loginfo("Switching to level %d", PacManGame.game.level + 1);
+		loginfo("Switching to level %d", game.level + 1);
 		enqueue(new LevelCompletedEvent());
 	}
 
@@ -293,12 +293,12 @@ public class ExtendedGameController extends GameController {
 		}
 		world.tiles().filter(location -> world.hasFood(ArcadeFood.PELLET, location)).forEach(tile -> {
 			world.removeFood(tile);
-			PacManGame.game.scoreSimplePelletEaten();
+			game.scoreSimplePelletEaten();
 			doorMan.onPacManFoundFood();
 			doorMan.update();
 		});
 		loginfo("All simple pellets have been eaten");
-		if (PacManGame.game.remainingFoodCount() == 0) {
+		if (game.remainingFoodCount() == 0) {
 			enqueue(new LevelCompletedEvent());
 			return;
 		}
@@ -308,9 +308,9 @@ public class ExtendedGameController extends GameController {
 		if (getState() != PLAYING) {
 			return;
 		}
-		PacManGame.game.ghostsKilledByEnergizer = 0;
+		game.ghostsKilledByEnergizer = 0;
 		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
-			PacManGame.game.scoreGhostKilled();
+			game.scoreGhostKilled();
 			ghost.ai.process(new GhostKilledEvent(ghost));
 		});
 		loginfo("All ghosts have been killed");
