@@ -81,7 +81,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	@Override
 	public List<Tile> pathToTarget() {
-		return target != null ? graph.shortestPath(me.tile(), target) : Collections.emptyList();
+		return target != null ? graph.findPath(me.tile(), target) : Collections.emptyList();
 	}
 
 	private boolean avoidTouchingGhostAhead() {
@@ -222,7 +222,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	private int shortestPathLength(Tile from, Tile to) {
-		return graph.shortestPath(from, to).size();
+		return graph.findPath(from, to).size();
 	}
 
 	private Optional<Direction> directionTowards(Ghost enemy) {
@@ -230,7 +230,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		double minDist = Integer.MAX_VALUE;
 		for (Direction dir : Direction.values()) {
 			if (me.canCrossBorderTo(dir)) {
-				List<Tile> path = graph.shortestPath(me.tile(), enemy.tile());
+				List<Tile> path = graph.findPath(me.tile(), enemy.tile());
 				int dist = path.size();
 				if (dist < minDist && path.size() >= 2) {
 					minDist = dist;

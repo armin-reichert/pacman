@@ -45,7 +45,7 @@ public class FleeingToSafeTile extends FollowingPath {
 	public void steer(Guy<?> guy) {
 		if (path.size() == 0 || isComplete()) {
 			safeTile = computeSafestCorner();
-			setPath(graph.shortestPath(guy.tile(), safeTile));
+			setPath(graph.findPath(guy.tile(), safeTile));
 		}
 		super.steer(guy);
 	}
@@ -75,8 +75,8 @@ public class FleeingToSafeTile extends FollowingPath {
 		return (t1, t2) -> {
 			Tile refugeeLocation = guy.tile();
 			Tile attackerLocation = attacker.tile();
-			double d1 = distanceFromPath(graph.shortestPath(refugeeLocation, t1), attackerLocation);
-			double d2 = distanceFromPath(graph.shortestPath(refugeeLocation, t2), attackerLocation);
+			double d1 = distanceFromPath(graph.findPath(refugeeLocation, t1), attackerLocation);
+			double d2 = distanceFromPath(graph.findPath(refugeeLocation, t2), attackerLocation);
 			return Double.compare(d2, d1); // larger distance comes first
 		};
 	}

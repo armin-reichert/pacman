@@ -59,7 +59,7 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 		}
 	}
 
-	private GraphSearch createSearch(Tile target) {
+	private GraphSearch createPathFinder(Tile target) {
 		switch (pathFinder) {
 		case BREADTH_FIRST_SEARCH:
 			return new BreadthFirstSearch(this);
@@ -79,16 +79,16 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 		return Tile.at(col(vertex), row(vertex));
 	}
 
-	public List<Tile> shortestPath(Tile source, Tile target) {
-		List<Tile> pathTiles = Collections.emptyList();
+	public List<Tile> findPath(Tile source, Tile target) {
+		List<Tile> tiles = Collections.emptyList();
 		if (world.includes(source) && world.includes(target)) {
-			Path path = createSearch(target).findPath(vertex(source), vertex(target));
+			Path path = createPathFinder(target).findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
 				loginfo("%d'th pathfinding (%s) executed", pathFinderCalls, pathFinder);
 			}
-			pathTiles = path.vertexStream().map(this::tile).collect(Collectors.toList());
+			tiles = path.vertexStream().map(this::tile).collect(Collectors.toList());
 		}
-		return pathTiles;
+		return tiles;
 	}
 }
