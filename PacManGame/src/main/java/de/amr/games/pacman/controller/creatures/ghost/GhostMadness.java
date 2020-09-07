@@ -65,36 +65,36 @@ public class GhostMadness extends StateMachine<GhostMentalState, String> {
 			.description(() -> String.format("%s Madness", ghost.name))
 			.states()
 			
-				.state(HEALTHY).onEntry(this::targetCorner)
+				.state(HEALTHY).onEntry(this::headForCorner)
 				
-				.state(ELROY1).onEntry(this::targetPacMan)
+				.state(ELROY1).onEntry(this::headForPacMan)
 					
-				.state(ELROY2).onEntry(this::targetPacMan)
+				.state(ELROY2).onEntry(this::headForPacMan)
 					
-				.state(TRANQUILIZED).onEntry(this::targetCorner)
+				.state(TRANQUILIZED).onEntry(this::headForCorner)
 			
 			.transitions()
 			
 				.when(HEALTHY).then(ELROY2)
-					.condition(this::reachedElroy2Score)
+					.condition(this::elroy2ScoreReached)
 					.annotation(() -> String.format("Pellets left <= %d", game.elroy2DotsLeft))
 			
 				.when(HEALTHY).then(ELROY1)
-					.condition(this::reachedElroy1Score)
+					.condition(this::elroy1ScoreReached)
 					.annotation(() -> String.format("Pellets left <= %d", game.elroy1DotsLeft))
 
 				.when(TRANQUILIZED).then(ELROY2)
 					.on(CLYDE_EXITS_HOUSE)
-					.condition(this::reachedElroy2Score)
+					.condition(this::elroy2ScoreReached)
 					.annotation("Become Elroy again when Clyde exits house")
 					
 				.when(TRANQUILIZED).then(ELROY1)
 					.on(CLYDE_EXITS_HOUSE)
-					.condition(this::reachedElroy1Score)
+					.condition(this::elroy1ScoreReached)
 					.annotation("Become Elroy again when Clyde exits house")
 					
 				.when(ELROY1).then(ELROY2)
-					.condition(this::reachedElroy2Score)
+					.condition(this::elroy2ScoreReached)
 					.annotation(() -> String.format("Remaining pellets <= %d", game.elroy2DotsLeft))
 
 				.when(ELROY1).then(TRANQUILIZED).on(PACMAN_DIES)
@@ -108,27 +108,27 @@ public class GhostMadness extends StateMachine<GhostMentalState, String> {
 		init();
 	}
 
-	private boolean reachedElroy1Score() {
-		return game.remainingFoodCount() <= game.elroy1DotsLeft;
-	}
-
-	private boolean reachedElroy2Score() {
-		return game.remainingFoodCount() <= game.elroy2DotsLeft;
-	}
-
-	private void targetCorner() {
-		you(ghost).when(SCATTERING).headFor().tile(ghost.world.width() - 3, 0).ok();
-	}
-
-	private void targetPacMan() {
-		you(ghost).when(SCATTERING).headFor().tile(ghost.pacMan::tile).ok();
-	}
-
 	public void pacManDies() {
 		process(PACMAN_DIES);
 	}
 
 	public void clydeExitsHouse() {
 		process(CLYDE_EXITS_HOUSE);
+	}
+
+	private boolean elroy1ScoreReached() {
+		return game.remainingFoodCount() <= game.elroy1DotsLeft;
+	}
+
+	private boolean elroy2ScoreReached() {
+		return game.remainingFoodCount() <= game.elroy2DotsLeft;
+	}
+
+	private void headForCorner() {
+		you(ghost).when(SCATTERING).headFor().tile(ghost.world.width() - 3, 0).ok();
+	}
+
+	private void headForPacMan() {
+		you(ghost).when(SCATTERING).headFor().tile(ghost.pacMan::tile).ok();
 	}
 }
