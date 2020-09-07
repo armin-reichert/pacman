@@ -47,11 +47,11 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @see https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=7
  */
-public class GhostMadness extends StateMachine<GhostMentalState, Byte> {
+public class GhostMadness extends StateMachine<GhostMentalState, String> {
 
-	// events:
-	private static final byte PACMAN_DIES = 0;
-	private static final byte CLYDE_EXITS_HOUSE = 1;
+	// events
+	private static final String PACMAN_DIES = "Pac-Man dies";
+	private static final String CLYDE_EXITS_HOUSE = "Clyde exits house";
 
 	private final Ghost ghost;
 
