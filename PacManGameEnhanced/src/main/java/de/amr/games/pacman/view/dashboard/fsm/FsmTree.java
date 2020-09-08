@@ -54,13 +54,13 @@ public class FsmTree extends DefaultTreeModel {
 
 	public void rebuild(FsmModel model) {
 		FsmTreeNode root = (FsmTreeNode) getRoot();
-		List<String> categoryNames = new ArrayList<>(model.data.keySet());
+		List<String> categoryNames = new ArrayList<>(model.dataByCategory.keySet());
 		categoryNames.sort(String::compareTo);
 		root.removeAllChildren();
 		for (String categoryName : categoryNames) {
 			FsmTreeNode categoryNode = new FsmTreeNode(categoryName);
 			root.add(categoryNode);
-			List<FsmData> sortedList = model.data.get(categoryName).stream().sorted().collect(Collectors.toList());
+			List<FsmData> sortedList = model.dataByCategory.get(categoryName).stream().sorted().collect(Collectors.toList());
 			for (FsmData data : sortedList) {
 				FsmTreeNode treeNode = new FsmTreeNode(data.getFsm().getDescription());
 				treeNode.setUserObject(data);

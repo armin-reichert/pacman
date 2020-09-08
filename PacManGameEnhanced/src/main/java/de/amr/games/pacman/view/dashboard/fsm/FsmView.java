@@ -194,9 +194,8 @@ public class FsmView extends JPanel implements Lifecycle {
 	}
 
 	private Stream<Action> actions() {
-		Stream<Action> actions = Stream.of(actionViewOnline, actionSave, fsmEmbeddedGraphView.actionZoomIn,
+		return Stream.of(actionViewOnline, actionSave, fsmEmbeddedGraphView.actionZoomIn,
 				fsmEmbeddedGraphView.actionZoomOut);
-		return actions;
 	}
 
 	private void saveFile(FsmData data) {
