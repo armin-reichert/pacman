@@ -5,10 +5,10 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IGameScoreRenderer;
+import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
-class LevelCounterRenderer implements IGameScoreRenderer {
+class LevelCounterRenderer implements IGameRenderer {
 
 	@Override
 	public void render(Graphics2D g, PacManGame level) {

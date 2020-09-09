@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IGameScoreRenderer;
+import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
@@ -109,7 +109,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameScoreRenderer levelCounterRenderer() {
+	public IGameRenderer levelCounterRenderer() {
 		return (g, level) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -121,7 +121,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameScoreRenderer livesCounterRenderer() {
+	public IGameRenderer livesCounterRenderer() {
 		return (g, level) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -132,7 +132,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameScoreRenderer pointsCounterRenderer() {
+	public IGameRenderer pointsCounterRenderer() {
 		return (g, level) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");

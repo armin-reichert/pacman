@@ -8,9 +8,9 @@ import java.awt.RenderingHints;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IGameScoreRenderer;
+import de.amr.games.pacman.view.api.IGameRenderer;
 
-public class PointsCounterRenderer implements IGameScoreRenderer {
+public class PointsCounterRenderer implements IGameRenderer {
 
 	private Font font;
 	private int topMargin = 1;

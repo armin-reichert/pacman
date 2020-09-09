@@ -9,7 +9,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.api.IGameScoreRenderer;
+import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
@@ -79,7 +79,7 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameScoreRenderer levelCounterRenderer() {
+	public IGameRenderer levelCounterRenderer() {
 		return new LevelCounterRenderer();
 	}
 
@@ -104,12 +104,12 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameScoreRenderer pointsCounterRenderer() {
+	public IGameRenderer pointsCounterRenderer() {
 		return new PointsCounterRenderer($font("font"));
 	}
 
 	@Override
-	public IGameScoreRenderer livesCounterRenderer() {
+	public IGameRenderer livesCounterRenderer() {
 		return new LivesCounterRenderer();
 	}
 

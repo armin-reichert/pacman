@@ -36,11 +36,11 @@ public interface Theme {
 
 	IGhostRenderer ghostRenderer(Ghost ghost);
 
-	IGameScoreRenderer levelCounterRenderer();
+	IGameRenderer levelCounterRenderer();
 
-	IGameScoreRenderer livesCounterRenderer();
+	IGameRenderer livesCounterRenderer();
 
-	IGameScoreRenderer pointsCounterRenderer();
+	IGameRenderer pointsCounterRenderer();
 
 	MessagesRenderer messagesRenderer();
 

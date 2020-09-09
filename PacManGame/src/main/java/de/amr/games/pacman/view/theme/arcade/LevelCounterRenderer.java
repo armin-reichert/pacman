@@ -8,9 +8,9 @@ import java.util.Map;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IGameScoreRenderer;
+import de.amr.games.pacman.view.api.IGameRenderer;
 
-class LevelCounterRenderer implements IGameScoreRenderer {
+class LevelCounterRenderer implements IGameRenderer {
 
 	private final Map<ArcadeBonus, Image> bonusImages = new HashMap<ArcadeBonus, Image>();
 

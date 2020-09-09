@@ -13,7 +13,7 @@ import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
-import de.amr.games.pacman.view.api.IGameScoreRenderer;
+import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
@@ -142,17 +142,17 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameScoreRenderer levelCounterRenderer() {
+	public IGameRenderer levelCounterRenderer() {
 		return new LevelCounterRenderer();
 	}
 
 	@Override
-	public IGameScoreRenderer livesCounterRenderer() {
+	public IGameRenderer livesCounterRenderer() {
 		return new LivesCounterRenderer();
 	}
 
 	@Override
-	public IGameScoreRenderer pointsCounterRenderer() {
+	public IGameRenderer pointsCounterRenderer() {
 		return new PointsCounterRenderer($font("font"));
 	}
 
