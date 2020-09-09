@@ -1,9 +1,6 @@
 package de.amr.games.pacman.view.dashboard.fsm;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -54,19 +51,16 @@ public class FsmTree extends DefaultTreeModel {
 
 	public void rebuild(FsmModel model) {
 		FsmTreeNode root = (FsmTreeNode) getRoot();
-		List<String> categoryNames = new ArrayList<>(model.dataByCategory.keySet());
-		categoryNames.sort(String::compareTo);
 		root.removeAllChildren();
-		for (String categoryName : categoryNames) {
-			FsmTreeNode categoryNode = new FsmTreeNode(categoryName);
+		model.categories().sorted().forEach(category -> {
+			FsmTreeNode categoryNode = new FsmTreeNode(category);
 			root.add(categoryNode);
-			List<FsmData> sortedList = model.dataByCategory.get(categoryName).stream().sorted().collect(Collectors.toList());
-			for (FsmData data : sortedList) {
-				FsmTreeNode treeNode = new FsmTreeNode(data.getFsm().getDescription());
-				treeNode.setUserObject(data);
-				categoryNode.add(treeNode);
-			}
-		}
+			model.data(category).sorted().forEach(data -> {
+				FsmTreeNode fsmNode = new FsmTreeNode(data.getFsm().getDescription());
+				fsmNode.setUserObject(data);
+				categoryNode.add(fsmNode);
+			});
+		});
 		nodeStructureChanged(root);
 	}
 

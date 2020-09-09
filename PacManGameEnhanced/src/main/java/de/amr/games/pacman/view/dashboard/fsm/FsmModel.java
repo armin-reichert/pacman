@@ -19,8 +19,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class FsmModel {
 
-	public final Map<String, List<FsmData>> dataByCategory = new ConcurrentHashMap<>();
-
+	private final Map<String, List<FsmData>> dataByCategory = new ConcurrentHashMap<>();
 	private boolean setOfMachinesChanged;
 
 	public FsmModel() {
@@ -40,6 +39,14 @@ public class FsmModel {
 		} else {
 			data().forEach(FsmData::updateGraph);
 		}
+	}
+
+	public Stream<String> categories() {
+		return dataByCategory.keySet().stream();
+	}
+
+	public Stream<FsmData> data(String category) {
+		return dataByCategory.get(category).stream();
 	}
 
 	public Stream<FsmData> data() {
