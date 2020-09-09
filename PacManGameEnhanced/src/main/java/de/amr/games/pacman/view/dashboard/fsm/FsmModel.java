@@ -31,7 +31,7 @@ public class FsmModel {
 			});
 			setOfMachinesChanged = true;
 		} else {
-			data().forEach(FsmData::updateGraph);
+			data().forEach(FsmData::updateGraphVizText);
 		}
 	}
 

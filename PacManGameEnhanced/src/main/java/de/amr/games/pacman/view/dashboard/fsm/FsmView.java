@@ -43,7 +43,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		public void actionPerformed(ActionEvent e) {
 			tree.getSelectedData().ifPresent(data -> {
 				try {
-					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, data.getGraph());
+					URI uri = new URI(null, GRAPHVIZ_ONLINE_URL, data.getGraphVizText());
 					Desktop.getDesktop().browse(uri);
 				} catch (Exception x) {
 					x.printStackTrace();
@@ -166,7 +166,7 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	private void onTreeViewSelectionChange(TreeSelectionEvent e) {
 		tree.setSelectedPath(e.getNewLeadSelectionPath());
-		tree.getSelectedData().ifPresent(FsmData::updateGraph);
+		tree.getSelectedData().ifPresent(FsmData::updateGraphVizText);
 	}
 
 	@Override
@@ -206,12 +206,12 @@ public class FsmView extends JPanel implements Lifecycle {
 			File file = saveDialog.getSelectedFile();
 			if (file.getName().endsWith(".dot")) {
 				try (FileWriter w = new FileWriter(saveDialog.getSelectedFile())) {
-					w.write(data.getGraph());
+					w.write(data.getGraphVizText());
 				} catch (Exception x) {
 					loginfo("DOT file could not be written", file);
 				}
 			} else if (file.getName().endsWith(".png")) {
-				BufferedImage png = Graphviz.fromString(data.getGraph()).render(Format.PNG).toImage();
+				BufferedImage png = Graphviz.fromString(data.getGraphVizText()).render(Format.PNG).toImage();
 				try {
 					ImageIO.write(png, "png", file);
 				} catch (IOException x) {

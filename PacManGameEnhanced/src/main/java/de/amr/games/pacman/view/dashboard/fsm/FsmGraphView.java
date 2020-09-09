@@ -79,7 +79,7 @@ public class FsmGraphView extends JPanel {
 	public void update() {
 		if (data != null) {
 			try {
-				BufferedImage png = Graphviz.fromString(data.getGraph()).totalMemory(GRAPHVIZ_MEMORY).scale(scaling)
+				BufferedImage png = Graphviz.fromString(data.getGraphVizText()).totalMemory(GRAPHVIZ_MEMORY).scale(scaling)
 						.render(Format.PNG).toImage();
 				graphDisplay.setIcon(new ImageIcon(png));
 				++RENDERING_COUNT;
