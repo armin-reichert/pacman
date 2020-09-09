@@ -9,8 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.statemachine.core.StateMachine;
-
 /**
  * Maintains a map of data (state machine, Graphviz representation) that is kept in sync with the
  * currently registered set of state machines.
@@ -22,18 +20,14 @@ public class FsmModel {
 	private final Map<String, List<FsmData>> dataByCategory = new ConcurrentHashMap<>();
 	private boolean setOfMachinesChanged;
 
-	public FsmModel() {
-		update();
-	}
-
 	public void update() {
 		setOfMachinesChanged = false;
-		Set<StateMachine<?, ?>> machineSet = data().map(FsmData::getFsm).collect(Collectors.toSet());
-		if (!REGISTRY.machines().equals(machineSet)) {
+		Set<?> modelMachineSet = data().map(FsmData::getFsm).collect(Collectors.toSet());
+		Set<?> registeredMachineSet = REGISTRY.machines().collect(Collectors.toSet());
+		if (!registeredMachineSet.equals(modelMachineSet)) {
 			dataByCategory.clear();
 			REGISTRY.categories().forEach(category -> {
-				dataByCategory.put(category,
-						REGISTRY.machines(category).stream().map(FsmData::new).collect(Collectors.toList()));
+				dataByCategory.put(category, REGISTRY.machines(category).map(FsmData::new).collect(Collectors.toList()));
 			});
 			setOfMachinesChanged = true;
 		} else {
