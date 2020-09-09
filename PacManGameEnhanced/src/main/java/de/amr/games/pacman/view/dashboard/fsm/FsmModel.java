@@ -1,12 +1,13 @@
 package de.amr.games.pacman.view.dashboard.fsm;
 
 import static de.amr.easy.game.controller.StateMachineRegistry.REGISTRY;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -21,15 +22,14 @@ public class FsmModel {
 	private boolean setOfMachinesChanged;
 
 	public void update() {
-		setOfMachinesChanged = false;
-		Set<?> modelMachineSet = data().map(FsmData::getFsm).collect(Collectors.toSet());
-		Set<?> registeredMachineSet = REGISTRY.machines().collect(Collectors.toSet());
-		if (!registeredMachineSet.equals(modelMachineSet)) {
+		Set<?> myMachineSet = data().map(FsmData::getFsm).collect(toSet());
+		Set<?> registeredMachineSet = REGISTRY.machines().collect(toSet());
+		setOfMachinesChanged = !registeredMachineSet.equals(myMachineSet);
+		if (setOfMachinesChanged) {
 			dataByCategory.clear();
 			REGISTRY.categories().forEach(category -> {
-				dataByCategory.put(category, REGISTRY.machines(category).map(FsmData::new).collect(Collectors.toList()));
+				dataByCategory.put(category, REGISTRY.machines(category).map(FsmData::new).collect(toList()));
 			});
-			setOfMachinesChanged = true;
 		} else {
 			data().forEach(FsmData::updateGraphVizText);
 		}
