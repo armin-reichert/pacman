@@ -1,22 +1,20 @@
 package de.amr.games.pacman.controller.creatures;
 
-import java.util.stream.Stream;
-
 import de.amr.easy.game.controller.Lifecycle;
+import de.amr.easy.game.controller.StateMachineControlled;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.core.TileWorldEntity;
-import de.amr.statemachine.core.StateMachine;
 
 /**
  * Guys can move through the world in a controlled way.
  * 
  * @author Armin Reichert
  */
-public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle {
+public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle, StateMachineControlled {
 
 	public final String name;
 	public Direction moveDir;
@@ -30,11 +28,6 @@ public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle {
 		this.name = name;
 		this.movement = new MovementController(this);
 	}
-
-	/**
-	 * @return state machines controlling this entity
-	 */
-	public abstract Stream<StateMachine<?, ?>> machines();
 
 	/**
 	 * @return pixels this guy can move on the next tick.
