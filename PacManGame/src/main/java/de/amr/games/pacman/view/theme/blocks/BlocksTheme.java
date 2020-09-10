@@ -2,20 +2,25 @@ package de.amr.games.pacman.view.theme.blocks;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.util.Map;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
+import de.amr.games.pacman.model.game.PacManGame;
+import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IMessagesRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
-import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.IPacManSounds;
+import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.PointsCounterRenderer;
+import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.core.ThemeParameters;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
 
@@ -76,11 +81,6 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameRenderer levelCounterRenderer() {
-		return new LevelCounterRenderer();
-	}
-
-	@Override
 	public IPacManRenderer pacManRenderer() {
 		return new PacManRenderer();
 	}
@@ -107,7 +107,28 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public IGameRenderer livesCounterRenderer() {
-		return new LivesCounterRenderer();
+		return (Graphics2D g, PacManGame level) -> {
+			Rendering.smoothOn(g);
+			g.setColor(Color.YELLOW);
+			for (int i = 0, x = 0; i < level.lives; ++i, x += 2 * Tile.SIZE) {
+				g.fillOval(x, 0, Tile.SIZE, Tile.SIZE);
+			}
+			Rendering.smoothOff(g);
+		};
+	}
+
+	@Override
+	public IGameRenderer levelCounterRenderer() {
+		return (Graphics2D g, PacManGame level) -> {
+			Rendering.smoothOn(g);
+			int levels = level.levelCounter.size();
+			for (int i = 0, x = -2 * Tile.SIZE; i < Math.min(7, levels); ++i, x -= 2 * Tile.SIZE) {
+				ArcadeBonus symbol = ArcadeBonus.valueOf(level.levelCounter.get(levels > 7 ? levels - 7 + i : i));
+				g.setColor(BlocksTheme.THEME.symbolColor(symbol.name()));
+				g.drawOval(x, 0, Tile.SIZE, Tile.SIZE);
+			}
+			Rendering.smoothOff(g);
+		};
 	}
 
 	@Override

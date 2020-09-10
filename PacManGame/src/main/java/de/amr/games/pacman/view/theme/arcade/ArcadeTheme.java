@@ -152,7 +152,16 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public IGameRenderer levelCounterRenderer() {
-		return new LevelCounterRenderer();
+		return (Graphics2D g, PacManGame game) -> {
+			int max = 7;
+			int first = Math.max(0, game.levelCounter.size() - max);
+			int n = Math.min(max, game.levelCounter.size());
+			int width = 2 * Tile.SIZE;
+			for (int i = 0, x = -2 * width; i < n; ++i, x -= width) {
+				ArcadeBonus symbol = ArcadeBonus.valueOf(game.levelCounter.get(first + i));
+				g.drawImage(sprites.imageBonusSymbol(symbol.ordinal()), x, 0, width, width, null);
+			}
+		};
 	}
 
 	@Override

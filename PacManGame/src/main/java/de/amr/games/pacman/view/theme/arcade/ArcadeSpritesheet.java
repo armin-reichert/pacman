@@ -148,6 +148,10 @@ public class ArcadeSpritesheet extends Spritesheet {
 		return pacMan_lives_counter;
 	}
 
+	public BufferedImage imageBonusSymbol(int bonus) {
+		return bonus_symbols[bonus];
+	}
+
 	public Sprite makeSprite_ghostColored(GhostColor color, Direction dir) {
 		BufferedImage[] frames = Arrays.copyOfRange(ghost_colored[color.ordinal()], 2 * dirIndex(dir),
 				2 * (dirIndex(dir) + 1));
