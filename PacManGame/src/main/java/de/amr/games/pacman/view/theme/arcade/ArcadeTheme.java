@@ -146,7 +146,9 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public IGameRenderer pointsCounterRenderer() {
-		return new PointsCounterRenderer($font("font"));
+		PointsCounterRenderer r = new PointsCounterRenderer();
+		r.setFont($font("font"));
+		return r;
 	}
 
 	@Override
