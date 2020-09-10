@@ -13,9 +13,9 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.theme.api.Theme;
+import de.amr.games.pacman.theme.api.Themes;
 import de.amr.games.pacman.view.play.ExtendedPlayView;
-import de.amr.games.pacman.view.theme.Themes;
 
 /**
  * Common controller for test applications.

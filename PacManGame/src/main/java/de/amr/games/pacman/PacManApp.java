@@ -8,8 +8,8 @@ import com.beust.jcommander.Parameter;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.game.GameController;
+import de.amr.games.pacman.theme.api.Themes;
 import de.amr.games.pacman.view.api.PacManGameView;
-import de.amr.games.pacman.view.theme.Themes;
 
 /**
  * The Pac-Man game application.

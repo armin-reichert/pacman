@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.arcade;
+package de.amr.games.pacman.theme.arcade;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -7,14 +7,14 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.SoundClip;
-import de.amr.games.pacman.view.api.PacManSounds;
+import de.amr.games.pacman.view.api.PacManGameSounds;
 
 /**
  * Clips and music.
  * 
  * @author Armin Reichert
  */
-public class ArcadeSounds implements PacManSounds {
+public class ArcadeSounds implements PacManGameSounds {
 
 	public static final ArcadeSounds SOUNDS = new ArcadeSounds();
 

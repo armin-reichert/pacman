@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.arcade;
+package de.amr.games.pacman.theme.arcade;
 
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.AWAKE;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
@@ -13,7 +13,7 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
-import de.amr.games.pacman.view.api.PacManRenderer;
+import de.amr.games.pacman.theme.api.PacManRenderer;
 
 /**
  * Renders Pac-Man using animated sprites.

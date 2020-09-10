@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.arcade;
+package de.amr.games.pacman.theme.arcade;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -13,8 +13,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
+import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.WorldRenderer;
 
 class ArcadeWorldRenderer implements WorldRenderer {
 

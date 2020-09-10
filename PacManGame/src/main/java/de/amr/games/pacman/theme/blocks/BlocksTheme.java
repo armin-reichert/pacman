@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.blocks;
+package de.amr.games.pacman.theme.blocks;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -11,18 +11,18 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.GameRenderer;
-import de.amr.games.pacman.view.api.GhostRenderer;
-import de.amr.games.pacman.view.api.MessagesRenderer;
-import de.amr.games.pacman.view.api.PacManRenderer;
-import de.amr.games.pacman.view.api.PacManSounds;
-import de.amr.games.pacman.view.api.WorldRenderer;
-import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.theme.api.GameRenderer;
+import de.amr.games.pacman.theme.api.GhostRenderer;
+import de.amr.games.pacman.theme.api.MessagesRenderer;
+import de.amr.games.pacman.theme.api.PacManRenderer;
+import de.amr.games.pacman.theme.api.Theme;
+import de.amr.games.pacman.theme.api.WorldRenderer;
+import de.amr.games.pacman.theme.arcade.ArcadeSounds;
+import de.amr.games.pacman.view.api.PacManGameSounds;
 import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
 import de.amr.games.pacman.view.common.DefaultGameScoreRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.core.ThemeParameters;
-import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
 
 /**
  * A theme using simple geometric figures.
@@ -132,7 +132,7 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public PacManSounds sounds() {
+	public PacManGameSounds sounds() {
 		return $value("sounds");
 	}
 }

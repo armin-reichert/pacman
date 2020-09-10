@@ -27,7 +27,7 @@ import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
-import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.view.play.ExtendedPlayView;
 import de.amr.games.pacman.view.play.PlayView;
 

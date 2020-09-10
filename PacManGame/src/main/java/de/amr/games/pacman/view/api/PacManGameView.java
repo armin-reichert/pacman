@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import de.amr.easy.game.controller.StateMachineControlled;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.theme.api.Theme;
 
 /**
  * All views of the Pac-Man game are themeable and have a lifecycle.

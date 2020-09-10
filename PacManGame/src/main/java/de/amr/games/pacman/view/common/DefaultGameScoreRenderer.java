@@ -8,7 +8,7 @@ import java.awt.RenderingHints;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.GameRenderer;
+import de.amr.games.pacman.theme.api.GameRenderer;
 
 public class DefaultGameScoreRenderer implements GameRenderer {
 

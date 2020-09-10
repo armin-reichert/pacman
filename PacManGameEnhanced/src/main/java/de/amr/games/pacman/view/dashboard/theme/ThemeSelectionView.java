@@ -26,9 +26,9 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.theme.api.Theme;
+import de.amr.games.pacman.theme.api.Themes;
 import de.amr.games.pacman.view.api.PacManGameView;
-import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.theme.Themes;
 import net.miginfocom.swing.MigLayout;
 
 public class ThemeSelectionView extends JPanel implements Lifecycle {

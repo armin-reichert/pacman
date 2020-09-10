@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.theme.api.Theme;
 
 public class ThemeSelector {
 

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.letters;
+package de.amr.games.pacman.theme.letters;
 
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.COLLAPSING;
 
@@ -12,19 +12,19 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
+import de.amr.games.pacman.theme.api.GameRenderer;
+import de.amr.games.pacman.theme.api.GhostRenderer;
+import de.amr.games.pacman.theme.api.MessagesRenderer;
+import de.amr.games.pacman.theme.api.PacManRenderer;
+import de.amr.games.pacman.theme.api.Theme;
+import de.amr.games.pacman.theme.api.WorldRenderer;
+import de.amr.games.pacman.theme.arcade.ArcadeSounds;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.GameRenderer;
-import de.amr.games.pacman.view.api.GhostRenderer;
-import de.amr.games.pacman.view.api.MessagesRenderer;
-import de.amr.games.pacman.view.api.PacManRenderer;
-import de.amr.games.pacman.view.api.WorldRenderer;
-import de.amr.games.pacman.view.api.PacManSounds;
-import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.view.api.PacManGameSounds;
 import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.core.ThemeParameters;
-import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
 
 /**
  * Theme using letters and other non-graphic characters.
@@ -199,7 +199,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public PacManSounds sounds() {
+	public PacManGameSounds sounds() {
 		return $value("sounds");
 	}
 }

@@ -9,7 +9,7 @@ import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.view.common.GridRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.common.RoutesRenderer;

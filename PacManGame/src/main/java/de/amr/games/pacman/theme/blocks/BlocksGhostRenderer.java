@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.blocks;
+package de.amr.games.pacman.theme.blocks;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -9,7 +9,7 @@ import java.awt.geom.Rectangle2D;
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.view.api.GhostRenderer;
+import de.amr.games.pacman.theme.api.GhostRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
 class BlocksGhostRenderer implements GhostRenderer {

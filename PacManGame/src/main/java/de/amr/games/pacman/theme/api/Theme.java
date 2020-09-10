@@ -1,8 +1,10 @@
-package de.amr.games.pacman.view.api;
+package de.amr.games.pacman.theme.api;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+
+import de.amr.games.pacman.view.api.PacManGameSounds;
 
 /**
  * Interface implemented by every theme.
@@ -39,5 +41,5 @@ public interface Theme {
 
 	MessagesRenderer messagesRenderer();
 
-	PacManSounds sounds();
+	PacManGameSounds sounds();
 }

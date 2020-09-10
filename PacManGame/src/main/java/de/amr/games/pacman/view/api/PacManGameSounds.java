@@ -10,7 +10,7 @@ import de.amr.easy.game.assets.SoundClip;
  * 
  * @author Armin Reichert
  */
-public interface PacManSounds {
+public interface PacManGameSounds {
 
 	SoundClip clipCrunching();
 

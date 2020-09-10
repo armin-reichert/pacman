@@ -1,12 +1,11 @@
-package de.amr.games.pacman.view.theme;
+package de.amr.games.pacman.theme.api;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
-import de.amr.games.pacman.view.theme.blocks.BlocksTheme;
-import de.amr.games.pacman.view.theme.letters.LettersTheme;
+import de.amr.games.pacman.theme.arcade.ArcadeTheme;
+import de.amr.games.pacman.theme.blocks.BlocksTheme;
+import de.amr.games.pacman.theme.letters.LettersTheme;
 
 /**
  * The predefined themes.

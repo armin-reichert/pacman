@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.api.MessagesRenderer;
-import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.theme.api.MessagesRenderer;
+import de.amr.games.pacman.theme.api.Theme;
 
 /**
  * Renders the messages inside the play view.

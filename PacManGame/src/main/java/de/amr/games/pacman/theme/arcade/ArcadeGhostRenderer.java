@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.arcade;
+package de.amr.games.pacman.theme.arcade;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
@@ -7,7 +7,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTEN
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
-import static de.amr.games.pacman.view.theme.arcade.ArcadeTheme.THEME;
+import static de.amr.games.pacman.theme.arcade.ArcadeTheme.THEME;
 
 import java.awt.Graphics2D;
 import java.util.Optional;
@@ -17,8 +17,8 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.view.api.GhostRenderer;
-import de.amr.games.pacman.view.theme.arcade.ArcadeSpritesheet.GhostColor;
+import de.amr.games.pacman.theme.api.GhostRenderer;
+import de.amr.games.pacman.theme.arcade.ArcadeSpritesheet.GhostColor;
 
 /**
  * Renders a ghost using animated sprites.

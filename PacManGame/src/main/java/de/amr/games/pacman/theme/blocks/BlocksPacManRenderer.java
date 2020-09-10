@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.blocks;
+package de.amr.games.pacman.theme.blocks;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -7,7 +7,7 @@ import java.awt.Stroke;
 
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
-import de.amr.games.pacman.view.api.PacManRenderer;
+import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
 class BlocksPacManRenderer implements PacManRenderer {

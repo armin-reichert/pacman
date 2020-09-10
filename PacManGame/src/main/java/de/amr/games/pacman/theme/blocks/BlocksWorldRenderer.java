@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.blocks;
+package de.amr.games.pacman.theme.blocks;
 
 import static de.amr.easy.game.Application.app;
 
@@ -11,9 +11,9 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
+import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.WorldRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
 class BlocksWorldRenderer implements WorldRenderer {

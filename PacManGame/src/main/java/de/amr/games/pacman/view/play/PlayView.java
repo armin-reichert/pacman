@@ -13,11 +13,11 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.GameRenderer;
-import de.amr.games.pacman.view.api.PacManRenderer;
-import de.amr.games.pacman.view.api.WorldRenderer;
+import de.amr.games.pacman.theme.api.GameRenderer;
+import de.amr.games.pacman.theme.api.PacManRenderer;
+import de.amr.games.pacman.theme.api.Theme;
+import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.view.api.PacManGameView;
-import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesView;
 
 /**
