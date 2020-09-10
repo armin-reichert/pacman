@@ -14,6 +14,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.Theme;
 
 /**
@@ -27,6 +28,7 @@ public class ChaseGhostsAnimation extends GameObject {
 	private final PacMan pacMan;
 	private final Ghost blinky, inky, pinky, clyde;
 	private Theme theme;
+	private IPacManRenderer pacManRenderer;
 	private int points;
 
 	public ChaseGhostsAnimation(Theme theme, World world) {
@@ -49,6 +51,7 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	public void setTheme(Theme theme) {
 		this.theme = theme;
+		pacManRenderer = theme.pacManRenderer();
 	}
 
 	@Override
@@ -101,7 +104,7 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
-		theme.pacManRenderer(pacMan).render(g, pacMan);
+		pacManRenderer.render(g, pacMan);
 		ghosts().forEach(ghost -> {
 			theme.ghostRenderer(ghost).render(g, ghost);
 		});

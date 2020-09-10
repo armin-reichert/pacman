@@ -21,6 +21,7 @@ import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.Theme;
 
 /**
@@ -35,6 +36,8 @@ public class GhostPointsAnimation extends GameObject {
 	private final Ghost blinky, inky, pinky, clyde;
 	private final BitSet killed = new BitSet(5);
 	private Theme theme;
+	private IPacManRenderer pacManRenderer;
+
 	private int ghostToKill;
 	private long ghostTimer;
 	private long energizerTimer;
@@ -62,11 +65,12 @@ public class GhostPointsAnimation extends GameObject {
 
 	public void setTheme(Theme theme) {
 		this.theme = theme;
+		pacManRenderer = theme.pacManRenderer();
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		theme.pacManRenderer(pacMan).render(g, pacMan);
+		pacManRenderer.render(g, pacMan);
 		ghosts().forEach(ghost -> {
 			theme.ghostRenderer(ghost).render(g, ghost);
 		});

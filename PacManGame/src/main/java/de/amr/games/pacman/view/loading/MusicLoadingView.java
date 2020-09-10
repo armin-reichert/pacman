@@ -14,6 +14,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
@@ -30,6 +31,7 @@ public class MusicLoadingView implements PacManGameView {
 	private final PacMan pacMan = folks.pacMan;
 	private final List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
 	private Theme theme;
+	private IPacManRenderer pacManRenderer;
 	private MessagesRenderer messagesRenderer;
 
 	private final int width;
@@ -55,6 +57,7 @@ public class MusicLoadingView implements PacManGameView {
 	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
+		pacManRenderer = theme.pacManRenderer();
 		messagesRenderer = theme.messagesRenderer();
 	}
 
@@ -98,7 +101,7 @@ public class MusicLoadingView implements PacManGameView {
 		messagesRenderer.setRow(18);
 		messagesRenderer.setTextColor(new Color(255, 0, 0, alpha));
 		messagesRenderer.drawCentered(g, PacManGameView.texts.getString("loading_music"), width);
-		theme.pacManRenderer(pacMan).render(g, pacMan);
+		pacManRenderer.render(g, pacMan);
 		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2, y = pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			Ghost ghost = ghosts.get(rnd.nextInt(4));

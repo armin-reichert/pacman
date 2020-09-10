@@ -14,6 +14,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.IGameRenderer;
+import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
@@ -36,6 +37,7 @@ public class PlayView implements PacManGameView {
 	protected IGameRenderer pointsCounterRenderer;
 	protected IGameRenderer livesCounterRenderer;
 	protected IGameRenderer levelCounterRenderer;
+	protected IPacManRenderer pacManRenderer;
 
 	public PlayView(Theme theme, Folks folks, World world) {
 		this.folks = folks;
@@ -44,7 +46,7 @@ public class PlayView implements PacManGameView {
 		messages = new MessagesView(theme, world, 15, 21);
 		// this is a hack to reset the collapsing animation of Pac-Man. Need clean solution.
 		folks.pacMan.ai.addStateExitListener(PacManState.DEAD, state -> {
-			theme.pacManRenderer(folks.pacMan).resetAnimations(folks.pacMan);
+			pacManRenderer.resetAnimations(folks.pacMan);
 		});
 		setTheme(theme);
 	}
@@ -76,6 +78,7 @@ public class PlayView implements PacManGameView {
 		pointsCounterRenderer = theme.pointsCounterRenderer();
 		livesCounterRenderer = theme.livesCounterRenderer();
 		levelCounterRenderer = theme.levelCounterRenderer();
+		pacManRenderer = theme.pacManRenderer();
 	}
 
 	@Override
@@ -109,7 +112,7 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawPacMan(Graphics2D g, PacMan pacMan) {
-		theme.pacManRenderer(pacMan).render(g, pacMan);
+		pacManRenderer.render(g, pacMan);
 	}
 
 	protected void drawGhost(Graphics2D g, Ghost ghost) {
