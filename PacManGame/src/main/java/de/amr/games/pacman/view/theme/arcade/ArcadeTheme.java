@@ -37,6 +37,18 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	private Map<PacMan, SpriteMap> pacManSprites = new HashMap<>();
 	private Map<Ghost, SpriteMap> ghostSprites = new HashMap<>();
 
+	private ArcadeTheme() {
+		set("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
+		set("maze-flash-sec", 0.4f);
+		for (ArcadeBonus symbol : ArcadeBonus.values()) {
+			set("symbol-" + symbol.name(), sprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
+		}
+		for (int points : PacManGame.POINTS_BONUS) {
+			set("points-" + points, sprites.makeSprite_number(points).frame(0));
+		}
+		set("sprites", sprites);
+	}
+
 	private SpriteMap makePacManSpriteMap() {
 		SpriteMap map = new SpriteMap();
 		Direction.dirs().forEach(dir -> {
@@ -48,26 +60,11 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 		return map;
 	}
 
-	private GhostColor color(GhostPersonality personality) {
-		switch (personality) {
-		case SHADOW:
-			return GhostColor.RED;
-		case SPEEDY:
-			return GhostColor.PINK;
-		case BASHFUL:
-			return GhostColor.CYAN;
-		case POKEY:
-			return GhostColor.ORANGE;
-		default:
-			throw new IllegalArgumentException("Illegal ghost personality: " + personality);
-		}
-	}
-
 	private SpriteMap makeGhostSpriteMap(Ghost ghost) {
 		SpriteMap map = new SpriteMap();
 		for (Direction dir : Direction.values()) {
-			for (GhostPersonality personality : GhostPersonality.values()) {
-				map.set(ghostSpriteKeyColor(personality, dir), sprites.makeSprite_ghostColored(color(personality), dir));
+			for (GhostColor color : GhostColor.values()) {
+				map.set(ghostSpriteKeyColor(color, dir), sprites.makeSprite_ghostColored(color, dir));
 			}
 			map.set(ghostSpriteKeyEyes(dir), sprites.makeSprite_ghostEyes(dir));
 		}
@@ -97,8 +94,8 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 		return spriteMap;
 	}
 
-	String ghostSpriteKeyColor(GhostPersonality personality, Direction dir) {
-		return String.format("colored-%s-%s", personality, dir);
+	String ghostSpriteKeyColor(GhostColor color, Direction dir) {
+		return String.format("colored-%s-%s", color, dir);
 	}
 
 	String ghostSpriteKeyEyes(Direction dir) {
@@ -109,16 +106,19 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 		return String.format("points-%d", points);
 	}
 
-	private ArcadeTheme() {
-		set("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
-		set("maze-flash-sec", 0.4f);
-		for (ArcadeBonus symbol : ArcadeBonus.values()) {
-			set("symbol-" + symbol.name(), sprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
+	GhostColor color(GhostPersonality personality) {
+		switch (personality) {
+		case SHADOW:
+			return GhostColor.RED;
+		case SPEEDY:
+			return GhostColor.PINK;
+		case BASHFUL:
+			return GhostColor.CYAN;
+		case POKEY:
+			return GhostColor.ORANGE;
+		default:
+			throw new IllegalArgumentException("Illegal ghost personality: " + personality);
 		}
-		for (int points : PacManGame.POINTS_BONUS) {
-			set("points-" + points, sprites.makeSprite_number(points).frame(0));
-		}
-		set("sprites", sprites);
 	}
 
 	@Override

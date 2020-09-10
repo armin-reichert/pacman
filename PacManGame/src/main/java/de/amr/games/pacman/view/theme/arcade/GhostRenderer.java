@@ -18,6 +18,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.view.api.IGhostRenderer;
+import de.amr.games.pacman.view.theme.arcade.ArcadeSpritesheet.GhostColor;
 
 /**
  * Renders a ghost using animated sprites.
@@ -44,13 +45,14 @@ class GhostRenderer implements IGhostRenderer {
 	}
 
 	private Optional<Sprite> selectSprite(Ghost ghost) {
-		SpriteMap spriteMap = ArcadeTheme.THEME.getSpriteMap(ghost);
+		SpriteMap spriteMap = THEME.getSpriteMap(ghost);
 		GhostState state = ghost.ai.getState();
 		Direction dir = ghost.moveDir;
+		GhostColor color = THEME.color(ghost.personality);
 		if (state == null) {
-			return spriteMap.select(THEME.ghostSpriteKeyColor(ghost.personality, dir));
+			return spriteMap.select(THEME.ghostSpriteKeyColor(color, dir));
 		} else if (ghost.ai.is(LOCKED, LEAVING_HOUSE, CHASING, SCATTERING)) {
-			return spriteMap.select(THEME.ghostSpriteKeyColor(ghost.personality, dir));
+			return spriteMap.select(THEME.ghostSpriteKeyColor(color, dir));
 		} else if (ghost.ai.is(ENTERING_HOUSE)) {
 			return spriteMap.select(THEME.ghostSpriteKeyEyes(dir));
 		} else if (ghost.ai.is(FRIGHTENED)) {
