@@ -10,7 +10,6 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
-import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
@@ -94,7 +93,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IPacManRenderer pacManRenderer(PacMan pacMan_) {
+	public IPacManRenderer pacManRenderer() {
 		return (g, pacMan) -> {
 			if (pacMan.visible) {
 				Transform tf = pacMan.tf;

@@ -116,7 +116,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IPacManRenderer pacManRenderer(PacMan pacMan) {
+	public IPacManRenderer pacManRenderer() {
 		return new PacManRenderer();
 	}
 

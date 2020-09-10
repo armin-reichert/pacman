@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.Image;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 
 /**
@@ -31,7 +30,7 @@ public interface Theme {
 
 	IWorldRenderer worldRenderer();
 
-	IPacManRenderer pacManRenderer(PacMan pacMan);
+	IPacManRenderer pacManRenderer();
 
 	IGhostRenderer ghostRenderer(Ghost ghost);
 
