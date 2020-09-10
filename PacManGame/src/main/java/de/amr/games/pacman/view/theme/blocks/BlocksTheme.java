@@ -11,15 +11,15 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IGameRenderer;
-import de.amr.games.pacman.view.api.IGhostRenderer;
-import de.amr.games.pacman.view.api.IMessagesRenderer;
-import de.amr.games.pacman.view.api.IPacManRenderer;
-import de.amr.games.pacman.view.api.IPacManSounds;
-import de.amr.games.pacman.view.api.IWorldRenderer;
+import de.amr.games.pacman.view.api.GameRenderer;
+import de.amr.games.pacman.view.api.GhostRenderer;
+import de.amr.games.pacman.view.api.MessagesRenderer;
+import de.amr.games.pacman.view.api.PacManRenderer;
+import de.amr.games.pacman.view.api.PacManSounds;
+import de.amr.games.pacman.view.api.WorldRenderer;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.common.MessagesRenderer;
-import de.amr.games.pacman.view.common.PointsCounterRenderer;
+import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
+import de.amr.games.pacman.view.common.DefaultGameScoreRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.core.ThemeParameters;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
@@ -76,37 +76,37 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IWorldRenderer worldRenderer() {
-		return new WorldRenderer();
+	public WorldRenderer worldRenderer() {
+		return new BlocksWorldRenderer();
 	}
 
 	@Override
-	public IPacManRenderer pacManRenderer() {
-		return new PacManRenderer();
+	public PacManRenderer pacManRenderer() {
+		return new BlocksPacManRenderer();
 	}
 
 	@Override
-	public IGhostRenderer ghostRenderer() {
-		return new GhostRenderer();
+	public GhostRenderer ghostRenderer() {
+		return new BlocksGhostRenderer();
 	}
 
 	@Override
-	public IMessagesRenderer messagesRenderer() {
-		MessagesRenderer messagesRenderer = new MessagesRenderer();
+	public MessagesRenderer messagesRenderer() {
+		DefaultMessagesRenderer messagesRenderer = new DefaultMessagesRenderer();
 		messagesRenderer.setFont($font("font").deriveFont(14f));
 		messagesRenderer.setTextAntialiasing(true);
 		return messagesRenderer;
 	}
 
 	@Override
-	public IGameRenderer pointsCounterRenderer() {
-		PointsCounterRenderer r = new PointsCounterRenderer();
+	public GameRenderer gameScoreRenderer() {
+		DefaultGameScoreRenderer r = new DefaultGameScoreRenderer();
 		r.setFont($font("font"));
 		return r;
 	}
 
 	@Override
-	public IGameRenderer livesCounterRenderer() {
+	public GameRenderer livesCounterRenderer() {
 		return (Graphics2D g, PacManGame level) -> {
 			Rendering.smoothOn(g);
 			g.setColor(Color.YELLOW);
@@ -118,7 +118,7 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameRenderer levelCounterRenderer() {
+	public GameRenderer levelCounterRenderer() {
 		return (Graphics2D g, PacManGame level) -> {
 			Rendering.smoothOn(g);
 			int levels = level.levelCounter.size();
@@ -132,7 +132,7 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IPacManSounds sounds() {
+	public PacManSounds sounds() {
 		return $value("sounds");
 	}
 }

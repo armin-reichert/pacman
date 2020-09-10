@@ -25,7 +25,7 @@ import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.core.EmptyWorld;
-import de.amr.games.pacman.view.api.IMessagesRenderer;
+import de.amr.games.pacman.view.api.MessagesRenderer;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
@@ -57,7 +57,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	private final LinkWidget gitHubLink;
 
 	private Theme theme;
-	private IMessagesRenderer messagesRenderer;
+	private MessagesRenderer messagesRenderer;
 
 	public IntroView(Theme theme) {
 		super(IntroState.class);

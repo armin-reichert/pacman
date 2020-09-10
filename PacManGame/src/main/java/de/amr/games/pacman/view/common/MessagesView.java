@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.api.IMessagesRenderer;
+import de.amr.games.pacman.view.api.MessagesRenderer;
 import de.amr.games.pacman.view.api.Theme;
 
 /**
@@ -18,7 +18,7 @@ public class MessagesView {
 
 	public final List<Message> messages;
 	private final World world;
-	private IMessagesRenderer renderer;
+	private MessagesRenderer renderer;
 
 	public MessagesView(Theme theme, World world, int... rows) {
 		this.world = world;

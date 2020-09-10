@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
-public interface IMessagesRenderer {
+public interface MessagesRenderer {
 
 	void draw(Graphics2D g, String message, int widthInTiles);
 

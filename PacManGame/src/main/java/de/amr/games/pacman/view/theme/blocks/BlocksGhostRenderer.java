@@ -9,10 +9,10 @@ import java.awt.geom.Rectangle2D;
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.view.api.IGhostRenderer;
+import de.amr.games.pacman.view.api.GhostRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
-class GhostRenderer implements IGhostRenderer {
+class BlocksGhostRenderer implements GhostRenderer {
 
 	@Override
 	public void render(Graphics2D g, Ghost ghost) {

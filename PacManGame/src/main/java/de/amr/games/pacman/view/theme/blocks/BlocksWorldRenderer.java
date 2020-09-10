@@ -13,10 +13,10 @@ import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IWorldRenderer;
+import de.amr.games.pacman.view.api.WorldRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
-class WorldRenderer implements IWorldRenderer {
+class BlocksWorldRenderer implements WorldRenderer {
 
 	@Override
 	public void render(Graphics2D g, World world) {

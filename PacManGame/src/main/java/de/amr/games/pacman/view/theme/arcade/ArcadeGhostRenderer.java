@@ -17,7 +17,7 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.view.api.IGhostRenderer;
+import de.amr.games.pacman.view.api.GhostRenderer;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSpritesheet.GhostColor;
 
 /**
@@ -25,7 +25,7 @@ import de.amr.games.pacman.view.theme.arcade.ArcadeSpritesheet.GhostColor;
  * 
  * @author Armin Reichert
  */
-class GhostRenderer implements IGhostRenderer {
+class ArcadeGhostRenderer implements GhostRenderer {
 
 	@Override
 	public void render(Graphics2D g, Ghost ghost) {

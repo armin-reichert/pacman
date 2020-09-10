@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 
-public interface IPacManRenderer {
+public interface PacManRenderer {
 
 	void render(Graphics2D g, PacMan pacMan);
 

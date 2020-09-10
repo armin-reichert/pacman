@@ -14,14 +14,14 @@ import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IGameRenderer;
-import de.amr.games.pacman.view.api.IGhostRenderer;
-import de.amr.games.pacman.view.api.IMessagesRenderer;
-import de.amr.games.pacman.view.api.IPacManRenderer;
-import de.amr.games.pacman.view.api.IWorldRenderer;
-import de.amr.games.pacman.view.api.IPacManSounds;
+import de.amr.games.pacman.view.api.GameRenderer;
+import de.amr.games.pacman.view.api.GhostRenderer;
+import de.amr.games.pacman.view.api.MessagesRenderer;
+import de.amr.games.pacman.view.api.PacManRenderer;
+import de.amr.games.pacman.view.api.WorldRenderer;
+import de.amr.games.pacman.view.api.PacManSounds;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.common.MessagesRenderer;
+import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.core.ThemeParameters;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
@@ -75,7 +75,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGhostRenderer ghostRenderer() {
+	public GhostRenderer ghostRenderer() {
 		return (g, ghost) -> {
 			if (ghost.visible) {
 				Font font = $font("font");
@@ -92,7 +92,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IPacManRenderer pacManRenderer() {
+	public PacManRenderer pacManRenderer() {
 		return (g, pacMan) -> {
 			if (pacMan.visible) {
 				Transform tf = pacMan.tf;
@@ -106,7 +106,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameRenderer levelCounterRenderer() {
+	public GameRenderer levelCounterRenderer() {
 		return (g, level) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -118,7 +118,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameRenderer livesCounterRenderer() {
+	public GameRenderer livesCounterRenderer() {
 		return (g, level) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -129,7 +129,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameRenderer pointsCounterRenderer() {
+	public GameRenderer gameScoreRenderer() {
 		return (g, level) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -143,7 +143,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IWorldRenderer worldRenderer() {
+	public WorldRenderer worldRenderer() {
 		return (g, world) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
@@ -192,14 +192,14 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IMessagesRenderer messagesRenderer() {
-		MessagesRenderer messagesRenderer = new MessagesRenderer();
+	public MessagesRenderer messagesRenderer() {
+		DefaultMessagesRenderer messagesRenderer = new DefaultMessagesRenderer();
 		messagesRenderer.setFont($font("font"));
 		return messagesRenderer;
 	}
 
 	@Override
-	public IPacManSounds sounds() {
+	public PacManSounds sounds() {
 		return $value("sounds");
 	}
 }

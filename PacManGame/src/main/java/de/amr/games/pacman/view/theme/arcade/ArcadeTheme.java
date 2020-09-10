@@ -14,15 +14,15 @@ import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IGameRenderer;
-import de.amr.games.pacman.view.api.IGhostRenderer;
-import de.amr.games.pacman.view.api.IMessagesRenderer;
-import de.amr.games.pacman.view.api.IPacManRenderer;
-import de.amr.games.pacman.view.api.IPacManSounds;
-import de.amr.games.pacman.view.api.IWorldRenderer;
+import de.amr.games.pacman.view.api.GameRenderer;
+import de.amr.games.pacman.view.api.GhostRenderer;
+import de.amr.games.pacman.view.api.MessagesRenderer;
+import de.amr.games.pacman.view.api.PacManRenderer;
+import de.amr.games.pacman.view.api.PacManSounds;
+import de.amr.games.pacman.view.api.WorldRenderer;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.common.MessagesRenderer;
-import de.amr.games.pacman.view.common.PointsCounterRenderer;
+import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
+import de.amr.games.pacman.view.common.DefaultGameScoreRenderer;
 import de.amr.games.pacman.view.core.ThemeParameters;
 import de.amr.games.pacman.view.theme.arcade.ArcadeSpritesheet.GhostColor;
 
@@ -129,29 +129,29 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IWorldRenderer worldRenderer() {
-		return new WorldRenderer(sprites);
+	public WorldRenderer worldRenderer() {
+		return new ArcadeWorldRenderer(sprites);
 	}
 
 	@Override
-	public IPacManRenderer pacManRenderer() {
-		return new PacManRenderer();
+	public PacManRenderer pacManRenderer() {
+		return new ArcadePacManRenderer();
 	}
 
 	@Override
-	public IGhostRenderer ghostRenderer() {
-		return new GhostRenderer();
+	public GhostRenderer ghostRenderer() {
+		return new ArcadeGhostRenderer();
 	}
 
 	@Override
-	public IMessagesRenderer messagesRenderer() {
-		MessagesRenderer messagesRenderer = new MessagesRenderer();
+	public MessagesRenderer messagesRenderer() {
+		DefaultMessagesRenderer messagesRenderer = new DefaultMessagesRenderer();
 		messagesRenderer.setFont($font("font"));
 		return messagesRenderer;
 	}
 
 	@Override
-	public IGameRenderer levelCounterRenderer() {
+	public GameRenderer levelCounterRenderer() {
 		return (Graphics2D g, PacManGame game) -> {
 			int max = 7;
 			int first = Math.max(0, game.levelCounter.size() - max);
@@ -165,7 +165,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameRenderer livesCounterRenderer() {
+	public GameRenderer livesCounterRenderer() {
 		return (Graphics2D g, PacManGame game) -> {
 			for (int i = 0, x = Tile.SIZE; i < game.lives; ++i, x += 2 * Tile.SIZE) {
 				g.drawImage(sprites.imageLivesCounter(), x, 0, null);
@@ -174,14 +174,14 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGameRenderer pointsCounterRenderer() {
-		PointsCounterRenderer r = new PointsCounterRenderer();
+	public GameRenderer gameScoreRenderer() {
+		DefaultGameScoreRenderer r = new DefaultGameScoreRenderer();
 		r.setFont($font("font"));
 		return r;
 	}
 
 	@Override
-	public IPacManSounds sounds() {
+	public PacManSounds sounds() {
 		return ArcadeSounds.SOUNDS;
 	}
 }

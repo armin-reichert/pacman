@@ -14,14 +14,14 @@ import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IWorldRenderer;
+import de.amr.games.pacman.view.api.WorldRenderer;
 
-class WorldRenderer implements IWorldRenderer {
+class ArcadeWorldRenderer implements WorldRenderer {
 
 	private SpriteMap spriteMap;
 	private SpriteAnimation energizerAnimation;
 
-	public WorldRenderer(ArcadeSpritesheet sprites) {
+	public ArcadeWorldRenderer(ArcadeSpritesheet sprites) {
 		spriteMap = new SpriteMap();
 		spriteMap.set("maze-full", sprites.makeSprite_fullMaze());
 		spriteMap.set("maze-flashing", sprites.makeSprite_flashingMaze());

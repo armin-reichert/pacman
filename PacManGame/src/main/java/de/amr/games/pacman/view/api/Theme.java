@@ -25,19 +25,19 @@ public interface Theme {
 
 	<T> T $value(String key);
 
-	IWorldRenderer worldRenderer();
+	WorldRenderer worldRenderer();
 
-	IPacManRenderer pacManRenderer();
+	PacManRenderer pacManRenderer();
 
-	IGhostRenderer ghostRenderer();
+	GhostRenderer ghostRenderer();
 
-	IGameRenderer levelCounterRenderer();
+	GameRenderer levelCounterRenderer();
 
-	IGameRenderer livesCounterRenderer();
+	GameRenderer livesCounterRenderer();
 
-	IGameRenderer pointsCounterRenderer();
+	GameRenderer gameScoreRenderer();
 
-	IMessagesRenderer messagesRenderer();
+	MessagesRenderer messagesRenderer();
 
-	IPacManSounds sounds();
+	PacManSounds sounds();
 }

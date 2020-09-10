@@ -6,9 +6,9 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IMessagesRenderer;
+import de.amr.games.pacman.view.api.MessagesRenderer;
 
-public class MessagesRenderer implements IMessagesRenderer {
+public class DefaultMessagesRenderer implements MessagesRenderer {
 
 	private int row;
 	private Color textColor;
@@ -16,7 +16,7 @@ public class MessagesRenderer implements IMessagesRenderer {
 	private int fontSize;
 	private boolean textAntialiasing;
 
-	public MessagesRenderer() {
+	public DefaultMessagesRenderer() {
 		row = 21;
 		textColor = Color.YELLOW;
 		font = new Font(Font.MONOSPACED, Font.PLAIN, Tile.SIZE);

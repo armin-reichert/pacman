@@ -14,8 +14,8 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IMessagesRenderer;
-import de.amr.games.pacman.view.api.IPacManRenderer;
+import de.amr.games.pacman.view.api.MessagesRenderer;
+import de.amr.games.pacman.view.api.PacManRenderer;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
 
@@ -31,8 +31,8 @@ public class MusicLoadingView implements PacManGameView {
 	private final PacMan pacMan = folks.pacMan;
 	private final List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
 	private Theme theme;
-	private IPacManRenderer pacManRenderer;
-	private IMessagesRenderer messagesRenderer;
+	private PacManRenderer pacManRenderer;
+	private MessagesRenderer messagesRenderer;
 
 	private final int width;
 	private final int height;

@@ -7,10 +7,10 @@ import java.awt.Stroke;
 
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
-import de.amr.games.pacman.view.api.IPacManRenderer;
+import de.amr.games.pacman.view.api.PacManRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
-class PacManRenderer implements IPacManRenderer {
+class BlocksPacManRenderer implements PacManRenderer {
 
 	@Override
 	public void render(Graphics2D g, PacMan pacMan) {

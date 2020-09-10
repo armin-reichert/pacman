@@ -13,9 +13,9 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IGameRenderer;
-import de.amr.games.pacman.view.api.IPacManRenderer;
-import de.amr.games.pacman.view.api.IWorldRenderer;
+import de.amr.games.pacman.view.api.GameRenderer;
+import de.amr.games.pacman.view.api.PacManRenderer;
+import de.amr.games.pacman.view.api.WorldRenderer;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesView;
@@ -33,11 +33,11 @@ public class PlayView implements PacManGameView {
 	public final MessagesView messages;
 
 	protected Theme theme;
-	protected IWorldRenderer worldRenderer;
-	protected IGameRenderer pointsCounterRenderer;
-	protected IGameRenderer livesCounterRenderer;
-	protected IGameRenderer levelCounterRenderer;
-	protected IPacManRenderer pacManRenderer;
+	protected WorldRenderer worldRenderer;
+	protected GameRenderer pointsCounterRenderer;
+	protected GameRenderer livesCounterRenderer;
+	protected GameRenderer levelCounterRenderer;
+	protected PacManRenderer pacManRenderer;
 
 	public PlayView(Theme theme, Folks folks, World world) {
 		this.folks = folks;
@@ -75,7 +75,7 @@ public class PlayView implements PacManGameView {
 
 	private void updateRenderers() {
 		worldRenderer = theme.worldRenderer();
-		pointsCounterRenderer = theme.pointsCounterRenderer();
+		pointsCounterRenderer = theme.gameScoreRenderer();
 		livesCounterRenderer = theme.livesCounterRenderer();
 		levelCounterRenderer = theme.levelCounterRenderer();
 		pacManRenderer = theme.pacManRenderer();

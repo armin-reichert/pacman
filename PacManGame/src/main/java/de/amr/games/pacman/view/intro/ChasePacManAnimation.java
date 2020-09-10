@@ -18,7 +18,7 @@ import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.view.api.IPacManRenderer;
+import de.amr.games.pacman.view.api.PacManRenderer;
 import de.amr.games.pacman.view.api.Theme;
 
 public class ChasePacManAnimation extends GameObject {
@@ -31,7 +31,7 @@ public class ChasePacManAnimation extends GameObject {
 	private final PacMan pacMan;
 	private final Ghost blinky, inky, pinky, clyde;
 	private Theme theme;
-	private IPacManRenderer pacManRenderer;
+	private PacManRenderer pacManRenderer;
 
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
