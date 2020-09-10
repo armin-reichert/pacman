@@ -12,7 +12,7 @@ import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IMessagesRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
-import de.amr.games.pacman.view.api.PacManSounds;
+import de.amr.games.pacman.view.api.IPacManSounds;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.PointsCounterRenderer;
@@ -111,7 +111,7 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public PacManSounds sounds() {
+	public IPacManSounds sounds() {
 		return $value("sounds");
 	}
 }

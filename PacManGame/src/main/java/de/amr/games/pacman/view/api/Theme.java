@@ -39,5 +39,5 @@ public interface Theme {
 
 	IMessagesRenderer messagesRenderer();
 
-	PacManSounds sounds();
+	IPacManSounds sounds();
 }
