@@ -29,8 +29,8 @@ public class PlayView implements PacManGameView {
 
 	public final World world;
 	public final Folks folks;
-	public final SoundState sound;
-	public final MessagesView messages;
+	public final SoundState soundState;
+	public final MessagesView messagesView;
 
 	protected Theme theme;
 	protected WorldRenderer worldRenderer;
@@ -42,8 +42,8 @@ public class PlayView implements PacManGameView {
 	public PlayView(Theme theme, Folks folks, World world) {
 		this.folks = folks;
 		this.world = world;
-		sound = new SoundState();
-		messages = new MessagesView(theme, world, 15, 21);
+		soundState = new SoundState();
+		messagesView = new MessagesView(theme, world, 15, 21);
 		// this is a hack to reset the collapsing animation of Pac-Man. Need clean solution.
 		folks.pacMan.ai.addStateExitListener(PacManState.DEAD, state -> {
 			pacManRenderer.resetAnimations(folks.pacMan);
@@ -53,7 +53,7 @@ public class PlayView implements PacManGameView {
 
 	@Override
 	public void init() {
-		messages.clearMessages();
+		messagesView.clearMessages();
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class PlayView implements PacManGameView {
 	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
-		messages.setTheme(theme);
+		messagesView.setTheme(theme);
 		updateRenderers();
 	}
 
@@ -128,12 +128,12 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawMessages(Graphics2D g) {
-		messages.draw(g);
+		messagesView.draw(g);
 	}
 
 	private void renderSound() {
 		// Pac-Man
-		long starvingMillis = System.currentTimeMillis() - sound.lastMealAt;
+		long starvingMillis = System.currentTimeMillis() - soundState.lastMealAt;
 		if (starvingMillis > 300) {
 			theme.sounds().clipCrunching().stop();
 		} else if (!theme.sounds().clipCrunching().isRunning()) {
@@ -144,34 +144,34 @@ public class PlayView implements PacManGameView {
 		} else if (!theme.sounds().clipWaza().isRunning()) {
 			theme.sounds().clipWaza().loop();
 		}
-		if (sound.pacManDied) {
+		if (soundState.pacManDied) {
 			theme.sounds().clipPacManDies().play();
-			sound.pacManDied = false;
+			soundState.pacManDied = false;
 		}
-		if (sound.bonusEaten) {
+		if (soundState.bonusEaten) {
 			theme.sounds().clipEatFruit().play();
-			sound.bonusEaten = false;
+			soundState.bonusEaten = false;
 		}
-		if (sound.gotExtraLife) {
+		if (soundState.gotExtraLife) {
 			theme.sounds().clipExtraLife().play();
-			sound.gotExtraLife = false;
+			soundState.gotExtraLife = false;
 		}
 
 		// Ghosts
-		if (!sound.chasingGhosts) {
+		if (!soundState.chasingGhosts) {
 			theme.sounds().clipGhostChase().stop();
 		} else if (!theme.sounds().clipGhostChase().isRunning()) {
 			theme.sounds().clipGhostChase().setVolume(0.5f);
 			theme.sounds().clipGhostChase().loop();
 		}
-		if (!sound.deadGhosts) {
+		if (!soundState.deadGhosts) {
 			theme.sounds().clipGhostDead().stop();
 		} else if (!theme.sounds().clipGhostDead().isRunning()) {
 			theme.sounds().clipGhostDead().loop();
 		}
-		if (sound.ghostEaten) {
+		if (soundState.ghostEaten) {
 			theme.sounds().clipEatGhost().play();
-			sound.ghostEaten = false;
+			soundState.ghostEaten = false;
 		}
 	}
 }

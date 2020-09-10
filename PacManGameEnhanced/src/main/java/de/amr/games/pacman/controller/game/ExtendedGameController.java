@@ -270,9 +270,9 @@ public class ExtendedGameController extends GameController {
 		settings.demoMode = !settings.demoMode;
 		setDemoMode(settings.demoMode);
 		if (settings.demoMode) {
-			playView().messages.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
+			playView().messagesView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 		} else {
-			playView().messages.clearMessage(1);
+			playView().messagesView.clearMessage(1);
 		}
 		loginfo("Demo mode is %s", settings.demoMode ? "on" : "off");
 	}

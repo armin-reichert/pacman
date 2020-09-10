@@ -44,14 +44,14 @@ class ScatteringTestUI extends TestController {
 		});
 		view.turnRoutesOn();
 		view.turnGridOn();
-		view.messages.showMessage(2, "Press SPACE to start", Color.WHITE);
+		view.messagesView.showMessage(2, "Press SPACE to start", Color.WHITE);
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			folks.ghostsInWorld().forEach(ghost -> ghost.ai.process(new GhostUnlockedEvent()));
-			view.messages.clearMessage(2);
+			view.messagesView.clearMessage(2);
 		}
 		if (Keyboard.keyPressedOnce("-")) {
 			folks.ghostsInWorld().forEach(ghost -> ghost.reverseDirection());

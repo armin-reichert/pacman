@@ -76,7 +76,7 @@ class TakeShortestPathTestUI extends TestController {
 		view.turnRoutesOn();
 		view.turnStatesOn();
 		view.turnGridOn();
-		view.messages.showMessage(2, "SPACE toggles ghost state", Color.WHITE);
+		view.messagesView.showMessage(2, "SPACE toggles ghost state", Color.WHITE);
 	}
 
 	private void selectNextTarget() {

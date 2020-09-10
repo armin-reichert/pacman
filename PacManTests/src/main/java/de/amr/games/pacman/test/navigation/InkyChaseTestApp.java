@@ -46,7 +46,7 @@ class InkyChaseTestUI extends TestController {
 			ghost.nextState = CHASING;
 		});
 		view.turnRoutesOn();
-		view.messages.showMessage(1, "Press SPACE to start", Color.WHITE);
+		view.messagesView.showMessage(1, "Press SPACE to start", Color.WHITE);
 	}
 
 	@Override
@@ -54,7 +54,7 @@ class InkyChaseTestUI extends TestController {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			folks.ghostsInWorld().forEach(ghost -> ghost.ai.process(new GhostUnlockedEvent()));
 			pacMan.wakeUp();
-			view.messages.clearMessage(1);
+			view.messagesView.clearMessage(1);
 		}
 		super.update();
 	}
