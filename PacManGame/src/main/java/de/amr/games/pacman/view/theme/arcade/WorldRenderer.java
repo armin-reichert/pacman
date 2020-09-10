@@ -6,6 +6,9 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.ui.sprites.CyclicAnimation;
+import de.amr.easy.game.ui.sprites.SpriteAnimation;
+import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
@@ -15,10 +18,15 @@ import de.amr.games.pacman.view.api.IWorldRenderer;
 
 class WorldRenderer implements IWorldRenderer {
 
-	private WorldSpriteMap spriteMap;
+	private SpriteMap spriteMap;
+	private SpriteAnimation energizerAnimation;
 
-	public WorldRenderer(WorldSpriteMap spriteMap) {
-		this.spriteMap = spriteMap;
+	public WorldRenderer(ArcadeSprites sprites) {
+		spriteMap = new SpriteMap();
+		spriteMap.set("maze-full", sprites.makeSprite_fullMaze());
+		spriteMap.set("maze-flashing", sprites.makeSprite_flashingMaze());
+		energizerAnimation = new CyclicAnimation(2);
+		energizerAnimation.setFrameDuration(150);
 	}
 
 	@Override
@@ -43,8 +51,6 @@ class WorldRenderer implements IWorldRenderer {
 				door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
 			});
 		}
-		spriteMap.getEnergizerAnimation().setEnabled(!world.isFrozen());
-		spriteMap.getEnergizerAnimation().update();
 		g2.dispose();
 	}
 
@@ -56,7 +62,9 @@ class WorldRenderer implements IWorldRenderer {
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
 		// simulate energizer blinking animation
-		if (spriteMap.getEnergizerAnimation().isEnabled() && spriteMap.getEnergizerAnimation().currentFrameIndex() == 1) {
+		energizerAnimation.update();
+		energizerAnimation.setEnabled(!world.isFrozen());
+		if (energizerAnimation.isEnabled() && energizerAnimation.currentFrameIndex() == 1) {
 			world.tiles().filter(tile -> world.hasFood(ArcadeFood.ENERGIZER, tile)).forEach(tile -> {
 				g.setColor(eatenFoodColor);
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);

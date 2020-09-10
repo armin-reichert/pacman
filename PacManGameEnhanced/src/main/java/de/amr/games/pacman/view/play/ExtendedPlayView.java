@@ -119,7 +119,7 @@ public class ExtendedPlayView extends PlayView {
 
 	@Override
 	protected void drawWorld(Graphics2D g) {
-		theme.worldRenderer(world).render(g, world);
+		worldRenderer.render(g, world);
 		if (showingGrid) {
 			world.tiles().filter(world::hasEatenFood).forEach(tile -> {
 				Color color = Rendering.patternColor(tile);

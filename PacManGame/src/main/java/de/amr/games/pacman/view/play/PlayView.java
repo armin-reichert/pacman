@@ -13,6 +13,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesView;
@@ -30,6 +31,7 @@ public class PlayView implements PacManGameView {
 	public final MessagesView messages;
 
 	protected Theme theme;
+	protected IWorldRenderer worldRenderer;
 
 	public PlayView(Theme theme, Folks folks, World world) {
 		this.theme = theme;
@@ -41,6 +43,7 @@ public class PlayView implements PacManGameView {
 		folks.pacMan.ai.addStateExitListener(PacManState.DEAD, state -> {
 			theme.pacManRenderer(folks.pacMan).resetAnimations(folks.pacMan);
 		});
+		updateRenderers();
 	}
 
 	@Override
@@ -56,6 +59,11 @@ public class PlayView implements PacManGameView {
 	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
+		updateRenderers();
+	}
+
+	private void updateRenderers() {
+		worldRenderer = theme.worldRenderer();
 		messages.setTheme(theme);
 	}
 
@@ -75,7 +83,7 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawWorld(Graphics2D g) {
-		theme.worldRenderer(world).render(g, world);
+		worldRenderer.render(g, world);
 	}
 
 	protected void drawScores(Graphics2D g) {

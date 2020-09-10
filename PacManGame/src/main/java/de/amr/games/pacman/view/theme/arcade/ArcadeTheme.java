@@ -11,7 +11,6 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
@@ -33,7 +32,6 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	public static final ArcadeTheme THEME = new ArcadeTheme();
 
 	private ArcadeSprites sprites = new ArcadeSprites();
-	private Map<World, WorldSpriteMap> worldSprites = new HashMap<>();
 	private Map<PacMan, SpriteMap> pacManSprites = new HashMap<>();
 	private Map<Ghost, SpriteMap> ghostSprites = new HashMap<>();
 	private MessagesRenderer messagesRenderer;
@@ -113,13 +111,8 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IWorldRenderer worldRenderer(World world) {
-		WorldSpriteMap spriteMap = worldSprites.get(world);
-		if (spriteMap == null) {
-			spriteMap = new WorldSpriteMap(world);
-			worldSprites.put(world, spriteMap);
-		}
-		return new WorldRenderer(spriteMap);
+	public IWorldRenderer worldRenderer() {
+		return new WorldRenderer(sprites);
 	}
 
 	@Override

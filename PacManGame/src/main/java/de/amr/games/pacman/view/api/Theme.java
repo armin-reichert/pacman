@@ -6,7 +6,6 @@ import java.awt.Image;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 
 /**
@@ -30,7 +29,7 @@ public interface Theme {
 
 	<T> T $value(String key);
 
-	IWorldRenderer worldRenderer(World world);
+	IWorldRenderer worldRenderer();
 
 	IPacManRenderer pacManRenderer(PacMan pacMan);
 

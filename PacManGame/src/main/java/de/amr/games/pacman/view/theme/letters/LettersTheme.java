@@ -11,7 +11,6 @@ import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
@@ -146,7 +145,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IWorldRenderer worldRenderer(World world_) {
+	public IWorldRenderer worldRenderer() {
 		return (g, world) -> {
 			Font font = $font("font");
 			int offset_baseline = $int("offset-baseline");
