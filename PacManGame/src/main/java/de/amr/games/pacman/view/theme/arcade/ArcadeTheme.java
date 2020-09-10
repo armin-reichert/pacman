@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.theme.arcade;
 
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
+import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IMessagesRenderer;
@@ -155,7 +157,11 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public IGameRenderer livesCounterRenderer() {
-		return new LivesCounterRenderer();
+		return (Graphics2D g, PacManGame game) -> {
+			for (int i = 0, x = Tile.SIZE; i < game.lives; ++i, x += 2 * Tile.SIZE) {
+				g.drawImage(sprites.imageLivesCounter(), x, 0, null);
+			}
+		};
 	}
 
 	@Override
