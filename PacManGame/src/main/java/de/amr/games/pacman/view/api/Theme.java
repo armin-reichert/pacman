@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
 
-import de.amr.games.pacman.view.common.MessagesRenderer;
-
 /**
  * Interface implemented by every theme.
  * 
@@ -39,7 +37,7 @@ public interface Theme {
 
 	IGameRenderer pointsCounterRenderer();
 
-	MessagesRenderer messagesRenderer();
+	IMessagesRenderer messagesRenderer();
 
 	PacManSounds sounds();
 }

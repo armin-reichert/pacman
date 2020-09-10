@@ -6,61 +6,75 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.view.api.IMessagesRenderer;
 
-public class MessagesRenderer {
+public class MessagesRenderer implements IMessagesRenderer {
 
 	private int row;
 	private Color textColor;
 	private Font font;
 	private int fontSize;
-	private boolean smoothText;
+	private boolean textAntialiasing;
 
 	public MessagesRenderer() {
 		row = 21;
 		textColor = Color.YELLOW;
 		font = new Font(Font.MONOSPACED, Font.PLAIN, Tile.SIZE);
-		smoothText = false;
+		textAntialiasing = false;
 	}
 
-	public void drawCentered(Graphics2D g, String text, int widthInTiles) {
-		if (text != null) {
+	@Override
+	public void draw(Graphics2D g, String message, int widthInTiles) {
+		if (message != null) {
 			try (Pen pen = new Pen(g)) {
-				if (smoothText) {
+				if (textAntialiasing) {
 					pen.turnSmoothRenderingOn();
 				}
 				pen.font(font);
 				pen.color(textColor);
 				pen.move(0, row * Tile.SIZE);
-				pen.hcenter(text, widthInTiles * Tile.SIZE);
+				pen.hcenter(message, widthInTiles * Tile.SIZE);
 			}
 		}
 	}
 
+	@Override
 	public Font getFont() {
 		return font;
 	}
 
+	@Override
 	public void setFont(Font font) {
 		this.font = font;
 	}
 
+	@Override
 	public int getFontSize() {
 		return fontSize;
 	}
 
+	@Override
 	public void setFontSize(int fontSize) {
 		this.fontSize = fontSize;
 		font = font.deriveFont((float) fontSize);
 	}
 
-	public void setSmoothText(boolean smoothText) {
-		this.smoothText = smoothText;
+	@Override
+	public void setTextAntialiasing(boolean enabled) {
+		this.textAntialiasing = enabled;
 	}
 
+	@Override
+	public Color getTextColor() {
+		return textColor;
+	}
+
+	@Override
 	public void setTextColor(Color color) {
 		this.textColor = color;
 	}
 
+	@Override
 	public void setRow(int row) {
 		this.row = row;
 	}

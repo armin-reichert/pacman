@@ -25,9 +25,9 @@ import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.core.EmptyWorld;
+import de.amr.games.pacman.view.api.IMessagesRenderer;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -57,7 +57,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	private final LinkWidget gitHubLink;
 
 	private Theme theme;
-	private MessagesRenderer messagesRenderer;
+	private IMessagesRenderer messagesRenderer;
 
 	public IntroView(Theme theme) {
 		super(IntroState.class);
@@ -144,7 +144,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		String text = "F11-" + texts.getString(isFullscreen ? "window_mode" : "fullscreen_mode");
 		messagesRenderer.setRow(row);
 		messagesRenderer.setTextColor(Color.ORANGE);
-		messagesRenderer.drawCentered(g, text, world.width());
+		messagesRenderer.draw(g, text, world.width());
 	}
 
 	private void drawSpeedSelectionTexts(Graphics2D g, int row) {
@@ -297,7 +297,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			if (app().clock().getTotalTicks() % Timing.sec(1) < Timing.sec(0.5f)) {
 				messagesRenderer.setRow(18);
 				messagesRenderer.setTextColor(Color.WHITE);
-				messagesRenderer.drawCentered(g, texts.getString("press_space_to_start"), world.width());
+				messagesRenderer.draw(g, texts.getString("press_space_to_start"), world.width());
 			}
 			drawSpeedSelectionTexts(g, 22);
 			drawToggleScreenModeText(g, 31);

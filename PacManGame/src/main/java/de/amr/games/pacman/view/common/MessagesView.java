@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.view.api.IMessagesRenderer;
 import de.amr.games.pacman.view.api.Theme;
 
 /**
@@ -17,7 +18,7 @@ public class MessagesView {
 
 	public final List<Message> messages;
 	private final World world;
-	private Theme theme;
+	private IMessagesRenderer renderer;
 
 	public MessagesView(Theme theme, World world, int... rows) {
 		this.world = world;
@@ -29,7 +30,7 @@ public class MessagesView {
 	}
 
 	public void setTheme(Theme theme) {
-		this.theme = theme;
+		renderer = theme.messagesRenderer();
 	}
 
 	/**
@@ -57,12 +58,11 @@ public class MessagesView {
 	}
 
 	public void draw(Graphics2D g) {
-		MessagesRenderer renderer = theme.messagesRenderer();
 		for (Message message : messages) {
 			if (message.text != null) {
 				renderer.setRow(message.row);
 				renderer.setTextColor(message.color);
-				renderer.drawCentered(g, message.text, world.width());
+				renderer.draw(g, message.text, world.width());
 			}
 		}
 	}

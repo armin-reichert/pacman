@@ -96,7 +96,7 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 		if (messagesRenderer == null) {
 			messagesRenderer = new MessagesRenderer();
 			messagesRenderer.setFont($font("font").deriveFont(14f));
-			messagesRenderer.setSmoothText(true);
+			messagesRenderer.setTextAntialiasing(true);
 		}
 		return messagesRenderer;
 	}
