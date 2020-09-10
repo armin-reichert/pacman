@@ -13,6 +13,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
@@ -32,9 +33,11 @@ public class PlayView implements PacManGameView {
 
 	protected Theme theme;
 	protected IWorldRenderer worldRenderer;
+	protected IGameRenderer pointsCounterRenderer;
+	protected IGameRenderer livesCounterRenderer;
+	protected IGameRenderer levelCounterRenderer;
 
 	public PlayView(Theme theme, Folks folks, World world) {
-		this.theme = theme;
 		this.folks = folks;
 		this.world = world;
 		sound = new SoundState();
@@ -43,7 +46,7 @@ public class PlayView implements PacManGameView {
 		folks.pacMan.ai.addStateExitListener(PacManState.DEAD, state -> {
 			theme.pacManRenderer(folks.pacMan).resetAnimations(folks.pacMan);
 		});
-		updateRenderers();
+		setTheme(theme);
 	}
 
 	@Override
@@ -57,19 +60,22 @@ public class PlayView implements PacManGameView {
 	}
 
 	@Override
+	public Theme getTheme() {
+		return theme;
+	}
+
+	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
+		messages.setTheme(theme);
 		updateRenderers();
 	}
 
 	private void updateRenderers() {
 		worldRenderer = theme.worldRenderer();
-		messages.setTheme(theme);
-	}
-
-	@Override
-	public Theme getTheme() {
-		return theme;
+		pointsCounterRenderer = theme.pointsCounterRenderer();
+		livesCounterRenderer = theme.livesCounterRenderer();
+		levelCounterRenderer = theme.levelCounterRenderer();
 	}
 
 	@Override
@@ -77,7 +83,7 @@ public class PlayView implements PacManGameView {
 		drawWorld(g);
 		drawMessages(g);
 		drawFolks(g);
-		drawScores(g);
+		drawPointsCounter(g);
 		drawLivesCounter(g);
 		drawLevelCounter(g);
 	}
@@ -86,8 +92,20 @@ public class PlayView implements PacManGameView {
 		worldRenderer.render(g, world);
 	}
 
-	protected void drawScores(Graphics2D g) {
-		theme.pointsCounterRenderer().render(g, game);
+	protected void drawPointsCounter(Graphics2D g) {
+		pointsCounterRenderer.render(g, game);
+	}
+
+	protected void drawLivesCounter(Graphics2D g) {
+		g.translate(Tile.SIZE, (world.height() - 2) * Tile.SIZE);
+		livesCounterRenderer.render(g, game);
+		g.translate(-Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
+	}
+
+	protected void drawLevelCounter(Graphics2D g) {
+		g.translate(world.width() * Tile.SIZE, (world.height() - 2) * Tile.SIZE);
+		levelCounterRenderer.render(g, game);
+		g.translate(-world.width() * Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
 	}
 
 	protected void drawPacMan(Graphics2D g, PacMan pacMan) {
@@ -104,18 +122,6 @@ public class PlayView implements PacManGameView {
 		drawPacMan(g, folks.pacMan);
 		folks.ghostsInWorld().filter(ghost -> !ghost.ai.is(DEAD, ENTERING_HOUSE, FRIGHTENED))
 				.forEach(ghost -> drawGhost(g, ghost));
-	}
-
-	protected void drawLivesCounter(Graphics2D g) {
-		g.translate(Tile.SIZE, (world.height() - 2) * Tile.SIZE);
-		theme.livesCounterRenderer().render(g, game);
-		g.translate(-Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
-	}
-
-	protected void drawLevelCounter(Graphics2D g) {
-		g.translate(world.width() * Tile.SIZE, (world.height() - 2) * Tile.SIZE);
-		theme.levelCounterRenderer().render(g, game);
-		g.translate(-world.width() * Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
 	}
 
 	protected void drawMessages(Graphics2D g) {

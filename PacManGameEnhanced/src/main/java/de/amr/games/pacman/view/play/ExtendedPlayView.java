@@ -54,7 +54,7 @@ public class ExtendedPlayView extends PlayView {
 		drawFolks(g);
 		drawRoutes(g);
 		drawStates(g);
-		drawScores(g);
+		drawPointsCounter(g);
 		drawLivesCounter(g);
 		drawLevelCounter(g);
 	}
@@ -130,7 +130,7 @@ public class ExtendedPlayView extends PlayView {
 	}
 
 	@Override
-	protected void drawScores(Graphics2D g) {
+	protected void drawPointsCounter(Graphics2D g) {
 		if (showingScores) {
 			theme.pointsCounterRenderer().render(g, PacManGame.game);
 		}
