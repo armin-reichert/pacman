@@ -10,7 +10,7 @@ class LivesCounterRenderer implements IGameRenderer {
 
 	@Override
 	public void render(Graphics2D g, PacManGame game) {
-		ArcadeSprites arcadeSprites = ArcadeTheme.THEME.$value("sprites");
+		ArcadeSpritesheet arcadeSprites = ArcadeTheme.THEME.$value("sprites");
 		for (int i = 0, x = Tile.SIZE; i < game.lives; ++i, x += 2 * Tile.SIZE) {
 			g.drawImage(arcadeSprites.imageLivesCounter(), x, 0, null);
 		}

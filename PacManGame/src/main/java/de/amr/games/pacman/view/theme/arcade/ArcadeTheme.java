@@ -16,12 +16,13 @@ import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
 import de.amr.games.pacman.view.api.IMessagesRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
-import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.IPacManSounds;
+import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 import de.amr.games.pacman.view.common.PointsCounterRenderer;
 import de.amr.games.pacman.view.core.ThemeParameters;
+import de.amr.games.pacman.view.theme.arcade.ArcadeSpritesheet.GhostColor;
 
 /**
  * This theme mimics the original Arcade version.
@@ -32,7 +33,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	public static final ArcadeTheme THEME = new ArcadeTheme();
 
-	private ArcadeSprites sprites = new ArcadeSprites();
+	private ArcadeSpritesheet sprites = new ArcadeSpritesheet();
 	private Map<PacMan, SpriteMap> pacManSprites = new HashMap<>();
 	private Map<Ghost, SpriteMap> ghostSprites = new HashMap<>();
 
@@ -47,11 +48,26 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 		return map;
 	}
 
+	private GhostColor color(GhostPersonality personality) {
+		switch (personality) {
+		case SHADOW:
+			return GhostColor.RED;
+		case SPEEDY:
+			return GhostColor.PINK;
+		case BASHFUL:
+			return GhostColor.CYAN;
+		case POKEY:
+			return GhostColor.ORANGE;
+		default:
+			throw new IllegalArgumentException("Illegal ghost personality: " + personality);
+		}
+	}
+
 	private SpriteMap makeGhostSpriteMap(Ghost ghost) {
 		SpriteMap map = new SpriteMap();
 		for (Direction dir : Direction.values()) {
 			for (GhostPersonality personality : GhostPersonality.values()) {
-				map.set(ghostSpriteKeyColor(personality, dir), sprites.makeSprite_ghostColored(personality, dir));
+				map.set(ghostSpriteKeyColor(personality, dir), sprites.makeSprite_ghostColored(color(personality), dir));
 			}
 			map.set(ghostSpriteKeyEyes(dir), sprites.makeSprite_ghostEyes(dir));
 		}

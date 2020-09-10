@@ -3,15 +3,19 @@ package de.amr.games.pacman.view.theme.arcade;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.FORWARD_BACKWARDS;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
+import static de.amr.games.pacman.model.world.api.Direction.DOWN;
+import static de.amr.games.pacman.model.world.api.Direction.LEFT;
+import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
+import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import java.util.List;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.Spritesheet;
-import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 
@@ -20,7 +24,18 @@ import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
  * 
  * @author Armin Reichert
  */
-public class ArcadeSprites extends Spritesheet {
+public class ArcadeSpritesheet extends Spritesheet {
+
+	public enum GhostColor {
+		RED, PINK, CYAN, ORANGE
+	}
+
+	static final List<Direction> DIRECTIONS = List.of(RIGHT, LEFT, UP, DOWN);
+	static final List<Integer> NUMBERS = List.of(200, 400, 800, 1600, 100, 300, 500, 700, 1000, 2000, 3000, 5000);
+
+	private static int dirIndex(Direction dir) {
+		return DIRECTIONS.indexOf(dir);
+	}
 
 	BufferedImage empty_maze = Assets.readImage("themes/arcade/maze_empty.png");
 	BufferedImage full_maze = Assets.readImage("themes/arcade/maze_full.png");
@@ -39,7 +54,7 @@ public class ArcadeSprites extends Spritesheet {
 	BufferedImage pink_numbers[];
 	BufferedImage bonus_symbols[];
 
-	public ArcadeSprites() {
+	public ArcadeSpritesheet() {
 		super("themes/arcade/sprites.png", 16);
 
 		// Debugger told me RGB value of blue color in maze image
@@ -88,24 +103,8 @@ public class ArcadeSprites extends Spritesheet {
 		};
 	}
 
-	private int spriteSheetOrder(Direction dir) {
-		if (dir == Direction.RIGHT) {
-			return 0;
-		}
-		if (dir == Direction.LEFT) {
-			return 1;
-		}
-		if (dir == Direction.UP) {
-			return 2;
-		}
-		if (dir == Direction.DOWN) {
-			return 3;
-		}
-		throw new IllegalArgumentException("Illegal direction: " + dir);
-	}
-
 	public Sprite makeSprite_number(int number) {
-		int index = Arrays.asList(200, 400, 800, 1600, 100, 300, 500, 700, 1000, 2000, 3000, 5000).indexOf(number);
+		int index = NUMBERS.indexOf(number);
 		if (index == -1) {
 			throw new IllegalArgumentException("No sprite found for number" + number);
 		}
@@ -134,11 +133,11 @@ public class ArcadeSprites extends Spritesheet {
 	}
 
 	public Sprite makeSprite_pacManBlocked(Direction dir) {
-		return Sprite.of(pacMan_blocked[spriteSheetOrder(dir)]);
+		return Sprite.of(pacMan_blocked[dirIndex(dir)]);
 	}
 
 	public Sprite makeSprite_pacManWalking(Direction dir) {
-		return Sprite.of(pacMan_walking[spriteSheetOrder(dir)]).animate(FORWARD_BACKWARDS, 5);
+		return Sprite.of(pacMan_walking[dirIndex(dir)]).animate(FORWARD_BACKWARDS, 5);
 	}
 
 	public Sprite makeSprite_pacManCollapsing() {
@@ -149,9 +148,9 @@ public class ArcadeSprites extends Spritesheet {
 		return pacMan_lives_counter;
 	}
 
-	public Sprite makeSprite_ghostColored(GhostPersonality personality, Direction dir) {
-		BufferedImage[] frames = Arrays.copyOfRange(ghost_colored[personality.ordinal()], 2 * spriteSheetOrder(dir),
-				2 * (spriteSheetOrder(dir) + 1));
+	public Sprite makeSprite_ghostColored(GhostColor color, Direction dir) {
+		BufferedImage[] frames = Arrays.copyOfRange(ghost_colored[color.ordinal()], 2 * dirIndex(dir),
+				2 * (dirIndex(dir) + 1));
 		return Sprite.of(frames).animate(FORWARD_BACKWARDS, 300);
 	}
 
@@ -164,6 +163,6 @@ public class ArcadeSprites extends Spritesheet {
 	}
 
 	public Sprite makeSprite_ghostEyes(Direction dir) {
-		return Sprite.of(ghost_eyes[spriteSheetOrder(dir)]);
+		return Sprite.of(ghost_eyes[dirIndex(dir)]);
 	}
 }

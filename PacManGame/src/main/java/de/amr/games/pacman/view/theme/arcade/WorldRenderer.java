@@ -21,7 +21,7 @@ class WorldRenderer implements IWorldRenderer {
 	private SpriteMap spriteMap;
 	private SpriteAnimation energizerAnimation;
 
-	public WorldRenderer(ArcadeSprites sprites) {
+	public WorldRenderer(ArcadeSpritesheet sprites) {
 		spriteMap = new SpriteMap();
 		spriteMap.set("maze-full", sprites.makeSprite_fullMaze());
 		spriteMap.set("maze-flashing", sprites.makeSprite_flashingMaze());
