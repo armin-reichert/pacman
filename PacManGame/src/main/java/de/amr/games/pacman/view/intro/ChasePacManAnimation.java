@@ -128,7 +128,7 @@ public class ChasePacManAnimation extends GameObject {
 	public void draw(Graphics2D g) {
 		pacManRenderer.render(g, pacMan);
 		ghosts().forEach(ghost -> {
-			theme.ghostRenderer(ghost).render(g, ghost);
+			theme.ghostRenderer().render(g, ghost);
 		});
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		int x = (int) pacMan.tf.x - Tile.SIZE;

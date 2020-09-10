@@ -116,7 +116,7 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawGhost(Graphics2D g, Ghost ghost) {
-		theme.ghostRenderer(ghost).render(g, ghost);
+		theme.ghostRenderer().render(g, ghost);
 	}
 
 	protected void drawFolks(Graphics2D g) {

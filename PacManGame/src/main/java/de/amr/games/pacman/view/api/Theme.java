@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
 
-import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.view.common.MessagesRenderer;
 
 /**
@@ -32,7 +31,7 @@ public interface Theme {
 
 	IPacManRenderer pacManRenderer();
 
-	IGhostRenderer ghostRenderer(Ghost ghost);
+	IGhostRenderer ghostRenderer();
 
 	IGameRenderer levelCounterRenderer();
 

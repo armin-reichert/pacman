@@ -107,7 +107,7 @@ public class MusicLoadingView implements PacManGameView {
 			Ghost ghost = ghosts.get(rnd.nextInt(4));
 			ghost.tf.x = x;
 			ghost.tf.y = y;
-			theme.ghostRenderer(ghost).render(g, ghost);
+			theme.ghostRenderer().render(g, ghost);
 			x += 20;
 		}
 	}

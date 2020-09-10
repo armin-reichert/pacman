@@ -87,7 +87,7 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGhostRenderer ghostRenderer(Ghost ghost) {
+	public IGhostRenderer ghostRenderer() {
 		return new GhostRenderer();
 	}
 

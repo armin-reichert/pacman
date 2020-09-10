@@ -76,7 +76,7 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public IGhostRenderer ghostRenderer(Ghost ghost_) {
+	public IGhostRenderer ghostRenderer() {
 		return (g, ghost) -> {
 			if (ghost.visible) {
 				Font font = $font("font");

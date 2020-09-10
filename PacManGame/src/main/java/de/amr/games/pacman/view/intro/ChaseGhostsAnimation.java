@@ -106,7 +106,7 @@ public class ChaseGhostsAnimation extends GameObject {
 	public void draw(Graphics2D g) {
 		pacManRenderer.render(g, pacMan);
 		ghosts().forEach(ghost -> {
-			theme.ghostRenderer(ghost).render(g, ghost);
+			theme.ghostRenderer().render(g, ghost);
 		});
 	}
 }
