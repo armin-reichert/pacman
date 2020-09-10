@@ -9,6 +9,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
+import de.amr.games.pacman.view.api.IMessagesRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.PacManSounds;
@@ -26,8 +27,6 @@ import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
 public class BlocksTheme extends ThemeParameters implements Theme {
 
 	public static final BlocksTheme THEME = new BlocksTheme();
-
-	private MessagesRenderer messagesRenderer;
 
 	private BlocksTheme() {
 		set("font", Assets.storeTrueTypeFont("ConcertOne", "themes/blocks/ConcertOne-Regular.ttf", Font.PLAIN, 10));
@@ -92,12 +91,10 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public MessagesRenderer messagesRenderer() {
-		if (messagesRenderer == null) {
-			messagesRenderer = new MessagesRenderer();
-			messagesRenderer.setFont($font("font").deriveFont(14f));
-			messagesRenderer.setTextAntialiasing(true);
-		}
+	public IMessagesRenderer messagesRenderer() {
+		MessagesRenderer messagesRenderer = new MessagesRenderer();
+		messagesRenderer.setFont($font("font").deriveFont(14f));
+		messagesRenderer.setTextAntialiasing(true);
 		return messagesRenderer;
 	}
 

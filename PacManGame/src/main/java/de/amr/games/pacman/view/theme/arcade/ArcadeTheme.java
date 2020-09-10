@@ -14,6 +14,7 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
+import de.amr.games.pacman.view.api.IMessagesRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.PacManSounds;
@@ -34,7 +35,6 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	private ArcadeSprites sprites = new ArcadeSprites();
 	private Map<PacMan, SpriteMap> pacManSprites = new HashMap<>();
 	private Map<Ghost, SpriteMap> ghostSprites = new HashMap<>();
-	private MessagesRenderer messagesRenderer;
 
 	private SpriteMap makePacManSpriteMap() {
 		SpriteMap map = new SpriteMap();
@@ -126,11 +126,9 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public MessagesRenderer messagesRenderer() {
-		if (messagesRenderer == null) {
-			messagesRenderer = new MessagesRenderer();
-			messagesRenderer.setFont($font("font"));
-		}
+	public IMessagesRenderer messagesRenderer() {
+		MessagesRenderer messagesRenderer = new MessagesRenderer();
+		messagesRenderer.setFont($font("font"));
 		return messagesRenderer;
 	}
 

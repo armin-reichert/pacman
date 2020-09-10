@@ -16,6 +16,7 @@ import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.api.IGameRenderer;
 import de.amr.games.pacman.view.api.IGhostRenderer;
+import de.amr.games.pacman.view.api.IMessagesRenderer;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.PacManSounds;
@@ -33,8 +34,6 @@ import de.amr.games.pacman.view.theme.arcade.ArcadeSounds;
 public class LettersTheme extends ThemeParameters implements Theme {
 
 	public static final LettersTheme THEME = new LettersTheme();
-
-	private MessagesRenderer messagesRenderer;
 
 	private LettersTheme() {
 		set("font", new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
@@ -193,11 +192,9 @@ public class LettersTheme extends ThemeParameters implements Theme {
 	}
 
 	@Override
-	public MessagesRenderer messagesRenderer() {
-		if (messagesRenderer == null) {
-			messagesRenderer = new MessagesRenderer();
-			messagesRenderer.setFont($font("font"));
-		}
+	public IMessagesRenderer messagesRenderer() {
+		MessagesRenderer messagesRenderer = new MessagesRenderer();
+		messagesRenderer.setFont($font("font"));
 		return messagesRenderer;
 	}
 
