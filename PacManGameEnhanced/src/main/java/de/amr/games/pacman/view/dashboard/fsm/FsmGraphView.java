@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,39 +17,37 @@ import javax.swing.SwingConstants;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 
+/**
+ * Displays a graph stored in GraphViz format.
+ * 
+ * @author Armin Reichert
+ */
 public class FsmGraphView extends JPanel {
 
-	public static int GRAPHVIZ_MEMORY = 20_000_000;
-	public static int RENDERING_COUNT = 0;
+	static final int GRAPHVIZ_MEMORY = 20_000_000;
 
 	static final double SCALE_MIN = 0.4;
 	static final double SCALE_MAX = 3.0;
 	static final double SCALE_STEP = 0.2;
 
-	public Action actionZoomIn = new AbstractAction("Zoom In") {
+	static int rendering_count = 0;
 
-		{
-			Icon icon = new ImageIcon(getClass().getResource("/zoom_in.png"));
-			putValue(SMALL_ICON, icon);
-		}
+	public Action actionZoomIn = new AbstractAction("Zoom In", new ImageIcon(getClass().getResource("/zoom_in.png"))) {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			zoomIn();
-		};
+			scaling = Math.min(SCALE_MAX, scaling + SCALE_STEP);
+			update();
+		}
 	};
 
-	public Action actionZoomOut = new AbstractAction("Zoom Out") {
-
-		{
-			Icon icon = new ImageIcon(getClass().getResource("/zoom_out.png"));
-			putValue(SMALL_ICON, icon);
-		}
+	public Action actionZoomOut = new AbstractAction("Zoom Out", new ImageIcon(getClass().getResource("/zoom_out.png"))) {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			zoomOut();
-		};
+			scaling = Math.max(SCALE_MIN, scaling - SCALE_STEP);
+			update();
+		}
 	};
 
 	private FsmData data;
@@ -77,18 +74,17 @@ public class FsmGraphView extends JPanel {
 	}
 
 	public void update() {
+		graphDisplay.setIcon(null);
 		if (data != null) {
 			try {
 				BufferedImage png = Graphviz.fromString(data.getGraphVizText()).totalMemory(GRAPHVIZ_MEMORY).scale(scaling)
 						.render(Format.PNG).toImage();
 				graphDisplay.setIcon(new ImageIcon(png));
-				++RENDERING_COUNT;
+				++rendering_count;
 			} catch (Exception x) {
-				System.err.println("Graphviz rendering failed for image #" + RENDERING_COUNT);
+				System.err.println("Graphviz rendering failed for image #" + rendering_count);
 				x.printStackTrace(System.err);
 			}
-		} else {
-			graphDisplay.setIcon(null);
 		}
 	}
 
@@ -98,16 +94,6 @@ public class FsmGraphView extends JPanel {
 
 	public void setData(FsmData data) {
 		this.data = data;
-		update();
-	}
-
-	private void zoomIn() {
-		scaling = Math.min(SCALE_MAX, scaling + SCALE_STEP);
-		update();
-	}
-
-	private void zoomOut() {
-		scaling = Math.max(SCALE_MIN, scaling - SCALE_STEP);
 		update();
 	}
 }
