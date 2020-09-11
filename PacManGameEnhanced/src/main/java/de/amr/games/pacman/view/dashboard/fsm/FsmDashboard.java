@@ -16,6 +16,8 @@ import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
 import de.amr.easy.game.ui.widgets.MultiPanel;
+import de.amr.games.pacman.model.fsm.FsmData;
+import de.amr.games.pacman.model.fsm.FsmModel;
 
 /**
  * Shows up to 4 state machines in a window.

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.dashboard.fsm;
+package de.amr.games.pacman.model.fsm;
 
 import java.util.Optional;
 
@@ -7,11 +7,11 @@ import javax.swing.tree.TreePath;
 
 import de.amr.statemachine.core.StateMachine;
 
-public class FsmTree extends DefaultTreeModel {
+public class FsmTreeModel extends DefaultTreeModel {
 
 	private TreePath selectedPath;
 
-	public FsmTree() {
+	public FsmTreeModel() {
 		super(new FsmTreeNode("State Machines"));
 		selectedPath = new TreePath(getRoot());
 	}

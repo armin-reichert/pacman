@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import de.amr.games.pacman.model.fsm.FsmData;
+
 /**
  * Displays the GraphViz representation of a finite-state machine.
  * 

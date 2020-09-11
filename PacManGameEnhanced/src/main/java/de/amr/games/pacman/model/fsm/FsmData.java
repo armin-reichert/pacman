@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.dashboard.fsm;
+package de.amr.games.pacman.model.fsm;
 
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;

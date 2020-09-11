@@ -30,6 +30,9 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.TreeSelectionModel;
 
 import de.amr.easy.game.controller.Lifecycle;
+import de.amr.games.pacman.model.fsm.FsmData;
+import de.amr.games.pacman.model.fsm.FsmModel;
+import de.amr.games.pacman.model.fsm.FsmTreeModel;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 
@@ -98,7 +101,7 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	private FsmModel model = new FsmModel();
 	private FsmDashboard dashboard;
-	private FsmTree tree;
+	private FsmTreeModel tree;
 	private FsmTextView fsmEmbeddedTextView;
 	private FsmGraphView fsmEmbeddedGraphView;
 	private JTree treeView;
@@ -124,7 +127,7 @@ public class FsmView extends JPanel implements Lifecycle {
 
 		treeView = new JTree();
 		fsmTreeScrollPane.setViewportView(treeView);
-		tree = new FsmTree();
+		tree = new FsmTreeModel();
 
 		tree.addTreeModelListener(treeSelectionInitializer);
 		treeView.setModel(tree);
