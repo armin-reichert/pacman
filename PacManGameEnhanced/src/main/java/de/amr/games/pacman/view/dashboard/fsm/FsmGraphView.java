@@ -55,7 +55,7 @@ public class FsmGraphView extends JPanel {
 
 	private FsmData data;
 	private JLabel graphDisplay;
-	private double scaling = 1.0;
+	private double scaling = 0.8;
 
 	public FsmGraphView() {
 		setBackground(Color.WHITE);
