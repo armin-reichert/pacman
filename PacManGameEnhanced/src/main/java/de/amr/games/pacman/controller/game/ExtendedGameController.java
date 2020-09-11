@@ -55,8 +55,12 @@ public class ExtendedGameController extends GameController {
 		});
 		addStateEntryListener(GETTING_READY, state -> {
 			REGISTRY.register(currentView.getClass().getSimpleName(), currentView.machines());
-			REGISTRY.register(folks.pacMan.name, folks.pacMan.machines());
-			folks.ghosts().forEach(ghost -> REGISTRY.register("Ghosts", ghost.machines()));
+			REGISTRY.unregister(folks.pacMan.machines());
+			REGISTRY.register("Pac-Man", folks.pacMan.machines());
+			folks.ghosts().forEach(ghost -> {
+				REGISTRY.unregister(ghost.machines());
+				REGISTRY.register("Ghosts", ghost.machines());
+			});
 		});
 		addStateEntryListener(GAME_OVER, state -> {
 			REGISTRY.unregister(currentView.machines());
