@@ -8,13 +8,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import de.amr.easy.game.controller.Lifecycle;
-
-public class FsmTextView extends JPanel implements Lifecycle {
+/**
+ * Displays the GraphViz representation of a finite-state machine.
+ * 
+ * @author Armin Reichert
+ */
+public class FsmTextView extends JPanel {
 
 	static final String HINT_TEXT = "This area shows the Graphviz representation of the selected finite-state machine";
 
-	private FsmData fsmInfo;
+	private FsmData data;
 	private JTextArea textArea;
 
 	public FsmTextView() {
@@ -34,19 +37,14 @@ public class FsmTextView extends JPanel implements Lifecycle {
 		scrollPane.setViewportView(textArea);
 	}
 
-	public void setData(FsmData fsmInfo) {
-		this.fsmInfo = fsmInfo;
+	public void setData(FsmData data) {
+		this.data = data;
 		update();
 	}
 
-	@Override
-	public void init() {
-	}
-
-	@Override
 	public void update() {
-		if (fsmInfo != null) {
-			textArea.setText(fsmInfo.getGraphVizText());
+		if (data != null) {
+			textArea.setText(data.getGraphVizText());
 			textArea.setCaretPosition(0);
 		} else {
 			textArea.setText(HINT_TEXT);
