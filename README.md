@@ -124,7 +124,7 @@ After having implemented this correctly, the next challenge is the logic and the
 Maybe you will start with a single ghost and implement its behavior: waiting (bouncing) in the ghost house, leaving the house to chase Pac-Man or scattering out to the ghost's maze corner. What should happen when Pac-Man and a ghost are colliding? 
 Which part of your program should coordinate this? Should the code be distributed over the actors or should you have 
 some kind of mediator, some central game control? Where should the game rules (points, lives, levels etc.) be implemented? 
-Should this be placed in some kind of [model](PacManGame/src/main/java/de/amr/games/pacman/model/game/Game.java) (in the sense of the Model-View-Controller pattern)?
+Should this be placed in some kind of model in the sense of the Model-View-Controller pattern?
 
 ## Finite-state machines
 
