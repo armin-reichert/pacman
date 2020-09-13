@@ -83,11 +83,15 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		return target != null ? graph.findPath(guy.tile(), target) : Collections.emptyList();
 	}
 
+	private void flee() {
+		guy.reverseDirection();
+	}
+
 	private boolean avoidTouchingGhostAhead() {
 		// is dangerous ghost just in front of pacMan and is moving in the same direction?
 		Ghost enemy = dangerousGhostsInRange(2).filter(ghost -> guy.moveDir == ghost.moveDir).findAny().orElse(null);
 		if (enemy != null) {
-			guy.reverseDirection();
+			flee();
 			return true;
 		}
 		return false;
@@ -98,7 +102,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		Ghost enemy = dangerousGhostsInRange(4).filter(ghost -> guy.moveDir == ghost.moveDir.opposite()).findAny()
 				.orElse(null);
 		if (enemy != null) {
-			guy.reverseDirection();
+			flee();
 			return true;
 		}
 		return false;
@@ -151,17 +155,16 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 					.or(() -> nearestFoodFrom(here));
 		} else {
 			return activeBonusAtMostAway(here, 10)
-					.or(() -> energizerAtMostAway(here, (int)nearestEnemyDist))
+					.or(() -> energizerAtMostAway(here, (int) nearestEnemyDist))
 					.or(() -> nearestFoodFrom(here));
 		}
 		//@formatter:on
 	}
 
 	private Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
-		//@formatter:off
 		if (world.temporaryFood().isPresent()) {
 			TemporaryFood bonus = world.temporaryFood().get();
-			if (bonus.isActive()) {
+			if (bonus.isActive() && !bonus.isConsumed()) {
 				int dist = here.manhattanDistance(bonus.location());
 				if (dist <= maxDistance) {
 					return Optional.of(bonus.location());
