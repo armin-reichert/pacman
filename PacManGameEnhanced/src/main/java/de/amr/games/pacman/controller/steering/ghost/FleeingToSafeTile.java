@@ -8,7 +8,6 @@ import de.amr.datastruct.StreamUtils;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.core.TileWorldEntity;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
@@ -25,19 +24,17 @@ import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
 public class FleeingToSafeTile extends FollowingPath {
 
 	private final TileWorldEntity attacker;
-	private final World world;
 	private final WorldGraph graph;
 	private final List<Tile> capes;
 	private final List<Tile> safeTiles;
 	private Tile safeTile;
 
-	public FleeingToSafeTile(Ghost refugee, TileWorldEntity attacker) {
+	public FleeingToSafeTile(Ghost refugee, WorldGraph graph, TileWorldEntity attacker) {
 		super(refugee);
-		world = refugee.world;
+		this.graph = graph;
 		this.attacker = attacker;
-		graph = new WorldGraph(world);
 		graph.setPathFinder(PathFinder.BEST_FIRST_SEARCH);
-		capes = world.capes();
+		capes = graph.world.capes();
 		safeTiles = new ArrayList<>(capes);
 	}
 

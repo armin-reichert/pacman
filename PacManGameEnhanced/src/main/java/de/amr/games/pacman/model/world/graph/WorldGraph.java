@@ -29,7 +29,7 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 		ASTAR, BEST_FIRST_SEARCH, BREADTH_FIRST_SEARCH
 	}
 
-	private final World world;
+	public final World world;
 	private PathFinder pathFinder;
 	private int pathFinderCalls;
 

@@ -27,6 +27,7 @@ import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
+import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.view.play.ExtendedPlayView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -42,11 +43,11 @@ public class ExtendedGameController extends GameController {
 	private boolean showingRoutes;
 	private boolean showingStates;
 	private boolean showingScores = true;
+	private WorldGraph graph;
 
 	public ExtendedGameController(Stream<Theme> themes) {
 		super(themes);
-		REGISTRY.register("Game", this);
-		REGISTRY.register("Game", Stream.of(bonusController, ghostCommand));
+		REGISTRY.register("Game", Stream.of(this, bonusController, ghostCommand));
 		addStateEntryListener(INTRO, state -> {
 			REGISTRY.register(currentView.getClass().getSimpleName(), currentView.machines());
 		});
@@ -260,7 +261,10 @@ public class ExtendedGameController extends GameController {
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;
-			folks.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, new FleeingToSafeTile(ghost, ghost.pacMan)));
+			if (graph == null) {
+				graph = new WorldGraph(world);
+			}
+			folks.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, new FleeingToSafeTile(ghost, graph, ghost.pacMan)));
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}

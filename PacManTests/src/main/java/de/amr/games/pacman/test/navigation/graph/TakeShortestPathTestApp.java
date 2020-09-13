@@ -17,6 +17,7 @@ import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.controller.steering.common.TakingShortestPath;
 import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.test.TestController;
 
 public class TakeShortestPathTestApp extends Application {
@@ -67,7 +68,8 @@ class TakeShortestPathTestUI extends TestController {
 		//@formatter:on
 		targetIndex = 0;
 
-		FollowingPath visitNextTarget = new TakingShortestPath(blinky, () -> targets.get(targetIndex));
+		WorldGraph graph = new WorldGraph(world);
+		FollowingPath visitNextTarget = new TakingShortestPath(blinky, graph, () -> targets.get(targetIndex));
 		blinky.setSteering(CHASING, visitNextTarget);
 		blinky.setSteering(FRIGHTENED, visitNextTarget);
 		blinky.ai.setState(CHASING);
