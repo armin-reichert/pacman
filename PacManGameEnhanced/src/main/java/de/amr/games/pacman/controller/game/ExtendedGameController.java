@@ -181,7 +181,7 @@ public class ExtendedGameController extends GameController {
 	protected void setDemoMode(boolean demoMode) {
 		if (demoMode) {
 			settings.pacManImmortable = true;
-			folks.pacMan.setSteering(PacManState.AWAKE, new SearchingForFoodAndAvoidingGhosts(folks));
+			folks.pacMan.setSteering(PacManState.AWAKE, new SearchingForFoodAndAvoidingGhosts(world, folks.pacMan, folks));
 		} else {
 			settings.pacManImmortable = false;
 			you(folks.pacMan).followTheCursorKeys().ok();
