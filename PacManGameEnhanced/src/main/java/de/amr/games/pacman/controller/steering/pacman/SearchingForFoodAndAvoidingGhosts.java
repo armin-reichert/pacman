@@ -84,15 +84,31 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		return target != null ? graph.findPath(guy.tile(), target) : Collections.emptyList();
 	}
 
-	private void flee() {
-		guy.reverseDirection();
+	private void flee(Ghost enemy) {
+		Tile here = guy.tile(), enemyTile = enemy.tile();
+		if (world.isIntersection(here)) {
+			double maxDistance = -1;
+			Iterable<Direction> dirs = Stream.of(guy.moveDir.opposite(), guy.moveDir.left(), guy.moveDir.right())
+					.filter(guy::canCrossBorderTo)::iterator;
+			for (Direction dir : dirs) {
+				Tile neighbor = world.neighbor(here, dir);
+				double distanceToEnemy = neighbor.distance(enemyTile);
+				if (distanceToEnemy > maxDistance) {
+					maxDistance = distanceToEnemy;
+					guy.moveDir = dir;
+				}
+			}
+			guy.forceMoving(guy.moveDir);
+		} else {
+			guy.reverseDirection();
+		}
 	}
 
 	private boolean avoidTouchingGhostAhead() {
 		// is dangerous ghost just in front of pacMan and is moving in the same direction?
 		Ghost enemy = dangerousGhostsInRange(2).filter(ghost -> guy.moveDir == ghost.moveDir).findAny().orElse(null);
 		if (enemy != null) {
-			flee();
+			flee(enemy);
 			return true;
 		}
 		return false;
@@ -103,7 +119,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		Ghost enemy = dangerousGhostsInRange(4).filter(ghost -> guy.moveDir == ghost.moveDir.opposite()).findAny()
 				.orElse(null);
 		if (enemy != null) {
-			flee();
+			flee(enemy);
 			return true;
 		}
 		return false;
@@ -144,16 +160,14 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	private Optional<Tile> preferredFoodLocationFrom(Tile here) {
-		//@formatter:off
-		double nearestEnemyDist = nearestDistanceToDangerousGhost(here);
+		double nearestEnemyDist = distanceToNearestEnemy(here);
 		if (nearestEnemyDist == Double.MAX_VALUE) {
-			return activeBonusAtMostAway(here, 30)
-				.or(() -> nearestFoodFrom(here));
-		} else {
-			return activeBonusAtMostAway(here, 10)
-				.or(() -> energizerAtMostAway(here, (int) nearestEnemyDist))
-				.or(() -> nearestFoodFrom(here));
+			return activeBonusAtMostAway(here, 30).or(() -> nearestFoodFrom(here));
 		}
+		//@formatter:off
+		return activeBonusAtMostAway(here, 10)
+			.or(() -> energizerAtMostAway(here, (int) nearestEnemyDist))
+			.or(() -> nearestFoodFrom(here));
 		//@formatter:on
 	}
 
@@ -207,7 +221,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		return ghostsInRange(numTiles).filter(this::isGhostDangerous);
 	}
 
-	private double nearestDistanceToDangerousGhost(Tile here) {
+	private double distanceToNearestEnemy(Tile here) {
 		return dangerousGhosts().map(ghost -> here.distance(ghost.tile())).min(Double::compareTo).orElse(Double.MAX_VALUE);
 	}
 
