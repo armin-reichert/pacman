@@ -8,6 +8,7 @@ import static java.util.Comparator.comparingInt;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.creatures.Folks;
@@ -46,9 +47,9 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	private Tile target;
 
 	public SearchingForFoodAndAvoidingGhosts(World world, Guy<?> guy, Folks folks) {
+		this.world = world;
 		this.guy = guy;
 		this.folks = folks;
-		this.world = world;
 		graph = new WorldGraph(world);
 		graph.setPathFinder(PathFinder.ASTAR);
 	}
@@ -60,7 +61,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		}
 		boolean acted = avoidTouchingGhostAhead() || avoidOncomingGhost() || chaseFrightenedGhost(10);
 		if (!acted) {
-			searchFood();
+			turnTowardsNearestFood(guy.tile());
 		}
 	}
 
@@ -121,26 +122,21 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		return false;
 	}
 
-	// TODO
-	private double distance;
-
-	private void searchFood() {
-		distance = Double.MAX_VALUE;
-		//@formatter:off
-		aheadThenRightThenLeft()
-			.filter(guy::canCrossBorderTo)
-			.forEach(dir -> {
-				Tile neighbor = world.tileToDir(guy.tile(), dir, 1);
-				preferredFoodLocationFrom(neighbor).ifPresent(foodLocation -> {
-					double d = neighbor.distance(foodLocation);
-					if (d < distance) {
-						guy.wishDir = dir;
-						target = foodLocation;
-						distance = d;
-					}
-				});
-			});
-		//@formatter:on
+	private void turnTowardsNearestFood(Tile here) {
+		double minFoodDistance = Double.MAX_VALUE;
+		Iterable<Direction> dirs = aheadThenLeftOrRight().filter(guy::canCrossBorderTo)::iterator;
+		for (Direction dir : dirs) {
+			Tile neighbor = world.neighbor(here, dir);
+			Optional<Tile> foodLocation = preferredFoodLocationFrom(neighbor);
+			if (foodLocation.isPresent()) {
+				double foodDistance = neighbor.distance(foodLocation.get());
+				if (foodDistance < minFoodDistance) {
+					guy.wishDir = dir;
+					target = foodLocation.get();
+					minFoodDistance = foodDistance;
+				}
+			}
+		}
 	}
 
 	private Stream<Tile> foodTiles() {
@@ -152,11 +148,11 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		double nearestEnemyDist = nearestDistanceToDangerousGhost(here);
 		if (nearestEnemyDist == Double.MAX_VALUE) {
 			return activeBonusAtMostAway(here, 30)
-					.or(() -> nearestFoodFrom(here));
+				.or(() -> nearestFoodFrom(here));
 		} else {
 			return activeBonusAtMostAway(here, 10)
-					.or(() -> energizerAtMostAway(here, (int) nearestEnemyDist))
-					.or(() -> nearestFoodFrom(here));
+				.or(() -> energizerAtMostAway(here, (int) nearestEnemyDist))
+				.or(() -> nearestFoodFrom(here));
 		}
 		//@formatter:on
 	}
@@ -177,17 +173,17 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	private Optional<Tile> energizerAtMostAway(Tile here, int distance) {
 		//@formatter:off
 		return foodTiles()
-				.filter(tile -> world.hasFood(ArcadeFood.ENERGIZER, tile))
-				.filter(energizer -> here.manhattanDistance(energizer) <= distance)
-				.findFirst();
+			.filter(tile -> world.hasFood(ArcadeFood.ENERGIZER, tile))
+			.filter(energizer -> here.manhattanDistance(energizer) <= distance)
+			.findFirst();
 		//@formatter:on
 	}
 
 	private Optional<Tile> nearestFoodFrom(Tile here) {
 		//@formatter:off
 		return foodTiles()
-				.sorted(comparingInt(food -> here.manhattanDistance(food)))
-				.findFirst();
+			.sorted(comparingInt(food -> here.manhattanDistance(food)))
+			.findFirst();
 		//@formatter:on
 	}
 
@@ -219,8 +215,9 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		return folks.ghostsInWorld().filter(ghost -> isGhostInRange(ghost, numTiles));
 	}
 
-	private Stream<Direction> aheadThenRightThenLeft() {
-		return Stream.of(guy.moveDir, guy.moveDir.right(), guy.moveDir.left());
+	private Stream<Direction> aheadThenLeftOrRight() {
+		return new Random().nextBoolean() ? Stream.of(guy.moveDir, guy.moveDir.right(), guy.moveDir.left())
+				: Stream.of(guy.moveDir, guy.moveDir.left(), guy.moveDir.right());
 	}
 
 	private int shortestPathLength(Tile from, Tile to) {
