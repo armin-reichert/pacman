@@ -27,7 +27,7 @@ import de.amr.games.pacman.view.api.PacManGameView;
 public class MusicLoadingView implements PacManGameView {
 
 	private final ArcadeWorld world = new ArcadeWorld();
-	private final Folks folks = new Folks(world, world.house(0));
+	private final Folks folks = new Folks(world, world.house(0).get());
 	private final PacMan pacMan = folks.pacMan;
 	private final List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
 	private Theme theme;

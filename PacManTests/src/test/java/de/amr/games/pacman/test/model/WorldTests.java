@@ -19,6 +19,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.components.Block;
+import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.components.Tile;
 
@@ -35,16 +36,17 @@ public class WorldTests {
 	public void testStructure() {
 		assertEquals(1, world.houses().count());
 		assertNotNull(world.pacManBed());
-		assertEquals(4, world.house(0).beds().count());
-		assertNotNull(world.house(0).bed(0));
-		assertNotNull(world.house(0).bed(1));
-		assertNotNull(world.house(0).bed(2));
-		assertNotNull(world.house(0).bed(3));
+		House house = world.house(0).get();
+		assertEquals(4, house.beds().count());
+		assertNotNull(house.bed(0));
+		assertNotNull(house.bed(1));
+		assertNotNull(house.bed(2));
+		assertNotNull(house.bed(3));
 		assertEquals(1, world.portals().count());
 		assertTrue(world.portals().findFirst().get().either.equals(Tile.at(0, 17)));
 		assertTrue(world.portals().findFirst().get().other.equals(Tile.at(27, 17)));
 		assertFalse(world.isAccessible(Tile.at(0, 3)));
-		assertTrue(world.house(0).hasDoorAt(Tile.at(13, 15)));
+		assertTrue(house.hasDoorAt(Tile.at(13, 15)));
 
 		/*
 		 * Intersection tiles: (6,4) (21,4) (1,8) (6,8) (9,8) (12,8) (15,8) (18,8) (21,8) (26,8) (6,11)

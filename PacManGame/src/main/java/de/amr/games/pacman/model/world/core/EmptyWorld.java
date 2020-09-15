@@ -43,8 +43,8 @@ public class EmptyWorld extends AbstractWorld {
 	}
 
 	@Override
-	public House house(int i) {
-		return null;
+	public Optional<House> house(int i) {
+		return Optional.empty();
 	}
 
 	@Override

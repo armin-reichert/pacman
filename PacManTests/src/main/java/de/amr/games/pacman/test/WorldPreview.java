@@ -9,9 +9,9 @@ import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
@@ -79,7 +79,7 @@ public class WorldPreview extends JFrame {
 			return "P";
 		}
 		for (int i = 0; i < 4; ++i) {
-			if (world.house(0).bed(i).includes(location)) {
+			if (world.house(0).get().bed(i).includes(location)) {
 				return "" + i;
 			}
 		}

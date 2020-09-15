@@ -184,8 +184,8 @@ public class ArcadeWorld extends AbstractWorld {
 	}
 
 	@Override
-	public House house(int i) {
-		return i == 0 ? house : null;
+	public Optional<House> house(int i) {
+		return i == 0 ? Optional.of(house) : Optional.empty();
 	}
 
 	@Override

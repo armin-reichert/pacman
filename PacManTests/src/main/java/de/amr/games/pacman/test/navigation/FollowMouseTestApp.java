@@ -65,7 +65,7 @@ class FollowMouseTestUI extends TestController {
 				Robot robot = new Robot();
 				robot.mouseMove(x, y);
 			} catch (AWTException e) {
-				Bed bed = world.house(0).bed(0);
+				Bed bed = world.house(0).get().bed(0);
 				mousePosition = Tile.at(bed.col(), bed.row());
 				e.printStackTrace();
 			}

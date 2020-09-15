@@ -90,11 +90,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		world = new ArcadeWorld();
 
-		folks = new Folks(world, world.house(0));
+		folks = new Folks(world, world.house(0).get());
 		folks.pacMan.ai.addEventListener(this::process);
 		folks.ghosts().forEach(ghost -> ghost.ai.addEventListener(this::process));
 
-		doorMan = new DoorMan(world.house(0), folks);
+		doorMan = new DoorMan(world.house(0).get(), folks);
 		ghostCommand = new GhostCommand(folks);
 		//@formatter:off
 		bonusController = new BonusFoodController(world,
@@ -177,7 +177,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GAME_OVER)
 					.onEntry(() -> {
 						folks.ghostsInWorld().forEach(ghost -> {
-							Bed bed = world.house(0).bed(0);
+							Bed bed = world.house(0).get().bed(0);
 							ghost.init();
 							ghost.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 							ghost.wishDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;

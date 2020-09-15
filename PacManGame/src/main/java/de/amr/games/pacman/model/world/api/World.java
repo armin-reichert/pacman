@@ -1,6 +1,7 @@
 package de.amr.games.pacman.model.world.api;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.Entity;
@@ -69,9 +70,9 @@ public interface World extends RectangularArea, FoodSource {
 
 	/**
 	 * @param i index
-	 * @return i'th house in this territory or {@code null}
+	 * @return i'th house in this territory
 	 */
-	House house(int i);
+	Optional<House> house(int i);
 
 	/**
 	 * @return all portals in this territory

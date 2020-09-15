@@ -13,8 +13,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
-import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.theme.api.WorldRenderer;
 
 class ArcadeWorldRenderer implements WorldRenderer {
 
@@ -46,7 +46,7 @@ class ArcadeWorldRenderer implements WorldRenderer {
 			spriteMap.select("maze-full");
 			spriteMap.current().get().draw(g2, 0, 3 * Tile.SIZE);
 			drawContent(g, world);
-			world.house(0).doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
+			world.house(0).get().doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
 				g.setColor(Color.BLACK);
 				door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
 			});

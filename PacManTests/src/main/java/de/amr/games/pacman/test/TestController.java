@@ -37,7 +37,7 @@ public class TestController implements VisualController {
 		world = new ArcadeWorld();
 		world.tiles().forEach(world::removeFood);
 		PacManGame.startNewGame(1, world.totalFoodCount());
-		folks = new Folks(world, world.house(0));
+		folks = new Folks(world, world.house(0).get());
 		pacMan = folks.pacMan;
 		blinky = folks.blinky;
 		pinky = folks.pinky;
