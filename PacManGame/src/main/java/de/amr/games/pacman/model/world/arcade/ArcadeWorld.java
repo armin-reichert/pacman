@@ -1,6 +1,7 @@
 package de.amr.games.pacman.model.world.arcade;
 
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -14,50 +15,50 @@ import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.MapBasedWorld;
+import de.amr.games.pacman.model.world.core.AbstractWorld;
 
 /**
  * The world of the Arcade version of the game.
  * 
  * @author Armin Reichert
  */
-public class ArcadeWorld extends MapBasedWorld {
+public class ArcadeWorld extends AbstractWorld {
 
-	static final byte[][] MAP = {
+	private static final byte[][] MAP = { // 0 = accessible, 1 = inaccessible, 2 = pellet
 			//@formatter:off
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
-			{ 1, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4, 4, 1, 1, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4, 1, },
-			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
-			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
-			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
-			{ 1, 6, 4, 4, 4, 4, 6, 4, 4, 6, 4, 4, 6, 4, 4, 6, 4, 4, 6, 4, 4, 6, 4, 4, 4, 4, 6, 1, },
-			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
-			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
-			{ 1, 4, 4, 4, 4, 4, 6, 1, 1, 4, 4, 4, 4, 1, 1, 4, 4, 4, 4, 1, 1, 6, 4, 4, 4, 4, 4, 1, },
-			{ 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, },
-			{ 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, },
-			{ 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 1, 1, 4, 1, 1, 1, 1, 1, 1, },
-			{ 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 1, 1, 1, },
-			{ 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 4, 1, 1, 1, 1, 1, 1, },
-			{ 0, 0, 0, 0, 0, 0, 6, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 6, 0, 0, 0, 0, 0, 0, },
-			{ 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 4, 1, 1, 1, 1, 1, 1, },
-			{ 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 1, 1, 1, },
-			{ 1, 1, 1, 1, 1, 1, 4, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 4, 1, 1, 1, 1, 1, 1, },
-			{ 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 1, 1, 1, },
-			{ 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 1, 1, 1, },
-			{ 1, 4, 4, 4, 4, 4, 6, 4, 4, 6, 4, 4, 4, 1, 1, 4, 4, 4, 6, 4, 4, 6, 4, 4, 4, 4, 4, 1, },
-			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
-			{ 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, },
-			{ 1, 4, 4, 4, 1, 1, 6, 4, 4, 6, 4, 4, 6, 0, 0, 6, 4, 4, 6, 4, 4, 6, 1, 1, 4, 4, 4, 1, },
-			{ 1, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 1, },
-			{ 1, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 1, },
-			{ 1, 4, 4, 6, 4, 4, 4, 1, 1, 4, 4, 4, 4, 1, 1, 4, 4, 4, 4, 1, 1, 4, 4, 4, 6, 4, 4, 1, },
-			{ 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, },
-			{ 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, },
-			{ 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 4, 4, 6, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, },
+			{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, },
+			{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, },
+			{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, },
+			{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, },
+			{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, },
+			{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1, },
+			{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1, },
+			{ 1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, },
+			{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, },
+			{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, },
+			{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, },
+			{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, },
+			{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, },
+			{ 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, },
+			{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, },
+			{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, },
+			{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, },
+			{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, },
+			{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, },
+			{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, },
+			{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, },
+			{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, },
+			{ 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 1, },
+			{ 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, },
+			{ 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, },
+			{ 1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, },
+			{ 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, },
+			{ 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, },
+			{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, },
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
@@ -74,9 +75,24 @@ public class ArcadeWorld extends MapBasedWorld {
 	protected Tile[] energizerTiles;
 	protected ArcadeBonus bonus;
 
+	private final BitSet accessible;
+	private final BitSet food;
+	private final BitSet eaten;
+
 	public ArcadeWorld() {
-		super(MAP);
-		portal = horizontalPortal(Tile.at(0, 17), Tile.at(27, 17));
+		super(28, 36);
+		accessible = new BitSet(width() * height());
+		food = new BitSet(width() * height());
+		eaten = new BitSet(width() * height());
+		for (int row = 0; row < height(); ++row) {
+			for (int col = 0; col < width(); ++col) {
+				int i = bitIndex(row, col);
+				accessible.set(i, MAP[row][col] != 1);
+				food.set(i, MAP[row][col] == 2);
+			}
+		}
+
+		portal = new Portal(Tile.at(0, 17), Tile.at(27, 17), false);
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
 		//@formatter:off
 		house =	House
@@ -108,6 +124,29 @@ public class ArcadeWorld extends MapBasedWorld {
 			Tile.at(26,26),
 		};
 		//@formatter:on
+	}
+
+	private int bitIndex(int row, int col) {
+		return row * width() + col;
+	}
+
+	private boolean insideWorld(Tile tile) {
+		return tile.inColumnRange(0, width() - 1) && tile.inRowRange(0, height() - 1);
+	}
+
+	private boolean outsideHouse(Tile tile) {
+		return houses().noneMatch(house -> house.includes(tile));
+	}
+
+	@Override
+	public boolean isAccessible(Tile tile) {
+		return insideWorld(tile) && accessible.get(bitIndex(tile.row, tile.col));
+	}
+
+	@Override
+	public boolean isIntersection(Tile tile) {
+		return insideWorld(tile) && Direction.dirs().map(dir -> neighbor(tile, dir)).filter(this::isAccessible)
+				.filter(this::outsideHouse).count() > 2;
 	}
 
 	@Override
@@ -143,6 +182,36 @@ public class ArcadeWorld extends MapBasedWorld {
 	@Override
 	public Stream<OneWayTile> oneWayTiles() {
 		return Arrays.stream(oneWayTiles);
+	}
+
+	@Override
+	public void restoreFood() {
+		eaten.clear();
+	}
+
+	@Override
+	public void removeFood(Tile tile) {
+		if (insideWorld(tile)) {
+			eaten.set(bitIndex(tile.row, tile.col), true);
+		}
+	}
+
+	@Override
+	public boolean hasFood(Tile tile) {
+		if (insideWorld(tile)) {
+			int i = bitIndex(tile.row, tile.col);
+			return food.get(i) && !eaten.get(i);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean hasEatenFood(Tile tile) {
+		if (insideWorld(tile)) {
+			int i = bitIndex(tile.row, tile.col);
+			return food.get(i) && eaten.get(i);
+		}
+		return false;
 	}
 
 	@Override
