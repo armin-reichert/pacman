@@ -112,15 +112,6 @@ public class ArcadeWorld extends AbstractWorld {
 			.bed(new Bed(15, 17, Direction.UP))
 			.build();
 
-		// compute intersections *after* adding house(s)!
-		for (int row = 0; row < height(); ++row) {
-			for (int col = 0; col < width(); ++col) {
-				Tile tile = Tile.at(col, row);
-				boolean intersection = Direction.dirs().map(dir -> neighbor(tile, dir)).filter(this::isAccessible)
-						.filter(this::outsideHouse).count() > 2;
-				intersections.set(bitIndex(row, col), intersection);
-			}
-		}
 		oneWayTiles = new OneWayTile[] {
 			new OneWayTile(12, 13, Direction.DOWN), 
 			new OneWayTile(15, 13, Direction.DOWN),
@@ -139,6 +130,19 @@ public class ArcadeWorld extends AbstractWorld {
 			Tile.at(1,26),
 			Tile.at(26,26),
 		};
+
+		// compute intersections *after* adding house(s)!
+		for (int row = 0; row < height(); ++row) {
+			for (int col = 0; col < width(); ++col) {
+				Tile tile = Tile.at(col, row);
+				boolean intersection = Direction.dirs()
+					.map(dir -> neighbor(tile, dir))
+					.filter(this::isAccessible)
+					.filter(this::outsideHouse)
+					.count() > 2;
+				intersections.set(bitIndex(row, col), intersection);
+			}
+		}
 		//@formatter:on
 	}
 
