@@ -78,17 +78,24 @@ public class ArcadeWorld extends AbstractWorld {
 	private final BitSet accessible;
 	private final BitSet food;
 	private final BitSet eaten;
+	private int foodCount;
 
 	public ArcadeWorld() {
 		super(28, 36);
 		accessible = new BitSet(width() * height());
+		accessible.set(0, width() * height());
 		food = new BitSet(width() * height());
 		eaten = new BitSet(width() * height());
 		for (int row = 0; row < height(); ++row) {
 			for (int col = 0; col < width(); ++col) {
 				int i = bitIndex(row, col);
-				accessible.set(i, MAP[row][col] != 1);
-				food.set(i, MAP[row][col] == 2);
+				if (MAP[row][col] == 1) {
+					accessible.set(i, false);
+				}
+				if (MAP[row][col] == 2) {
+					food.set(i, true);
+					++foodCount;
+				}
 			}
 		}
 
@@ -151,7 +158,7 @@ public class ArcadeWorld extends AbstractWorld {
 
 	@Override
 	public int totalFoodCount() {
-		return 244;
+		return foodCount;
 	}
 
 	@Override
