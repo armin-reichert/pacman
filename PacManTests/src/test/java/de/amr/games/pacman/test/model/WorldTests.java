@@ -45,6 +45,19 @@ public class WorldTests {
 		assertTrue(world.portals().findFirst().get().other.equals(Tile.at(27, 17)));
 		assertFalse(world.isAccessible(Tile.at(0, 3)));
 		assertTrue(world.house(0).hasDoorAt(Tile.at(13, 15)));
+
+		/*
+		 * Intersection tiles: (6,4) (21,4) (1,8) (6,8) (9,8) (12,8) (15,8) (18,8) (21,8) (26,8) (6,11)
+		 * (21,11) (12,14) (15,14) (6,17) (9,17) (18,17) (21,17) (9,20) (18,20) (6,23) (9,23) (18,23)
+		 * (21,23) (6,26) (9,26) (12,26) (15,26) (18,26) (21,26) (3,29) (24,29) (12,32) (15,32)
+		 */
+		assertTrue(world.isIntersection(Tile.at(1, 8)));
+		assertTrue(world.isIntersection(Tile.at(21, 23)));
+		assertTrue(world.isIntersection(Tile.at(9, 17)));
+		assertTrue(world.isIntersection(Tile.at(12, 32)));
+		assertTrue(world.isIntersection(Tile.at(15, 32)));
+
+		world.tiles().filter(world::isIntersection).forEach(System.out::println);
 	}
 
 	@Test

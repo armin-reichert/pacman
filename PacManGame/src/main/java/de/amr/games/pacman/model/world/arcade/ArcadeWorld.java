@@ -76,6 +76,7 @@ public class ArcadeWorld extends AbstractWorld {
 	private ArcadeBonus bonus;
 
 	private final BitSet accessible;
+	private final BitSet intersections;
 	private final BitSet food;
 	private final BitSet eaten;
 	private int foodCount;
@@ -84,6 +85,7 @@ public class ArcadeWorld extends AbstractWorld {
 		super(28, 36);
 		accessible = new BitSet(width() * height());
 		accessible.set(0, width() * height());
+		intersections = new BitSet(width() * height());
 		food = new BitSet(width() * height());
 		eaten = new BitSet(width() * height());
 		for (int row = 0; row < height(); ++row) {
@@ -97,7 +99,6 @@ public class ArcadeWorld extends AbstractWorld {
 				}
 			}
 		}
-
 		portal = new Portal(Tile.at(0, 17), Tile.at(27, 17), false);
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
 		//@formatter:off
@@ -110,7 +111,16 @@ public class ArcadeWorld extends AbstractWorld {
 			.bed(new Bed(13, 17, Direction.DOWN))
 			.bed(new Bed(15, 17, Direction.UP))
 			.build();
-		
+
+		// compute intersections *after* adding house(s)!
+		for (int row = 0; row < height(); ++row) {
+			for (int col = 0; col < width(); ++col) {
+				Tile tile = Tile.at(col, row);
+				boolean intersection = Direction.dirs().map(dir -> neighbor(tile, dir)).filter(this::isAccessible)
+						.filter(this::outsideHouse).count() > 2;
+				intersections.set(bitIndex(row, col), intersection);
+			}
+		}
 		oneWayTiles = new OneWayTile[] {
 			new OneWayTile(12, 13, Direction.DOWN), 
 			new OneWayTile(15, 13, Direction.DOWN),
@@ -151,8 +161,7 @@ public class ArcadeWorld extends AbstractWorld {
 
 	@Override
 	public boolean isIntersection(Tile tile) {
-		return insideWorld(tile) && Direction.dirs().map(dir -> neighbor(tile, dir)).filter(this::isAccessible)
-				.filter(this::outsideHouse).count() > 2;
+		return insideWorld(tile) && intersections.get(bitIndex(tile.row, tile.col));
 	}
 
 	@Override
