@@ -91,8 +91,7 @@ public class ArcadeWorld extends AbstractWorld {
 				int i = bitIndex(row, col);
 				if (MAP[row][col] == 1) {
 					accessible.set(i, false);
-				}
-				if (MAP[row][col] == 2) {
+				} else if (MAP[row][col] == 2) {
 					food.set(i, true);
 					++foodCount;
 				}
