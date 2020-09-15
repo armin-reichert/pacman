@@ -17,9 +17,9 @@ public enum Direction {
 
 	UP(0, -1), RIGHT(1, 0), DOWN(0, 1), LEFT(-1, 0);
 
-	static Direction[] OPPOSITE_DIR = { DOWN, LEFT, UP, RIGHT };
-	static Direction[] LEFT_DIR = { LEFT, UP, RIGHT, DOWN };
-	static Direction[] RIGHT_DIR = { RIGHT, DOWN, LEFT, UP };
+	private static Direction[] OPPOSITE_DIR = { DOWN, LEFT, UP, RIGHT };
+	private static Direction[] LEFT_DIR = { LEFT, UP, RIGHT, DOWN };
+	private static Direction[] RIGHT_DIR = { RIGHT, DOWN, LEFT, UP };
 
 	public static Stream<Direction> dirs() {
 		return Arrays.stream(values());
