@@ -52,8 +52,8 @@ import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.theme.api.Theme;
-import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.PacManGameSounds;
+import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.MusicLoadingView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -99,7 +99,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		//@formatter:off
 		bonusController = new BonusFoodController(world,
 			() -> sec(PacManGame.BONUS_SECONDS + new Random().nextFloat()),
-			() -> ArcadeBonus.of(game.bonusSymbol, game.bonusValue, ArcadeWorld.BONUS_LOCATION));
+			() -> ArcadeBonus.of(game.bonusSymbol, game.bonusValue));
 		//@formatter:on
 
 		app().onClose(() -> {

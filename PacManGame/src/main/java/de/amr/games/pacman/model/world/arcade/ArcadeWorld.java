@@ -65,15 +65,15 @@ public class ArcadeWorld extends AbstractWorld {
 			//@formatter:on
 	};
 
-	public static final Tile BONUS_LOCATION = Tile.at(13, 20);
+	static final Tile BONUS_LOCATION = Tile.at(13, 20);
 
-	protected House house;
-	protected Bed pacManBed;
-	protected Portal portal;
-	protected OneWayTile[] oneWayTiles;
-	protected Block[] tunnels;
-	protected Tile[] energizerTiles;
-	protected ArcadeBonus bonus;
+	private House house;
+	private Bed pacManBed;
+	private Portal portal;
+	private OneWayTile[] oneWayTiles;
+	private Block[] tunnels;
+	private Tile[] energizerTiles;
+	private ArcadeBonus bonus;
 
 	private final BitSet accessible;
 	private final BitSet food;

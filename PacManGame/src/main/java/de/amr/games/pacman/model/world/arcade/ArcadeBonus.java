@@ -12,10 +12,10 @@ public enum ArcadeBonus implements TemporaryFood {
 
 	CHERRIES, STRAWBERRY, PEACH, APPLE, GRAPES, GALAXIAN, BELL, KEY;
 
-	public static ArcadeBonus of(String name, int value, Tile location) {
+	public static ArcadeBonus of(String name, int value) {
 		ArcadeBonus bonus = valueOf(name);
 		bonus.value = value;
-		bonus.location = location;
+		bonus.location = ArcadeWorld.BONUS_LOCATION;
 		return bonus;
 	}
 
