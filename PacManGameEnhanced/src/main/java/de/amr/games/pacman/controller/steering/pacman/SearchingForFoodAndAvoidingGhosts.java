@@ -30,6 +30,8 @@ import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
  */
 public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
+	private static final Random rnd = new Random();
+
 	static class Target {
 
 		Direction dir;
@@ -230,7 +232,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	private Stream<Direction> aheadThenLeftOrRight() {
-		return new Random().nextBoolean() ? Stream.of(guy.moveDir, guy.moveDir.right(), guy.moveDir.left())
+		return rnd.nextBoolean() ? Stream.of(guy.moveDir, guy.moveDir.right(), guy.moveDir.left())
 				: Stream.of(guy.moveDir, guy.moveDir.left(), guy.moveDir.right());
 	}
 
