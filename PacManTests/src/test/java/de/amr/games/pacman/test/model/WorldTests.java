@@ -11,6 +11,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +20,9 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.components.TiledRectangle;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Portal;
+import de.amr.games.pacman.model.world.components.TiledRectangle;
 
 public class WorldTests {
 
@@ -48,18 +49,13 @@ public class WorldTests {
 		assertFalse(world.isAccessible(Tile.at(0, 3)));
 		assertTrue(house.hasDoorAt(Tile.at(13, 15)));
 
-		/*
-		 * Intersection tiles: (6,4) (21,4) (1,8) (6,8) (9,8) (12,8) (15,8) (18,8) (21,8) (26,8) (6,11)
-		 * (21,11) (12,14) (15,14) (6,17) (9,17) (18,17) (21,17) (9,20) (18,20) (6,23) (9,23) (18,23)
-		 * (21,23) (6,26) (9,26) (12,26) (15,26) (18,26) (21,26) (3,29) (24,29) (12,32) (15,32)
-		 */
-		assertTrue(world.isIntersection(Tile.at(1, 8)));
-		assertTrue(world.isIntersection(Tile.at(21, 23)));
-		assertTrue(world.isIntersection(Tile.at(9, 17)));
-		assertTrue(world.isIntersection(Tile.at(12, 32)));
-		assertTrue(world.isIntersection(Tile.at(15, 32)));
-
-		world.tiles().filter(world::isIntersection).forEach(System.out::println);
+		Stream.of(Tile.at(6, 4), Tile.at(21, 4), Tile.at(1, 8), Tile.at(6, 8), Tile.at(9, 8), Tile.at(12, 8),
+				Tile.at(15, 8), Tile.at(18, 8), Tile.at(21, 8), Tile.at(26, 8), Tile.at(6, 11), Tile.at(21, 11),
+				Tile.at(12, 14), Tile.at(15, 14), Tile.at(6, 17), Tile.at(9, 17), Tile.at(18, 17), Tile.at(21, 17),
+				Tile.at(9, 20), Tile.at(18, 20), Tile.at(6, 23), Tile.at(9, 23), Tile.at(18, 23), Tile.at(21, 23),
+				Tile.at(6, 26), Tile.at(9, 26), Tile.at(12, 26), Tile.at(15, 26), Tile.at(18, 26), Tile.at(21, 26),
+				Tile.at(3, 29), Tile.at(24, 29), Tile.at(12, 32), Tile.at(15, 32))
+				.forEach(tile -> assertTrue(world.isIntersection(tile)));
 	}
 
 	@Test
