@@ -12,9 +12,9 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoingToBed.State;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.Door;
-import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**

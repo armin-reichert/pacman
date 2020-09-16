@@ -4,7 +4,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.steering.api.SteeringBuilder;
-import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.test.TestController;
 
 public class PortalTestApp extends Application {

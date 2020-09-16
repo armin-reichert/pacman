@@ -3,8 +3,9 @@ package de.amr.games.pacman.model.world.components;
 import java.util.List;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.world.api.Area;
+import de.amr.games.pacman.model.world.api.TiledArea;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 
 /**
@@ -12,10 +13,10 @@ import de.amr.games.pacman.model.world.api.World;
  * 
  * @author Armin Reichert
  */
-public class House implements Area {
+public class House implements TiledArea {
 
 	private final World world;
-	private final Area layout;
+	private final TiledArea layout;
 	private final List<Door> doors;
 	private final List<Bed> beds;
 
@@ -23,7 +24,7 @@ public class House implements Area {
 		return new HouseBuilder(world);
 	}
 
-	public House(World world, Area layout, List<Door> doors, List<Bed> beds) {
+	public House(World world, TiledArea layout, List<Door> doors, List<Bed> beds) {
 		this.world = world;
 		this.layout = layout;
 		this.doors = doors;

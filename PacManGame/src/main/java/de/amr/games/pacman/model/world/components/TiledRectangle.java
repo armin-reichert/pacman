@@ -1,20 +1,20 @@
 package de.amr.games.pacman.model.world.components;
 
-import de.amr.games.pacman.model.world.api.RectangularArea;
+import de.amr.games.pacman.model.world.api.RectangularTiledArea;
 
 /**
- * A rectangular tile area.
+ * A rectangle of tiles.
  * 
  * @author Armin Reichert
  */
-public class Block implements RectangularArea {
+public class TiledRectangle implements RectangularTiledArea {
 
 	private final int col;
 	private final int row;
 	private final int width;
 	private final int height;
 
-	public Block(int col, int row, int width, int height) {
+	public TiledRectangle(int col, int row, int width, int height) {
 		this.col = col;
 		this.row = row;
 		this.width = width;

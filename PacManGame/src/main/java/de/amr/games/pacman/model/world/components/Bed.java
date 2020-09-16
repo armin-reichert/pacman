@@ -7,7 +7,7 @@ import de.amr.games.pacman.model.world.api.Direction;
  * 
  * @author Armin Reichert
  */
-public class Bed extends Block {
+public class Bed extends TiledRectangle {
 
 	public final Direction exitDir;
 

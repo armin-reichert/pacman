@@ -5,13 +5,13 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.model.world.components.Tile;
 
-public class EmptyWorld extends AbstractWorld {
+public class EmptyWorld extends AbstractTiledWorld {
 
 	public EmptyWorld(int horizontalTiles, int verticalTiles) {
 		super(horizontalTiles, verticalTiles);

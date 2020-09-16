@@ -7,13 +7,13 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.model.world.components.House;
-import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.view.common.Rendering;
 
 class BlocksWorldRenderer implements WorldRenderer {

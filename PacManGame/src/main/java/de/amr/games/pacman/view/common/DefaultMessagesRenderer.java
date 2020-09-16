@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.theme.api.MessagesRenderer;
 
 public class DefaultMessagesRenderer implements MessagesRenderer {

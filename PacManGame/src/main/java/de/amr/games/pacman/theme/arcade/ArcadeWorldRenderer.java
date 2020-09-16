@@ -9,11 +9,11 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.SpriteMap;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
-import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.theme.api.WorldRenderer;
 
 class ArcadeWorldRenderer implements WorldRenderer {

@@ -3,9 +3,13 @@ package de.amr.games.pacman.model.world.api;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.model.world.components.Tile;
 
-public interface RectangularArea extends Area {
+/**
+ * A rectangular tiled area.
+ * 
+ * @author Armin Reichert
+ */
+public interface RectangularTiledArea extends TiledArea {
 
 	/**
 	 * @return width in number of tiles
@@ -18,12 +22,12 @@ public interface RectangularArea extends Area {
 	int height();
 
 	/**
-	 * @return column of left-upper corner
+	 * @return column of left-upper tile
 	 */
 	int col();
 
 	/**
-	 * @return row of left-upper corner
+	 * @return row of left-upper tile
 	 */
 	int row();
 

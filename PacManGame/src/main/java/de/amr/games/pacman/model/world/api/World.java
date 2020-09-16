@@ -9,14 +9,13 @@ import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.model.world.components.Tile;
 
 /**
- * The Pac-Man game world is a territory where creatures can live and get food.
+ * The Pac-Man game world is a tiled territory where creatures can live and get food.
  * 
  * @author Armin Reichert
  */
-public interface World extends RectangularArea, FoodSource {
+public interface World extends RectangularTiledArea, FoodSource {
 
 	/**
 	 * @param tile reference tile

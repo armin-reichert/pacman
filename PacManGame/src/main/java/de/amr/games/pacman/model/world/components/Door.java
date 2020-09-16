@@ -7,7 +7,7 @@ import de.amr.games.pacman.model.world.api.Direction;
  * 
  * @author Armin Reichert
  */
-public class Door extends Block {
+public class Door extends TiledRectangle {
 
 	public enum DoorState {
 		OPEN, CLOSED

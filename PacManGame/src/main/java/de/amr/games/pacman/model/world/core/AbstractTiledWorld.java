@@ -7,24 +7,33 @@ import java.util.List;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.components.Block;
 import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.model.world.components.TiledRectangle;
 
 /**
  * World base class.
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractWorld extends Block implements World {
+public abstract class AbstractTiledWorld extends TiledRectangle implements World {
 
 	private final Collection<Entity> outsiders = new HashSet<>();
+	private Tile capeNW, capeNE, capeSE, capeSW;
+
 	protected boolean changing;
 	protected boolean frozen;
 
-	public AbstractWorld(int horizontalTiles, int verticalTiles) {
-		super(0, 0, horizontalTiles, verticalTiles);
+	public AbstractTiledWorld(int width, int height) {
+		super(0, 0, width, height);
+	}
+
+	private void computeCapes() {
+		capeNW = tiles().filter(this::isAccessible).min(this::distFromCornerNW).get();
+		capeNE = tiles().filter(this::isAccessible).min(this::distFromCornerNE).get();
+		capeSE = tiles().filter(this::isAccessible).max(this::distFromCornerNW).get();
+		capeSW = tiles().filter(this::isAccessible).max(this::distFromCornerNE).get();
 	}
 
 	private int distFromCornerNW(Tile t1, Tile t2) {
@@ -37,10 +46,9 @@ public abstract class AbstractWorld extends Block implements World {
 
 	@Override
 	public List<Tile> capes() {
-		Tile capeNW = tiles().filter(this::isAccessible).min(this::distFromCornerNW).get();
-		Tile capeNE = tiles().filter(this::isAccessible).min(this::distFromCornerNE).get();
-		Tile capeSE = tiles().filter(this::isAccessible).max(this::distFromCornerNW).get();
-		Tile capeSW = tiles().filter(this::isAccessible).max(this::distFromCornerNE).get();
+		if (capeNW == null) {
+			computeCapes();
+		}
 		return List.of(capeNW, capeNE, capeSE, capeSW);
 	}
 

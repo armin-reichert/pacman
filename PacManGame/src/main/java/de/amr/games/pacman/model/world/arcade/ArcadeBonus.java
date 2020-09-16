@@ -1,7 +1,7 @@
 package de.amr.games.pacman.model.world.arcade;
 
 import de.amr.games.pacman.model.world.api.TemporaryFood;
-import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 
 /**
  * Symbols appearing as bonus food in the Arcade game.

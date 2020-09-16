@@ -8,10 +8,10 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;

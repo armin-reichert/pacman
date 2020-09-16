@@ -1,7 +1,7 @@
 package de.amr.games.pacman.controller.event;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 
 public class PacManGhostCollisionEvent implements PacManGameEvent {
 

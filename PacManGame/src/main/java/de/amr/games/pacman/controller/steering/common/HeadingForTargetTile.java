@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 
 /**
  * Steers a guy towards a target tile.

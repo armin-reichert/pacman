@@ -10,8 +10,8 @@ import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import de.amr.games.pacman.controller.creatures.Guy;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.model.world.components.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**

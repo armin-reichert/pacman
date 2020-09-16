@@ -1,8 +1,8 @@
 package de.amr.games.pacman.model.world.core;
 
 import de.amr.easy.game.entity.Entity;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.components.Tile;
 
 /**
  * An entity in a tile-based world.

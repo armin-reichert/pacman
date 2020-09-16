@@ -17,11 +17,11 @@ import org.junit.Test;
 
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.components.Block;
+import de.amr.games.pacman.model.world.components.TiledRectangle;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.model.world.components.Tile;
 
 public class WorldTests {
 
@@ -86,7 +86,7 @@ public class WorldTests {
 
 	@Test
 	public void testTilesIterator() {
-		Block block = new Block(1, 1, 2, 5);
+		TiledRectangle block = new TiledRectangle(1, 1, 2, 5);
 		List<Tile> tiles = block.tiles().collect(Collectors.toList());
 		assertEquals(List.of(Tile.at(1, 1), Tile.at(2, 1), Tile.at(1, 2), Tile.at(2, 2), Tile.at(1, 3), Tile.at(2, 3),
 				Tile.at(1, 4), Tile.at(2, 4), Tile.at(1, 5), Tile.at(2, 5)), tiles);

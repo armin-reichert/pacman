@@ -3,13 +3,13 @@ package de.amr.games.pacman.model.world.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.model.world.api.Area;
+import de.amr.games.pacman.model.world.api.TiledArea;
 import de.amr.games.pacman.model.world.api.World;
 
 public class HouseBuilder {
 
 	private World world;
-	private Area layout;
+	private TiledArea layout;
 	private List<Door> doors = new ArrayList<>();
 	private List<Bed> beds = new ArrayList<>();
 
@@ -18,7 +18,7 @@ public class HouseBuilder {
 	}
 
 	public HouseBuilder layout(int col, int row, int width, int height) {
-		layout = new Block(col, row, width, height);
+		layout = new TiledRectangle(col, row, width, height);
 		return this;
 	}
 

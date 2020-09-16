@@ -8,21 +8,21 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.model.world.components.Block;
+import de.amr.games.pacman.model.world.components.TiledRectangle;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.model.world.components.Tile;
-import de.amr.games.pacman.model.world.core.AbstractWorld;
+import de.amr.games.pacman.model.world.core.AbstractTiledWorld;
 
 /**
  * The world of the Arcade version of the game.
  * 
  * @author Armin Reichert
  */
-public class ArcadeWorld extends AbstractWorld {
+public class ArcadeWorld extends AbstractTiledWorld {
 
 	private static final byte[][] MAP = { // 0 = accessible, 1 = inaccessible, 2 = pellet
 			//@formatter:off
@@ -71,7 +71,7 @@ public class ArcadeWorld extends AbstractWorld {
 	private Bed pacManBed;
 	private Portal portal;
 	private OneWayTile[] oneWayTiles;
-	private Block[] tunnels;
+	private TiledRectangle[] tunnels;
 	private Tile[] energizerTiles;
 	private ArcadeBonus bonus;
 
@@ -119,9 +119,9 @@ public class ArcadeWorld extends AbstractWorld {
 			new OneWayTile(15, 25, Direction.DOWN)
 		};
 		
-		tunnels = new Block[] {
-			new Block(1, 17, 5, 1),
-			new Block(22, 17, 5, 1),
+		tunnels = new TiledRectangle[] {
+			new TiledRectangle(1, 17, 5, 1),
+			new TiledRectangle(22, 17, 5, 1),
 		};
 		
 		energizerTiles = new Tile[] {

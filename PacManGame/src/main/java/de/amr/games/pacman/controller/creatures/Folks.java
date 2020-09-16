@@ -14,10 +14,10 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.House;
-import de.amr.games.pacman.model.world.components.Tile;
 
 /**
  * The folks from the original game with their individual behaviors.

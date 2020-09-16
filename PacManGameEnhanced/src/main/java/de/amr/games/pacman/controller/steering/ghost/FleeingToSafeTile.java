@@ -8,7 +8,7 @@ import de.amr.datastruct.StreamUtils;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
-import de.amr.games.pacman.model.world.components.Tile;
+import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.core.TileWorldEntity;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
