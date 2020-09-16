@@ -87,7 +87,7 @@ public class PacManGame {
 		loginfo("Game started at level %d", startLevel);
 	}
 
-	public void nextLevel() {
+	public static void nextLevel() {
 		PacManGame next = new PacManGame(game.level + 1, game.foodCount, game.lives, game.score);
 		next.hiscore = game.hiscore;
 		next.levelCounter = game.levelCounter;

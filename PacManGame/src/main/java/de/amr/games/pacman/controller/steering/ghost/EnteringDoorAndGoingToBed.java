@@ -69,7 +69,7 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 					.annotation("Reached floor: move right")
 	
 				.when(FALLING).then(BED_REACHED)
-					.condition(() -> ghost.tf.y >= targetY && ghost.tf.x == targetX)
+					.condition(() -> ghost.tf.y >= targetY && Math.round(ghost.tf.x) == Math.round(targetX))
 					.annotation("Reached bed")
 				
 				.when(MOVING_LEFT).then(BED_REACHED)

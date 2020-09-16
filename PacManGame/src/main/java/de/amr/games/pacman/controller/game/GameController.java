@@ -75,6 +75,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public final ThemeSelector themes;
 
 	protected PacManGameView currentView;
+	private Random rnd = new Random();
 
 	public GameController(Stream<Theme> supportedThemes) {
 		super(PacManGameState.class);
@@ -98,7 +99,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		ghostCommand = new GhostCommand(folks);
 		//@formatter:off
 		bonusController = new BonusFoodController(world,
-			() -> sec(PacManGame.BONUS_SECONDS + new Random().nextFloat()),
+			() -> sec(PacManGame.BONUS_SECONDS + rnd.nextFloat()),
 			() -> ArcadeBonus.of(game.bonusSymbol, game.bonusValue));
 		//@formatter:on
 
@@ -176,12 +177,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.state(GAME_OVER)
 					.onEntry(() -> {
+						Random rnd = new Random();
 						folks.ghostsInWorld().forEach(ghost -> {
 							Bed bed = world.house(0).get().bed(0);
 							ghost.init();
 							ghost.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
-							ghost.wishDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-							ghost.ai.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
+							ghost.wishDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+							ghost.ai.setState(rnd.nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
 						playView().messagesView.showMessage(2, "Game Over!", Color.RED);
 						sounds().stopAll();
@@ -457,7 +459,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (passed == flashingEnd) {
 				world.setChanging(false);
 				world.restoreFood();
-				game.nextLevel();
+				PacManGame.nextLevel();
 				folks.guys().forEach(Lifecycle::init);
 				folks.blinky.madness.init();
 				playView().init();
