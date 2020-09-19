@@ -55,7 +55,23 @@ public class Ghost extends Guy<GhostState> {
 	public int bounty;
 	public boolean recovering;
 
-	public Ghost(World world, String name, GhostPersonality personality) {
+	public static Ghost shadow(World world, String name) {
+		return new Ghost(world, name, GhostPersonality.SHADOW);
+	}
+
+	public static Ghost speedy(World world, String name) {
+		return new Ghost(world, name, GhostPersonality.SPEEDY);
+	}
+
+	public static Ghost bashful(World world, String name) {
+		return new Ghost(world, name, GhostPersonality.BASHFUL);
+	}
+
+	public static Ghost pokey(World world, String name) {
+		return new Ghost(world, name, GhostPersonality.POKEY);
+	}
+
+	private Ghost(World world, String name, GhostPersonality personality) {
 		super(world, name);
 		behaviors = new EnumMap<>(GhostState.class);
 		ai = buildAI();

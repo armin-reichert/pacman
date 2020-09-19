@@ -10,7 +10,6 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.entity.GameObject;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
@@ -39,10 +38,10 @@ public class ChasePacManAnimation extends GameObject {
 	public ChasePacManAnimation(Theme theme, World world) {
 		this.world = world;
 		pacMan = new PacMan(world, "Pac-Man");
-		blinky = new Ghost(world, "Blinky", GhostPersonality.SHADOW);
-		inky = new Ghost(world, "Inky", GhostPersonality.BASHFUL);
-		pinky = new Ghost(world, "Pinky", GhostPersonality.SPEEDY);
-		clyde = new Ghost(world, "Clyde", GhostPersonality.POKEY);
+		blinky = Ghost.shadow(world, "Blinky");
+		inky = Ghost.bashful(world, "Inky");
+		pinky = Ghost.speedy(world, "Pinky");
+		clyde = Ghost.pokey(world, "Clyde");
 		setTheme(theme);
 	}
 

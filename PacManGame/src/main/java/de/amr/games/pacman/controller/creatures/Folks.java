@@ -12,7 +12,6 @@ import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -33,10 +32,10 @@ public class Folks {
 
 		pacMan = new PacMan(world, "Pac-Man");
 
-		blinky = new Ghost(world, "Blinky", GhostPersonality.SHADOW);
-		inky = new Ghost(world, "Inky", GhostPersonality.BASHFUL);
-		pinky = new Ghost(world, "Pinky", GhostPersonality.SPEEDY);
-		clyde = new Ghost(world, "Clyde", GhostPersonality.POKEY);
+		blinky = Ghost.shadow(world, "Blinky");
+		inky = Ghost.bashful(world, "Inky");
+		pinky = Ghost.speedy(world, "Pinky");
+		clyde = Ghost.pokey(world, "Clyde");
 
 		ghosts().forEach(ghost -> {
 			ghost.house = ghostHouse;
