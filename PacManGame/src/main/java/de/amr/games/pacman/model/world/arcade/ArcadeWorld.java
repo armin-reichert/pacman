@@ -10,11 +10,10 @@ import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.model.world.components.TiledRectangle;
-import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
+import de.amr.games.pacman.model.world.components.TiledRectangle;
 import de.amr.games.pacman.model.world.core.AbstractTiledWorld;
 
 /**
@@ -105,11 +104,11 @@ public class ArcadeWorld extends AbstractTiledWorld {
 		house =	House
 			.world(this)
 			.layout(10, 15, 8, 5)
-			.door(new Door(Direction.DOWN, 13, 15, 2, 1))
-			.bed(new Bed(13, 14, Direction.LEFT))
-			.bed(new Bed(11, 17, Direction.UP))
-			.bed(new Bed(13, 17, Direction.DOWN))
-			.bed(new Bed(15, 17, Direction.UP))
+			.door(Direction.DOWN, 13, 15, 2, 1)
+			.bed(13, 14, Direction.LEFT)
+			.bed(11, 17, Direction.UP)
+			.bed(13, 17, Direction.DOWN)
+			.bed(15, 17, Direction.UP)
 			.build();
 
 		oneWayTiles = new OneWayTile[] {
