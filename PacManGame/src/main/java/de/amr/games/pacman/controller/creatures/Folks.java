@@ -84,12 +84,12 @@ public class Folks {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
-	public Stream<Ghost> ghostsInWorld() {
-		return ghosts().filter(ghost -> ghost.world.contains(ghost));
+	public Stream<Guy<?>> guys() {
+		return Stream.of(pacMan, blinky, pinky, inky, clyde);
 	}
 
-	public Stream<Guy<?>> guys() {
-		return Stream.of(pacMan, blinky, inky, pinky, clyde);
+	public Stream<Ghost> ghostsInWorld() {
+		return ghosts().filter(ghost -> ghost.world.contains(ghost));
 	}
 
 	public Stream<Guy<?>> guysInWorld() {
