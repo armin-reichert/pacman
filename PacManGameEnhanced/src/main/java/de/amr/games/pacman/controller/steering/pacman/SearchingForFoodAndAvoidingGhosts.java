@@ -58,7 +58,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	@Override
 	public void steer(Guy<?> guy_) {
-		if (!guy.enteredNewTile && guy.canCrossBorderTo(guy.moveDir)) {
+		if (!guy.enteredNewTile && guy.canMoveTo(guy.moveDir)) {
 			return;
 		}
 		boolean acted = avoidTouchingGhostAhead() || avoidOncomingGhost() || chaseFrightenedGhost(10);
@@ -91,7 +91,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		if (world.isIntersection(here)) {
 			double maxDistance = -1;
 			Iterable<Direction> dirs = Stream.of(guy.moveDir.opposite(), guy.moveDir.left(), guy.moveDir.right())
-					.filter(guy::canCrossBorderTo)::iterator;
+					.filter(guy::canMoveTo)::iterator;
 			for (Direction dir : dirs) {
 				Tile neighbor = world.neighbor(here, dir);
 				double distanceToEnemy = neighbor.distance(enemyTile);
@@ -142,7 +142,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	private void turnTowardsNearestFood(Tile here) {
 		double minFoodDistance = Double.MAX_VALUE;
-		Iterable<Direction> dirs = aheadThenLeftOrRight().filter(guy::canCrossBorderTo)::iterator;
+		Iterable<Direction> dirs = aheadThenLeftOrRight().filter(guy::canMoveTo)::iterator;
 		for (Direction dir : dirs) {
 			Tile neighbor = world.neighbor(here, dir);
 			Optional<Tile> foodLocation = preferredFoodLocationFrom(neighbor);
@@ -244,7 +244,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		Direction result = null;
 		double minDist = Integer.MAX_VALUE;
 		for (Direction dir : Direction.values()) {
-			if (guy.canCrossBorderTo(dir)) {
+			if (guy.canMoveTo(dir)) {
 				List<Tile> path = graph.findPath(guy.tile(), enemy.tile());
 				int dist = path.size();
 				if (dist < minDist && path.size() >= 2) {

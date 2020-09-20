@@ -15,11 +15,11 @@ public class RandomMovement implements Steering {
 
 	@Override
 	public void steer(Guy<?> guy) {
-		if (forced || !guy.canCrossBorderTo(guy.moveDir) || guy.enteredNewTile && guy.world.isIntersection(guy.tile())) {
+		if (forced || !guy.canMoveTo(guy.moveDir) || guy.enteredNewTile && guy.world.isIntersection(guy.tile())) {
 			/*@formatter:off*/
 			Direction.dirsShuffled()
 				.filter(dir -> dir != guy.moveDir.opposite())
-				.filter(guy::canCrossBorderTo)
+				.filter(guy::canMoveTo)
 				.findFirst()
 				.ifPresent(dir -> guy.wishDir = dir);
 			/*@formatter:on*/

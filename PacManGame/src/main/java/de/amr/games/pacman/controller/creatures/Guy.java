@@ -48,18 +48,18 @@ public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle, S
 	public abstract Steering getSteering();
 
 	/**
-	 * @param currentTile some tile
-	 * @param neighbor    neighbor of tile
+	 * @param tile     some tile
+	 * @param neighbor neighbor of tile
 	 * @return if this guy can move from tile to neighbor
 	 */
-	public abstract boolean canMoveBetween(Tile currentTile, Tile neighbor);
+	public abstract boolean canMoveBetween(Tile tile, Tile neighbor);
 
 	/**
 	 * @param dir some direction
 	 * @return if this guy can cross the border between its current tile and the neighbor to the given
 	 *         direction
 	 */
-	public boolean canCrossBorderTo(Direction dir) {
+	public boolean canMoveTo(Direction dir) {
 		Tile currentTile = tile(), neighbor = world.neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
@@ -123,7 +123,7 @@ public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle, S
 	 * @return speed the creature's max. possible speed towards this direction
 	 */
 	private float possibleMoveDistance(Direction dir, float speed) {
-		if (canCrossBorderTo(dir)) {
+		if (canMoveTo(dir)) {
 			return speed;
 		}
 		float availableX = tileOffsetX() - Tile.SIZE / 2;

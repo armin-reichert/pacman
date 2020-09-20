@@ -50,7 +50,7 @@ class ArcadePacManRenderer implements PacManRenderer {
 		if (pacMan.ai.getState() == null || pacMan.ai.is(IN_BED, SLEEPING)) {
 			return spriteMap.select("full");
 		} else if (pacMan.ai.is(AWAKE, POWERFUL)) {
-			boolean blocked = !pacMan.canCrossBorderTo(pacMan.moveDir);
+			boolean blocked = !pacMan.canMoveTo(pacMan.moveDir);
 			return spriteMap.select((blocked ? "blocked-" : "walking-") + pacMan.moveDir);
 		} else if (pacMan.ai.is(DEAD)) {
 			return spriteMap.select("full");

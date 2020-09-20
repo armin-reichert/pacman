@@ -33,7 +33,7 @@ public abstract class FollowingPath implements Steering {
 
 	@Override
 	public void steer(Guy<?> guy) {
-		if (!guy.canCrossBorderTo(guy.moveDir) || guy.enteredNewTile || pathIndex == -1) {
+		if (!guy.canMoveTo(guy.moveDir) || guy.enteredNewTile || pathIndex == -1) {
 			++pathIndex;
 			dirAlongPath().ifPresent(dir -> {
 				if (dir != guy.wishDir) {
