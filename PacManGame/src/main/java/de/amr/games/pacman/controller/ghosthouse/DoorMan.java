@@ -57,7 +57,7 @@ public class DoorMan implements Lifecycle {
 	@Override
 	public void update() {
 		preferredLockedGhost().ifPresent(ghost -> {
-			Decision decision = makeDecisionAboutReleasing(ghost);
+			Decision decision = decideIfGhostCanLeaveHouse(ghost);
 			if (decision.confirmed) {
 				loginfo(decision.reason);
 				unlock(ghost);
@@ -65,7 +65,7 @@ public class DoorMan implements Lifecycle {
 		});
 		pacManStarvingTicks += 1;
 		house.doors().forEach(this::closeDoor);
-		house.doors().filter(this::isOpeningRequested).forEach(this::openDoor);
+		house.doors().filter(this::isOpeningDoorRequested).forEach(this::openDoor);
 	}
 
 	public void onPacManFoundFood() {
@@ -84,17 +84,17 @@ public class DoorMan implements Lifecycle {
 		}
 	}
 
-	public void onLifeLost() {
+	public void onPacManLostLife() {
 		globalCounter.enabled = true;
 		globalCounter.dots = 0;
-		loginfo("Global dot counter enabled and set to zero");
+		loginfo("Global dot counter enabled and set to zero (Pac-Man lost life)");
 	}
 
 	public void onLevelChange() {
 		resetGhostDotCounters();
 	}
 
-	public boolean isPreferredGhost(Ghost ghost) {
+	public boolean isPreferredLockedGhost(Ghost ghost) {
 		return preferredLockedGhost().orElse(null) == ghost;
 	}
 
@@ -104,8 +104,8 @@ public class DoorMan implements Lifecycle {
 	 * @param ghost a ghost
 	 * @return if the ghost can leave
 	 */
-	public boolean canLeave(Ghost ghost) {
-		return makeDecisionAboutReleasing(ghost).confirmed;
+	public boolean canLeaveHouse(Ghost ghost) {
+		return decideIfGhostCanLeaveHouse(ghost).confirmed;
 	}
 
 	public int globalDotCount() {
@@ -167,6 +167,11 @@ public class DoorMan implements Lifecycle {
 		door.state = DoorState.OPEN;
 	}
 
+	private void resetGhostDotCounters() {
+		Arrays.fill(ghostCounters, 0);
+		loginfo("Ghost dot counters have been reset to zero");
+	}
+
 	private int index(Ghost ghost) {
 		return ghost.personality.ordinal();
 	}
@@ -175,13 +180,11 @@ public class DoorMan implements Lifecycle {
 		ghost.ai.process(new GhostUnlockedEvent());
 	}
 
-	private boolean isOpeningRequested(Door door) {
+	private boolean isOpeningDoorRequested(Door door) {
 		//@formatter:off
 		return folks.ghostsInWorld()
 			.filter(ghost -> ghost.ai.is(ENTERING_HOUSE, LEAVING_HOUSE))
-			.filter(ghost -> isGhostNearDoor(ghost, door))
-			.findAny()
-			.isPresent();
+			.anyMatch(ghost -> isGhostNearDoor(ghost, door));
 		//@formatter:on
 	}
 
@@ -203,12 +206,12 @@ public class DoorMan implements Lifecycle {
 	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
 	 *      Dossier</a>
 	 */
-	private Decision makeDecisionAboutReleasing(Ghost ghost) {
+	private Decision decideIfGhostCanLeaveHouse(Ghost ghost) {
 		if (!ghost.ai.is(LOCKED)) {
-			return confirmed("Ghost is not locked");
+			return confirmed("Ghost is not locked, can leave house");
 		}
 		if (ghost == folks.blinky) {
-			return confirmed("%s can always leave", ghost.name);
+			return confirmed("%s can always leave house", ghost.name);
 		}
 		if (pacManStarvingTicks >= pacManStarvingTimeLimit()) {
 			pacManStarvingTicks = 0;
@@ -227,10 +230,5 @@ public class DoorMan implements Lifecycle {
 			}
 		}
 		return rejected("");
-	}
-
-	private void resetGhostDotCounters() {
-		Arrays.fill(ghostCounters, 0);
-		loginfo("Ghost dot counters have been reset to zero");
 	}
 }

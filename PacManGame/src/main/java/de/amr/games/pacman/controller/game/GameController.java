@@ -381,7 +381,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 			else if (!settings.ghostsHarmless) {
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());
-				doorMan.onLifeLost();
+				doorMan.onPacManLostLife();
 				playView().soundState.chasingGhosts = false;
 				playView().soundState.deadGhosts = false;
 				folks.pacMan.ai.process(new PacManKilledEvent(ghost));
