@@ -12,7 +12,6 @@ import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.creatures.Guy;
@@ -147,15 +146,15 @@ public class Ghost extends Guy<GhostState> {
 				.when(LOCKED).then(LEAVING_HOUSE).on(GhostUnlockedEvent.class)
 	
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> hasLeftHouse() && nextState == SCATTERING)
+					.condition(() -> justLeftHouse() && nextState == SCATTERING)
 					.annotation("Outside house")
 	
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> hasLeftHouse() && nextState == CHASING)
+					.condition(() -> justLeftHouse() && nextState == CHASING)
 					.annotation("Outside house")
 	
 				.when(LEAVING_HOUSE).then(FRIGHTENED)
-					.condition(() -> hasLeftHouse() && nextState == FRIGHTENED)
+					.condition(() -> justLeftHouse() && nextState == FRIGHTENED)
 					.annotation("Outside house")
 	
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
@@ -331,9 +330,9 @@ public class Ghost extends Guy<GhostState> {
 			return ai.is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		if (ai.is(CHASING, SCATTERING)) {
-			Optional<OneWayTile> oneWay = world.oneWayTiles().filter(oneWayTile -> oneWayTile.tile.equals(neighbor))
-					.findFirst();
-			if (oneWay.isPresent() && tile.dirTo(neighbor).get().equals(oneWay.get().dir.opposite())) {
+			OneWayTile oneWayNeighbor = world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst()
+					.orElse(null);
+			if (oneWayNeighbor != null && tile.dirTo(neighbor).get().equals(oneWayNeighbor.dir.opposite())) {
 				return false;
 			}
 		}
@@ -346,9 +345,12 @@ public class Ghost extends Guy<GhostState> {
 		}
 	}
 
-	public boolean hasLeftHouse() {
-		Tile location = tile();
-		return ai.is(LEAVING_HOUSE) && house.isEntry(location) && tf.y == location.row * Tile.SIZE;
+	public boolean justLeftHouse() {
+		if (ai.is(LEAVING_HOUSE)) {
+			Tile location = tile();
+			return house.isEntry(location) && tf.y == location.row * Tile.SIZE;
+		}
+		return false;
 	}
 
 	public boolean isAtHouseEntry() {
