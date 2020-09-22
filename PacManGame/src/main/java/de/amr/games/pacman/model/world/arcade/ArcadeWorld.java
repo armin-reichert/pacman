@@ -11,6 +11,7 @@ import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
+import de.amr.games.pacman.model.world.components.HouseBuilder;
 import de.amr.games.pacman.model.world.components.OneWayTile;
 import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.components.TiledRectangle;
@@ -101,8 +102,7 @@ public class ArcadeWorld extends AbstractTiledWorld {
 		portal = new Portal(Tile.at(0, 17), Tile.at(27, 17), false);
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
 		//@formatter:off
-		house =	House
-			.world(this)
+		house =	new HouseBuilder()
 			.layout(10, 15, 8, 5)
 			.door(Direction.DOWN, 13, 15, 2, 1)
 			.bed(13, 14, Direction.LEFT)

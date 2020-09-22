@@ -356,6 +356,6 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	public boolean isInsideHouse() {
-		return house.isInsideOrDoor(tile());
+		return house.includes(tile());
 	}
 }
