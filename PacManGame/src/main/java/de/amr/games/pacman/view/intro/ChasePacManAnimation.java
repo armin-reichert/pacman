@@ -38,10 +38,10 @@ public class ChasePacManAnimation extends GameObject {
 	public ChasePacManAnimation(Theme theme, World world) {
 		this.world = world;
 		pacMan = new PacMan(world, "Pac-Man");
-		blinky = Ghost.shadow(world, "Blinky");
-		inky = Ghost.bashful(world, "Inky");
-		pinky = Ghost.speedy(world, "Pinky");
-		clyde = Ghost.pokey(world, "Clyde");
+		blinky = Ghost.shadowOne(world, "Blinky");
+		inky = Ghost.bashfulOne(world, "Inky");
+		pinky = Ghost.speedyOne(world, "Pinky");
+		clyde = Ghost.pokeyOne(world, "Clyde");
 		setTheme(theme);
 	}
 

@@ -7,6 +7,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTEN
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.game.Timing.sec;
 import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.util.EnumMap;
@@ -32,7 +33,6 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
-import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -43,8 +43,22 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Guy<GhostState> {
 
-	private final Map<GhostState, Steering> behaviors;
-	private Steering previousSteering;
+	public static Ghost shadowOne(World world, String name) {
+		return new Ghost(world, name, GhostPersonality.SHADOW);
+	}
+
+	public static Ghost speedyOne(World world, String name) {
+		return new Ghost(world, name, GhostPersonality.SPEEDY);
+	}
+
+	public static Ghost bashfulOne(World world, String name) {
+		return new Ghost(world, name, GhostPersonality.BASHFUL);
+	}
+
+	public static Ghost pokeyOne(World world, String name) {
+		return new Ghost(world, name, GhostPersonality.POKEY);
+	}
+
 	public final StateMachine<GhostState, PacManGameEvent> ai;
 	public GhostState nextState;
 	public GhostMadness madness;
@@ -55,39 +69,26 @@ public class Ghost extends Guy<GhostState> {
 	public int bounty;
 	public boolean recovering;
 
-	public static Ghost shadow(World world, String name) {
-		return new Ghost(world, name, GhostPersonality.SHADOW);
-	}
-
-	public static Ghost speedy(World world, String name) {
-		return new Ghost(world, name, GhostPersonality.SPEEDY);
-	}
-
-	public static Ghost bashful(World world, String name) {
-		return new Ghost(world, name, GhostPersonality.BASHFUL);
-	}
-
-	public static Ghost pokey(World world, String name) {
-		return new Ghost(world, name, GhostPersonality.POKEY);
-	}
+	private final Map<GhostState, Steering> behaviors;
+	private Steering previousSteering;
 
 	private Ghost(World world, String name, GhostPersonality personality) {
 		super(world, name);
-		behaviors = new EnumMap<>(GhostState.class);
-		ai = buildAI();
 		this.personality = personality;
+		behaviors = new EnumMap<>(GhostState.class);
+		ai = new StateMachine<>(GhostState.class);
+		buildAI();
 		if (personality == GhostPersonality.SHADOW) {
 			madness = new GhostMadness(this);
 		}
 		tf.width = tf.height = Tile.SIZE;
 	}
 
-	private StateMachine<GhostState, PacManGameEvent> buildAI() {
+	private void buildAI() {
 		/*@formatter:off*/
-		StateMachine<GhostState, PacManGameEvent> fsm = StateMachine
-			.beginStateMachine(GhostState.class, PacManGameEvent.class, TransitionMatchStrategy.BY_CLASS)
-				.description(name + " AI")
-				.initialState(LOCKED)
+		ai.beginStateMachine()
+			.description(name + " AI")
+			.initialState(LOCKED)
 
 			.states()
 
@@ -128,11 +129,11 @@ public class Ghost extends Guy<GhostState> {
 						updateMentalHealth();
 						checkPacManCollision();
 						move();
-						recovering = remaining < getFlashTimeTicks() * 0.5f; // one flashing takes 0.5 sec
+						recovering = remaining < getFlashTimeTicks();
 					})
 	
 				.state(DEAD)
-					.timeoutAfter(Timing.sec(1))
+					.timeoutAfter(sec(1))
 					.onEntry(this::computeBounty)
 					.onTick((s, consumed, remaining) -> {
 						if (remaining == 0) {
@@ -205,8 +206,7 @@ public class Ghost extends Guy<GhostState> {
 
 			.endStateMachine();
 		/*@formatter:on*/
-		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		return fsm;
+		ai.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 	}
 
 	private void placeIntoBed() {
@@ -298,11 +298,12 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	private long getFrightenedTicks() {
-		return PacManGame.started() ? Timing.sec(game.pacManPowerSeconds) : Timing.sec(5);
+		return PacManGame.started() ? sec(game.pacManPowerSeconds) : sec(5);
 	}
 
 	private long getFlashTimeTicks() {
-		return PacManGame.started() ? game.numFlashes * Timing.sec(0.5f) : 0;
+		// assuming one flashing takes 0.5 seconds
+		return PacManGame.started() ? game.numFlashes * sec(0.5f) : 0;
 	}
 
 	private void checkPacManCollision() {
