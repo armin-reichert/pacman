@@ -1,5 +1,9 @@
 package de.amr.games.pacman.controller.creatures;
 
+import static de.amr.games.pacman.controller.creatures.ghost.Ghost.bashfulGhost;
+import static de.amr.games.pacman.controller.creatures.ghost.Ghost.pokeyGhost;
+import static de.amr.games.pacman.controller.creatures.ghost.Ghost.shadowGhost;
+import static de.amr.games.pacman.controller.creatures.ghost.Ghost.speedyGhost;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
@@ -32,15 +36,12 @@ public class Folks {
 
 		pacMan = new PacMan(world, "Pac-Man");
 
-		blinky = Ghost.shadowOne(world, "Blinky");
-		inky = Ghost.bashfulOne(world, "Inky");
-		pinky = Ghost.speedyOne(world, "Pinky");
-		clyde = Ghost.pokeyOne(world, "Clyde");
+		blinky = shadowGhost(world, "Blinky", pacMan);
+		inky = bashfulGhost(world, "Inky", pacMan);
+		pinky = speedyGhost(world, "Pinky", pacMan);
+		clyde = pokeyGhost(world, "Clyde", pacMan);
 
-		ghosts().forEach(ghost -> {
-			ghost.house = ghostHouse;
-			ghost.pacMan = pacMan;
-		});
+		ghosts().forEach(ghost -> ghost.house = ghostHouse);
 
 		blinky.bed = ghostHouse.bed(0);
 		inky.bed = ghostHouse.bed(1);

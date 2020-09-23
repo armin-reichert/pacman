@@ -42,27 +42,26 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Guy<GhostState> {
 
-	public static Ghost shadowOne(World world, String name) {
-		return new Ghost(world, name, GhostPersonality.SHADOW);
+	public static Ghost shadowGhost(World world, String name, PacMan pacMan) {
+		return new Ghost(world, name, GhostPersonality.SHADOW, pacMan);
 	}
 
-	public static Ghost speedyOne(World world, String name) {
-		return new Ghost(world, name, GhostPersonality.SPEEDY);
+	public static Ghost speedyGhost(World world, String name, PacMan pacMan) {
+		return new Ghost(world, name, GhostPersonality.SPEEDY, pacMan);
 	}
 
-	public static Ghost bashfulOne(World world, String name) {
-		return new Ghost(world, name, GhostPersonality.BASHFUL);
+	public static Ghost bashfulGhost(World world, String name, PacMan pacMan) {
+		return new Ghost(world, name, GhostPersonality.BASHFUL, pacMan);
 	}
 
-	public static Ghost pokeyOne(World world, String name) {
-		return new Ghost(world, name, GhostPersonality.POKEY);
+	public static Ghost pokeyGhost(World world, String name, PacMan pacMan) {
+		return new Ghost(world, name, GhostPersonality.POKEY, pacMan);
 	}
 
 	public final StateMachine<GhostState, PacManGameEvent> ai;
 	public final GhostMadness madness;
 	public final GhostPersonality personality;
 	public GhostState nextState;
-	public PacMan pacMan;
 	public House house;
 	public Bed bed;
 	public int bounty;
@@ -71,17 +70,17 @@ public class Ghost extends Guy<GhostState> {
 	private final Map<GhostState, Steering> behaviors;
 	private Steering previousSteering;
 
-	private Ghost(World world, String name, GhostPersonality personality) {
+	private Ghost(World world, String name, GhostPersonality personality, PacMan pacMan) {
 		super(world, name);
 		this.personality = personality;
 		behaviors = new EnumMap<>(GhostState.class);
 		ai = new StateMachine<>(GhostState.class);
-		buildAI();
-		madness = personality == GhostPersonality.SHADOW ? new GhostMadness(this) : null;
+		buildGhostAI(pacMan);
+		madness = personality == GhostPersonality.SHADOW ? new GhostMadness(this, pacMan) : null;
 		tf.width = tf.height = Tile.SIZE;
 	}
 
-	private void buildAI() {
+	private void buildGhostAI(PacMan pacMan) {
 		/*@formatter:off*/
 		ai.beginStateMachine()
 			.description(name + " AI")
@@ -109,14 +108,14 @@ public class Ghost extends Guy<GhostState> {
 				.state(SCATTERING)
 					.onTick(() -> {
 						updateMentalHealth();
-						checkPacManCollision();
+						checkPacManCollision(pacMan);
 						move();
 					})
 	
 				.state(CHASING)
 					.onTick(() -> {
 						updateMentalHealth();
-						checkPacManCollision();
+						checkPacManCollision(pacMan);
 						move();
 					})
 	
@@ -124,7 +123,7 @@ public class Ghost extends Guy<GhostState> {
 					.timeoutAfter(this::getFrightenedTicks)
 					.onTick((state, consumed, remaining) -> {
 						updateMentalHealth();
-						checkPacManCollision();
+						checkPacManCollision(pacMan);
 						move();
 						recovering = remaining < getFlashTimeTicks();
 					})
@@ -303,7 +302,7 @@ public class Ghost extends Guy<GhostState> {
 		return PacManGame.started() ? game.numFlashes * sec(0.5f) : 0;
 	}
 
-	private void checkPacManCollision() {
+	private void checkPacManCollision(PacMan pacMan) {
 		if (!visible || !pacMan.visible) {
 			return;
 		}

@@ -10,6 +10,7 @@ import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.util.Objects;
 
+import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
 
@@ -54,10 +55,12 @@ public class GhostMadness extends StateMachine<GhostMentalState, String> {
 	private static final String CLYDE_EXITS_HOUSE = "Clyde exits house";
 
 	private final Ghost ghost;
+	private final PacMan pacMan;
 
-	public GhostMadness(Ghost ghost) {
+	public GhostMadness(Ghost ghost, PacMan pacMan) {
 		super(GhostMentalState.class, TransitionMatchStrategy.BY_VALUE);
 		this.ghost = Objects.requireNonNull(ghost);
+		this.pacMan = Objects.requireNonNull(pacMan);
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		//@formatter:off
 		beginStateMachine()
@@ -129,6 +132,6 @@ public class GhostMadness extends StateMachine<GhostMentalState, String> {
 	}
 
 	private void headForPacMan() {
-		you(ghost).when(SCATTERING).headFor().tile(ghost.pacMan::tile).ok();
+		you(ghost).when(SCATTERING).headFor().tile(pacMan::tile).ok();
 	}
 }
