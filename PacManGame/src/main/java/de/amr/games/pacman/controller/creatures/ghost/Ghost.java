@@ -8,6 +8,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.game.Timing.sec;
+import static de.amr.games.pacman.controller.game.Timing.speed;
 import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.util.EnumMap;
@@ -22,7 +23,6 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
-import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.PacManGame;
@@ -256,28 +256,28 @@ public class Ghost extends Guy<GhostState> {
 		boolean tunnel = world.isTunnel(tile) || world.isPortal(tile);
 		switch (ai.getState()) {
 		case LOCKED:
-			return Timing.speed(isInsideHouse() ? game.ghostSpeed / 2 : 0);
+			return speed(isInsideHouse() ? game.ghostSpeed / 2 : 0);
 		case LEAVING_HOUSE:
-			return Timing.speed(game.ghostSpeed / 2);
+			return speed(game.ghostSpeed / 2);
 		case ENTERING_HOUSE:
-			return Timing.speed(game.ghostSpeed);
+			return speed(game.ghostSpeed);
 		case CHASING:
 		case SCATTERING:
 			if (tunnel) {
-				return Timing.speed(game.ghostTunnelSpeed);
+				return speed(game.ghostTunnelSpeed);
 			}
 			GhostMentalState mentalState = getMentalState();
 			if (mentalState == GhostMentalState.ELROY1) {
-				return Timing.speed(game.elroy1Speed);
+				return speed(game.elroy1Speed);
 			}
 			if (mentalState == GhostMentalState.ELROY2) {
-				return Timing.speed(game.elroy2Speed);
+				return speed(game.elroy2Speed);
 			}
-			return Timing.speed(game.ghostSpeed);
+			return speed(game.ghostSpeed);
 		case FRIGHTENED:
-			return Timing.speed(tunnel ? game.ghostTunnelSpeed : game.ghostFrightenedSpeed);
+			return speed(tunnel ? game.ghostTunnelSpeed : game.ghostFrightenedSpeed);
 		case DEAD:
-			return Timing.speed(2 * game.ghostSpeed);
+			return speed(2 * game.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s", ai.getState()));
 		}
