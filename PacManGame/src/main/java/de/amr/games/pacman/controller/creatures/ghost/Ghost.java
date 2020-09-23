@@ -59,9 +59,9 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	public final StateMachine<GhostState, PacManGameEvent> ai;
+	public final GhostMadness madness;
+	public final GhostPersonality personality;
 	public GhostState nextState;
-	public GhostMadness madness;
-	public GhostPersonality personality;
 	public PacMan pacMan;
 	public House house;
 	public Bed bed;
@@ -77,9 +77,7 @@ public class Ghost extends Guy<GhostState> {
 		behaviors = new EnumMap<>(GhostState.class);
 		ai = new StateMachine<>(GhostState.class);
 		buildAI();
-		if (personality == GhostPersonality.SHADOW) {
-			madness = new GhostMadness(this);
-		}
+		madness = personality == GhostPersonality.SHADOW ? new GhostMadness(this) : null;
 		tf.width = tf.height = Tile.SIZE;
 	}
 

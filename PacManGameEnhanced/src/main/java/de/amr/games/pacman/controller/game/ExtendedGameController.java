@@ -264,7 +264,7 @@ public class ExtendedGameController extends GameController {
 			if (graph == null) {
 				graph = new WorldGraph(world);
 			}
-			folks.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, new FleeingToSafeTile(ghost, graph, ghost.pacMan)));
+			folks.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, new FleeingToSafeTile(ghost, graph, folks.pacMan)));
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}
