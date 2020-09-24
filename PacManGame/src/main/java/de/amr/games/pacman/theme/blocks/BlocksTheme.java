@@ -19,8 +19,8 @@ import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.theme.arcade.ArcadeSounds;
 import de.amr.games.pacman.view.api.PacManGameSounds;
-import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
 import de.amr.games.pacman.view.common.DefaultGameScoreRenderer;
+import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 import de.amr.games.pacman.view.core.ThemeParameters;
 
@@ -123,7 +123,8 @@ public class BlocksTheme extends ThemeParameters implements Theme {
 			Rendering.smoothOn(g);
 			int levels = level.levelCounter.size();
 			for (int i = 0, x = -2 * Tile.SIZE; i < Math.min(7, levels); ++i, x -= 2 * Tile.SIZE) {
-				ArcadeBonus symbol = ArcadeBonus.valueOf(level.levelCounter.get(levels > 7 ? levels - 7 + i : i));
+				String symbolName = level.levelCounter.get(levels > 7 ? i + levels - 7 : i);
+				ArcadeBonus.Symbol symbol = ArcadeBonus.Symbol.valueOf(symbolName);
 				g.setColor(BlocksTheme.THEME.symbolColor(symbol.name()));
 				g.drawOval(x, 0, Tile.SIZE, Tile.SIZE);
 			}

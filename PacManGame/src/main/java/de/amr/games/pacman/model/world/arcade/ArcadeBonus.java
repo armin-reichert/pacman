@@ -8,17 +8,24 @@ import de.amr.games.pacman.model.world.api.Tile;
  * 
  * @author Armin Reichert
  */
-public enum ArcadeBonus implements TemporaryFood {
+public class ArcadeBonus implements TemporaryFood {
 
-	CHERRIES, STRAWBERRY, PEACH, APPLE, GRAPES, GALAXIAN, BELL, KEY;
+	public enum Symbol {
+		CHERRIES, STRAWBERRY, PEACH, APPLE, GRAPES, GALAXIAN, BELL, KEY;
+	}
+
+	private ArcadeBonus(Symbol symbol) {
+		this.symbol = symbol;
+	}
 
 	public static ArcadeBonus of(String name, int value) {
-		ArcadeBonus bonus = valueOf(name);
+		ArcadeBonus bonus = new ArcadeBonus(Symbol.valueOf(name));
 		bonus.value = value;
 		bonus.location = ArcadeWorld.BONUS_LOCATION;
 		return bonus;
 	}
 
+	public final Symbol symbol;
 	private Tile location;
 	private int value;
 	private boolean active;
@@ -61,12 +68,8 @@ public enum ArcadeBonus implements TemporaryFood {
 		consumed = false;
 	}
 
-	public void setLocation(Tile location) {
-		this.location = location;
-	}
-
 	@Override
 	public String toString() {
-		return String.format("(%s,%s,active=%s,consumed=%s)", name(), value, active, consumed);
+		return String.format("(%s,value=%s,active=%s,consumed=%s)", symbol, value, active, consumed);
 	}
 }

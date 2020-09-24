@@ -180,7 +180,7 @@ class GameStateTableModel extends AbstractTableModel {
 		world.temporaryFood().filter(bonus -> bonus instanceof ArcadeBonus).map(ArcadeBonus.class::cast)
 				.ifPresent(bonus -> {
 					r.included = true;
-					r.name = bonus.name();
+					r.name = bonus.symbol.name();
 					r.state = "";
 					if (bonus.isConsumed()) {
 						r.state = "Consumed";

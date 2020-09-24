@@ -12,8 +12,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
-import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.model.world.components.House;
+import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
 class BlocksWorldRenderer implements WorldRenderer {
@@ -53,15 +53,15 @@ class BlocksWorldRenderer implements WorldRenderer {
 		Rendering.smoothOff(g);
 	}
 
-	private void drawActiveBonus(Graphics2D g, Vector2f center, ArcadeBonus symbol) {
+	private void drawActiveBonus(Graphics2D g, Vector2f center, ArcadeBonus bonus) {
 		if (app().clock().getTotalTicks() % 60 < 30) {
 			return; // blink effect
 		}
-		drawBonusSymbol(g, center, symbol);
+		drawBonusSymbol(g, center, bonus);
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
 			pen.font(BlocksTheme.THEME.$font("font"));
-			String text = symbol.name().substring(0, 1) + symbol.name().substring(1).toLowerCase();
+			String text = bonus.symbol.name().substring(0, 1) + bonus.symbol.name().substring(1).toLowerCase();
 			pen.drawCentered(text, center.x, center.y + Tile.SIZE / 2);
 		}
 	}
@@ -75,9 +75,9 @@ class BlocksWorldRenderer implements WorldRenderer {
 		}
 	}
 
-	private void drawBonusSymbol(Graphics2D g, Vector2f center, ArcadeBonus symbol) {
+	private void drawBonusSymbol(Graphics2D g, Vector2f center, ArcadeBonus bonus) {
 		int radius = 4;
-		g.setColor(BlocksTheme.THEME.symbolColor(symbol.name()));
+		g.setColor(BlocksTheme.THEME.symbolColor(bonus.symbol.name()));
 		g.fillOval(center.roundedX() - radius, center.roundedY() - radius, 2 * radius, 2 * radius);
 	}
 

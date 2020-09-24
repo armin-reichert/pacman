@@ -80,7 +80,7 @@ class ArcadeWorldRenderer implements WorldRenderer {
 				} else {
 					ArcadeBonus arcadeBonus = (ArcadeBonus) bonus;
 					Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.SIZE / 2);
-					Image img = ArcadeTheme.THEME.$image("symbol-" + arcadeBonus.name());
+					Image img = ArcadeTheme.THEME.$image("symbol-" + arcadeBonus.symbol.name());
 					g.drawImage(img, position.roundedX(), position.roundedY(), null);
 				}
 			}

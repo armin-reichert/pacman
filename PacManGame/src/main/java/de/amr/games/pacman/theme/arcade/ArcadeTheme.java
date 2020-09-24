@@ -22,8 +22,8 @@ import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.theme.arcade.ArcadeSpritesheet.GhostColor;
 import de.amr.games.pacman.view.api.PacManGameSounds;
-import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
 import de.amr.games.pacman.view.common.DefaultGameScoreRenderer;
+import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
 import de.amr.games.pacman.view.core.ThemeParameters;
 
 /**
@@ -42,7 +42,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	private ArcadeTheme() {
 		set("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		set("maze-flash-sec", 0.4f);
-		for (ArcadeBonus symbol : ArcadeBonus.values()) {
+		for (ArcadeBonus.Symbol symbol : ArcadeBonus.Symbol.values()) {
 			set("symbol-" + symbol.name(), sprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
 		}
 		for (int points : PacManGame.POINTS_BONUS) {
@@ -158,7 +158,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 			int n = Math.min(max, game.levelCounter.size());
 			int width = 2 * Tile.SIZE;
 			for (int i = 0, x = -2 * width; i < n; ++i, x -= width) {
-				ArcadeBonus symbol = ArcadeBonus.valueOf(game.levelCounter.get(first + i));
+				ArcadeBonus.Symbol symbol = ArcadeBonus.Symbol.valueOf(game.levelCounter.get(first + i));
 				g.drawImage(sprites.imageBonusSymbol(symbol.ordinal()), x, 0, width, width, null);
 			}
 		};

@@ -123,8 +123,8 @@ public class ArcadeSpritesheet extends Spritesheet {
 		return Sprite.of(empty_maze, empty_white_maze).animate(CYCLIC, 200);
 	}
 
-	public Sprite makeSprite_bonusSymbol(String symbol) {
-		int index = ArcadeBonus.valueOf(symbol).ordinal();
+	public Sprite makeSprite_bonusSymbol(String symbolName) {
+		int index = ArcadeBonus.Symbol.valueOf(symbolName).ordinal();
 		return Sprite.of(bonus_symbols[index]);
 	}
 
