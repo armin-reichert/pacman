@@ -89,11 +89,8 @@ public class ArcadeWorld extends AbstractTiledWorld {
 		for (int row = 0; row < height(); ++row) {
 			for (int col = 0; col < width(); ++col) {
 				int i = bitIndex(row, col);
-				if (MAP[row][col] == 0) {
-					accessible.set(i, true);
-				} else if (MAP[row][col] == 1) {
-					accessible.set(i, false);
-				} else if (MAP[row][col] == 2) {
+				accessible.set(i, MAP[row][col] != 1);
+				if (MAP[row][col] == 2) {
 					food.set(i, true);
 					++foodCount;
 				}
