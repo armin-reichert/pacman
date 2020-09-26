@@ -31,6 +31,10 @@ public interface RectangularTiledArea extends TiledArea {
 	 */
 	int row();
 
+	default int numTiles() {
+		return width() * height();
+	}
+
 	@Override
 	default boolean includes(Tile tile) {
 		return col() <= tile.col && tile.col < col() + width() && row() <= tile.row && tile.row < row() + height();

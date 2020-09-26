@@ -83,11 +83,11 @@ public class ArcadeWorld extends AbstractTiledWorld {
 
 	public ArcadeWorld() {
 		super(28, 36);
-		accessible = new BitSet(width() * height());
-		accessible.set(0, width() * height());
-		intersections = new BitSet(width() * height());
-		food = new BitSet(width() * height());
-		eaten = new BitSet(width() * height());
+		accessible = new BitSet(numTiles());
+		intersections = new BitSet(numTiles());
+		food = new BitSet(numTiles());
+		eaten = new BitSet(numTiles());
+		accessible.set(0, numTiles());
 		for (int row = 0; row < height(); ++row) {
 			for (int col = 0; col < width(); ++col) {
 				int i = bitIndex(row, col);
@@ -99,8 +99,11 @@ public class ArcadeWorld extends AbstractTiledWorld {
 				}
 			}
 		}
+
 		portal = new Portal(Tile.at(0, 17), Tile.at(27, 17), false);
+
 		pacManBed = new Bed(13, 26, Direction.RIGHT);
+
 		//@formatter:off
 		house =	new HouseBuilder()
 			.layout(10, 15, 8, 5)
@@ -124,13 +127,10 @@ public class ArcadeWorld extends AbstractTiledWorld {
 		};
 		
 		energizerTiles = new Tile[] {
-			Tile.at(1,6),
-			Tile.at(26,6),
-			Tile.at(1,26),
-			Tile.at(26,26),
+			Tile.at(1,6),	Tile.at(26,6), Tile.at(1,26),	Tile.at(26,26),
 		};
 
-		// compute intersections *after* adding house(s)!
+		// compute intersections *after* houses have been built!
 		for (int row = 0; row < height(); ++row) {
 			for (int col = 0; col < width(); ++col) {
 				Tile tile = Tile.at(col, row);
