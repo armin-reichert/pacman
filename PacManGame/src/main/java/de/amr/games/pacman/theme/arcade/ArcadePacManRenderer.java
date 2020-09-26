@@ -32,15 +32,13 @@ class ArcadePacManRenderer implements PacManRenderer {
 	public void render(Graphics2D g, PacMan pacMan) {
 		if (pacMan.visible) {
 			selectSprite(pacMan).ifPresent(sprite -> {
-				int sw = 2 * pacMan.tf.width, sh = 2 * pacMan.tf.height;
-				if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
-					sprite.scale(sw, sh);
+				int spriteWidth = 2 * pacMan.tf.width, spriteHeight = 2 * pacMan.tf.height;
+				if (spriteWidth != sprite.getWidth() || spriteHeight != sprite.getHeight()) {
+					sprite.scale(spriteWidth, spriteHeight);
 				}
-				Graphics2D g2 = (Graphics2D) g.create();
-				int w = pacMan.tf.width, h = pacMan.tf.height;
-				float x = pacMan.tf.x - (sprite.getWidth() - w) / 2, y = pacMan.tf.y - (sprite.getHeight() - h) / 2;
-				sprite.draw(g2, x, y);
-				g2.dispose();
+				int width = pacMan.tf.width, height = pacMan.tf.height;
+				float x = pacMan.tf.x - (sprite.getWidth() - width) / 2, y = pacMan.tf.y - (sprite.getHeight() - height) / 2;
+				sprite.draw(g, x, y);
 			});
 		}
 	}
