@@ -6,6 +6,9 @@ import de.amr.easy.game.ui.f2dialog.F2Dialog;
 import de.amr.games.pacman.controller.game.ExtendedGameController;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.theme.api.Themes;
+import de.amr.games.pacman.theme.arcade.ArcadeTheme;
+import de.amr.games.pacman.theme.blocks.BlocksTheme;
+import de.amr.games.pacman.theme.letters.LettersTheme;
 import de.amr.games.pacman.view.dashboard.fsm.FsmView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
@@ -21,6 +24,12 @@ import guru.nidi.graphviz.engine.GraphvizV8Engine;
  * @author Armin Reichert
  */
 public class PacManAppEnhanced extends PacManApp {
+
+	static {
+		Themes.registerTheme(ArcadeTheme.THEME);
+		Themes.registerTheme(BlocksTheme.THEME);
+		Themes.registerTheme(LettersTheme.THEME);
+	}
 
 	public static void main(String[] args) {
 		launch(PacManAppEnhanced.class, settings, args);

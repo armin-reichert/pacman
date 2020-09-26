@@ -9,6 +9,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.theme.api.Themes;
+import de.amr.games.pacman.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.api.PacManGameView;
 
 /**
@@ -19,6 +20,10 @@ import de.amr.games.pacman.view.api.PacManGameView;
  * @author Armin Reichert
  */
 public class PacManApp extends Application {
+
+	static {
+		Themes.registerTheme(ArcadeTheme.THEME);
+	}
 
 	public static void main(String[] args) {
 		launch(PacManApp.class, settings, args);

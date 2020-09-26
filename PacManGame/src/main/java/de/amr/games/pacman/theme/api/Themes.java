@@ -1,11 +1,10 @@
 package de.amr.games.pacman.theme.api;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-
-import de.amr.games.pacman.theme.arcade.ArcadeTheme;
-import de.amr.games.pacman.theme.blocks.BlocksTheme;
-import de.amr.games.pacman.theme.letters.LettersTheme;
+import java.util.Set;
 
 /**
  * The predefined themes.
@@ -14,8 +13,14 @@ import de.amr.games.pacman.theme.letters.LettersTheme;
  */
 public class Themes {
 
+	private static Set<Theme> REGISTERED_THEMES = new HashSet<>();
+
 	public static List<Theme> all() {
-		return List.of(ArcadeTheme.THEME, BlocksTheme.THEME, LettersTheme.THEME);
+		return new ArrayList<>(REGISTERED_THEMES);
+	}
+
+	public static void registerTheme(Theme theme) {
+		REGISTERED_THEMES.add(theme);
 	}
 
 	public static Optional<Theme> getTheme(String name) {
