@@ -84,14 +84,14 @@ public class ArcadeWorld extends AbstractTiledWorld {
 	public ArcadeWorld() {
 		super(28, 36);
 		accessible = new BitSet(numTiles());
-		intersections = new BitSet(numTiles());
 		food = new BitSet(numTiles());
 		eaten = new BitSet(numTiles());
-		accessible.set(0, numTiles());
 		for (int row = 0; row < height(); ++row) {
 			for (int col = 0; col < width(); ++col) {
 				int i = bitIndex(row, col);
-				if (MAP[row][col] == 1) {
+				if (MAP[row][col] == 0) {
+					accessible.set(i, true);
+				} else if (MAP[row][col] == 1) {
 					accessible.set(i, false);
 				} else if (MAP[row][col] == 2) {
 					food.set(i, true);
@@ -131,6 +131,7 @@ public class ArcadeWorld extends AbstractTiledWorld {
 		};
 
 		// compute intersections *after* houses have been built!
+		intersections = new BitSet(numTiles());
 		for (int row = 0; row < height(); ++row) {
 			for (int col = 0; col < width(); ++col) {
 				Tile tile = Tile.at(col, row);
