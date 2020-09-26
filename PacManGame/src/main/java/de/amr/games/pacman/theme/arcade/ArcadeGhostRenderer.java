@@ -31,15 +31,13 @@ class ArcadeGhostRenderer implements GhostRenderer {
 	public void render(Graphics2D g, Ghost ghost) {
 		if (ghost.visible) {
 			selectSprite(ghost).ifPresent(sprite -> {
-				int sw = 2 * ghost.tf.width, sh = 2 * ghost.tf.height;
-				if (sw != sprite.getWidth() || sh != sprite.getHeight()) {
-					sprite.scale(sw, sh);
+				int spriteWidth = 2 * ghost.tf.width, spriteHeight = 2 * ghost.tf.height;
+				if (spriteWidth != sprite.getWidth() || spriteHeight != sprite.getHeight()) {
+					sprite.scale(spriteWidth, spriteHeight);
 				}
-				Graphics2D g2 = (Graphics2D) g.create();
-				int w = ghost.tf.width, h = ghost.tf.height;
-				float x = ghost.tf.x - (sprite.getWidth() - w) / 2, y = ghost.tf.y - (sprite.getHeight() - h) / 2;
-				sprite.draw(g2, x, y);
-				g2.dispose();
+				int width = ghost.tf.width, height = ghost.tf.height;
+				float x = ghost.tf.x - (sprite.getWidth() - width) / 2, y = ghost.tf.y - (sprite.getHeight() - height) / 2;
+				sprite.draw(g, x, y);
 			});
 		}
 	}
