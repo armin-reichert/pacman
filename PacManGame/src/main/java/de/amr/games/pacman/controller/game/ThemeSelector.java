@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.theme.api.Theme;
 
@@ -14,7 +13,7 @@ public class ThemeSelector {
 	private Theme[] themes;
 	private List<Consumer<Theme>> listeners = new ArrayList<>();
 
-	public ThemeSelector(Stream<Theme> themes) {
+	public ThemeSelector(List<Theme> themes) {
 		this.themes = themes.toArray(Theme[]::new);
 		if (this.themes.length == 0) {
 			throw new IllegalArgumentException("At least one theme must be provided");

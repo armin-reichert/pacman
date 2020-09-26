@@ -17,9 +17,9 @@ import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.controller.Lifecycle;
@@ -74,10 +74,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public final GhostCommand ghostCommand;
 	public final ThemeSelector themes;
 
+	protected final Random rnd = new Random();
 	protected PacManGameView currentView;
-	private Random rnd = new Random();
 
-	public GameController(Stream<Theme> supportedThemes) {
+	public GameController(List<Theme> supportedThemes) {
 		super(PacManGameState.class);
 		buildStateMachine();
 

@@ -62,7 +62,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		add(lblSelectTheme, "cell 0 0,alignx trailing");
 
 		comboSelectTheme = new JComboBox<>();
-		String[] themeNames = Themes.all().map(Theme::name).toArray(String[]::new);
+		String[] themeNames = Themes.all().stream().map(Theme::name).toArray(String[]::new);
 		comboSelectTheme.setModel(new DefaultComboBoxModel<String>(themeNames));
 		add(comboSelectTheme, "cell 1 0,alignx left");
 

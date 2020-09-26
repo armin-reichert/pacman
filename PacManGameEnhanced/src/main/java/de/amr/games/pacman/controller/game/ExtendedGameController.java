@@ -16,6 +16,7 @@ import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.input.Keyboard;
@@ -45,7 +46,7 @@ public class ExtendedGameController extends GameController {
 	private boolean showingScores = true;
 	private WorldGraph graph;
 
-	public ExtendedGameController(Stream<Theme> themes) {
+	public ExtendedGameController(List<Theme> themes) {
 		super(themes);
 		REGISTRY.register("Game", Stream.of(this, bonusController, ghostCommand));
 		addStateEntryListener(INTRO, state -> {
