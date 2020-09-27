@@ -49,7 +49,6 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.view.api.PacManGameSounds;
@@ -177,11 +176,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.state(GAME_OVER)
 					.onEntry(() -> {
-						Random rnd = new Random();
+						closeAllDoors();
 						folks.ghostsInWorld().forEach(ghost -> {
-							Bed bed = world.house(0).get().bed(0);
 							ghost.init();
-							ghost.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+							ghost.placeAt(Tile.at(folks.blinky.bed.col(), folks.blinky.bed.row()), Tile.SIZE / 2, 0);
 							ghost.wishDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 							ghost.ai.setState(rnd.nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
@@ -193,9 +191,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						folks.ghostsInWorld().forEach(Ghost::move);
 					})
 					.onExit(() -> {
+						world.restoreFood();
 						playView().messagesView.clearMessage(2);
 						sounds().stopMusic(sounds().musicGameOver());
-						world.restoreFood();
 					})
 	
 			.transitions()
@@ -281,7 +279,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private void startNewGame() {
 			PacManGame.startNewGame(settings.startLevel, world.totalFoodCount());
 			world.setFrozen(true);
-			world.houses().flatMap(House::doors).forEach(doorMan::closeDoor);
+			closeAllDoors();
 			folks.guys().forEach(guy -> {
 				world.include(guy);
 				guy.init();
@@ -539,5 +537,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	protected ChangingLevelState state_CHANGING_LEVEL() {
 		return state(CHANGING_LEVEL);
+	}
+
+	protected void closeAllDoors() {
+		world.houses().flatMap(House::doors).forEach(doorMan::closeDoor);
 	}
 }
