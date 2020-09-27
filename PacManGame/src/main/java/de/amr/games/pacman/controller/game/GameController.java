@@ -96,11 +96,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		doorMan = new DoorMan(world.house(0).get(), folks);
 		ghostCommand = new GhostCommand(folks);
-		//@formatter:off
-		bonusController = new BonusFoodController(world,
-			() -> sec(PacManGame.BONUS_SECONDS + rnd.nextFloat()),
-			() -> ArcadeBonus.of(game.bonusSymbol, game.bonusValue));
-		//@formatter:on
+		bonusController = new BonusFoodController(world, () -> ArcadeBonus.of(game.bonusSymbol, game.bonusValue));
 
 		app().onClose(() -> {
 			if (PacManGame.started()) {
