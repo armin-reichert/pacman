@@ -15,6 +15,21 @@ import java.util.List;
  */
 public class PacManGame {
 
+	/*@formatter:off*/
+	public static final int LIVES              = 3;
+	public static final int POINTS_PELLET      = 10;
+	public static final int POINTS_ENERGIZER   = 50;
+	public static final int POINTS_EXTRA_LIFE  = 10_000;
+	public static final int POINTS_ALL_GHOSTS  = 12_000;
+	public static final int POINTS_BONUS[]     = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	public static final int POINTS_GHOSTS[]    = { 200, 400, 800, 1600 };
+	public static final int FAT_PELLET         = 1;
+	public static final int FAT_ENERGIZER      = 3;
+	public static final int BONUS_ACTIVATION_1 = 70;
+	public static final int BONUS_ACTIVATION_2 = 170;
+	public static final int BONUS_SECONDS      = 9;
+	/*@formatter:on*/
+
 	/**
 	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
 	 */
@@ -56,21 +71,6 @@ public class PacManGame {
 	private static int integer(Object value) {
 		return (int) value;
 	}
-
-	/*@formatter:off*/
-	public static final int LIVES              = 3;
-	public static final int POINTS_PELLET      = 10;
-	public static final int POINTS_ENERGIZER   = 50;
-	public static final int POINTS_EXTRA_LIFE  = 10_000;
-	public static final int POINTS_ALL_GHOSTS  = 12_000;
-	public static final int POINTS_BONUS[]     = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
-	public static final int POINTS_GHOSTS[]    = { 200, 400, 800, 1600 };
-	public static final int FAT_PELLET         = 1;
-	public static final int FAT_ENERGIZER      = 3;
-	public static final int BONUS_ACTIVATION_1 = 70;
-	public static final int BONUS_ACTIVATION_2 = 170;
-	public static final int BONUS_SECONDS      = 9;
-	/*@formatter:on*/
 
 	public static PacManGame game;
 
