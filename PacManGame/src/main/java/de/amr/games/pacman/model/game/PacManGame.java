@@ -58,7 +58,7 @@ public class PacManGame {
 	}
 
 	/*@formatter:off*/
-	public static final int LIVES              = 1;
+	public static final int LIVES              = 3;
 	public static final int POINTS_PELLET      = 10;
 	public static final int POINTS_ENERGIZER   = 50;
 	public static final int POINTS_EXTRA_LIFE  = 10_000;
