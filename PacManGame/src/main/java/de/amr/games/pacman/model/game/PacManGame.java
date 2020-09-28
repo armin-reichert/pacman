@@ -129,7 +129,7 @@ public class PacManGame {
 	public Hiscore hiscore;
 	public List<String> levelCounter;
 
-	private final ScoreResult scored = new ScoreResult(0, false);
+	private final Scoring scored = new Scoring(0, false);
 
 	private PacManGame(int level, int foodCount, int lives, int score) {
 		this.level = level;
@@ -164,7 +164,7 @@ public class PacManGame {
 	 * @param points points to score
 	 * @return score result
 	 */
-	private ScoreResult score(int points) {
+	private Scoring score(int points) {
 		scored.points = points;
 		scored.extraLife = score < POINTS_EXTRA_LIFE && score + points >= POINTS_EXTRA_LIFE;
 		score += scored.points;
@@ -178,7 +178,7 @@ public class PacManGame {
 	 * 
 	 * @return score result
 	 */
-	public ScoreResult scoreBonus() {
+	public Scoring scoreBonus() {
 		return score(bonusValue);
 	}
 
@@ -187,7 +187,7 @@ public class PacManGame {
 	 * 
 	 * @return points scored
 	 */
-	public ScoreResult scoreEnergizerEaten() {
+	public Scoring scoreEnergizerEaten() {
 		eatenFoodCount += 1;
 		ghostsKilledByEnergizer = 0;
 		return score(POINTS_ENERGIZER);
@@ -198,7 +198,7 @@ public class PacManGame {
 	 * 
 	 * @return points scored
 	 */
-	public ScoreResult scoreSimplePelletEaten() {
+	public Scoring scoreSimplePelletEaten() {
 		eatenFoodCount += 1;
 		return score(POINTS_PELLET);
 	}
@@ -207,7 +207,7 @@ public class PacManGame {
 	 * Scores killing a ghost. Value of a killed ghost doubles if killed in series using the same
 	 * energizer.
 	 */
-	public ScoreResult scoreGhostKilled() {
+	public Scoring scoreGhostKilled() {
 		ghostsKilledByEnergizer += 1;
 		ghostsKilledInLevel += 1;
 		int ghostBounty = ghostBounty();

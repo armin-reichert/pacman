@@ -42,7 +42,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.game.ScoreResult;
+import de.amr.games.pacman.model.game.Scoring;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -366,7 +366,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			Ghost ghost = collision.ghost;
 
 			if (ghost.ai.is(FRIGHTENED)) {
-				ScoreResult scored = game.scoreGhostKilled();
+				Scoring scored = game.scoreGhostKilled();
 				playView().soundState.gotExtraLife = scored.extraLife;
 				ghost.ai.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
@@ -384,7 +384,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onPacManFoundBonus(PacManGameEvent event) {
-			ScoreResult scored = game.scoreBonus();
+			Scoring scored = game.scoreBonus();
 			playView().soundState.bonusEaten = true;
 			playView().soundState.gotExtraLife = scored.extraLife;
 			bonusController.process(event);
@@ -394,7 +394,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			FoodFoundEvent found = (FoodFoundEvent) event;
 
 			boolean energizer = found.food == ArcadeFood.ENERGIZER;
-			ScoreResult scored = energizer ? game.scoreEnergizerEaten() : game.scoreSimplePelletEaten();
+			Scoring scored = energizer ? game.scoreEnergizerEaten() : game.scoreSimplePelletEaten();
 			if (game.isBonusDue()) {
 				bonusController.setState(BonusFoodState.BONUS_CONSUMABLE);
 			}
