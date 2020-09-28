@@ -129,7 +129,7 @@ public class PacManGame {
 	public Hiscore hiscore;
 	public List<String> levelCounter;
 
-	private final Scoring scored = new Scoring(0, false);
+	private final Scoring scoring = new Scoring(0, false);
 
 	private PacManGame(int level, int foodCount, int lives, int score) {
 		this.level = level;
@@ -165,12 +165,12 @@ public class PacManGame {
 	 * @return score result
 	 */
 	private Scoring score(int points) {
-		scored.points = points;
-		scored.extraLife = score < POINTS_EXTRA_LIFE && score + points >= POINTS_EXTRA_LIFE;
-		score += scored.points;
-		lives += scored.extraLife ? 1 : 0;
+		scoring.points = points;
+		scoring.extraLife = score < POINTS_EXTRA_LIFE && score + points >= POINTS_EXTRA_LIFE;
+		score += scoring.points;
+		lives += scoring.extraLife ? 1 : 0;
 		hiscore.check(level, score);
-		return scored;
+		return scoring;
 	}
 
 	/**
