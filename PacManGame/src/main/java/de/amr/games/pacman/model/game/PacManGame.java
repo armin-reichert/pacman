@@ -2,6 +2,7 @@ package de.amr.games.pacman.model.game;
 
 import static de.amr.easy.game.Application.loginfo;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class PacManGame {
 	public static final int BONUS_ACTIVATION_2 = 170;
 	public static final int BONUS_SECONDS      = 9;
 	/*@formatter:on*/
+
+	private static final File HISCORE_FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 
 	/**
 	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
@@ -80,7 +83,7 @@ public class PacManGame {
 
 	public static void startNewGame(int startLevel, int totalFoodCount) {
 		game = new PacManGame(startLevel, totalFoodCount, LIVES, 0);
-		game.hiscore = new Hiscore();
+		game.hiscore = new Hiscore(HISCORE_FILE);
 		game.hiscore.load();
 		game.levelCounter = new ArrayList<>();
 		game.levelCounter.add(game.bonusSymbol);

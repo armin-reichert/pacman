@@ -19,18 +19,18 @@ import java.util.Properties;
  */
 public class Hiscore {
 
-	private static final File DIR = new File(System.getProperty("user.home"));
-	private static final File FILE = new File(DIR, "pacman.hiscore.xml");
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 
 	public int points;
 	public int level;
 
+	private final File file;
 	private final Properties data = new Properties(3);
 	private ZonedDateTime time;
 	private boolean needsUpdate;
 
-	public Hiscore() {
+	public Hiscore(File file) {
+		this.file = file;
 		points = 0;
 		level = 1;
 		time = ZonedDateTime.now();
@@ -38,9 +38,9 @@ public class Hiscore {
 	}
 
 	public void load() {
-		loginfo("Loading highscore from file '%s'", FILE);
+		loginfo("Loading highscore from file '%s'", file);
 		try {
-			data.loadFromXML(new FileInputStream(FILE));
+			data.loadFromXML(new FileInputStream(file));
 			points = Integer.valueOf(data.getProperty("score"));
 			level = Integer.valueOf(data.getProperty("level"));
 			if (data.getProperty("time") != null) {
@@ -52,10 +52,10 @@ public class Hiscore {
 			loginfo("Hiscore file not available, creating new one");
 			save();
 		} catch (DateTimeParseException e) {
-			loginfo("Could not parse time in hiscore file '%s'", FILE);
+			loginfo("Could not parse time in hiscore file '%s'", file);
 			e.printStackTrace();
 		} catch (Exception e) {
-			loginfo("Could not load hiscore file '%s'", FILE);
+			loginfo("Could not load hiscore file '%s'", file);
 			e.printStackTrace();
 		}
 	}
@@ -69,11 +69,11 @@ public class Hiscore {
 			}
 			data.setProperty("time", time.format(DATE_FORMAT));
 			try {
-				data.storeToXML(new FileOutputStream(FILE), "Pac-Man Highscore");
+				data.storeToXML(new FileOutputStream(file), "Pac-Man Highscore");
 				needsUpdate = false;
-				loginfo("Saved highscore file '%s'", FILE);
+				loginfo("Saved highscore file '%s'", file);
 			} catch (IOException e) {
-				loginfo("Could not save hiscore file '%s'", FILE);
+				loginfo("Could not save hiscore file '%s'", file);
 				throw new RuntimeException(e);
 			}
 		}
