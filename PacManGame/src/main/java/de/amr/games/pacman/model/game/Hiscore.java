@@ -17,17 +17,22 @@ import java.util.Properties;
  * 
  * @author Armin Reichert
  */
-public class Hiscore extends Score {
+public class Hiscore {
 
 	private static final File DIR = new File(System.getProperty("user.home"));
 	private static final File FILE = new File(DIR, "pacman.hiscore.xml");
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+
+	public int points;
+	public int level;
 
 	private final Properties data = new Properties(3);
 	private ZonedDateTime time;
 	private boolean needsUpdate;
 
 	public Hiscore() {
+		points = 0;
+		level = 1;
 		time = ZonedDateTime.now();
 		needsUpdate = true;
 	}
