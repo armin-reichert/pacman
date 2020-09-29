@@ -42,7 +42,6 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.game.Scoring;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
@@ -366,8 +365,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			Ghost ghost = collision.ghost;
 
 			if (ghost.ai.is(FRIGHTENED)) {
-				Scoring scored = game.scoreGhostKilled();
-				playView().soundState.gotExtraLife = scored.extraLife;
+				boolean extraLife = game.scoreGhostKilled();
+				playView().soundState.gotExtraLife = extraLife;
 				ghost.ai.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
 				loginfo("%s got killed at %s", ghost.name, ghost.tile());
@@ -384,9 +383,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onPacManFoundBonus(PacManGameEvent event) {
-			Scoring scored = game.scoreBonus();
+			boolean extraLife = game.scoreBonus();
 			playView().soundState.bonusEaten = true;
-			playView().soundState.gotExtraLife = scored.extraLife;
+			playView().soundState.gotExtraLife = extraLife;
 			bonusController.process(event);
 		}
 
@@ -394,12 +393,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			FoodFoundEvent found = (FoodFoundEvent) event;
 
 			boolean energizer = found.food == ArcadeFood.ENERGIZER;
-			Scoring scored = energizer ? game.scoreEnergizerEaten() : game.scoreSimplePelletEaten();
+			boolean extraLife = energizer ? game.scoreEnergizerEaten() : game.scoreSimplePelletEaten();
 			if (game.isBonusDue()) {
 				bonusController.setState(BonusFoodState.BONUS_CONSUMABLE);
 			}
 			playView().soundState.lastMealAt = System.currentTimeMillis();
-			playView().soundState.gotExtraLife = scored.extraLife;
+			playView().soundState.gotExtraLife = extraLife;
 
 			doorMan.onPacManFoundFood();
 			world.removeFood(found.location);
