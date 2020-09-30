@@ -91,6 +91,9 @@ public class PacManGame {
 	}
 
 	public static void nextLevel() {
+		if (!started()) {
+			throw new IllegalStateException("Cannot enter next level, game not started");
+		}
 		PacManGame next = new PacManGame(game.level + 1, game.foodCount, game.lives, game.score);
 		next.hiscore = game.hiscore;
 		next.levelCounter = game.levelCounter;
