@@ -1,6 +1,6 @@
 ## A Pac-Man implementation using finite-state machines all over the place
 
-Youtube: https://www.youtube.com/watch?v=F4KdJvGvL1Q
+YouTube: https://www.youtube.com/watch?v=F4KdJvGvL1Q
 
 <img src="PacManDoc/fsm/Ghost Blinky AI.png">
 
