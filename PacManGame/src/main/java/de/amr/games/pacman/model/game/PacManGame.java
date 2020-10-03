@@ -163,7 +163,7 @@ public class PacManGame {
 	 * Gains the given points and handles high score and extra life.
 	 * 
 	 * @param points points to score
-	 * @return {@code true] if extra life has been gained
+	 * @return {@code true} if extra life has been gained
 	 */
 	private boolean gainPoints(int points) {
 		boolean extraLife = score < POINTS_EXTRA_LIFE && score + points >= POINTS_EXTRA_LIFE;
