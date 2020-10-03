@@ -365,7 +365,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			Ghost ghost = collision.ghost;
 
 			if (ghost.ai.is(FRIGHTENED)) {
-				boolean extraLife = game.scoreGhostKilled();
+				boolean extraLife = game.gainGhostPoints();
 				playView().soundState.gotExtraLife = extraLife;
 				ghost.ai.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
@@ -383,7 +383,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onPacManFoundBonus(PacManGameEvent event) {
-			boolean extraLife = game.scoreBonus();
+			boolean extraLife = game.gainBonus();
 			playView().soundState.bonusEaten = true;
 			playView().soundState.gotExtraLife = extraLife;
 			bonusController.process(event);
@@ -393,8 +393,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			FoodFoundEvent found = (FoodFoundEvent) event;
 
 			boolean energizer = found.food == ArcadeFood.ENERGIZER;
-			boolean extraLife = energizer ? game.scoreEnergizerEaten() : game.scoreSimplePelletEaten();
-			if (game.isBonusDue()) {
+			boolean extraLife = energizer ? game.gainEnergizerPoints() : game.gainPelletPoints();
+			if (game.isBonusGettingActivated()) {
 				bonusController.setState(BonusFoodState.BONUS_CONSUMABLE);
 			}
 			playView().soundState.lastMealAt = System.currentTimeMillis();

@@ -302,7 +302,7 @@ public class ExtendedGameController extends GameController {
 		}
 		world.tiles().filter(location -> world.hasFood(ArcadeFood.PELLET, location)).forEach(tile -> {
 			world.removeFood(tile);
-			game.scoreSimplePelletEaten();
+			game.gainPelletPoints();
 			doorMan.onPacManFoundFood();
 			doorMan.update();
 		});
@@ -319,7 +319,7 @@ public class ExtendedGameController extends GameController {
 		}
 		game.ghostsKilledByEnergizer = 0;
 		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
-			game.scoreGhostKilled();
+			game.gainGhostPoints();
 			ghost.ai.process(new GhostKilledEvent(ghost));
 		});
 		loginfo("All ghosts have been killed");

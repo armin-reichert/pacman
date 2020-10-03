@@ -84,9 +84,7 @@ public class PacManGame {
 	public static void startNewGame(int startLevel, int totalFoodCount) {
 		game = new PacManGame(startLevel, totalFoodCount, LIVES, 0);
 		game.hiscore = new Hiscore(HISCORE_FILE);
-		game.hiscore.load();
-		game.levelCounter = new ArrayList<>();
-		game.levelCounter.add(game.bonusSymbol);
+		game.levelCounter = new ArrayList<>(List.of(game.bonusSymbol));
 		loginfo("Game started at level %d", startLevel);
 	}
 
@@ -162,46 +160,48 @@ public class PacManGame {
 	/**
 	 * Gains the given points and handles high score and extra life.
 	 * 
-	 * @param points points to score
+	 * @param points gained points
 	 * @return {@code true} if extra life has been gained
 	 */
-	private boolean gainPoints(int points) {
+	private boolean gain(int points) {
 		boolean extraLife = score < POINTS_EXTRA_LIFE && score + points >= POINTS_EXTRA_LIFE;
-		lives += extraLife ? 1 : 0;
+		if (extraLife) {
+			lives++;
+		}
 		score += points;
 		hiscore.check(level, score);
 		return extraLife;
 	}
 
 	/**
-	 * Scores an eaten bonus.
+	 * Gains bonus points.
 	 */
-	public boolean scoreBonus() {
-		return gainPoints(bonusValue);
+	public boolean gainBonus() {
+		return gain(bonusValue);
 	}
 
 	/**
-	 * Scores eating an energizer.
+	 * Gains points for eating an energizer.
 	 */
-	public boolean scoreEnergizerEaten() {
+	public boolean gainEnergizerPoints() {
 		eatenFoodCount += 1;
 		ghostsKilledByEnergizer = 0;
-		return gainPoints(POINTS_ENERGIZER);
+		return gain(POINTS_ENERGIZER);
 	}
 
 	/**
-	 * Scores eating a simple pellet
+	 * Gains points for eating a normal pellet.
 	 */
-	public boolean scoreSimplePelletEaten() {
+	public boolean gainPelletPoints() {
 		eatenFoodCount += 1;
-		return gainPoints(POINTS_PELLET);
+		return gain(POINTS_PELLET);
 	}
 
 	/**
-	 * Scores killing a ghost. Value of a killed ghost doubles if killed in series using the same
-	 * energizer.
+	 * Gains points for killing a ghost. Value doubles for each ghost killed in series using the same
+	 * energizer. If all ghosts have been killed in a level, additional 12000 points are gained.
 	 */
-	public boolean scoreGhostKilled() {
+	public boolean gainGhostPoints() {
 		ghostsKilledByEnergizer += 1;
 		ghostsKilledInLevel += 1;
 		int ghostBounty = ghostBounty();
@@ -211,7 +211,7 @@ public class PacManGame {
 		if (ghostsKilledInLevel == 16) {
 			points += POINTS_ALL_GHOSTS;
 		}
-		return gainPoints(points);
+		return gain(points);
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class PacManGame {
 	/**
 	 * @return {@code true} if the number of eaten pellets causes the bonus to get active
 	 */
-	public boolean isBonusDue() {
+	public boolean isBonusGettingActivated() {
 		return eatenFoodCount == BONUS_ACTIVATION_1 || eatenFoodCount == BONUS_ACTIVATION_2;
 	}
 }

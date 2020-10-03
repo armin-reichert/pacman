@@ -35,6 +35,7 @@ public class Hiscore {
 		level = 1;
 		time = ZonedDateTime.now();
 		needsUpdate = true;
+		load();
 	}
 
 	public void load() {
