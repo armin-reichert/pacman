@@ -22,8 +22,7 @@ public class PacManGame {
 	static final int POINTS_EXTRA_LIFE = 10_000;
 	static final int POINTS_ALL_GHOSTS = 12_000;
 	static final int POINTS_GHOSTS[] = { 200, 400, 800, 1600 };
-	static final int BONUS_ACTIVATION_1 = 70;
-	static final int BONUS_ACTIVATION_2 = 170;
+	static final int BONUS_ACTIVATION[] = { 70, 170 };
 
 	/**
 	 * Returns the level-specific data.
@@ -220,6 +219,6 @@ public class PacManGame {
 	 * @return {@code true} if the number of eaten pellets causes the bonus to get active
 	 */
 	public boolean isBonusGettingActivated() {
-		return eatenFoodCount == BONUS_ACTIVATION_1 || eatenFoodCount == BONUS_ACTIVATION_2;
+		return eatenFoodCount == BONUS_ACTIVATION[0] || eatenFoodCount == BONUS_ACTIVATION[1];
 	}
 }
