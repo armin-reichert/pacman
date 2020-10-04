@@ -80,7 +80,7 @@ public class PacManGame {
 	public static void start(int startLevel, int totalFoodCount) {
 		game = new PacManGame(startLevel, totalFoodCount, PACMAN_LIVES, 0);
 		game.hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
-		game.levelCounter = new ArrayList<>(List.of(game.bonusSymbol));
+		game.levelCounter.add(game.bonusSymbol);
 		loginfo("Game started at level %d", startLevel);
 	}
 
@@ -93,10 +93,11 @@ public class PacManGame {
 		next.levelCounter = game.levelCounter;
 		next.levelCounter.add(next.bonusSymbol);
 		game = next;
-		loginfo("Game level %d started", next.level);
+		loginfo("Game entered level %d" + "", next.level);
 	}
 
 	//@formatter:off
+	
 	public final String bonusSymbol;
 	public final int    bonusValue;
 	public final float  pacManSpeed;
@@ -112,6 +113,7 @@ public class PacManGame {
 	public final float  ghostFrightenedSpeed;
 	public final int    pacManPowerSeconds;
 	public final int    numFlashes;
+
 	public final int    level;
 	public final int    foodCount;
 
@@ -122,6 +124,7 @@ public class PacManGame {
 	public int          score;
 	public Hiscore      hiscore;
 	public List<String> levelCounter;
+
 	//@formatter:on
 
 	private PacManGame(int level, int foodCount, int lives, int score) {
@@ -129,6 +132,7 @@ public class PacManGame {
 		this.foodCount = foodCount;
 		this.lives = lives;
 		this.score = score;
+		this.levelCounter = new ArrayList<>();
 		List<?> data = levelData(level);
 		bonusSymbol = (String) data.get(0);
 		bonusValue = integer(data.get(1));
