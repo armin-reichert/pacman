@@ -42,6 +42,11 @@ public class ArcadeBonus implements TemporaryFood {
 	}
 
 	@Override
+	public int fat() {
+		return 0;
+	}
+
+	@Override
 	public boolean isConsumed() {
 		return consumed;
 	}

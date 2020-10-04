@@ -16,27 +16,24 @@ import java.util.List;
  */
 public class PacManGame {
 
-	/*@formatter:off*/
-	public static final int LIVES              = 3;
-	public static final int POINTS_PELLET      = 10;
-	public static final int POINTS_ENERGIZER   = 50;
-	public static final int POINTS_EXTRA_LIFE  = 10_000;
-	public static final int POINTS_ALL_GHOSTS  = 12_000;
-	public static final int POINTS_BONUS[]     = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
-	public static final int POINTS_GHOSTS[]    = { 200, 400, 800, 1600 };
-	public static final int FAT_PELLET         = 1;
-	public static final int FAT_ENERGIZER      = 3;
-	public static final int BONUS_ACTIVATION_1 = 70;
-	public static final int BONUS_ACTIVATION_2 = 170;
-	public static final int BONUS_SECONDS      = 9;
-	/*@formatter:on*/
-
-	private static final File HISCORE_FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
+	static final int PACMAN_LIVES = 3;
+	static final int POINTS_PELLET = 10;
+	static final int POINTS_ENERGIZER = 50;
+	static final int POINTS_EXTRA_LIFE = 10_000;
+	static final int POINTS_ALL_GHOSTS = 12_000;
+	static final int POINTS_GHOSTS[] = { 200, 400, 800, 1600 };
+	static final int BONUS_ACTIVATION_1 = 70;
+	static final int BONUS_ACTIVATION_2 = 170;
 
 	/**
+	 * Returns the level-specific data.
+	 * 
 	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
+	 * 
+	 * @param level level number (1..)
+	 * @return data for level with given number
 	 */
-	private static List<?> levelData(int level) {
+	static List<?> levelData(int level) {
 		if (level < 1) {
 			throw new IllegalArgumentException("Illegal game level number: " + level);
 		}
@@ -63,7 +60,7 @@ public class PacManGame {
 		case 19: return List.of("KEY",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
 		case 20: return List.of("KEY",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
 		default: return List.of("KEY",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
-		/*@formatter:on*/
+		//@formatter:on
 		}
 	}
 
@@ -81,9 +78,9 @@ public class PacManGame {
 		return game != null;
 	}
 
-	public static void startNewGame(int startLevel, int totalFoodCount) {
-		game = new PacManGame(startLevel, totalFoodCount, LIVES, 0);
-		game.hiscore = new Hiscore(HISCORE_FILE);
+	public static void start(int startLevel, int totalFoodCount) {
+		game = new PacManGame(startLevel, totalFoodCount, PACMAN_LIVES, 0);
+		game.hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
 		game.levelCounter = new ArrayList<>(List.of(game.bonusSymbol));
 		loginfo("Game started at level %d", startLevel);
 	}
@@ -116,19 +113,17 @@ public class PacManGame {
 	public final float  ghostFrightenedSpeed;
 	public final int    pacManPowerSeconds;
 	public final int    numFlashes;
-	//@formatter:on
+	public final int    level;
+	public final int    foodCount;
 
-	public final int level;
-	public final int foodCount;
-
-	public int eatenFoodCount;
-	public int ghostsKilledByEnergizer;
-	public int ghostsKilledInLevel;
-	public int lives;
-	public int score;
-
-	public Hiscore hiscore;
+	public int          eatenFoodCount;
+	public int          ghostsKilledByEnergizer;
+	public int          ghostsKilledInLevel;
+	public int          lives;
+	public int          score;
+	public Hiscore      hiscore;
 	public List<String> levelCounter;
+	//@formatter:on
 
 	private PacManGame(int level, int foodCount, int lives, int score) {
 		this.level = level;

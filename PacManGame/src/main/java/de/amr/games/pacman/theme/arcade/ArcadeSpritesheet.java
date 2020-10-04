@@ -103,14 +103,6 @@ public class ArcadeSpritesheet extends Spritesheet {
 		};
 	}
 
-	public Sprite makeSprite_number(int number) {
-		int index = NUMBERS.indexOf(number);
-		if (index == -1) {
-			throw new IllegalArgumentException("No sprite found for number" + number);
-		}
-		return Sprite.of(index < 4 ? green_numbers[index] : pink_numbers[index - 4]);
-	}
-
 	public Sprite makeSprite_emptyMaze() {
 		return Sprite.of(empty_maze);
 	}
@@ -150,6 +142,14 @@ public class ArcadeSpritesheet extends Spritesheet {
 
 	public BufferedImage imageBonusSymbol(int bonus) {
 		return bonus_symbols[bonus];
+	}
+
+	public BufferedImage imageNumber(int number) {
+		int index = NUMBERS.indexOf(number);
+		if (index == -1) {
+			throw new IllegalArgumentException("No sprite found for number" + number);
+		}
+		return index < 4 ? green_numbers[index] : pink_numbers[index - 4];
 	}
 
 	public Sprite makeSprite_ghostColored(GhostColor color, Direction dir) {

@@ -8,5 +8,11 @@ import de.amr.games.pacman.model.world.api.Food;
  * @author Armin Reichert
  */
 public enum ArcadeFood implements Food {
+
 	PELLET, ENERGIZER;
+
+	@Override
+	public int fat() {
+		return this == PELLET ? 1 : 3;
+	}
 }

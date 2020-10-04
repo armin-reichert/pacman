@@ -6,4 +6,6 @@ package de.amr.games.pacman.model.world.api;
  * @author Armin Reichert
  */
 public interface Food {
+
+	int fat();
 }

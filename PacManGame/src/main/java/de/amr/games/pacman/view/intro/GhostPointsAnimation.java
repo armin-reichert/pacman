@@ -1,12 +1,11 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.games.pacman.model.game.PacManGame.POINTS_GHOSTS;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.BitSet;
+import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
@@ -30,6 +29,8 @@ import de.amr.games.pacman.theme.api.Theme;
  * @author Armin Reichert
  */
 public class GhostPointsAnimation extends GameObject {
+
+	static final List<Integer> POINTS_GHOSTS = List.of(200, 400, 800, 1600);
 
 	private final PacMan pacMan;
 	private final Ghost blinky, inky, pinky, clyde;
@@ -156,7 +157,7 @@ public class GhostPointsAnimation extends GameObject {
 					Ghost[] ghosts = ghosts().toArray(Ghost[]::new);
 					theme.sounds().clipEatGhost().play();
 					ghosts[ghostToKill].ai.setState(GhostState.DEAD);
-					ghosts[ghostToKill].bounty = POINTS_GHOSTS[ghostToKill];
+					ghosts[ghostToKill].bounty = POINTS_GHOSTS.get(ghostToKill);
 					killed.set(ghostToKill);
 					ghostToKill = ghostToKill + 1;
 					resetGhostTimer();

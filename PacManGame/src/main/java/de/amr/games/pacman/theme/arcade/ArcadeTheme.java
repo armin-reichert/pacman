@@ -3,9 +3,11 @@ package de.amr.games.pacman.theme.arcade;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.amr.easy.game.assets.Assets;
+import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
@@ -35,7 +37,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	public static final ArcadeTheme THEME = new ArcadeTheme();
 
-	private ArcadeSpritesheet sprites = new ArcadeSpritesheet();
+	private ArcadeSpritesheet spriteSheet = new ArcadeSpritesheet();
 	private Map<PacMan, SpriteMap> pacManSprites = new HashMap<>();
 	private Map<Ghost, SpriteMap> ghostSprites = new HashMap<>();
 
@@ -43,22 +45,22 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 		set("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		set("maze-flash-sec", 0.4f);
 		for (ArcadeBonus.Symbol symbol : ArcadeBonus.Symbol.values()) {
-			set("symbol-" + symbol.name(), sprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
+			set("symbol-" + symbol.name(), spriteSheet.makeSprite_bonusSymbol(symbol.name()).frame(0));
 		}
-		for (int points : PacManGame.POINTS_BONUS) {
-			set("points-" + points, sprites.makeSprite_number(points).frame(0));
+		for (int points : List.of(100, 300, 500, 700, 1000, 2000, 3000, 5000)) {
+			set("points-" + points, spriteSheet.imageNumber(points));
 		}
-		set("sprites", sprites);
+		set("sprites", spriteSheet);
 	}
 
 	private SpriteMap makePacManSpriteMap() {
 		SpriteMap map = new SpriteMap();
 		Direction.dirs().forEach(dir -> {
-			map.set("walking-" + dir, sprites.makeSprite_pacManWalking(dir));
-			map.set("blocked-" + dir, sprites.makeSprite_pacManBlocked(dir));
+			map.set("walking-" + dir, spriteSheet.makeSprite_pacManWalking(dir));
+			map.set("blocked-" + dir, spriteSheet.makeSprite_pacManBlocked(dir));
 		});
-		map.set("collapsing", sprites.makeSprite_pacManCollapsing());
-		map.set("full", sprites.makeSprite_pacManFull());
+		map.set("collapsing", spriteSheet.makeSprite_pacManCollapsing());
+		map.set("full", spriteSheet.makeSprite_pacManFull());
 		return map;
 	}
 
@@ -66,14 +68,14 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 		SpriteMap map = new SpriteMap();
 		for (Direction dir : Direction.values()) {
 			for (GhostColor color : GhostColor.values()) {
-				map.set(ghostSpriteKeyColor(color, dir), sprites.makeSprite_ghostColored(color, dir));
+				map.set(ghostSpriteKeyColor(color, dir), spriteSheet.makeSprite_ghostColored(color, dir));
 			}
-			map.set(ghostSpriteKeyEyes(dir), sprites.makeSprite_ghostEyes(dir));
+			map.set(ghostSpriteKeyEyes(dir), spriteSheet.makeSprite_ghostEyes(dir));
 		}
-		map.set("frightened", sprites.makeSprite_ghostFrightened());
-		map.set("flashing", sprites.makeSprite_ghostFlashing());
-		for (int bounty : PacManGame.POINTS_GHOSTS) {
-			map.set(ghostSpriteKeyPoints(bounty), sprites.makeSprite_number(bounty));
+		map.set("frightened", spriteSheet.makeSprite_ghostFrightened());
+		map.set("flashing", spriteSheet.makeSprite_ghostFlashing());
+		for (int bounty : List.of(200, 400, 800, 1600)) {
+			map.set(ghostSpriteKeyPoints(bounty), Sprite.of(spriteSheet.imageNumber(bounty)));
 		}
 		return map;
 	}
@@ -130,7 +132,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 
 	@Override
 	public WorldRenderer worldRenderer() {
-		return new ArcadeWorldRenderer(sprites);
+		return new ArcadeWorldRenderer(spriteSheet);
 	}
 
 	@Override
@@ -159,7 +161,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 			int width = 2 * Tile.SIZE;
 			for (int i = 0, x = -2 * width; i < n; ++i, x -= width) {
 				ArcadeBonus.Symbol symbol = ArcadeBonus.Symbol.valueOf(game.levelCounter.get(first + i));
-				g.drawImage(sprites.imageBonusSymbol(symbol.ordinal()), x, 0, width, width, null);
+				g.drawImage(spriteSheet.imageBonusSymbol(symbol.ordinal()), x, 0, width, width, null);
 			}
 		};
 	}
@@ -168,7 +170,7 @@ public class ArcadeTheme extends ThemeParameters implements Theme {
 	public GameRenderer livesCounterRenderer() {
 		return (Graphics2D g, PacManGame game) -> {
 			for (int i = 0, x = Tile.SIZE; i < game.lives; ++i, x += 2 * Tile.SIZE) {
-				g.drawImage(sprites.imageLivesCounter(), x, 0, null);
+				g.drawImage(spriteSheet.imageLivesCounter(), x, 0, null);
 			}
 		};
 	}

@@ -46,7 +46,7 @@ public class PacMan extends Guy<PacManState> {
 
 	public final StateMachine<PacManState, PacManGameEvent> ai;
 	private Steering walkingBehavior;
-	private int fat;
+	private int weight;
 
 	public PacMan(World world, String name) {
 		super(world, name);
@@ -67,7 +67,7 @@ public class PacMan extends Guy<PacManState> {
 					.onEntry(() -> {
 						putIntoBed(world.pacManBed());
 						visible = true;
-						fat = 0;
+						weight = 0;
 						movement.init();
 					})
 
@@ -193,9 +193,9 @@ public class PacMan extends Guy<PacManState> {
 		if (ai.is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {
 			return 0;
 		} else if (ai.is(POWERFUL)) {
-			return Timing.speed(fat > 0 ? game.pacManPowerDotsSpeed : game.pacManPowerSpeed);
+			return Timing.speed(weight > 0 ? game.pacManPowerDotsSpeed : game.pacManPowerSpeed);
 		} else if (ai.is(AWAKE)) {
-			return Timing.speed(fat > 0 ? game.pacManDotsSpeed : game.pacManSpeed);
+			return Timing.speed(weight > 0 ? game.pacManDotsSpeed : game.pacManSpeed);
 		}
 		throw new IllegalStateException("Illegal Pac-Man state: " + ai.getState());
 	}
@@ -214,8 +214,8 @@ public class PacMan extends Guy<PacManState> {
 	}
 
 	private Optional<PacManGameEvent> searchForFood() {
-		if (fat > 0 && enteredNewTile) {
-			fat -= 1;
+		if (weight > 0 && enteredNewTile) {
+			weight -= 1;
 		}
 		Tile location = tile();
 		TemporaryFood consumableBonus = world.temporaryFood().filter(bonus -> bonus.isActive() && !bonus.isConsumed())
@@ -224,11 +224,11 @@ public class PacMan extends Guy<PacManState> {
 			return Optional.of(new BonusFoundEvent(location, consumableBonus));
 		}
 		if (world.hasFood(ArcadeFood.ENERGIZER, location)) {
-			fat += PacManGame.FAT_ENERGIZER;
+			weight += ArcadeFood.ENERGIZER.fat();
 			return Optional.of(new FoodFoundEvent(location, ArcadeFood.ENERGIZER));
 		}
 		if (world.hasFood(ArcadeFood.PELLET, location)) {
-			fat += PacManGame.FAT_PELLET;
+			weight += ArcadeFood.PELLET.fat();
 			return Optional.of(new FoodFoundEvent(location, ArcadeFood.PELLET));
 		}
 		return Optional.empty();

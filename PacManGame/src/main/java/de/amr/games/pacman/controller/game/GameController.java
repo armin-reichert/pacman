@@ -272,7 +272,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class GettingReadyState extends State<PacManGameState> {
 
 		private void startNewGame() {
-			PacManGame.startNewGame(settings.startLevel, world.totalFoodCount());
+			PacManGame.start(settings.startLevel, world.totalFoodCount());
 			world.setFrozen(true);
 			closeAllDoors();
 			folks.guys().forEach(guy -> {

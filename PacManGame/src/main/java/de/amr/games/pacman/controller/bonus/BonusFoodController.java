@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.statemachine.core.StateMachine;
@@ -57,7 +56,7 @@ public class BonusFoodController extends StateMachine<BonusFoodState, PacManGame
 	}
 
 	private long bonusTime() {
-		return sec(PacManGame.BONUS_SECONDS + rnd.nextFloat());
+		return sec(9 + rnd.nextFloat());
 	}
 
 	private void activateBonus(World world, TemporaryFood bonus) {
