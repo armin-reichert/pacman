@@ -7,8 +7,9 @@ import java.awt.RenderingHints;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
+import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
-import de.amr.easy.game.ui.sprites.SpriteMap;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
@@ -18,12 +19,10 @@ import de.amr.games.pacman.theme.api.WorldRenderer;
 
 class ArcadeWorldRenderer implements WorldRenderer {
 
-	private SpriteMap spriteMap;
-	private SpriteAnimation energizerAnimation;
+	private Sprite spriteFlashingMaze;
+	private final SpriteAnimation energizerAnimation;
 
-	public ArcadeWorldRenderer(ArcadeSpritesheet sprites) {
-		spriteMap = new SpriteMap();
-		spriteMap.set("maze-flashing", sprites.makeSprite_flashingMaze());
+	public ArcadeWorldRenderer(ArcadeSpritesheet spriteSheet) {
 		energizerAnimation = new CyclicAnimation(2);
 		energizerAnimation.setFrameDuration(150);
 	}
@@ -35,14 +34,12 @@ class ArcadeWorldRenderer implements WorldRenderer {
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		if (world.isChanging()) {
-			String selectedKey = spriteMap.selectedKey();
-			if (!"maze-flashing".equals(selectedKey)) {
-				spriteMap.select("maze-flashing");
-				spriteMap.current().get().resetAnimation();
-				spriteMap.current().get().enableAnimation(true);
+			if (spriteFlashingMaze == null) {
+				spriteFlashingMaze = spriteSheet.makeSprite_flashingMaze(PacManGame.game.numFlashes);
 			}
-			spriteMap.current().get().draw(g2, 0, 3 * Tile.SIZE);
+			spriteFlashingMaze.draw(g2, 0, 3 * Tile.SIZE);
 		} else {
+			spriteFlashingMaze = null;
 			g.drawImage(spriteSheet.imageFullMaze(), 0, 3 * Tile.SIZE, null);
 			drawContent(g, world);
 			world.house(0).get().doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {

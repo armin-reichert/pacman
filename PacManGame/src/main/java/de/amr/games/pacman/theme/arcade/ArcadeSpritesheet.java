@@ -103,16 +103,20 @@ public class ArcadeSpritesheet extends Spritesheet {
 		};
 	}
 
-	public BufferedImage imageEmptyMaze() {
-		return empty_maze;
-	}
-
 	public BufferedImage imageFullMaze() {
 		return full_maze;
 	}
 
-	public Sprite makeSprite_flashingMaze() {
-		return Sprite.of(empty_maze, empty_white_maze).animate(CYCLIC, 200);
+	public Sprite makeSprite_flashingMaze(int flashes) {
+		if (flashes == 0) {
+			return Sprite.of(empty_maze);
+		}
+		BufferedImage[] frames = new BufferedImage[2 * flashes];
+		for (int i = 0; i < flashes; ++i) {
+			frames[2 * i] = empty_maze;
+			frames[2 * i + 1] = empty_white_maze;
+		}
+		return Sprite.of(frames).animate(LINEAR, 200);
 	}
 
 	public Sprite makeSprite_bonusSymbol(String symbolName) {
