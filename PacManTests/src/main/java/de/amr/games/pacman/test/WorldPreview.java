@@ -9,7 +9,7 @@ import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
@@ -26,7 +26,7 @@ public class WorldPreview extends JFrame {
 		SwingUtilities.invokeLater(WorldPreview::new);
 	}
 
-	private World world;
+	private TiledWorld world;
 	private WorldGraph graph;
 
 	public WorldPreview() {

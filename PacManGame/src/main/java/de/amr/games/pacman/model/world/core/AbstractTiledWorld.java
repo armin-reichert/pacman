@@ -8,7 +8,7 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.components.TiledRectangle;
 
@@ -17,7 +17,7 @@ import de.amr.games.pacman.model.world.components.TiledRectangle;
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractTiledWorld extends TiledRectangle implements World {
+public abstract class AbstractTiledWorld extends TiledRectangle implements TiledWorld {
 
 	private final Collection<Entity> outsiders = new HashSet<>();
 	private Tile capeNW, capeNE, capeSE, capeSW;

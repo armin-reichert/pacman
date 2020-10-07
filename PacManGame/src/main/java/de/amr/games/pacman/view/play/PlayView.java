@@ -12,7 +12,7 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.GameRenderer;
 import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.theme.api.Theme;
@@ -27,7 +27,7 @@ import de.amr.games.pacman.view.common.MessagesView;
  */
 public class PlayView implements PacManGameView {
 
-	public final World world;
+	public final TiledWorld world;
 	public final Folks folks;
 	public final SoundState soundState;
 	public final MessagesView messagesView;
@@ -39,7 +39,7 @@ public class PlayView implements PacManGameView {
 	protected GameRenderer levelCounterRenderer;
 	protected PacManRenderer pacManRenderer;
 
-	public PlayView(Theme theme, Folks folks, World world) {
+	public PlayView(Theme theme, Folks folks, TiledWorld world) {
 		this.folks = folks;
 		this.world = world;
 		soundState = new SoundState();

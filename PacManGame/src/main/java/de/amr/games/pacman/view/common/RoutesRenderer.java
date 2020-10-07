@@ -21,7 +21,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 
 /**
  * Renderes the routes of the creatures towards their current target tiles.
@@ -113,7 +113,7 @@ public class RoutesRenderer {
 
 	private void drawInkyChasing(Graphics2D g, Folks folks) {
 		PacMan pacMan = folks.pacMan;
-		World world = pacMan.world;
+		TiledWorld world = pacMan.world;
 		Ghost inky = folks.inky, blinky = folks.blinky;
 		if (!inky.ai.is(CHASING) || inky.getSteering().targetTile().isEmpty() || !world.contains(blinky)) {
 			return;

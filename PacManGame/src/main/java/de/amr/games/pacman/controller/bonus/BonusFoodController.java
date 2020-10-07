@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -24,7 +24,7 @@ public class BonusFoodController extends StateMachine<BonusFoodState, PacManGame
 
 	private Random rnd = new Random();
 
-	public BonusFoodController(World world, Supplier<TemporaryFood> fnBonusSupplier) {
+	public BonusFoodController(TiledWorld world, Supplier<TemporaryFood> fnBonusSupplier) {
 		super(BonusFoodState.class);
 		/*@formatter:off*/
 		beginStateMachine()
@@ -59,19 +59,19 @@ public class BonusFoodController extends StateMachine<BonusFoodState, PacManGame
 		return sec(9 + rnd.nextFloat());
 	}
 
-	private void activateBonus(World world, TemporaryFood bonus) {
+	private void activateBonus(TiledWorld world, TemporaryFood bonus) {
 		world.showTemporaryFood(bonus);
 		loginfo("Bonus %s activated for %.2f sec", bonus, state().getDuration() / 60f);
 	}
 
-	private void consumeBonus(World world) {
+	private void consumeBonus(TiledWorld world) {
 		world.temporaryFood().ifPresent(food -> {
 			food.consume();
 			loginfo("Bonus %s consumed after %.2f sec", food, state().getTicksConsumed() / 60f);
 		});
 	}
 
-	private void deactivateBonus(World world) {
+	private void deactivateBonus(TiledWorld world) {
 		world.temporaryFood().ifPresent(food -> {
 			food.deactivate();
 			loginfo("Bonus %s has not been consumed and gets deactivated", food);

@@ -18,7 +18,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.theme.api.Theme;
 
@@ -44,7 +44,7 @@ public class GhostPointsAnimation extends GameObject {
 	private boolean energizer;
 	private int dx = 2 * Tile.SIZE + 3;
 
-	public GhostPointsAnimation(Theme theme, World world) {
+	public GhostPointsAnimation(Theme theme, TiledWorld world) {
 		tf.width = 6 * dx;
 		tf.height = 2 * Tile.SIZE;
 		pacMan = new PacMan(world, "Pac-Man");

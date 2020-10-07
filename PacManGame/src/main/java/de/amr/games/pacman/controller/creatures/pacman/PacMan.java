@@ -29,7 +29,7 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
@@ -48,7 +48,7 @@ public class PacMan extends Guy<PacManState> {
 	private Steering walkingBehavior;
 	private int weight;
 
-	public PacMan(World world, String name) {
+	public PacMan(TiledWorld world, String name) {
 		super(world, name);
 		ai = buildAI();
 		tf.width = tf.height = Tile.SIZE;

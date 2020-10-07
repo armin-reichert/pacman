@@ -18,7 +18,7 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.model.world.graph.WorldGraph.PathFinder;
@@ -44,11 +44,11 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	private final Guy<?> guy;
 	private final Folks folks;
-	private final World world;
+	private final TiledWorld world;
 	private final WorldGraph graph;
 	private Tile target;
 
-	public SearchingForFoodAndAvoidingGhosts(World world, Guy<?> guy, Folks folks) {
+	public SearchingForFoodAndAvoidingGhosts(TiledWorld world, Guy<?> guy, Folks folks) {
 		this.world = world;
 		this.guy = guy;
 		this.folks = folks;

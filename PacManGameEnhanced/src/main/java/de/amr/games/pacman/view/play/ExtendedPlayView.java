@@ -8,7 +8,7 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.view.common.GridRenderer;
 import de.amr.games.pacman.view.common.Rendering;
@@ -34,7 +34,7 @@ public class ExtendedPlayView extends PlayView {
 	protected boolean showingStates;
 	protected boolean showingScores = true;
 
-	public ExtendedPlayView(Theme theme, Folks folks, GhostCommand ghostCommand, World world) {
+	public ExtendedPlayView(Theme theme, Folks folks, GhostCommand ghostCommand, TiledWorld world) {
 		super(theme, folks, world);
 		this.ghostCommand = ghostCommand;
 		gridRenderer = new GridRenderer(world.width(), world.height());

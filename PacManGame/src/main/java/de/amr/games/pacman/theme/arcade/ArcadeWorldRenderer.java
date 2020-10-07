@@ -11,7 +11,7 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
@@ -28,7 +28,7 @@ class ArcadeWorldRenderer implements WorldRenderer {
 	}
 
 	@Override
-	public void render(Graphics2D g, World world) {
+	public void render(Graphics2D g, TiledWorld world) {
 		ArcadeSpritesheet spriteSheet = ArcadeTheme.THEME.$value("sprites");
 		// no anti-aliasing for maze image for better performance
 		Graphics2D g2 = (Graphics2D) g.create();
@@ -50,7 +50,7 @@ class ArcadeWorldRenderer implements WorldRenderer {
 		g2.dispose();
 	}
 
-	private void drawContent(Graphics2D g, World world) {
+	private void drawContent(Graphics2D g, TiledWorld world) {
 		// hide eaten food
 		Color eatenFoodColor = Color.BLACK;
 		world.tiles().filter(world::hasEatenFood).forEach(tile -> {

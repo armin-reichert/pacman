@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.components.Bed;
 
 public class GridRenderer {
@@ -20,7 +20,7 @@ public class GridRenderer {
 		gridImage = createGridPatternImage(width, height);
 	}
 
-	public void renderGrid(Graphics2D g, World world) {
+	public void renderGrid(Graphics2D g, TiledWorld world) {
 		// use fast GC even if smooth rendering is globally enabled
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -50,13 +50,13 @@ public class GridRenderer {
 		return img;
 	}
 
-	public void drawOneWayTiles(Graphics2D g, World world) {
+	public void drawOneWayTiles(Graphics2D g, TiledWorld world) {
 		world.oneWayTiles().forEach(oneWay -> {
 			Rendering.drawDirectionIndicator(g, Color.WHITE, false, oneWay.dir, oneWay.tile.centerX(), oneWay.tile.y());
 		});
 	}
 
-	public void drawBeds(Graphics2D g, World world) {
+	public void drawBeds(Graphics2D g, TiledWorld world) {
 		Color[] colors = { Color.RED, Color.CYAN, Color.PINK, Color.ORANGE };
 		for (int i = 0; i < 4; ++i) {
 			drawBed(g, world.house(0).get().bed(i), i + "", colors[i]);

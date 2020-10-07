@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.world.components.Portal;
  * 
  * @author Armin Reichert
  */
-public interface World extends RectangularTiledArea, FoodSource {
+public interface TiledWorld extends RectangularTiledArea, FoodSource {
 
 	/**
 	 * @param tile reference tile

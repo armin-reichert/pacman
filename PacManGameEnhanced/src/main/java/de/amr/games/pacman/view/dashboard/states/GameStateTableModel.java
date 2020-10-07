@@ -16,7 +16,7 @@ import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 
 /**
@@ -67,7 +67,7 @@ class GameStateTableModel extends AbstractTableModel {
 	};
 
 	private GameController gameController;
-	private World world;
+	private TiledWorld world;
 	private GameStateRecord[] records;
 	private boolean dummy;
 
@@ -171,7 +171,7 @@ class GameStateTableModel extends AbstractTableModel {
 		r.pacManCollision = ghost.tile().equals(pacMan.tile());
 	}
 
-	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {
+	void fillBonusRecord(GameStateRecord r, GameController gameController, TiledWorld world) {
 		r.included = false;
 		r.name = "Bonus";
 		r.tile = null;

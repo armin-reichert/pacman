@@ -2,7 +2,7 @@ package de.amr.games.pacman.model.world.core;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 
 /**
  * An entity in a tile-based world.
@@ -11,9 +11,9 @@ import de.amr.games.pacman.model.world.api.World;
  */
 public abstract class TileWorldEntity extends Entity {
 
-	public final World world;
+	public final TiledWorld world;
 
-	public TileWorldEntity(World world) {
+	public TileWorldEntity(TiledWorld world) {
 		this.world = world;
 	}
 

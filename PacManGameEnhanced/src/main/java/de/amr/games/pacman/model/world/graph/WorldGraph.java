@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.impl.Grid4Topology;
 import de.amr.graph.grid.impl.GridGraph;
@@ -29,11 +29,11 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 		ASTAR, BEST_FIRST_SEARCH, BREADTH_FIRST_SEARCH
 	}
 
-	public final World world;
+	public final TiledWorld world;
 	private PathFinder pathFinder;
 	private int pathFinderCalls;
 
-	public WorldGraph(World world) {
+	public WorldGraph(TiledWorld world) {
 		super(world.width(), world.height(), Grid4Topology.get(), v -> null, (u, v) -> null, UndirectedEdge::new);
 		this.world = world;
 		fill();

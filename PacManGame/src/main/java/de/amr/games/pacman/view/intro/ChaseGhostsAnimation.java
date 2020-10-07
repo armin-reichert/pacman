@@ -12,7 +12,7 @@ import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.theme.api.Theme;
 
@@ -23,14 +23,14 @@ import de.amr.games.pacman.theme.api.Theme;
  */
 public class ChaseGhostsAnimation extends GameObject {
 
-	private final World world;
+	private final TiledWorld world;
 	private final PacMan pacMan;
 	private final Ghost blinky, inky, pinky, clyde;
 	private Theme theme;
 	private PacManRenderer pacManRenderer;
 	private int points;
 
-	public ChaseGhostsAnimation(Theme theme, World world) {
+	public ChaseGhostsAnimation(Theme theme, TiledWorld world) {
 		this.world = world;
 		pacMan = new PacMan(world, "Pac-Man");
 		blinky = Ghost.shadowGhost(world, "Blinky", pacMan);

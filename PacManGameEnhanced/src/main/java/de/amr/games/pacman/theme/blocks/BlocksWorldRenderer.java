@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
@@ -19,7 +19,7 @@ import de.amr.games.pacman.view.common.Rendering;
 class BlocksWorldRenderer implements WorldRenderer {
 
 	@Override
-	public void render(Graphics2D g, World world) {
+	public void render(Graphics2D g, TiledWorld world) {
 		drawEmptyWorld(g, world);
 		if (!world.isChanging()) {
 			drawFood(g, world);
@@ -31,7 +31,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 		});
 	}
 
-	private void drawFood(Graphics2D g, World world) {
+	private void drawFood(Graphics2D g, TiledWorld world) {
 		Rendering.smoothOn(g);
 		world.tiles().forEach(location -> {
 			if (world.hasFood(ArcadeFood.ENERGIZER, location)) {
@@ -86,7 +86,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 		g.fillOval(location.x() + 3, location.y() + 3, 2, 2);
 	}
 
-	private void drawEnergizer(Graphics2D g, World world, Tile location) {
+	private void drawEnergizer(Graphics2D g, TiledWorld world, Tile location) {
 		int size = Tile.SIZE;
 		int x = location.x() + (Tile.SIZE - size) / 2;
 		int y = location.y() + (Tile.SIZE - size) / 2;
@@ -102,7 +102,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 		g.translate(-x, -y);
 	}
 
-	private void drawEmptyWorld(Graphics2D g, World world) {
+	private void drawEmptyWorld(Graphics2D g, TiledWorld world) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, world.width() * Tile.SIZE, world.height() * Tile.SIZE);
 		for (int row = 0; row < world.height(); ++row) {
@@ -114,7 +114,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 		}
 	}
 
-	private void drawWall(Graphics2D g, World world, int row, int col) {
+	private void drawWall(Graphics2D g, TiledWorld world, int row, int col) {
 		if (world.isChanging() && app().clock().getTotalTicks() % 30 < 15) {
 			g.setColor(Color.WHITE);
 		} else {

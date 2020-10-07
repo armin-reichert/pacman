@@ -28,7 +28,7 @@ import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;
@@ -42,19 +42,19 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Guy<GhostState> {
 
-	public static Ghost shadowGhost(World world, String name, PacMan pacMan) {
+	public static Ghost shadowGhost(TiledWorld world, String name, PacMan pacMan) {
 		return new Ghost(world, name, GhostPersonality.SHADOW, pacMan);
 	}
 
-	public static Ghost speedyGhost(World world, String name, PacMan pacMan) {
+	public static Ghost speedyGhost(TiledWorld world, String name, PacMan pacMan) {
 		return new Ghost(world, name, GhostPersonality.SPEEDY, pacMan);
 	}
 
-	public static Ghost bashfulGhost(World world, String name, PacMan pacMan) {
+	public static Ghost bashfulGhost(TiledWorld world, String name, PacMan pacMan) {
 		return new Ghost(world, name, GhostPersonality.BASHFUL, pacMan);
 	}
 
-	public static Ghost pokeyGhost(World world, String name, PacMan pacMan) {
+	public static Ghost pokeyGhost(TiledWorld world, String name, PacMan pacMan) {
 		return new Ghost(world, name, GhostPersonality.POKEY, pacMan);
 	}
 
@@ -70,7 +70,7 @@ public class Ghost extends Guy<GhostState> {
 	private final Map<GhostState, Steering> behaviors;
 	private Steering previousSteering;
 
-	private Ghost(World world, String name, GhostPersonality personality, PacMan pacMan) {
+	private Ghost(TiledWorld world, String name, GhostPersonality personality, PacMan pacMan) {
 		super(world, name);
 		this.personality = personality;
 		behaviors = new EnumMap<>(GhostState.class);

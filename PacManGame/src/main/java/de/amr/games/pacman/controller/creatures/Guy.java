@@ -6,7 +6,7 @@ import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementController;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.core.TileWorldEntity;
 
 /**
@@ -23,7 +23,7 @@ public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle, S
 
 	protected final MovementController movement;
 
-	public Guy(World world, String name) {
+	public Guy(TiledWorld world, String name) {
 		super(world);
 		this.name = name;
 		this.movement = new MovementController(this);

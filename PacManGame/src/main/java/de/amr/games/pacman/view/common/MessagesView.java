@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.MessagesRenderer;
 import de.amr.games.pacman.theme.api.Theme;
 
@@ -17,10 +17,10 @@ import de.amr.games.pacman.theme.api.Theme;
 public class MessagesView {
 
 	public final List<Message> messages;
-	private final World world;
+	private final TiledWorld world;
 	private MessagesRenderer renderer;
 
-	public MessagesView(Theme theme, World world, int... rows) {
+	public MessagesView(Theme theme, TiledWorld world, int... rows) {
 		this.world = world;
 		this.messages = new ArrayList<>();
 		for (int row : rows) {

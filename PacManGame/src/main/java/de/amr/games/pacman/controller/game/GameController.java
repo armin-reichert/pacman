@@ -44,7 +44,7 @@ import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
@@ -65,7 +65,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
-	public final World world;
+	public final TiledWorld world;
 	public final Folks folks;
 	public final BonusFoodController bonusController;
 	public final DoorMan doorMan;

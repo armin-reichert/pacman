@@ -23,7 +23,7 @@ import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.model.world.api.Tile;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.core.EmptyWorld;
 import de.amr.games.pacman.theme.api.MessagesRenderer;
 import de.amr.games.pacman.theme.api.Theme;
@@ -47,7 +47,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	private static final Color ORANGE = new Color(255, 163, 71);
 	private static final Color RED = new Color(171, 19, 0);
 
-	private final World world;
+	private final TiledWorld world;
 	private final int width;
 	private final int height;
 	private final ImageWidget pacManLogo;
