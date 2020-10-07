@@ -23,7 +23,6 @@ class ArcadeWorldRenderer implements WorldRenderer {
 
 	public ArcadeWorldRenderer(ArcadeSpritesheet sprites) {
 		spriteMap = new SpriteMap();
-		spriteMap.set("maze-full", sprites.makeSprite_fullMaze());
 		spriteMap.set("maze-flashing", sprites.makeSprite_flashingMaze());
 		energizerAnimation = new CyclicAnimation(2);
 		energizerAnimation.setFrameDuration(150);
@@ -31,6 +30,7 @@ class ArcadeWorldRenderer implements WorldRenderer {
 
 	@Override
 	public void render(Graphics2D g, World world) {
+		ArcadeSpritesheet spriteSheet = ArcadeTheme.THEME.$value("sprites");
 		// no anti-aliasing for maze image for better performance
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -43,8 +43,7 @@ class ArcadeWorldRenderer implements WorldRenderer {
 			}
 			spriteMap.current().get().draw(g2, 0, 3 * Tile.SIZE);
 		} else {
-			spriteMap.select("maze-full");
-			spriteMap.current().get().draw(g2, 0, 3 * Tile.SIZE);
+			g.drawImage(spriteSheet.imageFullMaze(), 0, 3 * Tile.SIZE, null);
 			drawContent(g, world);
 			world.house(0).get().doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
 				g.setColor(Color.BLACK);

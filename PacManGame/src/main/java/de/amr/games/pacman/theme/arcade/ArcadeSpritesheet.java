@@ -103,12 +103,12 @@ public class ArcadeSpritesheet extends Spritesheet {
 		};
 	}
 
-	public Sprite makeSprite_emptyMaze() {
-		return Sprite.of(empty_maze);
+	public BufferedImage imageEmptyMaze() {
+		return empty_maze;
 	}
 
-	public Sprite makeSprite_fullMaze() {
-		return Sprite.of(full_maze);
+	public BufferedImage imageFullMaze() {
+		return full_maze;
 	}
 
 	public Sprite makeSprite_flashingMaze() {
