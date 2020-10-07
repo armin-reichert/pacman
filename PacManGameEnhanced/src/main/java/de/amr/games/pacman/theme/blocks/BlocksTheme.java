@@ -18,18 +18,18 @@ import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.theme.arcade.ArcadeSounds;
+import de.amr.games.pacman.theme.core.ThemeParameterMap;
 import de.amr.games.pacman.view.api.PacManGameSounds;
 import de.amr.games.pacman.view.common.DefaultGameScoreRenderer;
 import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
 import de.amr.games.pacman.view.common.Rendering;
-import de.amr.games.pacman.view.core.ThemeParameters;
 
 /**
  * A theme using simple geometric figures.
  * 
  * @author Armin Reichert
  */
-public class BlocksTheme extends ThemeParameters implements Theme {
+public class BlocksTheme extends ThemeParameterMap implements Theme {
 
 	public static final BlocksTheme THEME = new BlocksTheme();
 

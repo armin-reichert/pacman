@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.core;
+package de.amr.games.pacman.theme.core;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -6,7 +6,7 @@ import java.awt.Image;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ThemeParameters {
+public class ThemeParameterMap {
 
 	protected final Map<String, Object> parameters = new HashMap<>();
 

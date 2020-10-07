@@ -23,17 +23,17 @@ import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.theme.arcade.ArcadeSpritesheet.GhostColor;
+import de.amr.games.pacman.theme.core.ThemeParameterMap;
 import de.amr.games.pacman.view.api.PacManGameSounds;
 import de.amr.games.pacman.view.common.DefaultGameScoreRenderer;
 import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
-import de.amr.games.pacman.view.core.ThemeParameters;
 
 /**
  * This theme mimics the original Arcade version.
  * 
  * @author Armin Reichert
  */
-public class ArcadeTheme extends ThemeParameters implements Theme {
+public class ArcadeTheme extends ThemeParameterMap implements Theme {
 
 	public static final ArcadeTheme THEME = new ArcadeTheme();
 

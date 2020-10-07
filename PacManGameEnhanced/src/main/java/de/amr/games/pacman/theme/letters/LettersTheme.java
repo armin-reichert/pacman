@@ -20,18 +20,18 @@ import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.theme.arcade.ArcadeSounds;
+import de.amr.games.pacman.theme.core.ThemeParameterMap;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.view.api.PacManGameSounds;
 import de.amr.games.pacman.view.common.DefaultMessagesRenderer;
 import de.amr.games.pacman.view.common.Rendering;
-import de.amr.games.pacman.view.core.ThemeParameters;
 
 /**
  * Theme using letters and other non-graphic characters.
  * 
  * @author Armin Reichert
  */
-public class LettersTheme extends ThemeParameters implements Theme {
+public class LettersTheme extends ThemeParameterMap implements Theme {
 
 	public static final LettersTheme THEME = new LettersTheme();
 
