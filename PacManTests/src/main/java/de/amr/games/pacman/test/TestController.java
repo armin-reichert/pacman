@@ -1,5 +1,6 @@
 package de.amr.games.pacman.test;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -15,6 +16,9 @@ import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.theme.api.Themes;
+import de.amr.games.pacman.theme.arcade.ArcadeTheme;
+import de.amr.games.pacman.theme.blocks.BlocksTheme;
+import de.amr.games.pacman.theme.letters.LettersTheme;
 import de.amr.games.pacman.view.play.ExtendedPlayView;
 
 /**
@@ -24,14 +28,19 @@ import de.amr.games.pacman.view.play.ExtendedPlayView;
  */
 public class TestController implements VisualController {
 
+	static {
+		Themes.registerTheme(ArcadeTheme.THEME);
+		Themes.registerTheme(BlocksTheme.THEME);
+		Themes.registerTheme(LettersTheme.THEME);
+	}
+
 	protected final ArcadeWorld world;
 	protected final Folks folks;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
-	protected final Theme[] themes;
+	protected final List<Theme> themes;
 	protected final ExtendedPlayView view;
-
-	protected int currentThemeIndex = 0;
+	protected int currentThemeIndex;
 
 	public TestController() {
 		world = new ArcadeWorld();
@@ -43,7 +52,8 @@ public class TestController implements VisualController {
 		pinky = folks.pinky;
 		inky = folks.inky;
 		clyde = folks.clyde;
-		themes = Themes.all().toArray(Theme[]::new);
+		themes = Themes.all();
+		currentThemeIndex = themes.indexOf(ArcadeTheme.THEME);
 		view = new ExtendedPlayView(theme(), folks, null, world);
 		view.turnScoresOff();
 	}
@@ -58,7 +68,7 @@ public class TestController implements VisualController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce("z")) {
-			currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+			currentThemeIndex = (currentThemeIndex + 1) % themes.size();
 			view.setTheme(theme());
 		}
 		if (Keyboard.keyPressedOnce("g")) {
@@ -96,6 +106,6 @@ public class TestController implements VisualController {
 	}
 
 	protected Theme theme() {
-		return themes[currentThemeIndex];
+		return themes.get(currentThemeIndex);
 	}
 }
