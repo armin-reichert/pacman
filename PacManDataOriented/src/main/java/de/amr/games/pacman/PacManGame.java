@@ -198,14 +198,14 @@ public class PacManGame {
 		if (guy.speed == 0) {
 			return;
 		}
-		if (tryMovingCreature(guy, guy.intendedDirection)) {
+		if (moveCreature(guy, guy.intendedDirection)) {
 			guy.direction = guy.intendedDirection;
 		} else {
-			tryMovingCreature(guy, guy.direction);
+			moveCreature(guy, guy.direction);
 		}
 	}
 
-	private boolean tryMovingCreature(Creature guy, V2 direction) {
+	private boolean moveCreature(Creature guy, V2 direction) {
 
 		if ((direction.equals(V2.LEFT) || direction.equals(V2.RIGHT))) {
 			if (Math.abs(guy.offset.y) > 1) {
@@ -233,30 +233,27 @@ public class PacManGame {
 //				offsetAfterMove);
 
 		if (tileAfterMove.equals(guy.tile)) {
+			V2 neighbor = guy.tile.sum(direction);
 			if (direction.equals(V2.RIGHT)) {
-				V2 tile_right = new V2(guy.tile.x + 1, guy.tile.y);
-				if (offsetAfterMove.x > 0 && !isAccessibleTile(tile_right)) {
+				if (offsetAfterMove.x > 0 && !isAccessibleTile(neighbor)) {
 					guy.offset.x = 0;
 					return false;
 				}
 			}
 			if (direction.equals(V2.LEFT)) {
-				V2 tile_left = new V2(guy.tile.x - 1, guy.tile.y);
-				if (offsetAfterMove.x < 0 && !isAccessibleTile(tile_left)) {
+				if (offsetAfterMove.x < 0 && !isAccessibleTile(neighbor)) {
 					guy.offset.x = 0;
 					return false;
 				}
 			}
 			if (direction.equals(V2.DOWN)) {
-				V2 tile_down = new V2(guy.tile.x, guy.tile.y + 1);
-				if (offsetAfterMove.y > 0 && !isAccessibleTile(tile_down)) {
+				if (offsetAfterMove.y > 0 && !isAccessibleTile(neighbor)) {
 					guy.offset.y = 0;
 					return false;
 				}
 			}
 			if (direction.equals(V2.UP)) {
-				V2 tile_up = new V2(guy.tile.x, guy.tile.y - 1);
-				if (offsetAfterMove.y < 0 && !isAccessibleTile(tile_up)) {
+				if (offsetAfterMove.y < 0 && !isAccessibleTile(neighbor)) {
 					guy.offset.y = 0;
 					return false;
 				}
