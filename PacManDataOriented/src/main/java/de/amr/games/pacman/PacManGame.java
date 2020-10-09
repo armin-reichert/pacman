@@ -246,26 +246,12 @@ public class PacManGame {
 
 		if (tileAfterMove.equals(guy.tile)) {
 			V2 neighbor = guy.tile.sum(direction);
-			if (direction.equals(V2.RIGHT)) {
-				if (offsetAfterMove.x > 0 && !isAccessibleTile(neighbor)) {
+			if (!isAccessibleTile(neighbor)) {
+				if (direction.equals(V2.RIGHT) && offsetAfterMove.x > 0 || direction.equals(V2.LEFT) && offsetAfterMove.x < 0) {
 					guy.offset.x = 0;
 					return false;
 				}
-			}
-			if (direction.equals(V2.LEFT)) {
-				if (offsetAfterMove.x < 0 && !isAccessibleTile(neighbor)) {
-					guy.offset.x = 0;
-					return false;
-				}
-			}
-			if (direction.equals(V2.DOWN)) {
-				if (offsetAfterMove.y > 0 && !isAccessibleTile(neighbor)) {
-					guy.offset.y = 0;
-					return false;
-				}
-			}
-			if (direction.equals(V2.UP)) {
-				if (offsetAfterMove.y < 0 && !isAccessibleTile(neighbor)) {
+				if (direction.equals(V2.DOWN) && offsetAfterMove.y > 0 || direction.equals(V2.UP) && offsetAfterMove.y < 0) {
 					guy.offset.y = 0;
 					return false;
 				}
