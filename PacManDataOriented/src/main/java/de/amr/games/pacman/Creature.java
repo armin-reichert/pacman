@@ -1,5 +1,7 @@
 package de.amr.games.pacman;
 
+import java.awt.Color;
+
 public class Creature {
 
 	public Creature(String name) {
@@ -18,4 +20,5 @@ public class Creature {
 	public V2 direction;
 	public V2 intendedDirection;
 	float speed;
+	Color color;
 }

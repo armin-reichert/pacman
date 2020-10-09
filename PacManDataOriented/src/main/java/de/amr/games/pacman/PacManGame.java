@@ -183,6 +183,7 @@ public class PacManGame {
 		pacMan.direction = V2.RIGHT;
 		pacMan.intendedDirection = V2.RIGHT;
 		pacMan.speed = 1.25f;
+		pacMan.color = Color.YELLOW;
 		placeAtTile(pacMan, 13, 26, 0.5f, 0);
 
 		for (Creature ghost : List.of(blinky, inky, pinky, clyde)) {
@@ -190,6 +191,10 @@ public class PacManGame {
 			ghost.direction = V2.RIGHT;
 			ghost.speed = 0;
 		}
+		blinky.color = Color.RED;
+		inky.color = Color.CYAN;
+		pinky.color = Color.PINK;
+		clyde.color = Color.ORANGE;
 		placeAtTile(blinky, BLINKY_TILE.x, BLINKY_TILE.y, TILE_SIZE / 2, 0);
 		placeAtTile(inky, INKY_TILE.x, INKY_TILE.y, TILE_SIZE / 2, 0);
 		placeAtTile(pinky, PINKY_TILE.x, PINKY_TILE.y, TILE_SIZE / 2, 0);
@@ -300,7 +305,7 @@ public class PacManGame {
 
 	private void drawPacMan(Graphics2D g) {
 		V2 position = position(pacMan);
-		g.setColor(Color.YELLOW);
+		g.setColor(pacMan.color);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.fillRect((int) position.x, (int) position.y, (int) pacMan.size.x, (int) pacMan.size.y);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -308,17 +313,7 @@ public class PacManGame {
 
 	private void drawGhost(Graphics2D g, Creature ghost) {
 		V2 position = position(ghost);
-		Color color = null;
-		if (blinky == ghost) {
-			color = Color.red;
-		} else if (inky == ghost) {
-			color = Color.CYAN;
-		} else if (pinky == ghost) {
-			color = Color.PINK;
-		} else if (clyde == ghost) {
-			color = Color.ORANGE;
-		}
-		g.setColor(color);
+		g.setColor(ghost.color);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.fillRect((int) position.x, (int) position.y, (int) ghost.size.x, (int) ghost.size.y);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
