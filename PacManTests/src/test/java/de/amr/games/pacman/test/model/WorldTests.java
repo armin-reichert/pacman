@@ -34,6 +34,23 @@ public class WorldTests {
 	}
 
 	@Test
+	public void writeMap() {
+		for (int row = 0; row < world.height(); ++row) {
+			System.out.print("\"");
+			for (int col = 0; col < world.width(); ++col) {
+				Tile tile = Tile.at(col, row);
+				char c = world.isAccessible(tile) ? '0' : '1';
+				if (world.hasFood(tile)) {
+					c = '2';
+				}
+				System.out.print(c);
+			}
+			System.out.print("\",");
+			System.out.println();
+		}
+	}
+
+	@Test
 	public void testStructure() {
 		assertEquals(1, world.houses().count());
 		assertNotNull(world.pacManBed());
