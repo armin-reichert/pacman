@@ -23,6 +23,10 @@ public class PacManGame {
 		EventQueue.invokeLater(new PacManGame()::start);
 	}
 
+	private static V2 vec(float x, float y) {
+		return new V2(x, y);
+	}
+
 	private static final int FPS = 60;
 	private static final int TILE_SIZE = 8;
 	private static final int WORLD_WIDTH_TILES = 28;
@@ -30,10 +34,10 @@ public class PacManGame {
 	private static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TILE_SIZE;
 	private static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TILE_SIZE;
 
-	private static final V2 BLINKY_TILE = new V2(13, 14);
-	private static final V2 INKY_TILE = new V2(11, 17);
-	private static final V2 PINKY_TILE = new V2(13, 17);
-	private static final V2 CLYDE_TILE = new V2(15, 17);
+	private static final V2 BLINKY_TILE = vec(13, 14);
+	private static final V2 INKY_TILE = vec(11, 17);
+	private static final V2 PINKY_TILE = vec(13, 17);
+	private static final V2 CLYDE_TILE = vec(15, 17);
 
 	private static final String[] MAP = {
 		//@formatter:off
@@ -118,6 +122,7 @@ public class PacManGame {
 			x.printStackTrace();
 		}
 		JFrame window = new JFrame("PacMan");
+		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.addKeyListener(new KeyAdapter() {
 
@@ -180,15 +185,15 @@ public class PacManGame {
 	}
 
 	private void initEntities() {
-		pacMan.size = new V2(TILE_SIZE, TILE_SIZE);
+		pacMan.size = vec(TILE_SIZE, TILE_SIZE);
 		pacMan.direction = V2.RIGHT;
 		pacMan.intendedDirection = V2.RIGHT;
 		pacMan.speed = 1.25f;
 		pacMan.color = Color.YELLOW;
-		placeAtTile(pacMan, 13, 26, 0.5f, 0);
+		placeAtTile(pacMan, vec(13, 26), vec(0.5f, 0));
 
 		for (Creature ghost : List.of(blinky, inky, pinky, clyde)) {
-			ghost.size = new V2(TILE_SIZE, TILE_SIZE);
+			ghost.size = vec(TILE_SIZE, TILE_SIZE);
 			ghost.direction = V2.RIGHT;
 			ghost.speed = 0;
 		}
@@ -196,10 +201,10 @@ public class PacManGame {
 		inky.color = Color.CYAN;
 		pinky.color = Color.PINK;
 		clyde.color = Color.ORANGE;
-		placeAtTile(blinky, BLINKY_TILE.x, BLINKY_TILE.y, TILE_SIZE / 2, 0);
-		placeAtTile(inky, INKY_TILE.x, INKY_TILE.y, TILE_SIZE / 2, 0);
-		placeAtTile(pinky, PINKY_TILE.x, PINKY_TILE.y, TILE_SIZE / 2, 0);
-		placeAtTile(clyde, CLYDE_TILE.x, CLYDE_TILE.y, TILE_SIZE / 2, 0);
+		placeAtTile(blinky, BLINKY_TILE, vec(TILE_SIZE / 2, 0));
+		placeAtTile(inky, INKY_TILE, vec(TILE_SIZE / 2, 0));
+		placeAtTile(pinky, PINKY_TILE, vec(TILE_SIZE / 2, 0));
+		placeAtTile(clyde, CLYDE_TILE, vec(TILE_SIZE / 2, 0));
 	}
 
 	private void update() {
@@ -263,21 +268,21 @@ public class PacManGame {
 		return true;
 	}
 
-	private void placeAtTile(Creature guy, float tile_x, float tile_y, float offset_x, float offset_y) {
-		guy.tile = new V2(tile_x, tile_y);
-		guy.offset = new V2(offset_x, offset_y);
+	private void placeAtTile(Creature guy, V2 tile, V2 offset) {
+		guy.tile = tile;
+		guy.offset = offset;
 	}
 
 	private V2 tile(V2 position) {
-		return new V2((int) (position.x + TILE_SIZE / 2) / TILE_SIZE, (int) (position.y + TILE_SIZE / 2) / TILE_SIZE);
+		return vec((int) (position.x + TILE_SIZE / 2) / TILE_SIZE, (int) (position.y + TILE_SIZE / 2) / TILE_SIZE);
 	}
 
 	private V2 offset(V2 position, V2 tile) {
-		return new V2(position.x - tile.x * TILE_SIZE, position.y - tile.y * TILE_SIZE);
+		return vec(position.x - tile.x * TILE_SIZE, position.y - tile.y * TILE_SIZE);
 	}
 
 	private V2 position(Creature guy) {
-		return new V2(guy.tile.x * TILE_SIZE + guy.offset.x, guy.tile.y * TILE_SIZE + guy.offset.y);
+		return vec(guy.tile.x * TILE_SIZE + guy.offset.x, guy.tile.y * TILE_SIZE + guy.offset.y);
 	}
 
 	private boolean isAccessibleTile(V2 tile) {
