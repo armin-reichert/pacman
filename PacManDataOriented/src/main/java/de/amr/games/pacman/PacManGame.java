@@ -102,6 +102,7 @@ public class PacManGame {
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
 				drawMaze(g);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				drawPacMan(g);
 				drawGhosts(g);
 				g.dispose();
@@ -292,17 +293,13 @@ public class PacManGame {
 	private void drawPacMan(Graphics2D g) {
 		V2 position = position(pacMan);
 		g.setColor(pacMan.color);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.fillRect((int) position.x, (int) position.y, (int) pacMan.size.x, (int) pacMan.size.y);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
 	private void drawGhost(Graphics2D g, Creature ghost) {
 		V2 position = position(ghost);
 		g.setColor(ghost.color);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.fillRect((int) position.x, (int) position.y, (int) ghost.size.x, (int) ghost.size.y);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
 	private void drawGhosts(Graphics2D g) {
