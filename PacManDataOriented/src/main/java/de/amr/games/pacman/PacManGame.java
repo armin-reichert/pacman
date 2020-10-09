@@ -25,6 +25,7 @@ public class PacManGame {
 		EventQueue.invokeLater(new PacManGame()::start);
 	}
 
+	private static final int FPS = 60;
 	private static final int TILE_SIZE = 8;
 	private static final int WORLD_WIDTH_TILES = 28;
 	private static final int WORLD_HEIGHT_TILES = 36;
@@ -69,7 +70,7 @@ public class PacManGame {
 		"1111111111111111111111111111",
 		"1111111111111111111111111111",
 		"1111111111111111111111111111",
-		//@formatter:off
+		//@formatter:on
 	};
 
 	private Creature pacMan, blinky, pinky, inky, clyde;
@@ -161,7 +162,7 @@ public class PacManGame {
 				frames = 0;
 				start = System.nanoTime();
 			}
-			long sleep = Math.max(16_666_666 - time, 0);
+			long sleep = Math.max(1_000_000_000 / FPS - time, 0);
 			try {
 				Thread.sleep(sleep / 1_000_000); // millis
 			} catch (InterruptedException x) {
@@ -184,17 +185,49 @@ public class PacManGame {
 			return;
 		}
 		V2 velocity = guy.direction.scaled(guy.speed);
-		V2 newPosition = position(guy).sum(velocity);
-		V2 newTile = tile(newPosition);
-		if (isAccessibleTile(newTile)) {
-			V2 offset = offset(newPosition, newTile);
-			guy.offset = offset;
-			guy.tile = newTile;
-//			log("%s moves to %s, tile %s, offset %s", guy.name, position(guy), guy.tile, guy.offset);
-		} else {
-//			log("%s cannot access position %s, tile %s", guy.name, newPosition, newTile);
-//			log("%s stays at %s, tile %s, offset %s", guy.name, position(guy), guy.tile, guy.offset);
+		V2 positionAfterMove = position(guy).sum(velocity);
+		V2 tileAfterMove = tile(positionAfterMove);
+		V2 offsetAfterMove = offset(positionAfterMove, tileAfterMove);
+
+		if (!isAccessibleTile(tileAfterMove)) {
+			return;
 		}
+
+		log("Attempting to move %s to position %s tile %s offset %s", guy, positionAfterMove, tileAfterMove,
+				offsetAfterMove);
+
+		if (tileAfterMove.equals(guy.tile)) {
+			if (guy.direction.equals(V2.RIGHT)) {
+				V2 tile_right = new V2(guy.tile.x + 1, guy.tile.y);
+				if (offsetAfterMove.x > 0 && !isAccessibleTile(tile_right)) {
+					guy.offset.x = 0;
+					return;
+				}
+			}
+			if (guy.direction.equals(V2.LEFT)) {
+				V2 tile_left = new V2(guy.tile.x - 1, guy.tile.y);
+				if (offsetAfterMove.x < 0 && !isAccessibleTile(tile_left)) {
+					guy.offset.x = 0;
+					return;
+				}
+			}
+			if (guy.direction.equals(V2.DOWN)) {
+				V2 tile_down = new V2(guy.tile.x, guy.tile.y + 1);
+				if (offsetAfterMove.y > 0 && !isAccessibleTile(tile_down)) {
+					guy.offset.y = 0;
+					return;
+				}
+			}
+			if (guy.direction.equals(V2.UP)) {
+				V2 tile_up = new V2(guy.tile.x, guy.tile.y - 1);
+				if (offsetAfterMove.y < 0 && !isAccessibleTile(tile_up)) {
+					guy.offset.y = 0;
+					return;
+				}
+			}
+		}
+		guy.tile = tileAfterMove;
+		guy.offset = offsetAfterMove;
 	}
 
 	private void initEntities() {
@@ -211,9 +244,9 @@ public class PacManGame {
 		}
 	}
 
-	private void placeAtTile(Creature creature, float tile_x, float tile_y) {
-		creature.tile = new V2(tile_x, tile_y);
-		creature.offset = new V2(0, 0);
+	private void placeAtTile(Creature guy, float tile_x, float tile_y) {
+		guy.tile = new V2(tile_x, tile_y);
+		guy.offset = new V2(0, 0);
 	}
 
 	private V2 tile(V2 position) {
@@ -224,8 +257,8 @@ public class PacManGame {
 		return new V2(position.x - tile.x * TILE_SIZE, position.y - tile.y * TILE_SIZE);
 	}
 
-	private V2 position(Creature creature) {
-		return new V2(creature.tile.x * TILE_SIZE + creature.offset.x, creature.tile.y * TILE_SIZE + creature.offset.y);
+	private V2 position(Creature guy) {
+		return new V2(guy.tile.x * TILE_SIZE + guy.offset.x, guy.tile.y * TILE_SIZE + guy.offset.y);
 	}
 
 	private boolean isAccessibleTile(V2 tile) {

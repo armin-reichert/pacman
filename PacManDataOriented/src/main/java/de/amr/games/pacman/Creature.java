@@ -6,6 +6,11 @@ public class Creature {
 		this.name = name;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("%s tile %s offset %s", name, tile, offset);
+	}
+
 	public String name;
 	public V2 size;
 	public V2 tile;
