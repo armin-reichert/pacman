@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
@@ -30,6 +29,11 @@ public class PacManGame {
 	private static final int WORLD_HEIGHT_TILES = 36;
 	private static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TILE_SIZE;
 	private static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TILE_SIZE;
+
+	private static final V2 BLINKY_TILE = new V2(13, 14);
+	private static final V2 INKY_TILE = new V2(11, 17);
+	private static final V2 PINKY_TILE = new V2(13, 17);
+	private static final V2 CLYDE_TILE = new V2(15, 17);
 
 	private static final String[] MAP = {
 		//@formatter:off
@@ -179,14 +183,17 @@ public class PacManGame {
 		pacMan.direction = V2.RIGHT;
 		pacMan.intendedDirection = V2.RIGHT;
 		pacMan.speed = 1.25f;
-		placeAtTile(pacMan, 13, 26);
+		placeAtTile(pacMan, 13, 26, 0.5f, 0);
 
 		for (Creature ghost : List.of(blinky, inky, pinky, clyde)) {
 			ghost.size = new V2(TILE_SIZE, TILE_SIZE);
 			ghost.direction = V2.RIGHT;
 			ghost.speed = 0;
-			placeAtTile(ghost, 13, 15);
 		}
+		placeAtTile(blinky, BLINKY_TILE.x, BLINKY_TILE.y, TILE_SIZE / 2, 0);
+		placeAtTile(inky, INKY_TILE.x, INKY_TILE.y, TILE_SIZE / 2, 0);
+		placeAtTile(pinky, PINKY_TILE.x, PINKY_TILE.y, TILE_SIZE / 2, 0);
+		placeAtTile(clyde, CLYDE_TILE.x, CLYDE_TILE.y, TILE_SIZE / 2, 0);
 	}
 
 	private void update() {
@@ -264,9 +271,9 @@ public class PacManGame {
 		return true;
 	}
 
-	private void placeAtTile(Creature guy, float tile_x, float tile_y) {
+	private void placeAtTile(Creature guy, float tile_x, float tile_y, float offset_x, float offset_y) {
 		guy.tile = new V2(tile_x, tile_y);
-		guy.offset = new V2(0, 0);
+		guy.offset = new V2(offset_x, offset_y);
 	}
 
 	private V2 tile(V2 position) {
@@ -299,8 +306,28 @@ public class PacManGame {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
-	private void drawGhosts(Graphics g) {
+	private void drawGhost(Graphics2D g, Creature ghost) {
+		V2 position = position(ghost);
+		Color color = null;
+		if (blinky == ghost) {
+			color = Color.red;
+		} else if (inky == ghost) {
+			color = Color.CYAN;
+		} else if (pinky == ghost) {
+			color = Color.PINK;
+		} else if (clyde == ghost) {
+			color = Color.ORANGE;
+		}
+		g.setColor(color);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.fillRect((int) position.x, (int) position.y, (int) ghost.size.x, (int) ghost.size.y);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+	}
 
+	private void drawGhosts(Graphics2D g) {
+		for (Creature ghost : List.of(blinky, inky, pinky, clyde)) {
+			drawGhost(g, ghost);
+		}
 	}
 
 	private void drawMaze(Graphics2D g) {
