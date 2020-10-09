@@ -14,7 +14,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -121,16 +120,16 @@ public class PacManGame {
 			public void keyPressed(KeyEvent e) {
 				int key = e.getKeyCode();
 				if (KeyEvent.VK_LEFT == key) {
-					pacMan.direction = V2.LEFT;
+					pacMan.intendedDirection = V2.LEFT;
 				}
 				if (KeyEvent.VK_RIGHT == key) {
-					pacMan.direction = V2.RIGHT;
+					pacMan.intendedDirection = V2.RIGHT;
 				}
 				if (KeyEvent.VK_UP == key) {
-					pacMan.direction = V2.UP;
+					pacMan.intendedDirection = V2.UP;
 				}
 				if (KeyEvent.VK_DOWN == key) {
-					pacMan.direction = V2.DOWN;
+					pacMan.intendedDirection = V2.DOWN;
 				}
 			}
 		});
@@ -175,64 +174,10 @@ public class PacManGame {
 		System.err.println(String.format(msg, args));
 	}
 
-	private void update() {
-		moveCreature(pacMan);
-		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> moveCreature(ghost));
-	}
-
-	private void moveCreature(Creature guy) {
-		if (guy.speed == 0) {
-			return;
-		}
-		V2 velocity = guy.direction.scaled(guy.speed);
-		V2 positionAfterMove = position(guy).sum(velocity);
-		V2 tileAfterMove = tile(positionAfterMove);
-		V2 offsetAfterMove = offset(positionAfterMove, tileAfterMove);
-
-		if (!isAccessibleTile(tileAfterMove)) {
-			return;
-		}
-
-		log("Attempting to move %s to position %s tile %s offset %s", guy, positionAfterMove, tileAfterMove,
-				offsetAfterMove);
-
-		if (tileAfterMove.equals(guy.tile)) {
-			if (guy.direction.equals(V2.RIGHT)) {
-				V2 tile_right = new V2(guy.tile.x + 1, guy.tile.y);
-				if (offsetAfterMove.x > 0 && !isAccessibleTile(tile_right)) {
-					guy.offset.x = 0;
-					return;
-				}
-			}
-			if (guy.direction.equals(V2.LEFT)) {
-				V2 tile_left = new V2(guy.tile.x - 1, guy.tile.y);
-				if (offsetAfterMove.x < 0 && !isAccessibleTile(tile_left)) {
-					guy.offset.x = 0;
-					return;
-				}
-			}
-			if (guy.direction.equals(V2.DOWN)) {
-				V2 tile_down = new V2(guy.tile.x, guy.tile.y + 1);
-				if (offsetAfterMove.y > 0 && !isAccessibleTile(tile_down)) {
-					guy.offset.y = 0;
-					return;
-				}
-			}
-			if (guy.direction.equals(V2.UP)) {
-				V2 tile_up = new V2(guy.tile.x, guy.tile.y - 1);
-				if (offsetAfterMove.y < 0 && !isAccessibleTile(tile_up)) {
-					guy.offset.y = 0;
-					return;
-				}
-			}
-		}
-		guy.tile = tileAfterMove;
-		guy.offset = offsetAfterMove;
-	}
-
 	private void initEntities() {
 		pacMan.size = new V2(TILE_SIZE, TILE_SIZE);
 		pacMan.direction = V2.RIGHT;
+		pacMan.intendedDirection = V2.RIGHT;
 		pacMan.speed = 1.25f;
 		placeAtTile(pacMan, 13, 26);
 
@@ -242,6 +187,84 @@ public class PacManGame {
 			ghost.speed = 0;
 			placeAtTile(ghost, 13, 15);
 		}
+	}
+
+	private void update() {
+		moveCreature(pacMan);
+//		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> moveCreature(ghost));
+	}
+
+	private void moveCreature(Creature guy) {
+		if (guy.speed == 0) {
+			return;
+		}
+		if (tryMovingCreature(guy, guy.intendedDirection)) {
+			guy.direction = guy.intendedDirection;
+		} else {
+			tryMovingCreature(guy, guy.direction);
+		}
+	}
+
+	private boolean tryMovingCreature(Creature guy, V2 direction) {
+
+		if ((direction.equals(V2.LEFT) || direction.equals(V2.RIGHT))) {
+			if (Math.abs(guy.offset.y) > 1) {
+				return false;
+			}
+			guy.offset.y = 0;
+		}
+		if ((direction.equals(V2.UP) || direction.equals(V2.DOWN))) {
+			if (Math.abs(guy.offset.x) > 1f) {
+				return false;
+			}
+			guy.offset.x = 0;
+		}
+
+		V2 velocity = direction.scaled(guy.speed);
+		V2 positionAfterMove = position(guy).sum(velocity);
+		V2 tileAfterMove = tile(positionAfterMove);
+		V2 offsetAfterMove = offset(positionAfterMove, tileAfterMove);
+
+		if (!isAccessibleTile(tileAfterMove)) {
+			return false;
+		}
+
+//		log("Attempting to move %s to position %s tile %s offset %s", guy, positionAfterMove, tileAfterMove,
+//				offsetAfterMove);
+
+		if (tileAfterMove.equals(guy.tile)) {
+			if (direction.equals(V2.RIGHT)) {
+				V2 tile_right = new V2(guy.tile.x + 1, guy.tile.y);
+				if (offsetAfterMove.x > 0 && !isAccessibleTile(tile_right)) {
+					guy.offset.x = 0;
+					return false;
+				}
+			}
+			if (direction.equals(V2.LEFT)) {
+				V2 tile_left = new V2(guy.tile.x - 1, guy.tile.y);
+				if (offsetAfterMove.x < 0 && !isAccessibleTile(tile_left)) {
+					guy.offset.x = 0;
+					return false;
+				}
+			}
+			if (direction.equals(V2.DOWN)) {
+				V2 tile_down = new V2(guy.tile.x, guy.tile.y + 1);
+				if (offsetAfterMove.y > 0 && !isAccessibleTile(tile_down)) {
+					guy.offset.y = 0;
+					return false;
+				}
+			}
+			if (direction.equals(V2.UP)) {
+				V2 tile_up = new V2(guy.tile.x, guy.tile.y - 1);
+				if (offsetAfterMove.y < 0 && !isAccessibleTile(tile_up)) {
+					guy.offset.y = 0;
+					return false;
+				}
+			}
+		}
+		guy.tile = tileAfterMove;
+		guy.offset = offsetAfterMove;
+		return true;
 	}
 
 	private void placeAtTile(Creature guy, float tile_x, float tile_y) {

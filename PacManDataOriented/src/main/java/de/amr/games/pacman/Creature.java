@@ -16,5 +16,6 @@ public class Creature {
 	public V2 tile;
 	public V2 offset;
 	public V2 direction;
+	public V2 intendedDirection;
 	float speed;
 }
