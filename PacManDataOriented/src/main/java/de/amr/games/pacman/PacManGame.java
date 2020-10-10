@@ -273,14 +273,14 @@ public class PacManGame {
 		positionAfterMove.add(direction.scaled(guy.speed));
 		V2 tileAfterMove = tile(positionAfterMove);
 
-		if (!isAccessibleTile(tileAfterMove)) {
+		if (!canAccessTile(guy, tileAfterMove)) {
 			return false;
 		}
 
 		V2 offsetAfterMove = offset(positionAfterMove, tileAfterMove);
 		if (tileAfterMove.equals(guy.tile)) {
 			V2 neighbor = guy.tile.sum(direction);
-			if (!isAccessibleTile(neighbor)) {
+			if (!canAccessTile(guy, neighbor)) {
 				if (direction.equals(V2.RIGHT) && offsetAfterMove.x > 0 || direction.equals(V2.LEFT) && offsetAfterMove.x < 0) {
 					guy.offset.x = 0;
 					return false;
@@ -317,14 +317,21 @@ public class PacManGame {
 		return vec(guy.tile.x * TILE_SIZE + guy.offset.x, guy.tile.y * TILE_SIZE + guy.offset.y);
 	}
 
-	private boolean isAccessibleTile(V2 tile) {
+	private boolean canAccessTile(Creature guy, V2 tile) {
 		if (tile.x < 0 || tile.x >= WORLD_WIDTH_TILES) {
 			return false;
 		}
 		if (tile.y < 0 || tile.y >= WORLD_HEIGHT_TILES) {
 			return false;
 		}
+		if (guy == pacMan && isGhostHouseDoor(tile)) {
+			return false;
+		}
 		return MAP[(int) tile.y].charAt((int) tile.x) != '1';
+	}
+
+	private boolean isGhostHouseDoor(V2 tile) {
+		return tile.y == 15 && (tile.x == 13 || tile.x == 14);
 	}
 
 	private void drawPacMan(Graphics2D g) {
@@ -343,8 +350,8 @@ public class PacManGame {
 	}
 
 	private void drawGhosts(Graphics2D g) {
-		for (Creature ghost : List.of(blinky, inky, pinky, clyde)) {
-			drawGhost(g, ghost);
+		for (int i = 1; i < creatures.length; ++i) {
+			drawGhost(g, creatures[i]);
 		}
 	}
 
