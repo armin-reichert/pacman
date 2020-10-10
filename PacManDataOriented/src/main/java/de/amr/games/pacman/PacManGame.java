@@ -159,13 +159,6 @@ public class PacManGame {
 		updatePinky();
 		updateInky();
 		updateClyde();
-		for (int i = 1; i < creatures.length; ++i) {
-			Creature ghost = creatures[i];
-			if (ghost.tileChanged) {
-				updateGhostDirection(ghost);
-				log("%s's intended direction is %s", ghost.name, ghost.intendedDir);
-			}
-		}
 		for (Creature guy : creatures) {
 			moveCreature(guy);
 		}
@@ -173,6 +166,7 @@ public class PacManGame {
 
 	private void updateBlinky() {
 		blinky.targetTile = pacMan.tile;
+		updateGhostDirection(blinky);
 	}
 
 	private void updatePinky() {
@@ -180,10 +174,12 @@ public class PacManGame {
 		if (pacMan.dir.equals(V2.UP)) {
 			pinky.targetTile.add(V2.LEFT.scaled(4));
 		}
+		updateGhostDirection(pinky);
 	}
 
 	private void updateInky() {
 		inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
+		updateGhostDirection(inky);
 	}
 
 	private void updateClyde() {
@@ -193,6 +189,30 @@ public class PacManGame {
 			clyde.targetTile = pacMan.tile;
 		} else {
 			clyde.targetTile = clyde.scatterTile;
+		}
+		updateGhostDirection(clyde);
+	}
+
+	public void updateGhostDirection(Creature ghost) {
+		if (!ghost.tileChanged) {
+			return;
+		}
+		V2 newDir = null;
+		double min = Double.MAX_VALUE;
+		for (V2 dir : List.of(V2.RIGHT, V2.DOWN, V2.LEFT, V2.UP)) {
+			V2 neighbor = ghost.tile.sum(dir);
+			if (!canAccessTile(ghost, neighbor)) {
+				continue;
+			}
+			double d = V2.distance(neighbor, ghost.targetTile);
+			if (d <= min && !dir.equals(ghost.dir.scaled(-1))) {
+				newDir = dir;
+				min = d;
+			}
+		}
+		if (newDir != null) {
+			ghost.intendedDir = newDir;
+			log("%s's intended direction is %s", ghost.name, ghost.intendedDir);
 		}
 	}
 
@@ -291,20 +311,5 @@ public class PacManGame {
 
 	public boolean isInsideGhostHouse(V2 tile) {
 		return tile.x >= 10 && tile.x <= 17 && tile.y >= 15 && tile.y <= 22;
-	}
-
-	public void updateGhostDirection(Creature ghost) {
-		double min = Double.MAX_VALUE;
-		for (V2 dir : List.of(V2.RIGHT, V2.DOWN, V2.LEFT, V2.UP)) {
-			V2 neighbor = ghost.tile.sum(dir);
-			if (!canAccessTile(ghost, neighbor)) {
-				continue;
-			}
-			double d = V2.distance(neighbor, ghost.targetTile);
-			if (d <= min && !dir.equals(ghost.dir.scaled(-1))) {
-				ghost.intendedDir = dir;
-				min = d;
-			}
-		}
 	}
 }
