@@ -145,7 +145,7 @@ public class PacManGame {
 			time = System.nanoTime() - time;
 			++frames;
 			if (System.nanoTime() - start >= 1_000_000_000) {
-				log("Time: %s FPS: %d", LocalTime.now(), frames);
+				log("Time: %-18s %3d frames/sec", LocalTime.now(), frames);
 				frames = 0;
 				start = System.nanoTime();
 			}
