@@ -28,4 +28,5 @@ public class Creature {
 	public V2 homeTile;
 	public V2 targetTile;
 	public V2 scatterTile;
+	public boolean tileChanged;
 }

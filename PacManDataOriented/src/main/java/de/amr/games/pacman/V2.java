@@ -10,6 +10,10 @@ public class V2 {
 	public static final V2 UP = new V2(0, -1);
 	public static final V2 DOWN = new V2(0, 1);
 
+	public static double distance(V2 v1, V2 v2) {
+		return Math.hypot(v1.x - v2.x, v1.y - v2.y);
+	}
+
 	public float x;
 	public float y;
 
@@ -27,8 +31,13 @@ public class V2 {
 		if (getClass() != obj.getClass())
 			return false;
 		V2 other = (V2) obj;
-		return Float.floatToIntBits(x) == Float.floatToIntBits(other.x)
-				&& Float.floatToIntBits(y) == Float.floatToIntBits(other.y);
+		return almostEquals(x, other.x) && almostEquals(y, other.y);
+	}
+
+	private static float EPS = 0.000001f;
+
+	private boolean almostEquals(float x, float y) {
+		return x >= y - EPS && x <= y + EPS;
 	}
 
 	@Override
