@@ -228,39 +228,21 @@ public class PacManGame {
 	}
 
 	private void update() {
-		updatePacMan();
-		for (int i = 1; i < creatures.length; ++i) {
-			updateGhost(creatures[i]);
+		blinky.targetTile = pacMan.tile;
+		pinky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(4));
+		if (pacMan.dir.equals(V2.UP)) {
+			pinky.targetTile.add(V2.LEFT.scaled(4));
 		}
-	}
-
-	private void updatePacMan() {
-		moveCreature(pacMan);
-	}
-
-	private void updateGhost(Creature ghost) {
-		updateGhostTarget(ghost);
-		moveCreature(ghost);
-	}
-
-	private void updateGhostTarget(Creature ghost) {
-		if (ghost == blinky) {
-			ghost.targetTile = pacMan.tile;
-		} else if (ghost == pinky) {
-			ghost.targetTile = pacMan.tile.sum(pacMan.dir.scaled(4));
-			if (pacMan.dir.equals(V2.UP)) {
-				ghost.targetTile.add(V2.LEFT.scaled(4));
-			}
-		} else if (ghost == inky) {
-			ghost.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
-		} else if (ghost == clyde) {
-			float dx = ghost.tile.x - pacMan.tile.x;
-			float dy = ghost.tile.y - pacMan.tile.y;
-			if (dx * dx + dy * dy > 64) {
-				ghost.targetTile = pacMan.tile;
-			} else {
-				ghost.targetTile = ghost.scatterTile;
-			}
+		inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
+		float dx = clyde.tile.x - pacMan.tile.x;
+		float dy = clyde.tile.y - pacMan.tile.y;
+		if (dx * dx + dy * dy > 64) {
+			clyde.targetTile = pacMan.tile;
+		} else {
+			clyde.targetTile = clyde.scatterTile;
+		}
+		for (Creature guy : creatures) {
+			moveCreature(guy);
 		}
 	}
 
