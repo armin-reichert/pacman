@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -209,7 +210,7 @@ public class PacManGame {
 
 	private void update() {
 		moveCreature(pacMan);
-//		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> moveCreature(ghost));
+		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> moveCreature(ghost));
 	}
 
 	private void moveCreature(Creature guy) {
@@ -225,31 +226,28 @@ public class PacManGame {
 
 	private boolean moveCreature(Creature guy, V2 direction) {
 
-		if ((direction.equals(V2.LEFT) || direction.equals(V2.RIGHT))) {
+		if (direction.equals(V2.LEFT) || direction.equals(V2.RIGHT)) {
 			if (Math.abs(guy.offset.y) > 1) {
 				return false;
 			}
 			guy.offset.y = 0;
 		}
-		if ((direction.equals(V2.UP) || direction.equals(V2.DOWN))) {
+		if (direction.equals(V2.UP) || direction.equals(V2.DOWN)) {
 			if (Math.abs(guy.offset.x) > 1f) {
 				return false;
 			}
 			guy.offset.x = 0;
 		}
 
-		V2 velocity = direction.scaled(guy.speed);
-		V2 positionAfterMove = position(guy).sum(velocity);
+		V2 positionAfterMove = position(guy);
+		positionAfterMove.add(direction.scaled(guy.speed));
 		V2 tileAfterMove = tile(positionAfterMove);
-		V2 offsetAfterMove = offset(positionAfterMove, tileAfterMove);
 
 		if (!isAccessibleTile(tileAfterMove)) {
 			return false;
 		}
 
-//		log("Attempting to move %s to position %s tile %s offset %s", guy, positionAfterMove, tileAfterMove,
-//				offsetAfterMove);
-
+		V2 offsetAfterMove = offset(positionAfterMove, tileAfterMove);
 		if (tileAfterMove.equals(guy.tile)) {
 			V2 neighbor = guy.tile.sum(direction);
 			if (!isAccessibleTile(neighbor)) {
@@ -314,7 +312,7 @@ public class PacManGame {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		g.drawImage(imageMaze, 0, 24, null);
+		g.drawImage(imageMaze, 0, 3 * TILE_SIZE, null);
 		g.setColor(new Color(200, 200, 200, 100));
 		g.setStroke(new BasicStroke(0.1f));
 		for (int row = 1; row < WORLD_HEIGHT_TILES; ++row) {
