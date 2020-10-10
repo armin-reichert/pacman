@@ -8,6 +8,7 @@ import static de.amr.games.pacman.PacManGame.WORLD_WIDTH;
 import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
@@ -78,7 +79,7 @@ public class PacManGameUI {
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
-				drawMaze(g);
+				drawMaze(g, game);
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				drawPacMan(g, game, game.pacMan);
 				drawGhosts(g, game);
@@ -98,7 +99,7 @@ public class PacManGameUI {
 		V2 position = game.position(ghost);
 		g.setColor(ghost.color);
 		g.fillRect((int) position.x, (int) position.y, (int) ghost.size.x, (int) ghost.size.y);
-		g.fillRect((int) ghost.scatterTile.x * TILE_SIZE, (int) ghost.scatterTile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+		g.drawRect((int) ghost.scatterTile.x * TILE_SIZE, (int) ghost.scatterTile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 		g.fillRect((int) ghost.targetTile.x * TILE_SIZE + TILE_SIZE / 4,
 				(int) ghost.targetTile.y * TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2, TILE_SIZE / 2);
 	}
@@ -109,7 +110,8 @@ public class PacManGameUI {
 		}
 	}
 
-	private void drawMaze(Graphics2D g) {
+	private void drawMaze(Graphics2D g, PacManGame game) {
+		g = (Graphics2D) g.create();
 		g.drawImage(imageMaze, 0, 3 * TILE_SIZE, null);
 		g.setColor(new Color(200, 200, 200, 100));
 		g.setStroke(new BasicStroke(0.1f));
@@ -119,5 +121,14 @@ public class PacManGameUI {
 		for (int col = 1; col < PacManGame.WORLD_WIDTH_TILES; ++col) {
 			g.drawLine(col * TILE_SIZE, 0, col * TILE_SIZE, WORLD_HEIGHT);
 		}
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 8));
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.drawString(String.format("%d frames/sec", game.fps), 20, 20);
+		g.dispose();
+	}
+
+	public void showFPS(long frames) {
+
 	}
 }

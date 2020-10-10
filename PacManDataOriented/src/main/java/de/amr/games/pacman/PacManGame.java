@@ -70,6 +70,7 @@ public class PacManGame {
 	public Creature[] creatures = new Creature[5];
 	public Creature pacMan, blinky, inky, pinky, clyde;
 	public PacManGameUI ui;
+	public long fps;
 
 	public void start() {
 		createEntities();
@@ -88,7 +89,8 @@ public class PacManGame {
 			time = System.nanoTime() - time;
 			++frames;
 			if (System.nanoTime() - start >= 1_000_000_000) {
-				log("Time: %-18s %3d frames/sec", LocalTime.now(), frames);
+				log("Time: %-18s %3d frames/sec", LocalTime.now(), fps);
+				fps = frames;
 				frames = 0;
 				start = System.nanoTime();
 			}
@@ -113,17 +115,20 @@ public class PacManGame {
 
 		inky = new Creature("Inky");
 		inky.color = Color.CYAN;
-		inky.homeTile = vec(11, 17);
+//		inky.homeTile = vec(11, 17);
+		inky.homeTile = vec(13, 14);
 		inky.scatterTile = vec(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
 
 		pinky = new Creature("Pinky");
 		pinky.color = Color.PINK;
-		pinky.homeTile = vec(13, 17);
+//		pinky.homeTile = vec(13, 17);
+		pinky.homeTile = vec(13, 14);
 		pinky.scatterTile = vec(2, 0);
 
 		clyde = new Creature("Clyde");
 		clyde.color = Color.ORANGE;
-		clyde.homeTile = vec(15, 17);
+//		clyde.homeTile = vec(15, 17);
+		clyde.homeTile = vec(13, 14);
 		clyde.scatterTile = vec(0, WORLD_HEIGHT_TILES - 1);
 
 		creatures[0] = pacMan;
@@ -144,33 +149,50 @@ public class PacManGame {
 		clyde.dir = clyde.intendedDir = V2.UP;
 		for (int i = 1; i < creatures.length; ++i) {
 			placeAtHomeTile(creatures[i]);
-			creatures[i].speed = 1;
-			creatures[i].tileChanged = false;
+			creatures[i].speed = 0.9f;
+			creatures[i].tileChanged = true;
 		}
 	}
 
 	public void update() {
+		updateBlinky();
+		updatePinky();
+		updateInky();
+		updateClyde();
+		for (int i = 1; i < creatures.length; ++i) {
+			Creature ghost = creatures[i];
+			if (ghost.tileChanged) {
+				updateGhostDirection(ghost);
+				log("%s's intended direction is %s", ghost.name, ghost.intendedDir);
+			}
+		}
+		for (Creature guy : creatures) {
+			moveCreature(guy);
+		}
+	}
+
+	private void updateBlinky() {
 		blinky.targetTile = pacMan.tile;
+	}
+
+	private void updatePinky() {
 		pinky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(4));
 		if (pacMan.dir.equals(V2.UP)) {
 			pinky.targetTile.add(V2.LEFT.scaled(4));
 		}
+	}
+
+	private void updateInky() {
 		inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
+	}
+
+	private void updateClyde() {
 		float dx = clyde.tile.x - pacMan.tile.x;
 		float dy = clyde.tile.y - pacMan.tile.y;
 		if (dx * dx + dy * dy > 64) {
 			clyde.targetTile = pacMan.tile;
 		} else {
 			clyde.targetTile = clyde.scatterTile;
-		}
-		for (int i = 1; i <= 1; ++i) { // TODO
-			if (creatures[i].tileChanged) {
-				updateGhostDirection(creatures[i]);
-				log("%s's intended direction is %s", creatures[i].name, creatures[i].intendedDir);
-			}
-		}
-		for (Creature guy : creatures) {
-			moveCreature(guy);
 		}
 	}
 
