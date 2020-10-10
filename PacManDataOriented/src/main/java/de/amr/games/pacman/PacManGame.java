@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -76,7 +75,8 @@ public class PacManGame {
 		//@formatter:on
 	};
 
-	private Creature pacMan, blinky, pinky, inky, clyde;
+	private Creature[] creatures = new Creature[5];
+	private Creature pacMan, blinky, inky, pinky, clyde;
 	private Canvas canvas;
 	private BufferedImage imageMaze;
 	private float scaling;
@@ -89,33 +89,36 @@ public class PacManGame {
 		JFrame window = new JFrame("PacMan");
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		canvas = new Canvas();
+		canvas.setSize((int) (WORLD_WIDTH * scaling), (int) (WORLD_HEIGHT * scaling));
+
 		window.addKeyListener(new KeyAdapter() {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
 				int key = e.getKeyCode();
 				if (KeyEvent.VK_LEFT == key) {
-					pacMan.intendedDirection = V2.LEFT;
+					pacMan.intendedDir = V2.LEFT;
 				}
 				if (KeyEvent.VK_RIGHT == key) {
-					pacMan.intendedDirection = V2.RIGHT;
+					pacMan.intendedDir = V2.RIGHT;
 				}
 				if (KeyEvent.VK_UP == key) {
-					pacMan.intendedDirection = V2.UP;
+					pacMan.intendedDir = V2.UP;
 				}
 				if (KeyEvent.VK_DOWN == key) {
-					pacMan.intendedDirection = V2.DOWN;
+					pacMan.intendedDir = V2.DOWN;
 				}
 			}
 		});
-		canvas = new Canvas();
-		canvas.setSize((int) (WORLD_WIDTH * scaling), (int) (WORLD_HEIGHT * scaling));
+
 		window.add(canvas);
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
-		window.setAutoRequestFocus(true);
 		window.requestFocus();
+
 		canvas.createBufferStrategy(2);
 	}
 
@@ -188,45 +191,87 @@ public class PacManGame {
 		blinky = new Creature("Blinky");
 		blinky.color = Color.RED;
 		blinky.homeTile = vec(13, 14);
+		blinky.scatterTile = vec(WORLD_WIDTH_TILES - 3, 0);
 
 		inky = new Creature("Inky");
 		inky.color = Color.CYAN;
 		inky.homeTile = vec(11, 17);
+		inky.scatterTile = vec(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
 
 		pinky = new Creature("Pinky");
 		pinky.color = Color.PINK;
 		pinky.homeTile = vec(13, 17);
+		pinky.scatterTile = vec(2, 0);
 
 		clyde = new Creature("Clyde");
 		clyde.color = Color.ORANGE;
 		clyde.homeTile = vec(15, 17);
+		clyde.scatterTile = vec(0, WORLD_HEIGHT_TILES - 1);
+
+		creatures[0] = pacMan;
+		creatures[1] = blinky;
+		creatures[2] = inky;
+		creatures[3] = pinky;
+		creatures[4] = clyde;
 	}
 
 	private void initEntities() {
 		placeAtHomeTile(pacMan);
-		pacMan.direction = pacMan.intendedDirection = V2.RIGHT;
+		pacMan.dir = pacMan.intendedDir = V2.RIGHT;
 		pacMan.speed = 1.25f;
 
 		for (Creature ghost : List.of(blinky, inky, pinky, clyde)) {
 			placeAtHomeTile(ghost);
-			ghost.direction = ghost.intendedDirection = V2.RIGHT;
+			ghost.dir = ghost.intendedDir = V2.RIGHT;
 			ghost.speed = 0;
 		}
 	}
 
 	private void update() {
+		updatePacMan();
+		for (int i = 1; i < creatures.length; ++i) {
+			updateGhost(creatures[i]);
+		}
+	}
+
+	private void updatePacMan() {
 		moveCreature(pacMan);
-		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> moveCreature(ghost));
+	}
+
+	private void updateGhost(Creature ghost) {
+		updateGhostTarget(ghost);
+		moveCreature(ghost);
+	}
+
+	private void updateGhostTarget(Creature ghost) {
+		if (ghost == blinky) {
+			ghost.targetTile = pacMan.tile;
+		} else if (ghost == pinky) {
+			ghost.targetTile = pacMan.tile.sum(pacMan.dir.scaled(4));
+			if (pacMan.dir.equals(V2.UP)) {
+				ghost.targetTile.add(V2.LEFT.scaled(4));
+			}
+		} else if (ghost == inky) {
+			ghost.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
+		} else if (ghost == clyde) {
+			float dx = ghost.tile.x - pacMan.tile.x;
+			float dy = ghost.tile.y - pacMan.tile.y;
+			if (dx * dx + dy * dy > 64) {
+				ghost.targetTile = pacMan.tile;
+			} else {
+				ghost.targetTile = ghost.scatterTile;
+			}
+		}
 	}
 
 	private void moveCreature(Creature guy) {
 		if (guy.speed == 0) {
 			return;
 		}
-		if (moveCreature(guy, guy.intendedDirection)) {
-			guy.direction = guy.intendedDirection;
+		if (moveCreature(guy, guy.intendedDir)) {
+			guy.dir = guy.intendedDir;
 		} else {
-			moveCreature(guy, guy.direction);
+			moveCreature(guy, guy.dir);
 		}
 	}
 
@@ -313,6 +358,9 @@ public class PacManGame {
 		V2 position = position(ghost);
 		g.setColor(ghost.color);
 		g.fillRect((int) position.x, (int) position.y, (int) ghost.size.x, (int) ghost.size.y);
+		g.fillRect((int) ghost.scatterTile.x * TILE_SIZE, (int) ghost.scatterTile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+		g.fillRect((int) ghost.targetTile.x * TILE_SIZE + TILE_SIZE / 4,
+				(int) ghost.targetTile.y * TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2, TILE_SIZE / 2);
 	}
 
 	private void drawGhosts(Graphics2D g) {

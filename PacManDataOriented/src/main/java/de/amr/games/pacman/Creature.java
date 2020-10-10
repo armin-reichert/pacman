@@ -18,12 +18,14 @@ public class Creature {
 	}
 
 	public String name;
+	public Color color;
+	public float speed;
 	public V2 size;
 	public V2 tile;
 	public V2 offset;
-	public V2 direction;
-	public V2 intendedDirection;
+	public V2 dir;
+	public V2 intendedDir;
 	public V2 homeTile;
-	float speed;
-	Color color;
+	public V2 targetTile;
+	public V2 scatterTile;
 }
