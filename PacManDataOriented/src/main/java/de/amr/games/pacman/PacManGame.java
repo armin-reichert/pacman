@@ -79,31 +79,10 @@ public class PacManGame {
 	private Creature pacMan, blinky, pinky, inky, clyde;
 	private Canvas canvas;
 	private BufferedImage imageMaze;
-	private float scaling = 2;
+	private float scaling;
 
 	public PacManGame() {
-	}
-
-	private void render() {
-		BufferStrategy strategy = canvas.getBufferStrategy();
-		if (strategy == null) {
-			canvas.createBufferStrategy(2);
-			return;
-		}
-		do {
-			do {
-				Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
-				g.setColor(Color.BLACK);
-				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-				g.scale(scaling, scaling);
-				drawMaze(g);
-				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				drawPacMan(g);
-				drawGhosts(g);
-				g.dispose();
-			} while (strategy.contentsRestored());
-			strategy.show();
-		} while (strategy.contentsLost());
+		scaling = 2;
 	}
 
 	private void createUI() {
@@ -135,6 +114,9 @@ public class PacManGame {
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
+		window.setAutoRequestFocus(true);
+		window.requestFocus();
+		canvas.createBufferStrategy(2);
 	}
 
 	private void loadResources() {
@@ -174,6 +156,24 @@ public class PacManGame {
 				x.printStackTrace();
 			}
 		}
+	}
+
+	private void render() {
+		BufferStrategy strategy = canvas.getBufferStrategy();
+		do {
+			do {
+				Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
+				g.setColor(Color.BLACK);
+				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+				g.scale(scaling, scaling);
+				drawMaze(g);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				drawPacMan(g);
+				drawGhosts(g);
+				g.dispose();
+			} while (strategy.contentsRestored());
+			strategy.show();
+		} while (strategy.contentsLost());
 	}
 
 	private void log(String msg, Object... args) {
