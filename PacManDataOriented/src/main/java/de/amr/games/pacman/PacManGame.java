@@ -24,23 +24,18 @@ public class PacManGame {
 		EventQueue.invokeLater(new PacManGame()::start);
 	}
 
-	private static V2 vec(float x, float y) {
+	static V2 vec(float x, float y) {
 		return new V2(x, y);
 	}
 
-	private static final int FPS = 60;
-	private static final int TILE_SIZE = 8;
-	private static final int WORLD_WIDTH_TILES = 28;
-	private static final int WORLD_HEIGHT_TILES = 36;
-	private static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TILE_SIZE;
-	private static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TILE_SIZE;
+	static final int FPS = 60;
+	static final int TILE_SIZE = 8;
+	static final int WORLD_WIDTH_TILES = 28;
+	static final int WORLD_HEIGHT_TILES = 36;
+	static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TILE_SIZE;
+	static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TILE_SIZE;
 
-	private static final V2 BLINKY_TILE = vec(13, 14);
-	private static final V2 INKY_TILE = vec(11, 17);
-	private static final V2 PINKY_TILE = vec(13, 17);
-	private static final V2 CLYDE_TILE = vec(15, 17);
-
-	private static final String[] MAP = {
+	static final String[] MAP = {
 		//@formatter:off
 		"1111111111111111111111111111",
 		"1111111111111111111111111111",
@@ -87,11 +82,6 @@ public class PacManGame {
 	private float scaling = 2;
 
 	public PacManGame() {
-		pacMan = new Creature("Pac-Man");
-		blinky = new Creature("Blinky");
-		pinky = new Creature("Pinky");
-		inky = new Creature("Inky");
-		clyde = new Creature("Clyde");
 	}
 
 	private void render() {
@@ -153,6 +143,7 @@ public class PacManGame {
 	}
 
 	private void start() {
+		createEntities();
 		initEntities();
 		createUI();
 		new Thread(this::gameLoop, "GameLoop").start();
@@ -185,27 +176,38 @@ public class PacManGame {
 		System.err.println(String.format(msg, args));
 	}
 
-	private void initEntities() {
-		pacMan.size = vec(TILE_SIZE, TILE_SIZE);
-		pacMan.direction = V2.RIGHT;
-		pacMan.intendedDirection = V2.RIGHT;
-		pacMan.speed = 1.25f;
+	private void createEntities() {
+		pacMan = new Creature("Pac-Man");
 		pacMan.color = Color.YELLOW;
-		placeAtTile(pacMan, vec(13, 26), vec(0.5f, 0));
+		pacMan.homeTile = vec(13, 26);
+
+		blinky = new Creature("Blinky");
+		blinky.color = Color.RED;
+		blinky.homeTile = vec(13, 14);
+
+		inky = new Creature("Inky");
+		inky.color = Color.CYAN;
+		inky.homeTile = vec(11, 17);
+
+		pinky = new Creature("Pinky");
+		pinky.color = Color.PINK;
+		pinky.homeTile = vec(13, 17);
+
+		clyde = new Creature("Clyde");
+		clyde.color = Color.ORANGE;
+		clyde.homeTile = vec(15, 17);
+	}
+
+	private void initEntities() {
+		placeAtHomeTile(pacMan);
+		pacMan.direction = pacMan.intendedDirection = V2.RIGHT;
+		pacMan.speed = 1.25f;
 
 		for (Creature ghost : List.of(blinky, inky, pinky, clyde)) {
-			ghost.size = vec(TILE_SIZE, TILE_SIZE);
-			ghost.direction = V2.RIGHT;
+			placeAtHomeTile(ghost);
+			ghost.direction = ghost.intendedDirection = V2.RIGHT;
 			ghost.speed = 0;
 		}
-		blinky.color = Color.RED;
-		inky.color = Color.CYAN;
-		pinky.color = Color.PINK;
-		clyde.color = Color.ORANGE;
-		placeAtTile(blinky, BLINKY_TILE, vec(TILE_SIZE / 2, 0));
-		placeAtTile(inky, INKY_TILE, vec(TILE_SIZE / 2, 0));
-		placeAtTile(pinky, PINKY_TILE, vec(TILE_SIZE / 2, 0));
-		placeAtTile(clyde, CLYDE_TILE, vec(TILE_SIZE / 2, 0));
 	}
 
 	private void update() {
@@ -269,6 +271,10 @@ public class PacManGame {
 	private void placeAtTile(Creature guy, V2 tile, V2 offset) {
 		guy.tile = tile;
 		guy.offset = offset;
+	}
+
+	private void placeAtHomeTile(Creature guy) {
+		placeAtTile(guy, guy.homeTile, vec(TILE_SIZE / 2, 0));
 	}
 
 	private V2 tile(V2 position) {

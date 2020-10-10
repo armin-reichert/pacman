@@ -1,11 +1,15 @@
 package de.amr.games.pacman;
 
+import static de.amr.games.pacman.PacManGame.TILE_SIZE;
+import static de.amr.games.pacman.PacManGame.vec;
+
 import java.awt.Color;
 
 public class Creature {
 
 	public Creature(String name) {
 		this.name = name;
+		size = vec(TILE_SIZE, TILE_SIZE);
 	}
 
 	@Override
@@ -19,6 +23,7 @@ public class Creature {
 	public V2 offset;
 	public V2 direction;
 	public V2 intendedDirection;
+	public V2 homeTile;
 	float speed;
 	Color color;
 }
