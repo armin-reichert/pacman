@@ -100,14 +100,11 @@ public class PacManGame {
 				int key = e.getKeyCode();
 				if (KeyEvent.VK_LEFT == key) {
 					pacMan.intendedDir = V2.LEFT;
-				}
-				if (KeyEvent.VK_RIGHT == key) {
+				} else if (KeyEvent.VK_RIGHT == key) {
 					pacMan.intendedDir = V2.RIGHT;
-				}
-				if (KeyEvent.VK_UP == key) {
+				} else if (KeyEvent.VK_UP == key) {
 					pacMan.intendedDir = V2.UP;
-				}
-				if (KeyEvent.VK_DOWN == key) {
+				} else if (KeyEvent.VK_DOWN == key) {
 					pacMan.intendedDir = V2.DOWN;
 				}
 			}
