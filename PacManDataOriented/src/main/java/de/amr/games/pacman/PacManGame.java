@@ -107,11 +107,6 @@ public class PacManGame {
 	}
 
 	private void createUI() {
-		try {
-			imageMaze = ImageIO.read(getClass().getResourceAsStream("/maze_full.png"));
-		} catch (IOException x) {
-			x.printStackTrace();
-		}
 		JFrame window = new JFrame("PacMan");
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -142,7 +137,16 @@ public class PacManGame {
 		window.setVisible(true);
 	}
 
+	private void loadResources() {
+		try {
+			imageMaze = ImageIO.read(getClass().getResourceAsStream("/maze_full.png"));
+		} catch (IOException x) {
+			x.printStackTrace();
+		}
+	}
+
 	private void start() {
+		loadResources();
 		createEntities();
 		initEntities();
 		createUI();
