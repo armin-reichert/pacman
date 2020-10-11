@@ -232,7 +232,7 @@ public class PacManGame {
 		if (isInsideTunnel(ghost.tile)) {
 			ghost.speed = 0.5f;
 		} else {
-			ghost.speed = 0.9f;
+			ghost.speed = 0.8f + (float) Math.random() * 0.3f;
 		}
 	}
 
