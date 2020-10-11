@@ -188,6 +188,8 @@ public class PacManGame {
 			pacMan.intendedDir = V2.DOWN;
 		} else if (pressedKeys.get(KeyEvent.VK_D)) {
 			ui.debugDraw = !ui.debugDraw;
+		} else if (pressedKeys.get(KeyEvent.VK_N)) {
+			initGame();
 		}
 		pressedKeys.clear();
 	}
@@ -199,11 +201,6 @@ public class PacManGame {
 		updatePinky();
 		updateInky();
 		updateClyde();
-		for (Creature ghost : ghosts) {
-			if (ghost.stuck) {
-				log("%s stuck", ghost);
-			}
-		}
 	}
 
 	private void updatePacMan() {
@@ -419,5 +416,14 @@ public class PacManGame {
 
 	public boolean hasUneatenFood(int x, int y) {
 		return isFoodTile(x, y) && !hasEatenFood(x, y);
+	}
+
+	public boolean isEnergizerTile(V2 tile) {
+		//@formatter:off
+		return tile.x == 1  && tile.y == 6
+		  	|| tile.x == 26 && tile.y == 6
+			  || tile.x == 1  && tile.y == 26
+			  || tile.x == 26 && tile.y == 26;
+		//@formatter:on
 	}
 }

@@ -6,6 +6,7 @@ import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT;
 import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.PacManGame.WORLD_WIDTH;
 import static de.amr.games.pacman.PacManGame.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.PacManGame.vec;
 
 import java.awt.BasicStroke;
 import java.awt.Canvas;
@@ -98,6 +99,11 @@ public class PacManGameUI {
 				if (game.hasEatenFood(x, y)) {
 					g.setColor(Color.BLACK);
 					g.fillRect(x * TS, y * TS, TS, TS);
+				} else if (game.isEnergizerTile(vec(x, y))) {
+					if (game.framesTotal % 20 < 10) {
+						g.setColor(Color.BLACK);
+						g.fillRect(x * TS, y * TS, TS, TS);
+					}
 				}
 			}
 		}
