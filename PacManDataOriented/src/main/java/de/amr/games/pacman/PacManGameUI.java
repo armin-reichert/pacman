@@ -5,6 +5,7 @@ import static de.amr.games.pacman.PacManGame.TS;
 import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT;
 import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.PacManGame.WORLD_WIDTH;
+import static de.amr.games.pacman.PacManGame.WORLD_WIDTH_TILES;
 
 import java.awt.BasicStroke;
 import java.awt.Canvas;
@@ -92,6 +93,15 @@ public class PacManGameUI {
 	private void drawMaze(Graphics2D g, PacManGame game) {
 		g = (Graphics2D) g.create();
 		g.drawImage(imageMaze, 0, 3 * TS, null);
+		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
+			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+				if (game.hasEatenFood(x, y)) {
+					g.setColor(Color.BLACK);
+					g.fillRect(x * TS, y * TS, TS, TS);
+				}
+			}
+		}
+
 		if (debugDraw) {
 			g.setColor(new Color(200, 200, 200, 100));
 			g.setStroke(new BasicStroke(0.1f));

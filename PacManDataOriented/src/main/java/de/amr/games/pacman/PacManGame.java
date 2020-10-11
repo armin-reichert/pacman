@@ -82,8 +82,11 @@ public class PacManGame {
 	public PacManGameUI ui;
 	public long fps;
 	public long framesTotal;
+	public BitSet food = new BitSet(244);
+	public BitSet eaten = new BitSet(244);
 
 	public void start() {
+		initGame();
 		createEntities();
 		initEntities();
 		ui = new PacManGameUI(this);
@@ -158,6 +161,22 @@ public class PacManGame {
 		}
 	}
 
+	public void initGame() {
+		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
+			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+				char c = MAP[y].charAt(x);
+				if (c == '2') {
+					food.set(index(x, y));
+				}
+			}
+		}
+		eaten.clear();
+	}
+
+	private int index(int x, int y) {
+		return y * WORLD_WIDTH_TILES + x;
+	}
+
 	private void readInput() {
 		if (pressedKeys.get(KeyEvent.VK_LEFT)) {
 			pacMan.intendedDir = V2.LEFT;
@@ -189,6 +208,10 @@ public class PacManGame {
 
 	private void updatePacMan() {
 		pacMan.stuck = !move(pacMan);
+		int x = (int) pacMan.tile.x, y = (int) pacMan.tile.y;
+		if (hasUneatenFood(x, y)) {
+			eaten.set(index(x, y));
+		}
 	}
 
 	private void updateBlinky() {
@@ -384,5 +407,17 @@ public class PacManGame {
 			  || tile.x == 12 && tile.y == 25
 			  || tile.x == 15 && tile.y == 25;
 		//@formatter:on
+	}
+
+	public boolean isFoodTile(int x, int y) {
+		return food.get(index(x, y));
+	}
+
+	public boolean hasEatenFood(int x, int y) {
+		return isFoodTile(x, y) && eaten.get(index(x, y));
+	}
+
+	public boolean hasUneatenFood(int x, int y) {
+		return isFoodTile(x, y) && !hasEatenFood(x, y);
 	}
 }
