@@ -74,6 +74,7 @@ public class PacManGame {
 	public Creature pacMan, blinky, inky, pinky, clyde;
 	public PacManGameUI ui;
 	public long fps;
+	public long framesTotal;
 
 	public void start() {
 		createEntities();
@@ -91,6 +92,7 @@ public class PacManGame {
 			ui.render(this);
 			time = System.nanoTime() - time;
 			++frames;
+			++framesTotal;
 			if (System.nanoTime() - start >= 1_000_000_000) {
 				log("Time: %-18s %3d frames/sec", LocalTime.now(), fps);
 				fps = frames;

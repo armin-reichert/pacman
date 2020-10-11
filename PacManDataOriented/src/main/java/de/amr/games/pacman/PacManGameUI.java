@@ -85,19 +85,27 @@ public class PacManGameUI {
 
 	private void drawPacMan(Graphics2D g, PacManGame game, Creature pacMan) {
 		int dirIndex = dirIndex(pacMan.dir);
-		BufferedImage img = spriteSheet.getSubimage(0, dirIndex * 16, 16, 16);
+		long interval = game.framesTotal % 30;
+		int frame = (int) interval / 10;
+		BufferedImage sprite;
+		if (frame < 2) {
+			sprite = spriteSheet.getSubimage(frame * 16, dirIndex * 16, 16, 16);
+		} else {
+			sprite = spriteSheet.getSubimage(2 * 16, 0, 16, 16);
+		}
 		V2 position = game.position(pacMan);
-		g.drawImage(img, (int) position.x - 4, (int) position.y - 4, null);
+		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
 //	g.fillRect((int) position.x, (int) position.y, (int) pacMan.size.x, (int) pacMan.size.y);
 	}
 
 	private void drawGhost(Graphics2D g, PacManGame game, int ghostIndex) {
 		Creature ghost = game.ghosts[ghostIndex];
 		int dirIndex = dirIndex(ghost.dir);
-		BufferedImage img = spriteSheet.getSubimage(2 * dirIndex * 16, (4 + ghostIndex) * 16, 16, 16);
+		int frame = game.framesTotal % 60 < 30 ? 0 : 1;
+		BufferedImage sprite = spriteSheet.getSubimage((2 * dirIndex + frame) * 16, (4 + ghostIndex) * 16, 16, 16);
 		V2 position = game.position(ghost);
 		g.setColor(ghost.color);
-		g.drawImage(img, (int) position.x - 4, (int) position.y - 4, null);
+		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
 		if (debugDraw) {
 //		g.fillRect((int) position.x, (int) position.y, (int) ghost.size.x, (int) ghost.size.y);
 			g.drawRect((int) ghost.scatterTile.x * TILE_SIZE, (int) ghost.scatterTile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
