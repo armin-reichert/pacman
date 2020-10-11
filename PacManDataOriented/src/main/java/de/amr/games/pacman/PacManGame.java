@@ -29,6 +29,10 @@ public class PacManGame {
 		return new V2(x, y);
 	}
 
+	public static int sec(float seconds) {
+		return (int) (seconds * FPS);
+	}
+
 	public static final int FPS = 60;
 	public static final int TS = 8;
 	public static final int HTS = TS / 2;
@@ -162,6 +166,7 @@ public class PacManGame {
 			ghost.speed = 0;
 			ghost.tileChanged = true;
 			ghost.stuck = false;
+			ghost.forceTurnBack = false;
 		}
 	}
 
@@ -217,7 +222,10 @@ public class PacManGame {
 			points += 10;
 			if (isEnergizerTile(pacMan.tile)) {
 				points += 40;
-				pacManPowerTime = 10 * FPS;
+				pacManPowerTime = sec(5);
+				for (Creature ghost : ghosts) {
+					ghost.forceTurnBack = true;
+				}
 			}
 		}
 		pacManPowerTime = Math.max(0, pacManPowerTime - 1);
@@ -275,6 +283,11 @@ public class PacManGame {
 			return;
 		}
 		if (isPortalTile(ghost.tile)) {
+			return;
+		}
+		if (ghost.forceTurnBack) {
+			ghost.intendedDir = ghost.intendedDir.inverse();
+			ghost.forceTurnBack = false;
 			return;
 		}
 		if (pacManPowerTime > 0 && isIntersectionTile(ghost.tile)) {

@@ -31,4 +31,5 @@ public class Creature {
 	public V2 scatterTile;
 	public boolean tileChanged;
 	public boolean stuck;
+	public boolean forceTurnBack;
 }
