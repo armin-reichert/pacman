@@ -274,12 +274,12 @@ public class PacManGame {
 	}
 
 	public boolean move(Creature guy, V2 dir) {
-		if (guy.tile.equals(vec(27, 17)) && dir.equals(V2.RIGHT)) {
-			placeAtTile(guy, vec(0, 17), V2.NULL);
+		if (guy.tile.equals(vec(28, 17)) && dir.equals(V2.RIGHT)) {
+			placeAtTile(guy, vec(-1, 17), V2.NULL);
 			return true;
 		}
-		if (guy.tile.equals(vec(0, 17)) && guy.offset.equals(V2.NULL) && dir.equals(V2.LEFT)) {
-			placeAtTile(guy, vec(27, 17), V2.NULL);
+		if (guy.tile.equals(vec(-1, 17)) && dir.equals(V2.LEFT)) {
+			placeAtTile(guy, vec(28, 17), V2.NULL);
 			return true;
 		}
 		if (!isInsideGhostHouse(guy.tile)) {
@@ -347,6 +347,9 @@ public class PacManGame {
 	}
 
 	public boolean canAccessTile(Creature guy, V2 tile) {
+		if (tile.y == 17 && (tile.x < 0 || tile.x >= WORLD_WIDTH_TILES)) {
+			return true;
+		}
 		if (tile.x < 0 || tile.x >= WORLD_WIDTH_TILES) {
 			return false;
 		}
