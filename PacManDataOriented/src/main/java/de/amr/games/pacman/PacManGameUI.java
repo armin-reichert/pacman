@@ -35,10 +35,6 @@ public class PacManGameUI {
 		JFrame window = new JFrame("PacMan");
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		canvas = new Canvas();
-		canvas.setSize((int) (PacManGame.WORLD_WIDTH * scaling), (int) (PacManGame.WORLD_HEIGHT * scaling));
-
 		window.addKeyListener(new KeyAdapter() {
 
 			@Override
@@ -46,6 +42,10 @@ public class PacManGameUI {
 				game.pressedKeys.set(e.getKeyCode());
 			}
 		});
+
+		canvas = new Canvas();
+		canvas.setSize((int) (PacManGame.WORLD_WIDTH * scaling), (int) (PacManGame.WORLD_HEIGHT * scaling));
+		canvas.setFocusable(false);
 
 		window.add(canvas);
 		window.pack();
