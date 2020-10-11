@@ -246,6 +246,9 @@ public class PacManGame {
 			if (dir.equals(ghost.dir.inverse())) {
 				continue;
 			}
+			if (dir.equals(V2.UP) && isUpwardsBlocked(ghost.tile.sum(V2.UP))) {
+				continue;
+			}
 			V2 neighbor = ghost.tile.sum(dir);
 			if (!canAccessTile(ghost, neighbor)) {
 				continue;
@@ -357,7 +360,7 @@ public class PacManGame {
 			return false;
 		}
 		if (isGhostHouseDoor(tile)) {
-			return false; // TODO
+			return false; // TODO ghost can access door when leaving or entering ghosthouse
 		}
 		return MAP[(int) tile.y].charAt((int) tile.x) != '1';
 	}
@@ -372,5 +375,14 @@ public class PacManGame {
 
 	public boolean isInsideTunnel(V2 tile) {
 		return tile.y == 17 && (tile.x <= 5 || tile.x >= 21);
+	}
+
+	public boolean isUpwardsBlocked(V2 tile) {
+		//@formatter:off
+		return tile.x == 12 && tile.y == 13
+		  	|| tile.x == 15 && tile.y == 13
+			  || tile.x == 12 && tile.y == 25
+			  || tile.x == 15 && tile.y == 25;
+		//@formatter:on
 	}
 }
