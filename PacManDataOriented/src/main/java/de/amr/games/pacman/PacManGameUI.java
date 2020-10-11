@@ -1,6 +1,7 @@
 package de.amr.games.pacman;
 
-import static de.amr.games.pacman.PacManGame.TILE_SIZE;
+import static de.amr.games.pacman.PacManGame.HTS;
+import static de.amr.games.pacman.PacManGame.TS;
 import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT;
 import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.PacManGame.WORLD_WIDTH;
@@ -90,15 +91,15 @@ public class PacManGameUI {
 
 	private void drawMaze(Graphics2D g, PacManGame game) {
 		g = (Graphics2D) g.create();
-		g.drawImage(imageMaze, 0, 3 * TILE_SIZE, null);
+		g.drawImage(imageMaze, 0, 3 * TS, null);
 		if (debugDraw) {
 			g.setColor(new Color(200, 200, 200, 100));
 			g.setStroke(new BasicStroke(0.1f));
 			for (int row = 1; row < WORLD_HEIGHT_TILES; ++row) {
-				g.drawLine(0, row * TILE_SIZE, WORLD_WIDTH, row * TILE_SIZE);
+				g.drawLine(0, row * TS, WORLD_WIDTH, row * TS);
 			}
 			for (int col = 1; col < PacManGame.WORLD_WIDTH_TILES; ++col) {
-				g.drawLine(col * TILE_SIZE, 0, col * TILE_SIZE, WORLD_HEIGHT);
+				g.drawLine(col * TS, 0, col * TS, WORLD_HEIGHT);
 			}
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 8));
@@ -133,9 +134,8 @@ public class PacManGameUI {
 		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
 		if (debugDraw) {
 //		g.fillRect((int) position.x, (int) position.y, (int) ghost.size.x, (int) ghost.size.y);
-			g.drawRect((int) ghost.scatterTile.x * TILE_SIZE, (int) ghost.scatterTile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-			g.fillRect((int) ghost.targetTile.x * TILE_SIZE + TILE_SIZE / 4,
-					(int) ghost.targetTile.y * TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2, TILE_SIZE / 2);
+			g.drawRect((int) ghost.scatterTile.x * TS, (int) ghost.scatterTile.y * TS, TS, TS);
+			g.fillRect((int) ghost.targetTile.x * TS + TS / 4, (int) ghost.targetTile.y * TS + TS / 4, HTS, HTS);
 		}
 	}
 

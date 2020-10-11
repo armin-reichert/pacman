@@ -28,11 +28,12 @@ public class PacManGame {
 	}
 
 	public static final int FPS = 60;
-	public static final int TILE_SIZE = 8;
+	public static final int TS = 8;
+	public static final int HTS = TS / 2;
 	public static final int WORLD_WIDTH_TILES = 28;
 	public static final int WORLD_HEIGHT_TILES = 36;
-	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TILE_SIZE;
-	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TILE_SIZE;
+	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
+	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
 
 	public static final String[] MAP = {
 		//@formatter:off
@@ -330,19 +331,19 @@ public class PacManGame {
 	}
 
 	public void placeAtHomeTile(Creature guy) {
-		placeAtTile(guy, guy.homeTile, vec(TILE_SIZE / 2, 0));
+		placeAtTile(guy, guy.homeTile, vec(HTS, 0));
 	}
 
 	public V2 tile(V2 position) {
-		return vec((int) (position.x + TILE_SIZE / 2) / TILE_SIZE, (int) (position.y + TILE_SIZE / 2) / TILE_SIZE);
+		return vec((int) (position.x + HTS) / TS, (int) (position.y + HTS) / TS);
 	}
 
 	public V2 offset(V2 position, V2 tile) {
-		return vec(position.x - tile.x * TILE_SIZE, position.y - tile.y * TILE_SIZE);
+		return vec(position.x - tile.x * TS, position.y - tile.y * TS);
 	}
 
 	public V2 position(Creature guy) {
-		return vec(guy.tile.x * TILE_SIZE + guy.offset.x, guy.tile.y * TILE_SIZE + guy.offset.y);
+		return vec(guy.tile.x * TS + guy.offset.x, guy.tile.y * TS + guy.offset.y);
 	}
 
 	public boolean canAccessTile(Creature guy, V2 tile) {
