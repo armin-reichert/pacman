@@ -2,7 +2,9 @@ package de.amr.games.pacman;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.event.KeyEvent;
 import java.time.LocalTime;
+import java.util.BitSet;
 import java.util.List;
 
 public class PacManGame {
@@ -67,6 +69,7 @@ public class PacManGame {
 		//@formatter:on
 	};
 
+	public BitSet pressedKeys = new BitSet(256);
 	public Creature[] ghosts = new Creature[4];
 	public Creature pacMan, blinky, inky, pinky, clyde;
 	public PacManGameUI ui;
@@ -108,33 +111,28 @@ public class PacManGame {
 		pacMan.color = Color.YELLOW;
 		pacMan.homeTile = vec(13, 26);
 
-		blinky = new Creature("Blinky");
+		ghosts[0] = blinky = new Creature("Blinky");
 		blinky.color = Color.RED;
 		blinky.homeTile = vec(13, 14);
 		blinky.scatterTile = vec(WORLD_WIDTH_TILES - 3, 0);
 
-		inky = new Creature("Inky");
-		inky.color = Color.CYAN;
-//		inky.homeTile = vec(11, 17);
-		inky.homeTile = vec(13, 14);
-		inky.scatterTile = vec(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
-
-		pinky = new Creature("Pinky");
+		ghosts[1] = pinky = new Creature("Pinky");
 		pinky.color = Color.PINK;
 //		pinky.homeTile = vec(13, 17);
 		pinky.homeTile = vec(13, 14);
 		pinky.scatterTile = vec(2, 0);
 
-		clyde = new Creature("Clyde");
+		ghosts[2] = inky = new Creature("Inky");
+		inky.color = Color.CYAN;
+//		inky.homeTile = vec(11, 17);
+		inky.homeTile = vec(13, 14);
+		inky.scatterTile = vec(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
+
+		ghosts[3] = clyde = new Creature("Clyde");
 		clyde.color = Color.ORANGE;
 //		clyde.homeTile = vec(15, 17);
 		clyde.homeTile = vec(13, 14);
 		clyde.scatterTile = vec(0, WORLD_HEIGHT_TILES - 1);
-
-		ghosts[0] = blinky;
-		ghosts[1] = inky;
-		ghosts[2] = pinky;
-		ghosts[3] = clyde;
 	}
 
 	public void initEntities() {
@@ -155,11 +153,25 @@ public class PacManGame {
 	}
 
 	public void update() {
+		readInput();
 		updatePacMan();
 		updateBlinky();
 		updatePinky();
 		updateInky();
 		updateClyde();
+	}
+
+	private void readInput() {
+		if (pressedKeys.get(KeyEvent.VK_LEFT)) {
+			pacMan.intendedDir = V2.LEFT;
+		} else if (pressedKeys.get(KeyEvent.VK_RIGHT)) {
+			pacMan.intendedDir = V2.RIGHT;
+		} else if (pressedKeys.get(KeyEvent.VK_UP)) {
+			pacMan.intendedDir = V2.UP;
+		} else if (pressedKeys.get(KeyEvent.VK_DOWN)) {
+			pacMan.intendedDir = V2.DOWN;
+		}
+		pressedKeys.clear();
 	}
 
 	private void updatePacMan() {

@@ -22,9 +22,11 @@ import javax.swing.JFrame;
 
 public class PacManGameUI {
 
+	public boolean debugDraw;
 	public float scaling = 2;
 	public Canvas canvas;
 	public BufferedImage imageMaze;
+	public BufferedImage spriteSheet;
 
 	public PacManGameUI(PacManGame game) {
 
@@ -41,16 +43,7 @@ public class PacManGameUI {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				int key = e.getKeyCode();
-				if (KeyEvent.VK_LEFT == key) {
-					game.pacMan.intendedDir = V2.LEFT;
-				} else if (KeyEvent.VK_RIGHT == key) {
-					game.pacMan.intendedDir = V2.RIGHT;
-				} else if (KeyEvent.VK_UP == key) {
-					game.pacMan.intendedDir = V2.UP;
-				} else if (KeyEvent.VK_DOWN == key) {
-					game.pacMan.intendedDir = V2.DOWN;
-				}
+				game.pressedKeys.set(e.getKeyCode());
 			}
 		});
 
@@ -65,6 +58,7 @@ public class PacManGameUI {
 
 	public void loadResources() {
 		try {
+			spriteSheet = ImageIO.read(getClass().getResourceAsStream("/sprites.png"));
 			imageMaze = ImageIO.read(getClass().getResourceAsStream("/maze_full.png"));
 		} catch (IOException x) {
 			x.printStackTrace();
@@ -90,41 +84,67 @@ public class PacManGameUI {
 	}
 
 	private void drawPacMan(Graphics2D g, PacManGame game, Creature pacMan) {
+		int dirIndex = dirIndex(pacMan.dir);
+		BufferedImage img = spriteSheet.getSubimage(0, dirIndex * 16, 16, 16);
 		V2 position = game.position(pacMan);
-		g.setColor(pacMan.color);
-		g.fillRect((int) position.x, (int) position.y, (int) pacMan.size.x, (int) pacMan.size.y);
+		g.drawImage(img, (int) position.x - 4, (int) position.y - 4, null);
+//	g.fillRect((int) position.x, (int) position.y, (int) pacMan.size.x, (int) pacMan.size.y);
 	}
 
-	private void drawGhost(Graphics2D g, PacManGame game, Creature ghost) {
+	private void drawGhost(Graphics2D g, PacManGame game, int ghostIndex) {
+		Creature ghost = game.ghosts[ghostIndex];
+		int dirIndex = dirIndex(ghost.dir);
+		BufferedImage img = spriteSheet.getSubimage(2 * dirIndex * 16, (4 + ghostIndex) * 16, 16, 16);
 		V2 position = game.position(ghost);
 		g.setColor(ghost.color);
-		g.fillRect((int) position.x, (int) position.y, (int) ghost.size.x, (int) ghost.size.y);
-		g.drawRect((int) ghost.scatterTile.x * TILE_SIZE, (int) ghost.scatterTile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-		g.fillRect((int) ghost.targetTile.x * TILE_SIZE + TILE_SIZE / 4,
-				(int) ghost.targetTile.y * TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2, TILE_SIZE / 2);
+		g.drawImage(img, (int) position.x - 4, (int) position.y - 4, null);
+		if (debugDraw) {
+//		g.fillRect((int) position.x, (int) position.y, (int) ghost.size.x, (int) ghost.size.y);
+			g.drawRect((int) ghost.scatterTile.x * TILE_SIZE, (int) ghost.scatterTile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+			g.fillRect((int) ghost.targetTile.x * TILE_SIZE + TILE_SIZE / 4,
+					(int) ghost.targetTile.y * TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2, TILE_SIZE / 2);
+		}
+	}
+
+	private int dirIndex(V2 dir) {
+		if (V2.RIGHT.equals(dir)) {
+			return 0;
+		}
+		if (V2.LEFT.equals(dir)) {
+			return 1;
+		}
+		if (V2.UP.equals(dir)) {
+			return 2;
+		}
+		if (V2.DOWN.equals(dir)) {
+			return 3;
+		}
+		return 0;
 	}
 
 	private void drawGhosts(Graphics2D g, PacManGame game) {
 		for (int i = 0; i < game.ghosts.length; ++i) {
-			drawGhost(g, game, game.ghosts[i]);
+			drawGhost(g, game, i);
 		}
 	}
 
 	private void drawMaze(Graphics2D g, PacManGame game) {
 		g = (Graphics2D) g.create();
 		g.drawImage(imageMaze, 0, 3 * TILE_SIZE, null);
-		g.setColor(new Color(200, 200, 200, 100));
-		g.setStroke(new BasicStroke(0.1f));
-		for (int row = 1; row < WORLD_HEIGHT_TILES; ++row) {
-			g.drawLine(0, row * TILE_SIZE, WORLD_WIDTH, row * TILE_SIZE);
+		if (debugDraw) {
+			g.setColor(new Color(200, 200, 200, 100));
+			g.setStroke(new BasicStroke(0.1f));
+			for (int row = 1; row < WORLD_HEIGHT_TILES; ++row) {
+				g.drawLine(0, row * TILE_SIZE, WORLD_WIDTH, row * TILE_SIZE);
+			}
+			for (int col = 1; col < PacManGame.WORLD_WIDTH_TILES; ++col) {
+				g.drawLine(col * TILE_SIZE, 0, col * TILE_SIZE, WORLD_HEIGHT);
+			}
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 8));
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g.drawString(String.format("%d frames/sec", game.fps), 20, 20);
 		}
-		for (int col = 1; col < PacManGame.WORLD_WIDTH_TILES; ++col) {
-			g.drawLine(col * TILE_SIZE, 0, col * TILE_SIZE, WORLD_HEIGHT);
-		}
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 8));
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.drawString(String.format("%d frames/sec", game.fps), 20, 20);
 		g.dispose();
 	}
 }
