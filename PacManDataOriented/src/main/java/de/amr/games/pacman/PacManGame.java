@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -85,6 +87,7 @@ public class PacManGame {
 	public BitSet food = new BitSet(244);
 	public BitSet eaten = new BitSet(244);
 	public int points;
+	public int pacManPowerTime;
 
 	public void start() {
 		initGame();
@@ -173,6 +176,7 @@ public class PacManGame {
 		}
 		eaten.clear();
 		points = 0;
+		pacManPowerTime = 0;
 	}
 
 	private int index(int x, int y) {
@@ -213,8 +217,10 @@ public class PacManGame {
 			points += 10;
 			if (isEnergizerTile(pacMan.tile)) {
 				points += 40;
+				pacManPowerTime = 10 * FPS;
 			}
 		}
+		pacManPowerTime = Math.max(0, pacManPowerTime - 1);
 	}
 
 	private void updateBlinky() {
@@ -257,13 +263,22 @@ public class PacManGame {
 	public void updateGhostSpeed(Creature ghost) {
 		if (isInsideTunnel(ghost.tile)) {
 			ghost.speed = 0.5f;
+		} else if (pacManPowerTime > 0) {
+			ghost.speed = 0.6f;
 		} else {
-			ghost.speed = 0.8f + (float) Math.random() * 0.3f;
+			ghost.speed = 0.8f;
 		}
 	}
 
 	public void updateGhostDirection(Creature ghost) {
 		if (!ghost.tileChanged) {
+			return;
+		}
+		if (isPortalTile(ghost.tile)) {
+			return;
+		}
+		if (pacManPowerTime > 0 && isIntersectionTile(ghost.tile)) {
+			ghost.intendedDir = randomAccessibleDir(ghost);
 			return;
 		}
 		V2 newDir = null;
@@ -431,5 +446,45 @@ public class PacManGame {
 			  || tile.x == 1  && tile.y == 26
 			  || tile.x == 26 && tile.y == 26;
 		//@formatter:on
+	}
+
+	public boolean isIntersectionTile(V2 tile) {
+		int accessibleNeighbors = 0;
+		for (V2 dir : List.of(V2.DOWN, V2.LEFT, V2.RIGHT, V2.UP)) {
+			V2 neighbor = tile.sum(dir);
+			if (isAccessibleTile(neighbor)) {
+				++accessibleNeighbors;
+			}
+		}
+		return accessibleNeighbors >= 3;
+	}
+
+	public V2 randomAccessibleDir(Creature guy) {
+		List<V2> dirs = new ArrayList<>(3);
+		for (V2 dir : List.of(V2.DOWN, V2.LEFT, V2.RIGHT, V2.UP)) {
+			if (dir.equals(guy.dir.inverse())) {
+				continue;
+			}
+			if (isAccessibleTile(guy.tile.sum(dir))) {
+				dirs.add(dir);
+			}
+		}
+		Collections.shuffle(dirs);
+		return dirs.get(0);
+	}
+
+	public boolean isAccessibleTile(V2 tile) {
+		if (isPortalTile(tile)) {
+			return true;
+		}
+		int x = (int) tile.x, y = (int) tile.y;
+		if (x >= 0 && x < WORLD_WIDTH_TILES && y > 0 && y < WORLD_HEIGHT_TILES) {
+			return false;
+		}
+		return MAP[y].charAt(x) != '1';
+	}
+
+	public boolean isPortalTile(V2 tile) {
+		return tile.equals(vec(28, 17)) || tile.equals(vec(-1, 17));
 	}
 }

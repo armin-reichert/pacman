@@ -106,10 +106,11 @@ public class PacManGameUI {
 		g.drawImage(imageMaze, 0, 3 * TS, null);
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+				V2 tile = vec(x, y);
 				if (game.hasEatenFood(x, y)) {
 					g.setColor(Color.BLACK);
 					g.fillRect(x * TS, y * TS, TS, TS);
-				} else if (game.isEnergizerTile(vec(x, y))) {
+				} else if (game.isEnergizerTile(tile)) {
 					if (game.framesTotal % 20 < 10) {
 						g.setColor(Color.BLACK);
 						g.fillRect(x * TS, y * TS, TS, TS);
@@ -130,7 +131,7 @@ public class PacManGameUI {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 8));
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-			g.drawString(String.format("%d frames/sec", game.fps), 20, 20);
+			g.drawString(String.format("%d frames/sec", game.fps), 20, 24);
 		}
 		g.dispose();
 	}
@@ -156,7 +157,12 @@ public class PacManGameUI {
 		Creature ghost = game.ghosts[ghostIndex];
 		int dirIndex = dirIndex(ghost.dir);
 		int frame = game.framesTotal % 60 < 30 ? 0 : 1;
-		BufferedImage sprite = spriteSheet.getSubimage((2 * dirIndex + frame) * 16, (4 + ghostIndex) * 16, 16, 16);
+		BufferedImage sprite;
+		if (game.pacManPowerTime > 0) {
+			sprite = spriteSheet.getSubimage((8 + frame) * 16, 4 * 16, 16, 16);
+		} else {
+			sprite = spriteSheet.getSubimage((2 * dirIndex + frame) * 16, (4 + ghostIndex) * 16, 16, 16);
+		}
 		V2 position = game.position(ghost);
 		g.setColor(ghost.color);
 		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
