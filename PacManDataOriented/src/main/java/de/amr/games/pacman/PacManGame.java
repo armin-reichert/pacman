@@ -1,5 +1,7 @@
 package de.amr.games.pacman;
 
+import static de.amr.games.pacman.V2.distance;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
@@ -249,20 +251,14 @@ public class PacManGame {
 	}
 
 	private void updateInky() {
-		inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
+		inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.inverse());
 		updateGhostDirection(inky);
 		updateGhostSpeed(inky);
 		inky.stuck = !move(inky);
 	}
 
 	private void updateClyde() {
-		float dx = clyde.tile.x - pacMan.tile.x;
-		float dy = clyde.tile.y - pacMan.tile.y;
-		if (dx * dx + dy * dy > 64) {
-			clyde.targetTile = pacMan.tile;
-		} else {
-			clyde.targetTile = clyde.scatterTile;
-		}
+		clyde.targetTile = distance(clyde.tile, pacMan.tile) > 8 ? pacMan.tile : clyde.scatterTile;
 		updateGhostDirection(clyde);
 		updateGhostSpeed(clyde);
 		clyde.stuck = !move(clyde);
