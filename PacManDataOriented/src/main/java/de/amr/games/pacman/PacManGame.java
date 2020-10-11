@@ -157,15 +157,6 @@ public class PacManGame {
 		}
 	}
 
-	public void update() {
-		readInput();
-		updatePacMan();
-		updateBlinky();
-		updatePinky();
-		updateInky();
-		updateClyde();
-	}
-
 	private void readInput() {
 		if (pressedKeys.get(KeyEvent.VK_LEFT)) {
 			pacMan.intendedDir = V2.LEFT;
@@ -181,6 +172,20 @@ public class PacManGame {
 		pressedKeys.clear();
 	}
 
+	public void update() {
+		readInput();
+		updatePacMan();
+		updateBlinky();
+		updatePinky();
+		updateInky();
+		updateClyde();
+		for (Creature ghost : ghosts) {
+			if (ghost.stuck) {
+				log("%s stuck", ghost);
+			}
+		}
+	}
+
 	private void updatePacMan() {
 		pacMan.stuck = !move(pacMan);
 	}
@@ -188,7 +193,7 @@ public class PacManGame {
 	private void updateBlinky() {
 		blinky.targetTile = pacMan.tile;
 		updateGhostDirection(blinky);
-		move(blinky);
+		blinky.stuck = !move(blinky);
 	}
 
 	private void updatePinky() {
@@ -197,13 +202,13 @@ public class PacManGame {
 			pinky.targetTile.add(V2.LEFT.scaled(4));
 		}
 		updateGhostDirection(pinky);
-		move(pinky);
+		pinky.stuck = !move(pinky);
 	}
 
 	private void updateInky() {
 		inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
 		updateGhostDirection(inky);
-		move(inky);
+		inky.stuck = !move(inky);
 	}
 
 	private void updateClyde() {
@@ -215,7 +220,7 @@ public class PacManGame {
 			clyde.targetTile = clyde.scatterTile;
 		}
 		updateGhostDirection(clyde);
-		move(clyde);
+		clyde.stuck = !move(clyde);
 	}
 
 	public void updateGhostDirection(Creature ghost) {
@@ -255,15 +260,23 @@ public class PacManGame {
 		return move(guy, guy.dir);
 	}
 
-	public boolean move(Creature guy, V2 direction) {
+	public boolean move(Creature guy, V2 dir) {
+		if (guy.tile.equals(vec(27, 17)) && dir.equals(V2.RIGHT)) {
+			placeAtTile(guy, vec(0, 17), V2.NULL);
+			return true;
+		}
+		if (guy.tile.equals(vec(0, 17)) && guy.offset.equals(V2.NULL) && dir.equals(V2.LEFT)) {
+			placeAtTile(guy, vec(27, 17), V2.NULL);
+			return true;
+		}
 		if (!isInsideGhostHouse(guy.tile)) {
-			if (direction.equals(V2.LEFT) || direction.equals(V2.RIGHT)) {
+			if (dir.equals(V2.LEFT) || dir.equals(V2.RIGHT)) {
 				if (Math.abs(guy.offset.y) > 1) {
 					return false;
 				}
 				guy.offset.y = 0;
 			}
-			if (direction.equals(V2.UP) || direction.equals(V2.DOWN)) {
+			if (dir.equals(V2.UP) || dir.equals(V2.DOWN)) {
 				if (Math.abs(guy.offset.x) > 1f) {
 					return false;
 				}
@@ -272,7 +285,7 @@ public class PacManGame {
 		}
 
 		V2 positionAfterMove = position(guy);
-		positionAfterMove.add(direction.scaled(guy.speed));
+		positionAfterMove.add(dir.scaled(guy.speed));
 		V2 tileAfterMove = tile(positionAfterMove);
 
 		if (!canAccessTile(guy, tileAfterMove)) {
@@ -281,13 +294,13 @@ public class PacManGame {
 
 		V2 offsetAfterMove = offset(positionAfterMove, tileAfterMove);
 		if (tileAfterMove.equals(guy.tile)) {
-			V2 neighbor = guy.tile.sum(direction);
+			V2 neighbor = guy.tile.sum(dir);
 			if (!canAccessTile(guy, neighbor)) {
-				if (direction.equals(V2.RIGHT) && offsetAfterMove.x > 0 || direction.equals(V2.LEFT) && offsetAfterMove.x < 0) {
+				if (dir.equals(V2.RIGHT) && offsetAfterMove.x > 0 || dir.equals(V2.LEFT) && offsetAfterMove.x < 0) {
 					guy.offset.x = 0;
 					return false;
 				}
-				if (direction.equals(V2.DOWN) && offsetAfterMove.y > 0 || direction.equals(V2.UP) && offsetAfterMove.y < 0) {
+				if (dir.equals(V2.DOWN) && offsetAfterMove.y > 0 || dir.equals(V2.UP) && offsetAfterMove.y < 0) {
 					guy.offset.y = 0;
 					return false;
 				}
