@@ -23,6 +23,10 @@ public class PacManGame {
 		EventQueue.invokeLater(new PacManGame()::start);
 	}
 
+	public enum GameState {
+		SCATTERING, CHASING;
+	}
+
 	public static void log(String msg, Object... args) {
 		System.err.println(String.format(msg, args));
 	}
@@ -84,6 +88,7 @@ public class PacManGame {
 		//@formatter:on
 	};
 
+	public GameState state;
 	public BitSet pressedKeys = new BitSet(256);
 	public Creature[] ghosts = new Creature[4];
 	public Creature pacMan, blinky, inky, pinky, clyde;
@@ -184,6 +189,7 @@ public class PacManGame {
 		eaten.clear();
 		points = 0;
 		pacManPowerTime = 0;
+		state = GameState.SCATTERING;
 	}
 
 	private int index(int x, int y) {
@@ -203,6 +209,12 @@ public class PacManGame {
 			ui.debugDraw = !ui.debugDraw;
 		} else if (pressedKeys.get(KeyEvent.VK_N)) {
 			initGame();
+		} else if (pressedKeys.get(KeyEvent.VK_C)) {
+			state = GameState.CHASING;
+			forceGhostsTurnBack();
+		} else if (pressedKeys.get(KeyEvent.VK_S)) {
+			state = GameState.SCATTERING;
+			forceGhostsTurnBack();
 		}
 		pressedKeys.clear();
 	}
@@ -225,25 +237,31 @@ public class PacManGame {
 			if (isEnergizerTile(pacMan.tile)) {
 				points += 40;
 				pacManPowerTime = sec(5);
-				for (Creature ghost : ghosts) {
-					ghost.forceTurnBack = true;
-				}
+				forceGhostsTurnBack();
 			}
 		}
 		pacManPowerTime = Math.max(0, pacManPowerTime - 1);
 	}
 
 	private void updateBlinky() {
-		blinky.targetTile = pacMan.tile;
+		if (state == GameState.SCATTERING) {
+			blinky.targetTile = blinky.scatterTile;
+		} else if (state == GameState.CHASING) {
+			blinky.targetTile = pacMan.tile;
+		}
 		updateGhostDirection(blinky);
 		updateGhostSpeed(blinky);
 		blinky.stuck = !move(blinky);
 	}
 
 	private void updatePinky() {
-		pinky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(4));
-		if (pacMan.dir.equals(V2.UP)) {
-			pinky.targetTile.add(V2.LEFT.scaled(4));
+		if (state == GameState.SCATTERING) {
+			pinky.targetTile = pinky.scatterTile;
+		} else if (state == GameState.CHASING) {
+			pinky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(4));
+			if (pacMan.dir.equals(V2.UP)) {
+				pinky.targetTile.add(V2.LEFT.scaled(4));
+			}
 		}
 		updateGhostDirection(pinky);
 		updateGhostSpeed(pinky);
@@ -251,14 +269,22 @@ public class PacManGame {
 	}
 
 	private void updateInky() {
-		inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.inverse());
+		if (state == GameState.SCATTERING) {
+			inky.targetTile = inky.scatterTile;
+		} else if (state == GameState.CHASING) {
+			inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.inverse());
+		}
 		updateGhostDirection(inky);
 		updateGhostSpeed(inky);
 		inky.stuck = !move(inky);
 	}
 
 	private void updateClyde() {
-		clyde.targetTile = distance(clyde.tile, pacMan.tile) > 8 ? pacMan.tile : clyde.scatterTile;
+		if (state == GameState.SCATTERING) {
+			clyde.targetTile = clyde.scatterTile;
+		} else if (state == GameState.CHASING) {
+			clyde.targetTile = distance(clyde.tile, pacMan.tile) > 8 ? pacMan.tile : clyde.scatterTile;
+		}
 		updateGhostDirection(clyde);
 		updateGhostSpeed(clyde);
 		clyde.stuck = !move(clyde);
@@ -312,6 +338,12 @@ public class PacManGame {
 		if (newDir != null) {
 			ghost.intendedDir = newDir;
 //			log("%s's intended direction is %s", ghost.name, ghost.intendedDir);
+		}
+	}
+
+	public void forceGhostsTurnBack() {
+		for (Creature ghost : ghosts) {
+			ghost.forceTurnBack = true;
 		}
 	}
 
