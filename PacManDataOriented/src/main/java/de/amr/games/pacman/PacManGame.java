@@ -35,6 +35,18 @@ public class PacManGame {
 		return new V2(x, y);
 	}
 
+	public static V2 tile(V2 position) {
+		return vec((int) (position.x + HTS) / TS, (int) (position.y + HTS) / TS);
+	}
+
+	public static V2 offset(V2 position, V2 tile) {
+		return vec(position.x - tile.x * TS, position.y - tile.y * TS);
+	}
+
+	public static V2 position(Creature guy) {
+		return vec(guy.tile.x * TS + guy.offset.x, guy.tile.y * TS + guy.offset.y);
+	}
+
 	public static int sec(float seconds) {
 		return (int) (seconds * FPS);
 	}
@@ -47,7 +59,7 @@ public class PacManGame {
 	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
 	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
 
-	public static final String[] MAP = {
+	public final String[] map = {
 		//@formatter:off
 		"1111111111111111111111111111",
 		"1111111111111111111111111111",
@@ -100,7 +112,7 @@ public class PacManGame {
 	public int points;
 	public int pacManPowerTime;
 
-	public void start() {
+	private void start() {
 		initGame();
 		createEntities();
 		initEntities();
@@ -108,7 +120,7 @@ public class PacManGame {
 		new Thread(this::gameLoop, "GameLoop").start();
 	}
 
-	public void gameLoop() {
+	private void gameLoop() {
 		long start = 0;
 		long frames = 0;
 		while (true) {
@@ -133,7 +145,7 @@ public class PacManGame {
 		}
 	}
 
-	public void createEntities() {
+	private void createEntities() {
 		pacMan = new Creature("Pac-Man", Color.YELLOW);
 		pacMan.homeTile = vec(13, 26);
 
@@ -157,7 +169,7 @@ public class PacManGame {
 		clyde.scatterTile = vec(0, WORLD_HEIGHT_TILES - 1);
 	}
 
-	public void initEntities() {
+	private void initEntities() {
 		placeAtHomeTile(pacMan);
 		pacMan.dir = pacMan.intendedDir = V2.RIGHT;
 		pacMan.speed = 1.25f;
@@ -177,10 +189,10 @@ public class PacManGame {
 		}
 	}
 
-	public void initGame() {
+	private void initGame() {
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				char c = MAP[y].charAt(x);
+				char c = map(x, y);
 				if (c == '2') {
 					food.set(index(x, y));
 				}
@@ -219,7 +231,7 @@ public class PacManGame {
 		pressedKeys.clear();
 	}
 
-	public void update() {
+	private void update() {
 		readInput();
 		updatePacMan();
 		updateBlinky();
@@ -290,7 +302,7 @@ public class PacManGame {
 		clyde.stuck = !move(clyde);
 	}
 
-	public void updateGhostSpeed(Creature ghost) {
+	private void updateGhostSpeed(Creature ghost) {
 		if (isInsideTunnel(ghost.tile)) {
 			ghost.speed = 0.5f;
 		} else if (pacManPowerTime > 0) {
@@ -300,7 +312,7 @@ public class PacManGame {
 		}
 	}
 
-	public void updateGhostDirection(Creature ghost) {
+	private void updateGhostDirection(Creature ghost) {
 		if (!ghost.tileChanged) {
 			return;
 		}
@@ -341,13 +353,13 @@ public class PacManGame {
 		}
 	}
 
-	public void forceGhostsTurnBack() {
+	private void forceGhostsTurnBack() {
 		for (Creature ghost : ghosts) {
 			ghost.forceTurnBack = true;
 		}
 	}
 
-	public boolean move(Creature guy) {
+	private boolean move(Creature guy) {
 		if (guy.speed == 0) {
 			return false;
 		}
@@ -358,7 +370,7 @@ public class PacManGame {
 		return move(guy, guy.dir);
 	}
 
-	public boolean move(Creature guy, V2 dir) {
+	private boolean move(Creature guy, V2 dir) {
 		if (guy.tile.equals(vec(28, 17)) && dir.equals(V2.RIGHT)) {
 			placeAtTile(guy, vec(-1, 17), V2.NULL);
 			return true;
@@ -410,25 +422,17 @@ public class PacManGame {
 		return true;
 	}
 
-	public void placeAtTile(Creature guy, V2 tile, V2 offset) {
+	private void placeAtTile(Creature guy, V2 tile, V2 offset) {
 		guy.tile = tile;
 		guy.offset = offset;
 	}
 
-	public void placeAtHomeTile(Creature guy) {
+	private void placeAtHomeTile(Creature guy) {
 		placeAtTile(guy, guy.homeTile, vec(HTS, 0));
 	}
 
-	public V2 tile(V2 position) {
-		return vec((int) (position.x + HTS) / TS, (int) (position.y + HTS) / TS);
-	}
-
-	public V2 offset(V2 position, V2 tile) {
-		return vec(position.x - tile.x * TS, position.y - tile.y * TS);
-	}
-
-	public V2 position(Creature guy) {
-		return vec(guy.tile.x * TS + guy.offset.x, guy.tile.y * TS + guy.offset.y);
+	private char map(int x, int y) {
+		return map[y].charAt(x);
 	}
 
 	public boolean canAccessTile(Creature guy, V2 tile) {
@@ -444,7 +448,7 @@ public class PacManGame {
 		if (isGhostHouseDoor(tile)) {
 			return false; // TODO ghost can access door when leaving or entering ghosthouse
 		}
-		return MAP[(int) tile.y].charAt((int) tile.x) != '1';
+		return map((int) tile.x, (int) tile.y) != '1';
 	}
 
 	public boolean isGhostHouseDoor(V2 tile) {
@@ -459,7 +463,7 @@ public class PacManGame {
 		return tile.y == 17 && (tile.x <= 5 || tile.x >= 21);
 	}
 
-	public boolean isUpwardsBlocked(V2 tile) {
+	private boolean isUpwardsBlocked(V2 tile) {
 		//@formatter:off
 		return tile.x == 12 && tile.y == 13
 		  	|| tile.x == 15 && tile.y == 13
@@ -522,7 +526,7 @@ public class PacManGame {
 		if (x >= 0 && x < WORLD_WIDTH_TILES && y > 0 && y < WORLD_HEIGHT_TILES) {
 			return false;
 		}
-		return MAP[y].charAt(x) != '1';
+		return map(x, y) != '1';
 	}
 
 	public boolean isPortalTile(V2 tile) {

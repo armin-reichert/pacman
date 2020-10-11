@@ -6,6 +6,7 @@ import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT;
 import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.PacManGame.WORLD_WIDTH;
 import static de.amr.games.pacman.PacManGame.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.PacManGame.position;
 import static de.amr.games.pacman.PacManGame.vec;
 
 import java.awt.BasicStroke;
@@ -148,7 +149,7 @@ public class PacManGameUI {
 		} else {
 			sprite = spriteSheet.getSubimage(frame * 16, dirIndex * 16, 16, 16);
 		}
-		V2 position = game.position(pacMan);
+		V2 position = position(pacMan);
 		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
 //	g.fillRect((int) position.x, (int) position.y, (int) pacMan.size.x, (int) pacMan.size.y);
 	}
@@ -163,7 +164,7 @@ public class PacManGameUI {
 		} else {
 			sprite = spriteSheet.getSubimage((2 * dirIndex + frame) * 16, (4 + ghostIndex) * 16, 16, 16);
 		}
-		V2 position = game.position(ghost);
+		V2 position = position(ghost);
 		g.setColor(ghost.color);
 		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
 		if (debugDraw) {
