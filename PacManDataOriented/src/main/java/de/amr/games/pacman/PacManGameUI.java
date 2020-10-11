@@ -114,7 +114,9 @@ public class PacManGameUI {
 		long interval = game.framesTotal % 30;
 		int frame = (int) interval / 10;
 		BufferedImage sprite;
-		if (pacMan.stuck || frame == 2) {
+		if (pacMan.stuck) {
+			sprite = spriteSheet.getSubimage(0, dirIndex * 16, 16, 16);
+		} else if (frame == 2) {
 			sprite = spriteSheet.getSubimage(2 * 16, 0, 16, 16);
 		} else {
 			sprite = spriteSheet.getSubimage(frame * 16, dirIndex * 16, 16, 16);
