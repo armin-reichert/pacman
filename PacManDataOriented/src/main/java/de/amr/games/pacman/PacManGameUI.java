@@ -6,6 +6,7 @@ import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT;
 import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.PacManGame.WORLD_WIDTH;
 import static de.amr.games.pacman.PacManGame.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.PacManGame.levelData;
 import static de.amr.games.pacman.PacManGame.position;
 import static de.amr.games.pacman.PacManGame.vec;
 
@@ -19,6 +20,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -27,11 +31,12 @@ public class PacManGameUI {
 
 	public boolean debugDraw;
 	public float scaling = 2;
-	public Canvas canvas;
 
-	public BufferedImage imageMaze;
-	public BufferedImage spriteSheet;
-	public Font scoreFont;
+	private Canvas canvas;
+	private BufferedImage imageMaze;
+	private BufferedImage spriteSheet;
+	private Map<String, BufferedImage> levelSymbols;
+	private Font scoreFont;
 
 	public PacManGameUI(PacManGame game) {
 
@@ -63,13 +68,30 @@ public class PacManGameUI {
 
 	public void loadResources() {
 		try {
-			spriteSheet = ImageIO.read(getClass().getResourceAsStream("/sprites.png"));
-			imageMaze = ImageIO.read(getClass().getResourceAsStream("/maze_full.png"));
-			scoreFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/PressStart2P-Regular.ttf"));
-			scoreFont = scoreFont.deriveFont((float) TS);
+			spriteSheet = image("/sprites.png");
+			imageMaze = image("/maze_full.png");
+			levelSymbols = new HashMap<>();
+			levelSymbols.put("CHERRIES", sheet(2, 3));
+			levelSymbols.put("STRAWBERRY", sheet(3, 3));
+			levelSymbols.put("PEACH", sheet(4, 3));
+			levelSymbols.put("APPLE", sheet(5, 3));
+			levelSymbols.put("GRAPES", sheet(6, 3));
+			levelSymbols.put("GALAXIAN", sheet(7, 3));
+			levelSymbols.put("BELL", sheet(8, 3));
+			levelSymbols.put("KEY", sheet(9, 3));
+			scoreFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/PressStart2P-Regular.ttf"))
+					.deriveFont((float) TS);
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
+	}
+
+	private BufferedImage sheet(int x, int y) {
+		return spriteSheet.getSubimage(x * 16, y * 16, 16, 16);
+	}
+
+	private BufferedImage image(String path) throws IOException {
+		return ImageIO.read(getClass().getResourceAsStream(path));
 	}
 
 	public void render(PacManGame game) {
@@ -94,12 +116,20 @@ public class PacManGameUI {
 		for (int i = 0; i < game.ghosts.length; ++i) {
 			drawGhost(g, game, i);
 		}
+		drawLevelCounter(g, game);
 	}
 
 	private void drawScore(Graphics2D g, PacManGame game) {
 		g.setFont(scoreFont);
 		g.setColor(Color.WHITE);
 		g.drawString(String.format("SCORE %d", game.points), 16, 16);
+	}
+
+	private void drawLevelCounter(Graphics2D g, PacManGame game) {
+		int x = PacManGame.WORLD_WIDTH - 3 * TS;
+		int y = PacManGame.WORLD_HEIGHT - 2 * TS;
+		BufferedImage symbol = levelSymbols.get(levelData(game.level).get(0));
+		g.drawImage(symbol, x, y, null);
 	}
 
 	private void drawMaze(Graphics2D g, PacManGame game) {

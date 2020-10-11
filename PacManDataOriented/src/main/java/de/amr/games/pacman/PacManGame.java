@@ -59,6 +59,45 @@ public class PacManGame {
 	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
 	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
 
+	/**
+	 * Returns the level-specific data.
+	 * 
+	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
+	 * 
+	 * @param level level number (1..)
+	 * @return data for level with given number
+	 */
+	public static List<?> levelData(int level) {
+		if (level < 1) {
+			throw new IllegalArgumentException("Illegal game level number: " + level);
+		}
+		switch (level) {
+		/*@formatter:off*/
+		case  1: return List.of("CHERRIES",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5);
+		case  2: return List.of("STRAWBERRY", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5);
+		case  3: return List.of("PEACH",      500,  90,  79,  85, 45,  40,  90, 20,  95,  95, 83, 55, 4, 5);
+		case  4: return List.of("PEACH",      500,  90,  79,  85, 50,  40, 100, 20,  95,  95, 83, 55, 3, 5);
+		case  5: return List.of("APPLE",      700, 100,  87,  95, 50,  40, 100, 20, 105, 100, 87, 60, 2, 5);
+		case  6: return List.of("APPLE",      700, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 5, 5);
+		case  7: return List.of("GRAPES",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5);
+		case  8: return List.of("GRAPES",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5);
+		case  9: return List.of("GALAXIAN",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 1, 3);
+		case 10: return List.of("GALAXIAN",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 5, 5);
+		case 11: return List.of("BELL",      3000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 2, 5);
+		case 12: return List.of("BELL",      3000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3);
+		case 13: return List.of("KEY",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3);
+		case 14: return List.of("KEY",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 3, 5);
+		case 15: return List.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 1, 3);
+		case 16: return List.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,  0,  0, 1, 3);
+		case 17: return List.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 0, 0);
+		case 18: return List.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,   0, 0, 1, 0);
+		case 19: return List.of("KEY",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
+		case 20: return List.of("KEY",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
+		default: return List.of("KEY",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
+		//@formatter:on
+		}
+	}
+
 	public final String[] map = {
 		//@formatter:off
 		"1111111111111111111111111111",
@@ -101,6 +140,7 @@ public class PacManGame {
 	};
 
 	public GameState state;
+	public int level;
 	public BitSet pressedKeys = new BitSet(256);
 	public Creature[] ghosts = new Creature[4];
 	public Creature pacMan, blinky, inky, pinky, clyde;
@@ -109,11 +149,12 @@ public class PacManGame {
 	public long framesTotal;
 	public BitSet food = new BitSet(244);
 	public BitSet eaten = new BitSet(244);
+	public int foodRemaining;
 	public int points;
 	public int pacManPowerTime;
 
 	private void start() {
-		initGame();
+		initGame(1);
 		createEntities();
 		initEntities();
 		ui = new PacManGameUI(this);
@@ -189,7 +230,7 @@ public class PacManGame {
 		}
 	}
 
-	private void initGame() {
+	private void initGame(int level) {
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				char c = map(x, y);
@@ -202,6 +243,8 @@ public class PacManGame {
 		points = 0;
 		pacManPowerTime = 0;
 		state = GameState.SCATTERING;
+		this.level = level;
+		foodRemaining = 244;
 	}
 
 	private int index(int x, int y) {
@@ -219,8 +262,6 @@ public class PacManGame {
 			pacMan.intendedDir = V2.DOWN;
 		} else if (pressedKeys.get(KeyEvent.VK_D)) {
 			ui.debugDraw = !ui.debugDraw;
-		} else if (pressedKeys.get(KeyEvent.VK_N)) {
-			initGame();
 		} else if (pressedKeys.get(KeyEvent.VK_C)) {
 			state = GameState.CHASING;
 			forceGhostsTurnBack();
@@ -238,6 +279,10 @@ public class PacManGame {
 		updatePinky();
 		updateInky();
 		updateClyde();
+		if (foodRemaining == 0) {
+			++level;
+			initGame(level);
+		}
 	}
 
 	private void updatePacMan() {
@@ -251,6 +296,7 @@ public class PacManGame {
 				pacManPowerTime = sec(5);
 				forceGhostsTurnBack();
 			}
+			foodRemaining--;
 		}
 		pacManPowerTime = Math.max(0, pacManPowerTime - 1);
 	}
