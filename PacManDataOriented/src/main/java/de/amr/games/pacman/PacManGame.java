@@ -173,6 +173,8 @@ public class PacManGame {
 			pacMan.intendedDir = V2.UP;
 		} else if (pressedKeys.get(KeyEvent.VK_DOWN)) {
 			pacMan.intendedDir = V2.DOWN;
+		} else if (pressedKeys.get(KeyEvent.VK_D)) {
+			ui.debugDraw = !ui.debugDraw;
 		}
 		pressedKeys.clear();
 	}
