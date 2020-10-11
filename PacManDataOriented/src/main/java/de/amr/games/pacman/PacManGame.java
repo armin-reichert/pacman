@@ -142,6 +142,7 @@ public class PacManGame {
 		placeAtHomeTile(pacMan);
 		pacMan.dir = pacMan.intendedDir = V2.RIGHT;
 		pacMan.speed = 1.25f;
+		pacMan.stuck = false;
 
 		blinky.dir = blinky.intendedDir = V2.LEFT;
 		inky.dir = inky.intendedDir = V2.UP;
@@ -152,6 +153,7 @@ public class PacManGame {
 			placeAtHomeTile(ghost);
 			ghost.speed = 0.9f;
 			ghost.tileChanged = true;
+			ghost.stuck = false;
 		}
 	}
 
@@ -180,7 +182,7 @@ public class PacManGame {
 	}
 
 	private void updatePacMan() {
-		move(pacMan);
+		pacMan.stuck = !move(pacMan);
 	}
 
 	private void updateBlinky() {
@@ -242,15 +244,15 @@ public class PacManGame {
 		}
 	}
 
-	public void move(Creature guy) {
+	public boolean move(Creature guy) {
 		if (guy.speed == 0) {
-			return;
+			return false;
 		}
 		if (move(guy, guy.intendedDir)) {
 			guy.dir = guy.intendedDir;
-		} else {
-			move(guy, guy.dir);
+			return true;
 		}
+		return move(guy, guy.dir);
 	}
 
 	public boolean move(Creature guy, V2 direction) {
