@@ -178,13 +178,13 @@ public class PacManGame {
 	}
 
 	private void updatePacMan() {
-		moveCreature(pacMan);
+		move(pacMan);
 	}
 
 	private void updateBlinky() {
 		blinky.targetTile = pacMan.tile;
 		updateGhostDirection(blinky);
-		moveCreature(blinky);
+		move(blinky);
 	}
 
 	private void updatePinky() {
@@ -193,13 +193,13 @@ public class PacManGame {
 			pinky.targetTile.add(V2.LEFT.scaled(4));
 		}
 		updateGhostDirection(pinky);
-		moveCreature(pinky);
+		move(pinky);
 	}
 
 	private void updateInky() {
 		inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
 		updateGhostDirection(inky);
-		moveCreature(inky);
+		move(inky);
 	}
 
 	private void updateClyde() {
@@ -211,7 +211,7 @@ public class PacManGame {
 			clyde.targetTile = clyde.scatterTile;
 		}
 		updateGhostDirection(clyde);
-		moveCreature(clyde);
+		move(clyde);
 	}
 
 	public void updateGhostDirection(Creature ghost) {
@@ -240,18 +240,18 @@ public class PacManGame {
 		}
 	}
 
-	public void moveCreature(Creature guy) {
+	public void move(Creature guy) {
 		if (guy.speed == 0) {
 			return;
 		}
-		if (moveCreature(guy, guy.intendedDir)) {
+		if (move(guy, guy.intendedDir)) {
 			guy.dir = guy.intendedDir;
 		} else {
-			moveCreature(guy, guy.dir);
+			move(guy, guy.dir);
 		}
 	}
 
-	public boolean moveCreature(Creature guy, V2 direction) {
+	public boolean move(Creature guy, V2 direction) {
 		if (!isInsideGhostHouse(guy.tile)) {
 			if (direction.equals(V2.LEFT) || direction.equals(V2.RIGHT)) {
 				if (Math.abs(guy.offset.y) > 1) {
