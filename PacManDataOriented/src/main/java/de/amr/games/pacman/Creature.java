@@ -7,8 +7,9 @@ import java.awt.Color;
 
 public class Creature {
 
-	public Creature(String name) {
+	public Creature(String name, Color color) {
 		this.name = name;
+		this.color = color;
 		size = vec(TILE_SIZE, TILE_SIZE);
 	}
 

@@ -109,29 +109,24 @@ public class PacManGame {
 	}
 
 	public void createEntities() {
-		pacMan = new Creature("Pac-Man");
-		pacMan.color = Color.YELLOW;
+		pacMan = new Creature("Pac-Man", Color.YELLOW);
 		pacMan.homeTile = vec(13, 26);
 
-		ghosts[0] = blinky = new Creature("Blinky");
-		blinky.color = Color.RED;
+		ghosts[0] = blinky = new Creature("Blinky", Color.RED);
 		blinky.homeTile = vec(13, 14);
 		blinky.scatterTile = vec(WORLD_WIDTH_TILES - 3, 0);
 
-		ghosts[1] = pinky = new Creature("Pinky");
-		pinky.color = Color.PINK;
+		ghosts[1] = pinky = new Creature("Pinky", Color.PINK);
 //		pinky.homeTile = vec(13, 17);
 		pinky.homeTile = vec(13, 14);
 		pinky.scatterTile = vec(2, 0);
 
-		ghosts[2] = inky = new Creature("Inky");
-		inky.color = Color.CYAN;
+		ghosts[2] = inky = new Creature("Inky", Color.CYAN);
 //		inky.homeTile = vec(11, 17);
 		inky.homeTile = vec(13, 14);
 		inky.scatterTile = vec(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
 
-		ghosts[3] = clyde = new Creature("Clyde");
-		clyde.color = Color.ORANGE;
+		ghosts[3] = clyde = new Creature("Clyde", Color.ORANGE);
 //		clyde.homeTile = vec(15, 17);
 		clyde.homeTile = vec(13, 14);
 		clyde.scatterTile = vec(0, WORLD_HEIGHT_TILES - 1);
