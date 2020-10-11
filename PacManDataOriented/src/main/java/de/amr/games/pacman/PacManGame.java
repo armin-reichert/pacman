@@ -151,7 +151,7 @@ public class PacManGame {
 		for (int i = 0; i < ghosts.length; ++i) {
 			Creature ghost = ghosts[i];
 			placeAtHomeTile(ghost);
-			ghost.speed = 0.9f;
+			ghost.speed = 0;
 			ghost.tileChanged = true;
 			ghost.stuck = false;
 		}
@@ -193,6 +193,7 @@ public class PacManGame {
 	private void updateBlinky() {
 		blinky.targetTile = pacMan.tile;
 		updateGhostDirection(blinky);
+		updateGhostSpeed(blinky);
 		blinky.stuck = !move(blinky);
 	}
 
@@ -202,12 +203,14 @@ public class PacManGame {
 			pinky.targetTile.add(V2.LEFT.scaled(4));
 		}
 		updateGhostDirection(pinky);
+		updateGhostSpeed(pinky);
 		pinky.stuck = !move(pinky);
 	}
 
 	private void updateInky() {
 		inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
 		updateGhostDirection(inky);
+		updateGhostSpeed(inky);
 		inky.stuck = !move(inky);
 	}
 
@@ -220,7 +223,16 @@ public class PacManGame {
 			clyde.targetTile = clyde.scatterTile;
 		}
 		updateGhostDirection(clyde);
+		updateGhostSpeed(clyde);
 		clyde.stuck = !move(clyde);
+	}
+
+	public void updateGhostSpeed(Creature ghost) {
+		if (isInsideTunnel(ghost.tile)) {
+			ghost.speed = 0.5f;
+		} else {
+			ghost.speed = 0.9f;
+		}
 	}
 
 	public void updateGhostDirection(Creature ghost) {
@@ -352,5 +364,9 @@ public class PacManGame {
 
 	public boolean isInsideGhostHouse(V2 tile) {
 		return tile.x >= 10 && tile.x <= 17 && tile.y >= 15 && tile.y <= 22;
+	}
+
+	public boolean isInsideTunnel(V2 tile) {
+		return tile.y == 17 && (tile.x <= 5 || tile.x >= 21);
 	}
 }
