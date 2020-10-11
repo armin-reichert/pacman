@@ -105,8 +105,8 @@ public class PacManGameUI {
 	}
 
 	private void drawGhosts(Graphics2D g, PacManGame game) {
-		for (int i = 1; i < game.creatures.length; ++i) {
-			drawGhost(g, game, game.creatures[i]);
+		for (int i = 0; i < game.ghosts.length; ++i) {
+			drawGhost(g, game, game.ghosts[i]);
 		}
 	}
 
@@ -126,9 +126,5 @@ public class PacManGameUI {
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.drawString(String.format("%d frames/sec", game.fps), 20, 20);
 		g.dispose();
-	}
-
-	public void showFPS(long frames) {
-
 	}
 }

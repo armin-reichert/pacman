@@ -75,4 +75,8 @@ public class V2 {
 		scaled.scale(s);
 		return scaled;
 	}
+
+	public V2 inverse() {
+		return new V2(-x, -y);
+	}
 }

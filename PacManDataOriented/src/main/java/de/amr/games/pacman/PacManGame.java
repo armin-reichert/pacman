@@ -67,7 +67,7 @@ public class PacManGame {
 		//@formatter:on
 	};
 
-	public Creature[] creatures = new Creature[5];
+	public Creature[] ghosts = new Creature[4];
 	public Creature pacMan, blinky, inky, pinky, clyde;
 	public PacManGameUI ui;
 	public long fps;
@@ -131,11 +131,10 @@ public class PacManGame {
 		clyde.homeTile = vec(13, 14);
 		clyde.scatterTile = vec(0, WORLD_HEIGHT_TILES - 1);
 
-		creatures[0] = pacMan;
-		creatures[1] = blinky;
-		creatures[2] = inky;
-		creatures[3] = pinky;
-		creatures[4] = clyde;
+		ghosts[0] = blinky;
+		ghosts[1] = inky;
+		ghosts[2] = pinky;
+		ghosts[3] = clyde;
 	}
 
 	public void initEntities() {
@@ -147,26 +146,30 @@ public class PacManGame {
 		inky.dir = inky.intendedDir = V2.UP;
 		pinky.dir = pinky.intendedDir = V2.DOWN;
 		clyde.dir = clyde.intendedDir = V2.UP;
-		for (int i = 1; i < creatures.length; ++i) {
-			placeAtHomeTile(creatures[i]);
-			creatures[i].speed = 0.9f;
-			creatures[i].tileChanged = true;
+		for (int i = 0; i < ghosts.length; ++i) {
+			Creature ghost = ghosts[i];
+			placeAtHomeTile(ghost);
+			ghost.speed = 0.9f;
+			ghost.tileChanged = true;
 		}
 	}
 
 	public void update() {
+		updatePacMan();
 		updateBlinky();
 		updatePinky();
 		updateInky();
 		updateClyde();
-		for (Creature guy : creatures) {
-			moveCreature(guy);
-		}
+	}
+
+	private void updatePacMan() {
+		moveCreature(pacMan);
 	}
 
 	private void updateBlinky() {
 		blinky.targetTile = pacMan.tile;
 		updateGhostDirection(blinky);
+		moveCreature(blinky);
 	}
 
 	private void updatePinky() {
@@ -175,11 +178,13 @@ public class PacManGame {
 			pinky.targetTile.add(V2.LEFT.scaled(4));
 		}
 		updateGhostDirection(pinky);
+		moveCreature(pinky);
 	}
 
 	private void updateInky() {
 		inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
 		updateGhostDirection(inky);
+		moveCreature(inky);
 	}
 
 	private void updateClyde() {
@@ -191,6 +196,7 @@ public class PacManGame {
 			clyde.targetTile = clyde.scatterTile;
 		}
 		updateGhostDirection(clyde);
+		moveCreature(clyde);
 	}
 
 	public void updateGhostDirection(Creature ghost) {
@@ -200,7 +206,7 @@ public class PacManGame {
 		V2 newDir = null;
 		double min = Double.MAX_VALUE;
 		for (V2 dir : List.of(V2.RIGHT, V2.DOWN, V2.LEFT, V2.UP)) {
-			if (dir.equals(ghost.dir.scaled(-1))) {
+			if (dir.equals(ghost.dir.inverse())) {
 				continue;
 			}
 			V2 neighbor = ghost.tile.sum(dir);
