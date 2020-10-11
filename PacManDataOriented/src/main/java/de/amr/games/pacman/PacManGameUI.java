@@ -18,7 +18,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -28,8 +27,10 @@ public class PacManGameUI {
 	public boolean debugDraw;
 	public float scaling = 2;
 	public Canvas canvas;
+
 	public BufferedImage imageMaze;
 	public BufferedImage spriteSheet;
+	public Font scoreFont;
 
 	public PacManGameUI(PacManGame game) {
 
@@ -63,7 +64,9 @@ public class PacManGameUI {
 		try {
 			spriteSheet = ImageIO.read(getClass().getResourceAsStream("/sprites.png"));
 			imageMaze = ImageIO.read(getClass().getResourceAsStream("/maze_full.png"));
-		} catch (IOException x) {
+			scoreFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/PressStart2P-Regular.ttf"));
+			scoreFont = scoreFont.deriveFont((float) TS);
+		} catch (Exception x) {
 			x.printStackTrace();
 		}
 	}
@@ -84,11 +87,18 @@ public class PacManGameUI {
 	}
 
 	private void draw(PacManGame game, Graphics2D g) {
+		drawScore(g, game);
 		drawMaze(g, game);
 		drawPacMan(g, game, game.pacMan);
 		for (int i = 0; i < game.ghosts.length; ++i) {
 			drawGhost(g, game, i);
 		}
+	}
+
+	private void drawScore(Graphics2D g, PacManGame game) {
+		g.setFont(scoreFont);
+		g.setColor(Color.WHITE);
+		g.drawString(String.format("SCORE %d", game.points), 16, 16);
 	}
 
 	private void drawMaze(Graphics2D g, PacManGame game) {

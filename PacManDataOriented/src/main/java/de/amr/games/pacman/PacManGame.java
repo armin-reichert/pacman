@@ -84,6 +84,7 @@ public class PacManGame {
 	public long framesTotal;
 	public BitSet food = new BitSet(244);
 	public BitSet eaten = new BitSet(244);
+	public int points;
 
 	public void start() {
 		initGame();
@@ -171,6 +172,7 @@ public class PacManGame {
 			}
 		}
 		eaten.clear();
+		points = 0;
 	}
 
 	private int index(int x, int y) {
@@ -208,6 +210,10 @@ public class PacManGame {
 		int x = (int) pacMan.tile.x, y = (int) pacMan.tile.y;
 		if (hasUneatenFood(x, y)) {
 			eaten.set(index(x, y));
+			points += 10;
+			if (isEnergizerTile(pacMan.tile)) {
+				points += 40;
+			}
 		}
 	}
 
