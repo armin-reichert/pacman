@@ -200,19 +200,22 @@ public class PacManGame {
 		V2 newDir = null;
 		double min = Double.MAX_VALUE;
 		for (V2 dir : List.of(V2.RIGHT, V2.DOWN, V2.LEFT, V2.UP)) {
+			if (dir.equals(ghost.dir.scaled(-1))) {
+				continue;
+			}
 			V2 neighbor = ghost.tile.sum(dir);
 			if (!canAccessTile(ghost, neighbor)) {
 				continue;
 			}
 			double d = V2.distance(neighbor, ghost.targetTile);
-			if (d <= min && !dir.equals(ghost.dir.scaled(-1))) {
+			if (d <= min) {
 				newDir = dir;
 				min = d;
 			}
 		}
 		if (newDir != null) {
 			ghost.intendedDir = newDir;
-			log("%s's intended direction is %s", ghost.name, ghost.intendedDir);
+//			log("%s's intended direction is %s", ghost.name, ghost.intendedDir);
 		}
 	}
 
