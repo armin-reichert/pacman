@@ -7,6 +7,12 @@ import java.time.LocalTime;
 import java.util.BitSet;
 import java.util.List;
 
+/**
+ * My attempt at writing a minimal Pac-Man game with faithful behavior.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public class PacManGame {
 
 	public static void main(String[] args) {
