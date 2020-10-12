@@ -249,7 +249,7 @@ public class PacManGame {
 	private void initEntities() {
 		placeAtHomeTile(pacMan);
 		pacMan.dir = pacMan.intendedDir = V2.RIGHT;
-		pacMan.speed = 1.25f;
+		pacMan.speed = 0;
 		pacMan.stuck = false;
 
 		blinky.dir = blinky.intendedDir = V2.LEFT;
@@ -377,6 +377,8 @@ public class PacManGame {
 	}
 
 	private void updatePacMan() {
+//		pacMan.speed = (int) levelData.get(2) / 100f;
+		pacMan.speed = .8f;
 		pacMan.stuck = !move(pacMan);
 		int x = (int) pacMan.tile.x, y = (int) pacMan.tile.y;
 		if (hasUneatenFood(x, y)) {
@@ -509,6 +511,8 @@ public class PacManGame {
 	}
 
 	private boolean move(Creature guy, V2 dir) {
+
+		// portal
 		if (guy.tile.equals(vec(28, 17)) && dir.equals(V2.RIGHT)) {
 			placeAtTile(guy, vec(-1, 17), V2.NULL);
 			return true;
@@ -517,7 +521,9 @@ public class PacManGame {
 			placeAtTile(guy, vec(28, 17), V2.NULL);
 			return true;
 		}
-		if (!isInsideGhostHouse(guy.tile)) {
+
+		// turns
+		if (!isInsideGhostHouse(guy.tile) && canAccessTile(guy, guy.tile.sum(dir))) {
 			if (dir.equals(V2.LEFT) || dir.equals(V2.RIGHT)) {
 				if (Math.abs(guy.offset.y) > 1) {
 					return false;
@@ -525,7 +531,7 @@ public class PacManGame {
 				guy.offset = vec(guy.offset.x, 0);
 			}
 			if (dir.equals(V2.UP) || dir.equals(V2.DOWN)) {
-				if (Math.abs(guy.offset.x) > 1f) {
+				if (Math.abs(guy.offset.x) > 1) {
 					return false;
 				}
 				guy.offset = vec(0, guy.offset.y);
@@ -540,9 +546,10 @@ public class PacManGame {
 		}
 
 		V2 offsetAfterMove = offset(positionAfterMove, tileAfterMove);
+
+		// avoid moving partially into inaccessible tile
 		if (tileAfterMove.equals(guy.tile)) {
-			V2 neighbor = guy.tile.sum(dir);
-			if (!canAccessTile(guy, neighbor)) {
+			if (!canAccessTile(guy, guy.tile.sum(dir))) {
 				if (dir.equals(V2.RIGHT) && offsetAfterMove.x > 0 || dir.equals(V2.LEFT) && offsetAfterMove.x < 0) {
 					guy.offset = vec(0, guy.offset.y);
 					return false;
