@@ -120,7 +120,7 @@ public class PacManGameUI {
 	private void draw(Graphics2D g, PacManGame game) {
 		drawScore(g, game);
 		drawMaze(g, game);
-		drawPacMan(g, game, game.pacMan);
+		drawPacMan(g, game);
 		for (int i = 0; i < game.ghosts.length; ++i) {
 			drawGhost(g, game, i);
 		}
@@ -187,7 +187,8 @@ public class PacManGameUI {
 		g.dispose();
 	}
 
-	private void drawPacMan(Graphics2D g, PacManGame game, Creature pacMan) {
+	private void drawPacMan(Graphics2D g, PacManGame game) {
+		Creature pacMan = game.pacMan;
 		BufferedImage sprite;
 		long interval = game.framesTotal % 30;
 		int frame = (int) interval / 10;
