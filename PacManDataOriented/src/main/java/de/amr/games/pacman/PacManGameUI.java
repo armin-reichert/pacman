@@ -15,7 +15,6 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
@@ -172,7 +171,7 @@ public class PacManGameUI {
 			}
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 8));
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g.drawString(String.format("%d frames/sec", game.fps), 2 * TS, 3 * TS);
 			int timer = 0;
 			if (game.state == GameState.CHANGING_LEVEL) {

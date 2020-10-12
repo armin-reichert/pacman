@@ -296,7 +296,9 @@ public class PacManGame {
 			if (chasingTimer == 0) {
 				enterScatteringState();
 			} else {
-				--chasingTimer;
+				if (pacManPowerTimer == 0) {
+					--chasingTimer;
+				}
 			}
 		} else if (state == GameState.SCATTERING) {
 			updateGuys();
@@ -306,7 +308,9 @@ public class PacManGame {
 			if (scatteringTimer == 0) {
 				enterChasingState();
 			} else {
-				--scatteringTimer;
+				if (pacManPowerTimer == 0) {
+					--scatteringTimer;
+				}
 			}
 		} else if (state == GameState.CHANGING_LEVEL) {
 			if (levelChangeTimer == 0) {
@@ -352,13 +356,13 @@ public class PacManGame {
 		int x = (int) pacMan.tile.x, y = (int) pacMan.tile.y;
 		if (hasUneatenFood(x, y)) {
 			eaten.set(index(x, y));
+			foodRemaining--;
 			points += 10;
 			if (isEnergizerTile(pacMan.tile)) {
 				points += 40;
 				pacManPowerTimer = sec(5);
 				forceGhostsTurnBack();
 			}
-			foodRemaining--;
 		}
 		pacManPowerTimer = Math.max(0, pacManPowerTimer - 1);
 	}
