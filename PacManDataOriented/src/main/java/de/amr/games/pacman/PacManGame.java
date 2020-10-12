@@ -23,7 +23,7 @@ public class PacManGame {
 	}
 
 	public enum GameState {
-		SCATTERING, CHASING, LEVEL_COMPLETE;
+		SCATTERING, CHASING, CHANGING_LEVEL;
 	}
 
 	public static void log(String msg, Object... args) {
@@ -154,7 +154,10 @@ public class PacManGame {
 	public BitSet eaten = new BitSet(244);
 	public int foodRemaining;
 	public int points;
-	public int pacManPowerTime;
+	public int pacManPowerTimer;
+	public int scatteringTimer;
+	public int chasingTimer;
+	public int levelChangeTimer;
 
 	private void gameLoop() {
 		long start = 0;
@@ -186,7 +189,7 @@ public class PacManGame {
 	private void start() {
 		createEntities();
 		initEntities();
-		ui = new PacManGameUI(this);
+		ui = new PacManGameUI(this, 2);
 		initGame();
 		new Thread(this::gameLoop, "GameLoop").start();
 	}
@@ -252,8 +255,11 @@ public class PacManGame {
 		}
 		eaten.clear();
 		foodRemaining = 244;
-		pacManPowerTime = 0;
-		state = GameState.SCATTERING;
+		pacManPowerTimer = 0;
+		chasingTimer = 0;
+		levelChangeTimer = 0;
+		initEntities();
+		enterScatteringState();
 	}
 
 	private void readInput() {
@@ -285,17 +291,50 @@ public class PacManGame {
 		if (state == GameState.CHASING) {
 			updateGuys();
 			if (foodRemaining == 0) {
-				state = GameState.LEVEL_COMPLETE;
+				enterChangingLevelState();
+			}
+			if (chasingTimer == 0) {
+				enterScatteringState();
+			} else {
+				--chasingTimer;
 			}
 		} else if (state == GameState.SCATTERING) {
 			updateGuys();
 			if (foodRemaining == 0) {
-				state = GameState.LEVEL_COMPLETE;
+				enterChangingLevelState();
 			}
-		} else if (state == GameState.LEVEL_COMPLETE) {
-			initLevel(++level);
-			state = GameState.SCATTERING;
+			if (scatteringTimer == 0) {
+				enterChasingState();
+			} else {
+				--scatteringTimer;
+			}
+		} else if (state == GameState.CHANGING_LEVEL) {
+			if (levelChangeTimer == 0) {
+				exitChangingLevelState();
+				enterScatteringState();
+			} else {
+				--levelChangeTimer;
+			}
 		}
+	}
+
+	private void enterScatteringState() {
+		state = GameState.SCATTERING;
+		scatteringTimer = sec(5);
+	}
+
+	private void enterChasingState() {
+		state = GameState.CHASING;
+		chasingTimer = sec(10);
+	}
+
+	private void enterChangingLevelState() {
+		state = GameState.CHANGING_LEVEL;
+		levelChangeTimer = sec(3);
+	}
+
+	private void exitChangingLevelState() {
+		initLevel(++level);
 	}
 
 	private void updateGuys() {
@@ -314,12 +353,12 @@ public class PacManGame {
 			points += 10;
 			if (isEnergizerTile(pacMan.tile)) {
 				points += 40;
-				pacManPowerTime = sec(5);
+				pacManPowerTimer = sec(5);
 				forceGhostsTurnBack();
 			}
 			foodRemaining--;
 		}
-		pacManPowerTime = Math.max(0, pacManPowerTime - 1);
+		pacManPowerTimer = Math.max(0, pacManPowerTimer - 1);
 	}
 
 	private void updateBlinky() {
@@ -372,7 +411,7 @@ public class PacManGame {
 	private void updateGhostSpeed(Creature ghost) {
 		if (isInsideTunnel(ghost.tile)) {
 			ghost.speed = 0.5f;
-		} else if (pacManPowerTime > 0) {
+		} else if (pacManPowerTimer > 0) {
 			ghost.speed = 0.6f;
 		} else {
 			ghost.speed = 0.8f;
@@ -391,7 +430,7 @@ public class PacManGame {
 			ghost.forceTurnBack = false;
 			return;
 		}
-		if (pacManPowerTime > 0 && isIntersectionTile(ghost.tile)) {
+		if (pacManPowerTimer > 0 && isIntersectionTile(ghost.tile)) {
 			ghost.intendedDir = randomAccessibleDir(ghost);
 			return;
 		}

@@ -27,19 +27,22 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import de.amr.games.pacman.PacManGame.GameState;
+
 public class PacManGameUI {
 
 	public boolean debugDraw;
-	public float scaling = 2;
 
-	private Canvas canvas;
+	private final float scaling;
+	private final Canvas canvas;
+
 	private BufferedImage imageMaze;
 	private BufferedImage spriteSheet;
 	private Map<String, BufferedImage> levelSymbols;
 	private Font scoreFont;
 
-	public PacManGameUI(PacManGame game) {
-
+	public PacManGameUI(PacManGame game, float scaling) {
+		this.scaling = scaling;
 		loadResources();
 
 		JFrame window = new JFrame("Pac-Man");
@@ -131,10 +134,13 @@ public class PacManGameUI {
 	}
 
 	private void drawLevelCounter(Graphics2D g, PacManGame game) {
-		int x = WORLD_WIDTH - 3 * TS;
+		int x = WORLD_WIDTH - 4 * TS;
 		int y = WORLD_HEIGHT - 2 * TS;
-		BufferedImage symbol = levelSymbols.get(levelData(game.level).get(0));
-		g.drawImage(symbol, x, y, null);
+		for (int i = 1; i <= game.level; ++i) {
+			BufferedImage symbol = levelSymbols.get(levelData(i).get(0));
+			g.drawImage(symbol, x, y, null);
+			x -= 2 * TS;
+		}
 	}
 
 	private void drawMaze(Graphics2D g, PacManGame game) {
@@ -165,25 +171,34 @@ public class PacManGameUI {
 				g.drawLine(col * TS, 0, col * TS, WORLD_HEIGHT);
 			}
 			g.setColor(Color.WHITE);
-			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 8));
+			g.setFont(new Font("Arial", Font.PLAIN, 8));
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g.drawString(String.format("%d frames/sec", game.fps), 2 * TS, 3 * TS);
-			g.drawString(String.format("%s", game.state), 12 * TS, 3 * TS);
+			int timer = 0;
+			if (game.state == GameState.CHANGING_LEVEL) {
+				timer = game.levelChangeTimer;
+			} else if (game.state == GameState.SCATTERING) {
+				timer = game.scatteringTimer;
+			} else if (game.state == GameState.CHASING) {
+				timer = game.chasingTimer;
+			}
+			g.drawString(String.format("%s %d ticks remaining", game.state, timer), 12 * TS, 3 * TS);
 		}
 		g.dispose();
 	}
 
 	private void drawPacMan(Graphics2D g, PacManGame game, Creature pacMan) {
-		int dirIndex = dirIndex(pacMan.dir);
+		BufferedImage sprite;
 		long interval = game.framesTotal % 30;
 		int frame = (int) interval / 10;
-		BufferedImage sprite;
-		if (pacMan.stuck) {
-			sprite = spriteSheet.getSubimage(0, dirIndex * 16, 16, 16);
+		if (game.state == GameState.CHANGING_LEVEL) {
+			sprite = spriteSheet.getSubimage(2 * 16, 0, 16, 16);
+		} else if (pacMan.stuck) {
+			sprite = spriteSheet.getSubimage(0, dirIndex(pacMan.dir) * 16, 16, 16);
 		} else if (frame == 2) {
 			sprite = spriteSheet.getSubimage(2 * 16, 0, 16, 16);
 		} else {
-			sprite = spriteSheet.getSubimage(frame * 16, dirIndex * 16, 16, 16);
+			sprite = spriteSheet.getSubimage(frame * 16, dirIndex(pacMan.dir) * 16, 16, 16);
 		}
 		V2 position = position(pacMan);
 		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
@@ -191,11 +206,14 @@ public class PacManGameUI {
 	}
 
 	private void drawGhost(Graphics2D g, PacManGame game, int ghostIndex) {
+		if (game.state == GameState.CHANGING_LEVEL) {
+			return;
+		}
 		Creature ghost = game.ghosts[ghostIndex];
 		int dirIndex = dirIndex(ghost.dir);
 		int frame = game.framesTotal % 60 < 30 ? 0 : 1;
 		BufferedImage sprite;
-		if (game.pacManPowerTime > 0) {
+		if (game.pacManPowerTimer > 0) {
 			sprite = spriteSheet.getSubimage((8 + frame) * 16, 4 * 16, 16, 16);
 		} else {
 			sprite = spriteSheet.getSubimage((2 * dirIndex + frame) * 16, (4 + ghostIndex) * 16, 16, 16);
