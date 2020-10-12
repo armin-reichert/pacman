@@ -2,6 +2,11 @@ package de.amr.games.pacman;
 
 import java.util.Objects;
 
+/**
+ * Immutable float 2D vector.
+ * 
+ * @author Armin Reichert
+ */
 public class V2 {
 
 	public static final V2 NULL = new V2(0, 0);
@@ -10,12 +15,14 @@ public class V2 {
 	public static final V2 UP = new V2(0, -1);
 	public static final V2 DOWN = new V2(0, 1);
 
+	private static float EPS = 0.000001f;
+
 	public static double distance(V2 v1, V2 v2) {
 		return Math.hypot(v1.x - v2.x, v1.y - v2.y);
 	}
 
-	public float x;
-	public float y;
+	public final float x;
+	public final float y;
 
 	@Override
 	public int hashCode() {
@@ -34,8 +41,6 @@ public class V2 {
 		return almostEquals(x, other.x) && almostEquals(y, other.y);
 	}
 
-	private static float EPS = 0.000001f;
-
 	private boolean almostEquals(float x, float y) {
 		return x >= y - EPS && x <= y + EPS;
 	}
@@ -50,30 +55,12 @@ public class V2 {
 		this.y = y;
 	}
 
-	public V2 copy() {
-		return new V2(x, y);
-	}
-
-	public void add(V2 v) {
-		x += v.x;
-		y += v.y;
-	}
-
-	public void scale(float s) {
-		x *= s;
-		y *= s;
-	}
-
 	public V2 sum(V2 v) {
-		V2 sum = copy();
-		sum.add(v);
-		return sum;
+		return new V2(x + v.x, y + v.y);
 	}
 
 	public V2 scaled(float s) {
-		V2 scaled = copy();
-		scaled.scale(s);
-		return scaled;
+		return new V2(s * x, s * y);
 	}
 
 	public V2 inverse() {

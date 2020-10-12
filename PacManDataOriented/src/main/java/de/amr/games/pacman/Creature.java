@@ -18,8 +18,8 @@ public class Creature {
 		return String.format("%s tile %s offset %s", name, tile, offset);
 	}
 
-	public String name;
-	public Color color;
+	public final String name;
+	public final Color color;
 	public float speed;
 	public V2 size;
 	public V2 tile;

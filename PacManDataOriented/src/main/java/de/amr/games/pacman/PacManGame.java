@@ -380,7 +380,8 @@ public class PacManGame {
 		} else if (state == GameState.CHASING) {
 			pinky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(4));
 			if (pacMan.dir.equals(V2.UP)) {
-				pinky.targetTile.add(V2.LEFT.scaled(4));
+				// simulate offset bug
+				pinky.targetTile = pinky.targetTile.sum(V2.LEFT.scaled(4));
 			}
 		}
 		updateGhostDirection(pinky);
@@ -492,18 +493,17 @@ public class PacManGame {
 				if (Math.abs(guy.offset.y) > 1) {
 					return false;
 				}
-				guy.offset.y = 0;
+				guy.offset = vec(guy.offset.x, 0);
 			}
 			if (dir.equals(V2.UP) || dir.equals(V2.DOWN)) {
 				if (Math.abs(guy.offset.x) > 1f) {
 					return false;
 				}
-				guy.offset.x = 0;
+				guy.offset = vec(0, guy.offset.y);
 			}
 		}
 
-		V2 positionAfterMove = position(guy);
-		positionAfterMove.add(dir.scaled(guy.speed));
+		V2 positionAfterMove = position(guy).sum(dir.scaled(guy.speed));
 		V2 tileAfterMove = tile(positionAfterMove);
 
 		if (!canAccessTile(guy, tileAfterMove)) {
@@ -515,11 +515,11 @@ public class PacManGame {
 			V2 neighbor = guy.tile.sum(dir);
 			if (!canAccessTile(guy, neighbor)) {
 				if (dir.equals(V2.RIGHT) && offsetAfterMove.x > 0 || dir.equals(V2.LEFT) && offsetAfterMove.x < 0) {
-					guy.offset.x = 0;
+					guy.offset = vec(0, guy.offset.y);
 					return false;
 				}
 				if (dir.equals(V2.DOWN) && offsetAfterMove.y > 0 || dir.equals(V2.UP) && offsetAfterMove.y < 0) {
-					guy.offset.y = 0;
+					guy.offset = vec(guy.offset.x, 0);
 					return false;
 				}
 			}
