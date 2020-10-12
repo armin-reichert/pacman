@@ -321,11 +321,13 @@ public class PacManGame {
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
 		scatteringTimer = sec(5);
+		forceGhostsTurnBack();
 	}
 
 	private void enterChasingState() {
 		state = GameState.CHASING;
 		chasingTimer = sec(10);
+		forceGhostsTurnBack();
 	}
 
 	private void enterChangingLevelState() {
