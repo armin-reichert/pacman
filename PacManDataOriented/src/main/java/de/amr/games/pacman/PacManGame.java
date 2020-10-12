@@ -247,18 +247,17 @@ public class PacManGame {
 	}
 
 	private void initEntities() {
-		placeAtHomeTile(pacMan);
+		placeAtTile(pacMan, pacMan.homeTile.x, pacMan.homeTile.y, HTS, 0);
 		pacMan.dir = pacMan.intendedDir = V2.RIGHT;
 		pacMan.speed = 0;
 		pacMan.stuck = false;
-
 		blinky.dir = blinky.intendedDir = V2.LEFT;
 		inky.dir = inky.intendedDir = V2.UP;
 		pinky.dir = pinky.intendedDir = V2.DOWN;
 		clyde.dir = clyde.intendedDir = V2.UP;
 		for (int i = 0; i < ghosts.length; ++i) {
 			Creature ghost = ghosts[i];
-			placeAtHomeTile(ghost);
+			placeAtTile(ghost, ghost.homeTile.x, ghost.homeTile.y, HTS, 0);
 			ghost.speed = 0;
 			ghost.tileChanged = true;
 			ghost.stuck = false;
@@ -514,11 +513,11 @@ public class PacManGame {
 
 		// portal
 		if (guy.tile.equals(vec(28, 17)) && dir.equals(V2.RIGHT)) {
-			placeAtTile(guy, vec(-1, 17), V2.NULL);
+			placeAtTile(guy, -1, 17, 0, 0);
 			return true;
 		}
 		if (guy.tile.equals(vec(-1, 17)) && dir.equals(V2.LEFT)) {
-			placeAtTile(guy, vec(28, 17), V2.NULL);
+			placeAtTile(guy, 28, 17, 0, 0);
 			return true;
 		}
 
@@ -538,7 +537,8 @@ public class PacManGame {
 			}
 		}
 
-		V2 positionAfterMove = position(guy).sum(dir.scaled(guy.speed));
+		V2 velocity = dir.scaled(1.25f * guy.speed); // 100% speed corresponds to 60 * 1.25 = 90 pixels / sec
+		V2 positionAfterMove = position(guy).sum(velocity);
 		V2 tileAfterMove = tile(positionAfterMove);
 
 		if (!canAccessTile(guy, tileAfterMove)) {
@@ -566,13 +566,9 @@ public class PacManGame {
 		return true;
 	}
 
-	private void placeAtTile(Creature guy, V2 tile, V2 offset) {
-		guy.tile = tile;
-		guy.offset = offset;
-	}
-
-	private void placeAtHomeTile(Creature guy) {
-		placeAtTile(guy, guy.homeTile, vec(HTS, 0));
+	private void placeAtTile(Creature guy, float tile_x, float tile_y, float offset_x, float offset_y) {
+		guy.tile = vec(tile_x, tile_y);
+		guy.offset = vec(offset_x, offset_y);
 	}
 
 	private char map(int x, int y) {
