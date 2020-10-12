@@ -178,6 +178,7 @@ public class PacManGame {
 	public BitSet food = new BitSet(244);
 	public BitSet eaten = new BitSet(244);
 	public int level;
+	public List<?> levelData;
 	public int attackWave;
 	public int foodRemaining;
 	public int points;
@@ -216,8 +217,8 @@ public class PacManGame {
 	private void start() {
 		createEntities();
 		initEntities();
-		ui = new PacManGameUI(this, 2);
 		initGame();
+		ui = new PacManGameUI(this, 2);
 		new Thread(this::gameLoop, "GameLoop").start();
 	}
 
@@ -272,6 +273,7 @@ public class PacManGame {
 
 	private void initLevel(int n) {
 		level = n;
+		levelData = levelData(level);
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				char c = map(x, y);
@@ -440,11 +442,11 @@ public class PacManGame {
 
 	private void updateGhostSpeed(Creature ghost) {
 		if (isInsideTunnel(ghost.tile)) {
-			ghost.speed = 0.5f;
+			ghost.speed = (int) levelData.get(5) / 100f;
 		} else if (pacManPowerTimer > 0) {
-			ghost.speed = 0.6f;
+			ghost.speed = (int) levelData.get(12) / 100f;
 		} else {
-			ghost.speed = 0.8f;
+			ghost.speed = (int) levelData.get(4) / 100f;
 		}
 	}
 
