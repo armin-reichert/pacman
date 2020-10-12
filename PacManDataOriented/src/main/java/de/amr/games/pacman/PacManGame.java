@@ -375,8 +375,7 @@ public class PacManGame {
 	}
 
 	private void updatePacMan() {
-//		pacMan.speed = (int) levelData.get(2) / 100f;
-		pacMan.speed = .8f;
+		pacMan.speed = (int) levelData.get(2) / 100f;
 		pacMan.stuck = !move(pacMan);
 		int x = (int) pacMan.tile.x, y = (int) pacMan.tile.y;
 		if (hasUneatenFood(x, y)) {

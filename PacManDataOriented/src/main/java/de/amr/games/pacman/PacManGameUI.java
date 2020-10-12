@@ -189,8 +189,8 @@ public class PacManGameUI {
 	private void drawPacMan(Graphics2D g, PacManGame game) {
 		Creature pacMan = game.pacMan;
 		BufferedImage sprite;
-		long interval = game.framesTotal % 30;
-		int frame = (int) interval / 10;
+		long interval = game.framesTotal % 15;
+		int frame = (int) interval / 5;
 		if (game.state == GameState.CHANGING_LEVEL) {
 			sprite = spriteSheet.getSubimage(2 * 16, 0, 16, 16);
 		} else if (pacMan.stuck) {
