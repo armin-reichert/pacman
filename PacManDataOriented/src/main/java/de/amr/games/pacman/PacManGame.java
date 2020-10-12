@@ -26,6 +26,14 @@ public class PacManGame {
 		SCATTERING, CHASING, CHANGING_LEVEL;
 	}
 
+	public static final int FPS = 60;
+	public static final int TS = 8;
+	public static final int HTS = TS / 2;
+	public static final int WORLD_WIDTH_TILES = 28;
+	public static final int WORLD_HEIGHT_TILES = 36;
+	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
+	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
+
 	public static void log(String msg, Object... args) {
 		System.err.println(String.format(msg, args));
 	}
@@ -46,6 +54,11 @@ public class PacManGame {
 		return vec(guy.tile.x * TS + guy.offset.x, guy.tile.y * TS + guy.offset.y);
 	}
 
+	public static void placeAtTile(Creature guy, float tile_x, float tile_y, float offset_x, float offset_y) {
+		guy.tile = vec(tile_x, tile_y);
+		guy.offset = vec(offset_x, offset_y);
+	}
+
 	public static int sec(float seconds) {
 		return (int) (seconds * FPS);
 	}
@@ -53,14 +66,6 @@ public class PacManGame {
 	private static int index(int x, int y) {
 		return y * WORLD_WIDTH_TILES + x;
 	}
-
-	public static final int FPS = 60;
-	public static final int TS = 8;
-	public static final int HTS = TS / 2;
-	public static final int WORLD_WIDTH_TILES = 28;
-	public static final int WORLD_HEIGHT_TILES = 36;
-	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
-	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
 
 	/**
 	 * Returns the level-specific data.
@@ -118,13 +123,7 @@ public class PacManGame {
 	};
 
 	private static int attackWaveIndex(int level) {
-		if (level == 1) {
-			return 0;
-		}
-		if (level < 5) {
-			return 1;
-		}
-		return 2;
+		return level == 1 ? 0 : level <= 4 ? 1 : 2;
 	}
 
 	static final String[] MAP = {
@@ -564,11 +563,6 @@ public class PacManGame {
 		guy.tile = tileAfterMove;
 		guy.offset = offsetAfterMove;
 		return true;
-	}
-
-	private void placeAtTile(Creature guy, float tile_x, float tile_y, float offset_x, float offset_y) {
-		guy.tile = vec(tile_x, tile_y);
-		guy.offset = vec(offset_x, offset_y);
 	}
 
 	private char map(int x, int y) {
