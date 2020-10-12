@@ -153,14 +153,6 @@ public class PacManGame {
 	public int points;
 	public int pacManPowerTime;
 
-	private void start() {
-		initGame(1);
-		createEntities();
-		initEntities();
-		ui = new PacManGameUI(this);
-		new Thread(this::gameLoop, "GameLoop").start();
-	}
-
 	private void gameLoop() {
 		long start = 0;
 		long frames = 0;
@@ -184,6 +176,14 @@ public class PacManGame {
 				x.printStackTrace();
 			}
 		}
+	}
+
+	private void start() {
+		initGame();
+		createEntities();
+		initEntities();
+		ui = new PacManGameUI(this);
+		new Thread(this::gameLoop, "GameLoop").start();
 	}
 
 	private void createEntities() {
@@ -230,7 +230,13 @@ public class PacManGame {
 		}
 	}
 
-	private void initGame(int level) {
+	private void initGame() {
+		points = 0;
+		initLevel(1);
+	}
+
+	private void initLevel(int n) {
+		level = n;
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				char c = map(x, y);
@@ -240,11 +246,9 @@ public class PacManGame {
 			}
 		}
 		eaten.clear();
-		points = 0;
+		foodRemaining = 244;
 		pacManPowerTime = 0;
 		state = GameState.SCATTERING;
-		this.level = level;
-		foodRemaining = 244;
 	}
 
 	private int index(int x, int y) {
@@ -269,7 +273,6 @@ public class PacManGame {
 			state = GameState.SCATTERING;
 			forceGhostsTurnBack();
 		}
-		pressedKeys.clear();
 	}
 
 	private void update() {
@@ -280,8 +283,7 @@ public class PacManGame {
 		updateInky();
 		updateClyde();
 		if (foodRemaining == 0) {
-			++level;
-			initGame(level);
+			initLevel(++level);
 		}
 	}
 

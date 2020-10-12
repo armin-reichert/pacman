@@ -42,7 +42,7 @@ public class PacManGameUI {
 
 		loadResources();
 
-		JFrame window = new JFrame("PacMan");
+		JFrame window = new JFrame("Pac-Man");
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.addKeyListener(new KeyAdapter() {
@@ -50,6 +50,11 @@ public class PacManGameUI {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				game.pressedKeys.set(e.getKeyCode());
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				game.pressedKeys.clear(e.getKeyCode());
 			}
 		});
 
