@@ -59,7 +59,7 @@ public class PacManGameUI {
 		});
 
 		canvas = new Canvas();
-		canvas.setSize((int) (PacManGame.WORLD_WIDTH * scaling), (int) (PacManGame.WORLD_HEIGHT * scaling));
+		canvas.setSize((int) (WORLD_WIDTH * scaling), (int) (WORLD_HEIGHT * scaling));
 		canvas.setFocusable(false);
 
 		window.add(canvas);
@@ -131,8 +131,8 @@ public class PacManGameUI {
 	}
 
 	private void drawLevelCounter(Graphics2D g, PacManGame game) {
-		int x = PacManGame.WORLD_WIDTH - 3 * TS;
-		int y = PacManGame.WORLD_HEIGHT - 2 * TS;
+		int x = WORLD_WIDTH - 3 * TS;
+		int y = WORLD_HEIGHT - 2 * TS;
 		BufferedImage symbol = levelSymbols.get(levelData(game.level).get(0));
 		g.drawImage(symbol, x, y, null);
 	}
@@ -161,13 +161,14 @@ public class PacManGameUI {
 			for (int row = 1; row < WORLD_HEIGHT_TILES; ++row) {
 				g.drawLine(0, row * TS, WORLD_WIDTH, row * TS);
 			}
-			for (int col = 1; col < PacManGame.WORLD_WIDTH_TILES; ++col) {
+			for (int col = 1; col < WORLD_WIDTH_TILES; ++col) {
 				g.drawLine(col * TS, 0, col * TS, WORLD_HEIGHT);
 			}
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 8));
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-			g.drawString(String.format("%d frames/sec", game.fps), 20, 24);
+			g.drawString(String.format("%d frames/sec", game.fps), 2 * TS, 3 * TS);
+			g.drawString(String.format("%s", game.state), 12 * TS, 3 * TS);
 		}
 		g.dispose();
 	}
@@ -212,16 +213,14 @@ public class PacManGameUI {
 	private int dirIndex(V2 dir) {
 		if (V2.RIGHT.equals(dir)) {
 			return 0;
-		}
-		if (V2.LEFT.equals(dir)) {
+		} else if (V2.LEFT.equals(dir)) {
 			return 1;
-		}
-		if (V2.UP.equals(dir)) {
+		} else if (V2.UP.equals(dir)) {
 			return 2;
-		}
-		if (V2.DOWN.equals(dir)) {
+		} else if (V2.DOWN.equals(dir)) {
 			return 3;
+		} else {
+			return 0; // TODO
 		}
-		return 0;
 	}
 }

@@ -15,7 +15,6 @@ import java.util.List;
  * My attempt at writing a minimal Pac-Man game with faithful behavior.
  * 
  * @author Armin Reichert
- *
  */
 public class PacManGame {
 
@@ -24,7 +23,7 @@ public class PacManGame {
 	}
 
 	public enum GameState {
-		SCATTERING, CHASING;
+		SCATTERING, CHASING, LEVEL_COMPLETE;
 	}
 
 	public static void log(String msg, Object... args) {
@@ -49,6 +48,10 @@ public class PacManGame {
 
 	public static int sec(float seconds) {
 		return (int) (seconds * FPS);
+	}
+
+	private static int index(int x, int y) {
+		return y * WORLD_WIDTH_TILES + x;
 	}
 
 	public static final int FPS = 60;
@@ -170,19 +173,21 @@ public class PacManGame {
 				start = System.nanoTime();
 			}
 			long sleep = Math.max(1_000_000_000 / FPS - time, 0);
-			try {
-				Thread.sleep(sleep / 1_000_000); // millis
-			} catch (InterruptedException x) {
-				x.printStackTrace();
+			if (sleep > 0) {
+				try {
+					Thread.sleep(sleep / 1_000_000); // millis
+				} catch (InterruptedException x) {
+					x.printStackTrace();
+				}
 			}
 		}
 	}
 
 	private void start() {
-		initGame();
 		createEntities();
 		initEntities();
 		ui = new PacManGameUI(this);
+		initGame();
 		new Thread(this::gameLoop, "GameLoop").start();
 	}
 
@@ -251,10 +256,6 @@ public class PacManGame {
 		state = GameState.SCATTERING;
 	}
 
-	private int index(int x, int y) {
-		return y * WORLD_WIDTH_TILES + x;
-	}
-
 	private void readInput() {
 		if (pressedKeys.get(KeyEvent.VK_LEFT)) {
 			pacMan.intendedDir = V2.LEFT;
@@ -277,14 +278,32 @@ public class PacManGame {
 
 	private void update() {
 		readInput();
+		updateGame();
+	}
+
+	private void updateGame() {
+		if (state == GameState.CHASING) {
+			updateGuys();
+			if (foodRemaining == 0) {
+				state = GameState.LEVEL_COMPLETE;
+			}
+		} else if (state == GameState.SCATTERING) {
+			updateGuys();
+			if (foodRemaining == 0) {
+				state = GameState.LEVEL_COMPLETE;
+			}
+		} else if (state == GameState.LEVEL_COMPLETE) {
+			initLevel(++level);
+			state = GameState.SCATTERING;
+		}
+	}
+
+	private void updateGuys() {
 		updatePacMan();
 		updateBlinky();
 		updatePinky();
 		updateInky();
 		updateClyde();
-		if (foodRemaining == 0) {
-			initLevel(++level);
-		}
 	}
 
 	private void updatePacMan() {
