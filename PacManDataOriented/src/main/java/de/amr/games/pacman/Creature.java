@@ -1,7 +1,6 @@
 package de.amr.games.pacman;
 
-import static de.amr.games.pacman.PacManGame.TS;
-import static de.amr.games.pacman.PacManGame.vec;
+import static de.amr.games.pacman.World.TS;
 
 import java.awt.Color;
 
@@ -10,7 +9,7 @@ public class Creature {
 	public Creature(String name, Color color) {
 		this.name = name;
 		this.color = color;
-		size = vec(TS, TS);
+		size = new V2(TS, TS);
 	}
 
 	@Override

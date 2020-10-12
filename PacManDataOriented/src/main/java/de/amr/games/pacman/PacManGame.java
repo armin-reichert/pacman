@@ -1,6 +1,9 @@
 package de.amr.games.pacman;
 
 import static de.amr.games.pacman.V2.distance;
+import static de.amr.games.pacman.World.HTS;
+import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
+import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -27,44 +30,18 @@ public class PacManGame {
 	}
 
 	public static final int FPS = 60;
-	public static final int TS = 8;
-	public static final int HTS = TS / 2;
-	public static final int WORLD_WIDTH_TILES = 28;
-	public static final int WORLD_HEIGHT_TILES = 36;
-	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
-	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
 
 	public static void log(String msg, Object... args) {
 		System.err.println(String.format(msg, args));
 	}
 
-	public static V2 vec(float x, float y) {
-		return new V2(x, y);
-	}
-
-	public static V2 tile(V2 position) {
-		return vec((int) (position.x + HTS) / TS, (int) (position.y + HTS) / TS);
-	}
-
-	public static V2 offset(V2 position, V2 tile) {
-		return vec(position.x - tile.x * TS, position.y - tile.y * TS);
-	}
-
-	public static V2 position(Creature guy) {
-		return vec(guy.tile.x * TS + guy.offset.x, guy.tile.y * TS + guy.offset.y);
-	}
-
 	public static void placeAtTile(Creature guy, float tile_x, float tile_y, float offset_x, float offset_y) {
-		guy.tile = vec(tile_x, tile_y);
-		guy.offset = vec(offset_x, offset_y);
+		guy.tile = new V2(tile_x, tile_y);
+		guy.offset = new V2(offset_x, offset_y);
 	}
 
 	public static int sec(float seconds) {
 		return (int) (seconds * FPS);
-	}
-
-	private static int index(int x, int y) {
-		return y * WORLD_WIDTH_TILES + x;
 	}
 
 	/**
@@ -126,47 +103,6 @@ public class PacManGame {
 		return level == 1 ? 0 : level <= 4 ? 1 : 2;
 	}
 
-	static final String[] MAP = {
-		//@formatter:off
-		"1111111111111111111111111111",
-		"1111111111111111111111111111",
-		"1111111111111111111111111111",
-		"1111111111111111111111111111",
-		"1222222222222112222222222221",
-		"1211112111112112111112111121",
-		"1211112111112112111112111121",
-		"1211112111112112111112111121",
-		"1222222222222222222222222221",
-		"1211112112111111112112111121",
-		"1211112112111111112112111121",
-		"1222222112222112222112222221",
-		"1111112111110110111112111111",
-		"1111112111110110111112111111",
-		"1111112110000000000112111111",
-		"1111112110111001110112111111",
-		"1111112110100000010112111111",
-		"0000002000100000010002000000",
-		"1111112110100000010112111111",
-		"1111112110111111110112111111",
-		"1111112110000000000112111111",
-		"1111112110111111110112111111",
-		"1111112110111111110112111111",
-		"1222222222222112222222222221",
-		"1211112111112112111112111121",
-		"1211112111112112111112111121",
-		"1222112222222002222222112221",
-		"1112112112111111112112112111",
-		"1112112112111111112112112111",
-		"1222222112222112222112222221",
-		"1211111111112112111111111121",
-		"1211111111112112111111111121",
-		"1222222222222222222222222221",
-		"1111111111111111111111111111",
-		"1111111111111111111111111111",
-		"1111111111111111111111111111",
-		//@formatter:on
-	};
-
 	public GameState state;
 	public BitSet pressedKeys = new BitSet(256);
 	public Creature[] ghosts = new Creature[4];
@@ -174,8 +110,7 @@ public class PacManGame {
 	public PacManGameUI ui;
 	public long fps;
 	public long framesTotal;
-	public BitSet food = new BitSet(244);
-	public BitSet eaten = new BitSet(244);
+	public World world;
 	public int level;
 	public List<?> levelData;
 	public int attackWave;
@@ -213,6 +148,10 @@ public class PacManGame {
 		}
 	}
 
+	public PacManGame() {
+		world = new World();
+	}
+
 	private void start() {
 		createEntities();
 		initEntities();
@@ -223,26 +162,26 @@ public class PacManGame {
 
 	private void createEntities() {
 		pacMan = new Creature("Pac-Man", Color.YELLOW);
-		pacMan.homeTile = vec(13, 26);
+		pacMan.homeTile = new V2(13, 26);
 
 		ghosts[0] = blinky = new Creature("Blinky", Color.RED);
-		blinky.homeTile = vec(13, 14);
-		blinky.scatterTile = vec(WORLD_WIDTH_TILES - 3, 0);
+		blinky.homeTile = new V2(13, 14);
+		blinky.scatterTile = new V2(WORLD_WIDTH_TILES - 3, 0);
 
 		ghosts[1] = pinky = new Creature("Pinky", Color.PINK);
-//		pinky.homeTile = vec(13, 17);
-		pinky.homeTile = vec(13, 14);
-		pinky.scatterTile = vec(2, 0);
+//		pinky.homeTile = new V2(13, 17);
+		pinky.homeTile = new V2(13, 14);
+		pinky.scatterTile = new V2(2, 0);
 
 		ghosts[2] = inky = new Creature("Inky", Color.CYAN);
-//		inky.homeTile = vec(11, 17);
-		inky.homeTile = vec(13, 14);
-		inky.scatterTile = vec(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
+//		inky.homeTile = new V2(11, 17);
+		inky.homeTile = new V2(13, 14);
+		inky.scatterTile = new V2(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
 
 		ghosts[3] = clyde = new Creature("Clyde", Color.ORANGE);
-//		clyde.homeTile = vec(15, 17);
-		clyde.homeTile = vec(13, 14);
-		clyde.scatterTile = vec(0, WORLD_HEIGHT_TILES - 1);
+//		clyde.homeTile = new V2(15, 17);
+		clyde.homeTile = new V2(13, 14);
+		clyde.scatterTile = new V2(0, WORLD_HEIGHT_TILES - 1);
 	}
 
 	private void initEntities() {
@@ -274,13 +213,13 @@ public class PacManGame {
 		levelData = levelData(level);
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				char c = map(x, y);
+				char c = world.content(x, y);
 				if (c == '2') {
-					food.set(index(x, y));
+					world.food.set(world.index(x, y));
 				}
 			}
 		}
-		eaten.clear();
+		world.eaten.clear();
 		foodRemaining = 244;
 		pacManPowerTimer = 0;
 		chasingTimer = 0;
@@ -378,11 +317,11 @@ public class PacManGame {
 		pacMan.speed = (int) levelData.get(2) / 100f;
 		pacMan.stuck = !move(pacMan);
 		int x = (int) pacMan.tile.x, y = (int) pacMan.tile.y;
-		if (hasUneatenFood(x, y)) {
-			eaten.set(index(x, y));
+		if (world.hasUneatenFood(x, y)) {
+			world.eaten.set(world.index(x, y));
 			foodRemaining--;
 			points += 10;
-			if (isEnergizerTile(pacMan.tile)) {
+			if (world.isEnergizerTile(pacMan.tile)) {
 				points += 40;
 				pacManPowerTimer = sec(5);
 				forceGhostsTurnBack();
@@ -440,7 +379,7 @@ public class PacManGame {
 	}
 
 	private void updateGhostSpeed(Creature ghost) {
-		if (isInsideTunnel(ghost.tile)) {
+		if (world.isInsideTunnel(ghost.tile)) {
 			ghost.speed = (int) levelData.get(5) / 100f;
 		} else if (pacManPowerTimer > 0) {
 			ghost.speed = (int) levelData.get(12) / 100f;
@@ -453,7 +392,7 @@ public class PacManGame {
 		if (!ghost.tileChanged) {
 			return;
 		}
-		if (isPortalTile(ghost.tile)) {
+		if (world.isPortalTile(ghost.tile)) {
 			return;
 		}
 		if (ghost.forceTurnBack) {
@@ -461,7 +400,7 @@ public class PacManGame {
 			ghost.forceTurnBack = false;
 			return;
 		}
-		if (pacManPowerTimer > 0 && isIntersectionTile(ghost.tile)) {
+		if (pacManPowerTimer > 0 && world.isIntersectionTile(ghost.tile)) {
 			ghost.intendedDir = randomAccessibleDir(ghost);
 			return;
 		}
@@ -471,7 +410,7 @@ public class PacManGame {
 			if (dir.equals(ghost.dir.inverse())) {
 				continue;
 			}
-			if (dir.equals(V2.UP) && isUpwardsBlocked(ghost.tile.sum(V2.UP))) {
+			if (dir.equals(V2.UP) && world.isUpwardsBlocked(ghost.tile.sum(V2.UP))) {
 				continue;
 			}
 			V2 neighbor = ghost.tile.sum(dir);
@@ -510,50 +449,50 @@ public class PacManGame {
 	private boolean move(Creature guy, V2 dir) {
 
 		// portal
-		if (guy.tile.equals(vec(28, 17)) && dir.equals(V2.RIGHT)) {
+		if (guy.tile.equals(new V2(28, 17)) && dir.equals(V2.RIGHT)) {
 			placeAtTile(guy, -1, 17, 0, 0);
 			return true;
 		}
-		if (guy.tile.equals(vec(-1, 17)) && dir.equals(V2.LEFT)) {
+		if (guy.tile.equals(new V2(-1, 17)) && dir.equals(V2.LEFT)) {
 			placeAtTile(guy, 28, 17, 0, 0);
 			return true;
 		}
 
 		// turns
-		if (!isInsideGhostHouse(guy.tile) && canAccessTile(guy, guy.tile.sum(dir))) {
+		if (!world.isInsideGhostHouse(guy.tile) && canAccessTile(guy, guy.tile.sum(dir))) {
 			if (dir.equals(V2.LEFT) || dir.equals(V2.RIGHT)) {
 				if (Math.abs(guy.offset.y) > 1) {
 					return false;
 				}
-				guy.offset = vec(guy.offset.x, 0);
+				guy.offset = new V2(guy.offset.x, 0);
 			}
 			if (dir.equals(V2.UP) || dir.equals(V2.DOWN)) {
 				if (Math.abs(guy.offset.x) > 1) {
 					return false;
 				}
-				guy.offset = vec(0, guy.offset.y);
+				guy.offset = new V2(0, guy.offset.y);
 			}
 		}
 
 		V2 velocity = dir.scaled(1.25f * guy.speed); // 100% speed corresponds to 60 * 1.25 = 90 pixels / sec
-		V2 positionAfterMove = position(guy).sum(velocity);
-		V2 tileAfterMove = tile(positionAfterMove);
+		V2 positionAfterMove = world.position(guy).sum(velocity);
+		V2 tileAfterMove = world.tile(positionAfterMove);
 
 		if (!canAccessTile(guy, tileAfterMove)) {
 			return false;
 		}
 
-		V2 offsetAfterMove = offset(positionAfterMove, tileAfterMove);
+		V2 offsetAfterMove = world.offset(positionAfterMove, tileAfterMove);
 
 		// avoid moving partially into inaccessible tile
 		if (tileAfterMove.equals(guy.tile)) {
 			if (!canAccessTile(guy, guy.tile.sum(dir))) {
 				if (dir.equals(V2.RIGHT) && offsetAfterMove.x > 0 || dir.equals(V2.LEFT) && offsetAfterMove.x < 0) {
-					guy.offset = vec(0, guy.offset.y);
+					guy.offset = new V2(0, guy.offset.y);
 					return false;
 				}
 				if (dir.equals(V2.DOWN) && offsetAfterMove.y > 0 || dir.equals(V2.UP) && offsetAfterMove.y < 0) {
-					guy.offset = vec(guy.offset.x, 0);
+					guy.offset = new V2(guy.offset.x, 0);
 					return false;
 				}
 			}
@@ -562,10 +501,6 @@ public class PacManGame {
 		guy.tile = tileAfterMove;
 		guy.offset = offsetAfterMove;
 		return true;
-	}
-
-	private char map(int x, int y) {
-		return MAP[y].charAt(x);
 	}
 
 	public boolean canAccessTile(Creature guy, V2 tile) {
@@ -578,63 +513,10 @@ public class PacManGame {
 		if (tile.y < 0 || tile.y >= WORLD_HEIGHT_TILES) {
 			return false;
 		}
-		if (isGhostHouseDoor(tile)) {
+		if (world.isGhostHouseDoor(tile)) {
 			return false; // TODO ghost can access door when leaving or entering ghosthouse
 		}
-		return map((int) tile.x, (int) tile.y) != '1';
-	}
-
-	public boolean isGhostHouseDoor(V2 tile) {
-		return tile.y == 15 && (tile.x == 13 || tile.x == 14);
-	}
-
-	public boolean isInsideGhostHouse(V2 tile) {
-		return tile.x >= 10 && tile.x <= 17 && tile.y >= 15 && tile.y <= 22;
-	}
-
-	public boolean isInsideTunnel(V2 tile) {
-		return tile.y == 17 && (tile.x <= 5 || tile.x >= 21);
-	}
-
-	private boolean isUpwardsBlocked(V2 tile) {
-		//@formatter:off
-		return tile.x == 12 && tile.y == 13
-		  	|| tile.x == 15 && tile.y == 13
-			  || tile.x == 12 && tile.y == 25
-			  || tile.x == 15 && tile.y == 25;
-		//@formatter:on
-	}
-
-	public boolean isFoodTile(int x, int y) {
-		return food.get(index(x, y));
-	}
-
-	public boolean hasEatenFood(int x, int y) {
-		return isFoodTile(x, y) && eaten.get(index(x, y));
-	}
-
-	public boolean hasUneatenFood(int x, int y) {
-		return isFoodTile(x, y) && !hasEatenFood(x, y);
-	}
-
-	public boolean isEnergizerTile(V2 tile) {
-		//@formatter:off
-		return tile.x == 1  && tile.y == 6
-		  	|| tile.x == 26 && tile.y == 6
-			  || tile.x == 1  && tile.y == 26
-			  || tile.x == 26 && tile.y == 26;
-		//@formatter:on
-	}
-
-	public boolean isIntersectionTile(V2 tile) {
-		int accessibleNeighbors = 0;
-		for (V2 dir : List.of(V2.DOWN, V2.LEFT, V2.RIGHT, V2.UP)) {
-			V2 neighbor = tile.sum(dir);
-			if (isAccessibleTile(neighbor)) {
-				++accessibleNeighbors;
-			}
-		}
-		return accessibleNeighbors >= 3;
+		return world.content((int) tile.x, (int) tile.y) != '1';
 	}
 
 	public V2 randomAccessibleDir(Creature guy) {
@@ -643,26 +525,11 @@ public class PacManGame {
 			if (dir.equals(guy.dir.inverse())) {
 				continue;
 			}
-			if (isAccessibleTile(guy.tile.sum(dir))) {
+			if (world.isAccessibleTile(guy.tile.sum(dir))) {
 				dirs.add(dir);
 			}
 		}
 		Collections.shuffle(dirs);
 		return dirs.get(0);
-	}
-
-	public boolean isAccessibleTile(V2 tile) {
-		if (isPortalTile(tile)) {
-			return true;
-		}
-		int x = (int) tile.x, y = (int) tile.y;
-		if (x >= 0 && x < WORLD_WIDTH_TILES && y > 0 && y < WORLD_HEIGHT_TILES) {
-			return false;
-		}
-		return map(x, y) != '1';
-	}
-
-	public boolean isPortalTile(V2 tile) {
-		return tile.equals(vec(28, 17)) || tile.equals(vec(-1, 17));
 	}
 }

@@ -1,16 +1,13 @@
 package de.amr.games.pacman;
 
-import static de.amr.games.pacman.PacManGame.HTS;
-import static de.amr.games.pacman.PacManGame.TS;
-import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT;
-import static de.amr.games.pacman.PacManGame.WORLD_HEIGHT_TILES;
-import static de.amr.games.pacman.PacManGame.WORLD_WIDTH;
-import static de.amr.games.pacman.PacManGame.WORLD_WIDTH_TILES;
 import static de.amr.games.pacman.PacManGame.levelData;
-import static de.amr.games.pacman.PacManGame.position;
-import static de.amr.games.pacman.PacManGame.vec;
+import static de.amr.games.pacman.World.HTS;
+import static de.amr.games.pacman.World.TS;
+import static de.amr.games.pacman.World.WORLD_HEIGHT;
+import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
+import static de.amr.games.pacman.World.WORLD_WIDTH;
+import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 
-import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
@@ -147,11 +144,11 @@ public class PacManGameUI {
 		g.drawImage(imageMaze, 0, 3 * TS, null);
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				V2 tile = vec(x, y);
-				if (game.hasEatenFood(x, y)) {
+				V2 tile = new V2(x, y);
+				if (game.world.hasEatenFood(x, y)) {
 					g.setColor(Color.BLACK);
 					g.fillRect(x * TS, y * TS, TS, TS);
-				} else if (game.isEnergizerTile(tile)) {
+				} else if (game.world.isEnergizerTile(tile)) {
 					if (game.framesTotal % 20 < 10) {
 						g.setColor(Color.BLACK);
 						g.fillRect(x * TS, y * TS, TS, TS);
@@ -161,18 +158,20 @@ public class PacManGameUI {
 		}
 
 		if (debugDraw) {
-			g.setColor(new Color(200, 200, 200, 100));
-			g.setStroke(new BasicStroke(0.1f));
-			for (int row = 1; row < WORLD_HEIGHT_TILES; ++row) {
-				g.drawLine(0, row * TS, WORLD_WIDTH, row * TS);
-			}
-			for (int col = 1; col < WORLD_WIDTH_TILES; ++col) {
-				g.drawLine(col * TS, 0, col * TS, WORLD_HEIGHT);
-			}
+//			g.setColor(new Color(200, 200, 200, 100));
+//			g.setStroke(new BasicStroke(0.1f));
+//			for (int row = 1; row < WORLD_HEIGHT_TILES; ++row) {
+//				g.drawLine(0, row * TS, WORLD_WIDTH, row * TS);
+//			}
+//			for (int col = 1; col < WORLD_WIDTH_TILES; ++col) {
+//				g.drawLine(col * TS, 0, col * TS, WORLD_HEIGHT);
+//			}
+
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
 //			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g.drawString(String.format("%d frames/sec", game.fps), 2 * TS, 3 * TS);
+
 			long timer = 0;
 			if (game.state == GameState.CHANGING_LEVEL) {
 				timer = game.levelChangeTimer;
@@ -200,7 +199,7 @@ public class PacManGameUI {
 		} else {
 			sprite = spriteSheet.getSubimage(frame * 16, dirIndex(pacMan.dir) * 16, 16, 16);
 		}
-		V2 position = position(pacMan);
+		V2 position = game.world.position(pacMan);
 		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
 //	g.fillRect((int) position.x, (int) position.y, (int) pacMan.size.x, (int) pacMan.size.y);
 	}
@@ -218,7 +217,7 @@ public class PacManGameUI {
 		} else {
 			sprite = spriteSheet.getSubimage((2 * dirIndex + frame) * 16, (4 + ghostIndex) * 16, 16, 16);
 		}
-		V2 position = position(ghost);
+		V2 position = game.world.position(ghost);
 		g.setColor(ghost.color);
 		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
 		if (debugDraw) {
