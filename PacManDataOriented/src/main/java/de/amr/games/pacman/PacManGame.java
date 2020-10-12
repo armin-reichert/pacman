@@ -301,12 +301,6 @@ public class PacManGame {
 			pacMan.intendedDir = V2.DOWN;
 		} else if (pressedKeys.get(KeyEvent.VK_D)) {
 			ui.debugDraw = !ui.debugDraw;
-		} else if (pressedKeys.get(KeyEvent.VK_C)) {
-			state = GameState.CHASING;
-			forceGhostsTurnBack();
-		} else if (pressedKeys.get(KeyEvent.VK_S)) {
-			state = GameState.SCATTERING;
-			forceGhostsTurnBack();
 		}
 	}
 
