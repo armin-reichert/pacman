@@ -110,14 +110,14 @@ public class PacManGameUI {
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
-				draw(game, g);
+				draw(g, game);
 				g.dispose();
 			} while (strategy.contentsRestored());
 			strategy.show();
 		} while (strategy.contentsLost());
 	}
 
-	private void draw(PacManGame game, Graphics2D g) {
+	private void draw(Graphics2D g, PacManGame game) {
 		drawScore(g, game);
 		drawMaze(g, game);
 		drawPacMan(g, game, game.pacMan);
