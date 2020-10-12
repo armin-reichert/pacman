@@ -101,7 +101,33 @@ public class PacManGame {
 		}
 	}
 
-	public final String[] map = {
+	static final long[][] SCATTERING_TIMES = {
+		//@formatter:off
+		{ sec(7), sec(7), sec(5), sec(5) },
+		{ sec(7), sec(7), sec(5), 1      },
+		{ sec(5), sec(5), sec(5), 1      },
+		//@formatter:on
+	};
+
+	static final long[][] CHASING_TIMES = {
+		//@formatter:off
+		{ sec(20), sec(20), sec(20),   Long.MAX_VALUE },
+		{ sec(20), sec(20), sec(1033), Long.MAX_VALUE },
+		{ sec(5),  sec(5),  sec(1037), Long.MAX_VALUE },
+		//@formatter:on
+	};
+
+	private static int attackWaveIndex(int level) {
+		if (level == 1) {
+			return 0;
+		}
+		if (level < 5) {
+			return 1;
+		}
+		return 2;
+	}
+
+	static final String[] MAP = {
 		//@formatter:off
 		"1111111111111111111111111111",
 		"1111111111111111111111111111",
@@ -143,7 +169,6 @@ public class PacManGame {
 	};
 
 	public GameState state;
-	public int level;
 	public BitSet pressedKeys = new BitSet(256);
 	public Creature[] ghosts = new Creature[4];
 	public Creature pacMan, blinky, inky, pinky, clyde;
@@ -152,12 +177,14 @@ public class PacManGame {
 	public long framesTotal;
 	public BitSet food = new BitSet(244);
 	public BitSet eaten = new BitSet(244);
+	public int level;
+	public int attackWave;
 	public int foodRemaining;
 	public int points;
-	public int pacManPowerTimer;
-	public int scatteringTimer;
-	public int chasingTimer;
-	public int levelChangeTimer;
+	public long pacManPowerTimer;
+	public long scatteringTimer;
+	public long chasingTimer;
+	public long levelChangeTimer;
 
 	private void gameLoop() {
 		long start = 0;
@@ -258,6 +285,7 @@ public class PacManGame {
 		pacManPowerTimer = 0;
 		chasingTimer = 0;
 		levelChangeTimer = 0;
+		attackWave = 0;
 		initEntities();
 		enterScatteringState();
 	}
@@ -294,6 +322,7 @@ public class PacManGame {
 				enterChangingLevelState();
 			}
 			if (chasingTimer == 0) {
+				++attackWave;
 				enterScatteringState();
 			} else {
 				if (pacManPowerTimer == 0) {
@@ -324,13 +353,13 @@ public class PacManGame {
 
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
-		scatteringTimer = sec(5);
+		scatteringTimer = SCATTERING_TIMES[attackWaveIndex(level)][attackWave];
 		forceGhostsTurnBack();
 	}
 
 	private void enterChasingState() {
 		state = GameState.CHASING;
-		chasingTimer = sec(10);
+		chasingTimer = CHASING_TIMES[attackWaveIndex(level)][attackWave];
 		forceGhostsTurnBack();
 	}
 
@@ -544,7 +573,7 @@ public class PacManGame {
 	}
 
 	private char map(int x, int y) {
-		return map[y].charAt(x);
+		return MAP[y].charAt(x);
 	}
 
 	public boolean canAccessTile(Creature guy, V2 tile) {

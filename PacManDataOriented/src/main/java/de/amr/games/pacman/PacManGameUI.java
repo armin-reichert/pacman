@@ -170,10 +170,10 @@ public class PacManGameUI {
 				g.drawLine(col * TS, 0, col * TS, WORLD_HEIGHT);
 			}
 			g.setColor(Color.WHITE);
-			g.setFont(new Font("Arial", Font.PLAIN, 8));
+			g.setFont(new Font("Arial", Font.PLAIN, 6));
 //			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g.drawString(String.format("%d frames/sec", game.fps), 2 * TS, 3 * TS);
-			int timer = 0;
+			long timer = 0;
 			if (game.state == GameState.CHANGING_LEVEL) {
 				timer = game.levelChangeTimer;
 			} else if (game.state == GameState.SCATTERING) {
