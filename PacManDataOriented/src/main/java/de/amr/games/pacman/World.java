@@ -1,6 +1,5 @@
 package de.amr.games.pacman;
 
-import java.util.BitSet;
 import java.util.List;
 
 public class World {
@@ -11,8 +10,6 @@ public class World {
 	public static final int WORLD_HEIGHT_TILES = 36;
 	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
 	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
-
-	public BitSet eaten = new BitSet(244);
 
 	final String[] map;
 
@@ -102,14 +99,6 @@ public class World {
 
 	public boolean isFoodTile(int x, int y) {
 		return content(x, y) == '2';
-	}
-
-	public boolean hasEatenFood(int x, int y) {
-		return isFoodTile(x, y) && eaten.get(index(x, y));
-	}
-
-	public boolean hasUneatenFood(int x, int y) {
-		return isFoodTile(x, y) && !hasEatenFood(x, y);
 	}
 
 	public boolean isEnergizerTile(V2 tile) {

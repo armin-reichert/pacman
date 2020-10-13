@@ -145,7 +145,7 @@ public class PacManGameUI {
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				V2 tile = new V2(x, y);
-				if (game.world.hasEatenFood(x, y)) {
+				if (game.hasEatenFood(x, y)) {
 					g.setColor(Color.BLACK);
 					g.fillRect(x * TS, y * TS, TS, TS);
 				} else if (game.world.isEnergizerTile(tile)) {

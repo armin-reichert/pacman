@@ -106,6 +106,7 @@ public class PacManGame {
 	public long fps;
 	public long framesTotal;
 	public World world;
+	public BitSet eatenFood;
 	public int level;
 	public List<?> levelData;
 	public int attackWave;
@@ -201,13 +202,14 @@ public class PacManGame {
 
 	private void initGame() {
 		points = 0;
+		eatenFood = new BitSet();
 		initLevel(1);
 	}
 
 	private void initLevel(int n) {
 		level = n;
 		levelData = levelData(level);
-		world.eaten.clear();
+		eatenFood.clear();
 		foodRemaining = 244;
 		pacManPowerTimer = 0;
 		chasingTimer = 0;
@@ -303,8 +305,8 @@ public class PacManGame {
 		pacMan.speed = (int) levelData.get(2) / 100f;
 		pacMan.stuck = !move(pacMan);
 		int x = (int) pacMan.tile.x, y = (int) pacMan.tile.y;
-		if (world.hasUneatenFood(x, y)) {
-			world.eaten.set(world.index(x, y));
+		if (world.isFoodTile(x, y) && !hasEatenFood(x, y)) {
+			eatenFood.set(world.index(x, y));
 			foodRemaining--;
 			points += 10;
 			if (world.isEnergizerTile(pacMan.tile)) {
@@ -519,5 +521,9 @@ public class PacManGame {
 		}
 		Collections.shuffle(dirs);
 		return dirs.get(0);
+	}
+
+	public boolean hasEatenFood(int x, int y) {
+		return world.isFoodTile(x, y) && eatenFood.get(world.index(x, y));
 	}
 }
