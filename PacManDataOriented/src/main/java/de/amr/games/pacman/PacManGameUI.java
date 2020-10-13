@@ -93,10 +93,10 @@ public class PacManGameUI {
 			numbers.put(300, sheet(1, 9));
 			numbers.put(500, sheet(2, 9));
 			numbers.put(700, sheet(3, 9));
-			numbers.put(1000, sheet(4, 9));
-			numbers.put(2000, sheet(4, 10));
-			numbers.put(3000, sheet(4, 11));
-			numbers.put(5000, sheet(4, 12));
+			numbers.put(1000, sheet(4, 9, 2, 1));
+			numbers.put(2000, sheet(4, 10, 2, 1));
+			numbers.put(3000, sheet(4, 11, 2, 1));
+			numbers.put(5000, sheet(4, 12, 2, 1));
 
 			scoreFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/PressStart2P-Regular.ttf"))
 					.deriveFont((float) TS);
@@ -105,8 +105,12 @@ public class PacManGameUI {
 		}
 	}
 
+	private BufferedImage sheet(int x, int y, int w, int h) {
+		return spriteSheet.getSubimage(x * 16, y * 16, w * 16, h * 16);
+	}
+
 	private BufferedImage sheet(int x, int y) {
-		return spriteSheet.getSubimage(x * 16, y * 16, 16, 16);
+		return sheet(x, y, 1, 1);
 	}
 
 	private BufferedImage image(String path) throws IOException {

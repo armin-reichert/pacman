@@ -181,7 +181,7 @@ public class PacManGame {
 	private void initGame() {
 		points = 0;
 		eatenFood = new BitSet();
-		initLevel(1);
+		initLevel(7);
 		createEntities();
 		enterReadyState();
 	}
