@@ -356,14 +356,14 @@ public class PacManGame {
 				pacManPowerTimer = sec(powerSeconds);
 				log("Pac-Man got power for %d seconds", powerSeconds);
 				for (Creature ghost : ghosts) {
-					ghost.vulnerable = true;
+					ghost.vulnerable = !ghost.dead;
 				}
 				forceGhostsTurnBack();
 			}
 		}
 		if (pacManPowerTimer > 0) {
 			for (Creature ghost : ghosts) {
-				if (pacMan.tile.equals(ghost.tile) && !ghost.dead) {
+				if (pacMan.tile.equals(ghost.tile) && ghost.vulnerable) {
 					ghost.dead = true;
 					log("Pac-Man killed %s at location %s", ghost.name, ghost.tile);
 				}
