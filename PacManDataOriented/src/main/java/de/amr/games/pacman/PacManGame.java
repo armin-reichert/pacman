@@ -274,7 +274,7 @@ public class PacManGame {
 		else if (state == GameState.CHANGING_LEVEL) {
 			if (levelChangeStateTimer == 0) {
 				exitChangingLevelState();
-				enterScatteringState();
+				enterReadyState();
 			} else {
 				--levelChangeStateTimer;
 			}

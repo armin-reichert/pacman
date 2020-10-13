@@ -151,9 +151,12 @@ public class PacManGameUI {
 					g.setColor(Color.BLACK);
 					g.fillRect(x * TS, y * TS, TS, TS);
 				} else if (game.world.isEnergizerTile(tile)) {
-					if (game.framesTotal % 20 < 10) {
-						g.setColor(Color.BLACK);
-						g.fillRect(x * TS, y * TS, TS, TS);
+					if (game.state == GameState.CHASING || game.state == GameState.SCATTERING) {
+						// blinking
+						if (game.framesTotal % 20 < 10) {
+							g.setColor(Color.BLACK);
+							g.fillRect(x * TS, y * TS, TS, TS);
+						}
 					}
 				}
 			}
