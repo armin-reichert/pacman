@@ -141,23 +141,26 @@ public class PacManGameUI {
 		}
 	}
 
+	private void drawTileHidden(Graphics2D g, int x, int y) {
+		g.setColor(Color.BLACK);
+		g.fillRect(x * TS, y * TS, TS, TS);
+	}
+
 	private void drawMaze(Graphics2D g, PacManGame game) {
 		g = (Graphics2D) g.create();
 		g.drawImage(imageMaze, 0, 3 * TS, null);
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				V2 tile = new V2(x, y);
+				// hide eaten food
 				if (game.hasEatenFood(x, y)) {
-					g.setColor(Color.BLACK);
-					g.fillRect(x * TS, y * TS, TS, TS);
-				} else if (game.world.isEnergizerTile(tile)) {
-					if (game.state == GameState.CHASING || game.state == GameState.SCATTERING) {
-						// blinking
-						if (game.framesTotal % 20 < 10) {
-							g.setColor(Color.BLACK);
-							g.fillRect(x * TS, y * TS, TS, TS);
-						}
-					}
+					drawTileHidden(g, x, y);
+					continue;
+				}
+				// uneaten energizer blinking
+				if (game.world.isEnergizerTile(tile) && game.framesTotal % 20 < 10
+						&& (game.state == GameState.CHASING || game.state == GameState.SCATTERING)) {
+					drawTileHidden(g, x, y);
 				}
 			}
 		}

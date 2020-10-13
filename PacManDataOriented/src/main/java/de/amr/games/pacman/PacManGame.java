@@ -314,6 +314,7 @@ public class PacManGame {
 	}
 
 	private void exitChangingLevelState() {
+		log("Level %d complete, entering level %d", level, level + 1);
 		initLevel(++level);
 	}
 
@@ -335,7 +336,9 @@ public class PacManGame {
 			points += 10;
 			if (world.isEnergizerTile(pacMan.tile)) {
 				points += 40;
-				pacManPowerTimer = sec(5);
+				int powerSeconds = (int) levelData.get(13);
+				pacManPowerTimer = sec(powerSeconds);
+				log("Pac-Man got power for %d seconds", powerSeconds);
 				forceGhostsTurnBack();
 			}
 		}
