@@ -26,7 +26,7 @@ public class PacManGame {
 	}
 
 	public enum GameState {
-		SCATTERING, CHASING, CHANGING_LEVEL;
+		READY, SCATTERING, CHASING, CHANGING_LEVEL;
 	}
 
 	public static final int FPS = 60;
@@ -102,6 +102,7 @@ public class PacManGame {
 	public Creature pacMan;
 	public Creature[] ghosts;
 	public PacManGameUI ui;
+	public String messageText;
 	public long fps;
 	public long framesTotal;
 	public World world;
@@ -112,9 +113,10 @@ public class PacManGame {
 	public int foodRemaining;
 	public int points;
 	public long pacManPowerTimer;
-	public long scatteringTimer;
-	public long chasingTimer;
-	public long levelChangeTimer;
+	public long readyStateTimer;
+	public long scatteringStateTimer;
+	public long chasingStateTimer;
+	public long levelChangeStateTimer;
 
 	public PacManGame() {
 		world = new World();
@@ -138,18 +140,15 @@ public class PacManGame {
 		ghosts[0].scatterTile = new V2(WORLD_WIDTH_TILES - 3, 0);
 
 		ghosts[1] = new Creature("Pinky", Color.PINK);
-//		ghosts[1].homeTile = new V2(13, 17);
-		ghosts[1].homeTile = new V2(13, 14);
+		ghosts[1].homeTile = new V2(13, 17);
 		ghosts[1].scatterTile = new V2(2, 0);
 
 		ghosts[2] = new Creature("Inky", Color.CYAN);
-//		ghosts[2].homeTile = new V2(11, 17);
-		ghosts[2].homeTile = new V2(13, 14);
+		ghosts[2].homeTile = new V2(11, 17);
 		ghosts[2].scatterTile = new V2(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
 
 		ghosts[3] = new Creature("Clyde", Color.ORANGE);
-//		ghosts[3].homeTile = new V2(15, 17);
-		ghosts[3].homeTile = new V2(13, 14);
+		ghosts[3].homeTile = new V2(15, 17);
 		ghosts[3].scatterTile = new V2(0, WORLD_HEIGHT_TILES - 1);
 	}
 
@@ -186,11 +185,11 @@ public class PacManGame {
 		eatenFood.clear();
 		foodRemaining = 244;
 		pacManPowerTimer = 0;
-		chasingTimer = 0;
-		levelChangeTimer = 0;
+		chasingStateTimer = 0;
+		levelChangeStateTimer = 0;
 		attackWave = 0;
 		initEntities();
-		enterScatteringState();
+		enterReadyState();
 	}
 
 	private void gameLoop() {
@@ -236,54 +235,82 @@ public class PacManGame {
 
 	private void update() {
 		readInput();
-		if (state == GameState.CHASING) {
+		if (state == GameState.READY) {
+			if (readyStateTimer == 0) {
+				exitReadyState();
+				enterScatteringState();
+			} else {
+				--readyStateTimer;
+			}
+		}
+
+		else if (state == GameState.CHASING) {
 			updateGuys();
 			if (foodRemaining == 0) {
 				enterChangingLevelState();
-			} else if (chasingTimer == 0) {
+			} else if (chasingStateTimer == 0) {
 				++attackWave;
 				enterScatteringState();
 			} else {
 				if (pacManPowerTimer == 0) {
-					--chasingTimer;
+					--chasingStateTimer;
 				}
 			}
-		} else if (state == GameState.SCATTERING) {
+		}
+
+		else if (state == GameState.SCATTERING) {
 			updateGuys();
 			if (foodRemaining == 0) {
 				enterChangingLevelState();
-			} else if (scatteringTimer == 0) {
+			} else if (scatteringStateTimer == 0) {
 				enterChasingState();
 			} else {
 				if (pacManPowerTimer == 0) {
-					--scatteringTimer;
+					--scatteringStateTimer;
 				}
 			}
-		} else if (state == GameState.CHANGING_LEVEL) {
-			if (levelChangeTimer == 0) {
+		}
+
+		else if (state == GameState.CHANGING_LEVEL) {
+			if (levelChangeStateTimer == 0) {
 				exitChangingLevelState();
 				enterScatteringState();
 			} else {
-				--levelChangeTimer;
+				--levelChangeStateTimer;
 			}
+		}
+	}
+
+	private void enterReadyState() {
+		state = GameState.READY;
+		readyStateTimer = sec(5);
+		messageText = "Ready!";
+	}
+
+	private void exitReadyState() {
+		messageText = null;
+		// TODO move ghosts out of house
+		for (int i = 1; i < ghosts.length; ++i) {
+			ghosts[i].tile = ghosts[0].homeTile;
+			ghosts[1].offset = new V2(HTS, 0);
 		}
 	}
 
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
-		scatteringTimer = SCATTERING_TIMES[attackWaveIndex(level)][attackWave];
+		scatteringStateTimer = SCATTERING_TIMES[attackWaveIndex(level)][attackWave];
 		forceGhostsTurnBack();
 	}
 
 	private void enterChasingState() {
 		state = GameState.CHASING;
-		chasingTimer = CHASING_TIMES[attackWaveIndex(level)][attackWave];
+		chasingStateTimer = CHASING_TIMES[attackWaveIndex(level)][attackWave];
 		forceGhostsTurnBack();
 	}
 
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
-		levelChangeTimer = sec(3);
+		levelChangeStateTimer = sec(3);
 	}
 
 	private void exitChangingLevelState() {
@@ -317,7 +344,9 @@ public class PacManGame {
 
 	private void updateBlinky() {
 		Creature blinky = ghosts[0];
-		if (state == GameState.SCATTERING) {
+		if (state == GameState.READY) {
+			blinky.targetTile = null;
+		} else if (state == GameState.SCATTERING) {
 			blinky.targetTile = blinky.scatterTile;
 		} else if (state == GameState.CHASING) {
 			blinky.targetTile = pacMan.tile;
@@ -329,7 +358,9 @@ public class PacManGame {
 
 	private void updatePinky() {
 		Creature pinky = ghosts[1];
-		if (state == GameState.SCATTERING) {
+		if (state == GameState.READY) {
+			pinky.targetTile = null;
+		} else if (state == GameState.SCATTERING) {
 			pinky.targetTile = pinky.scatterTile;
 		} else if (state == GameState.CHASING) {
 			pinky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(4));
@@ -346,7 +377,9 @@ public class PacManGame {
 	private void updateInky() {
 		Creature inky = ghosts[2];
 		Creature blinky = ghosts[0];
-		if (state == GameState.SCATTERING) {
+		if (state == GameState.READY) {
+			inky.targetTile = null;
+		} else if (state == GameState.SCATTERING) {
 			inky.targetTile = inky.scatterTile;
 		} else if (state == GameState.CHASING) {
 			inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.inverse());
@@ -358,7 +391,9 @@ public class PacManGame {
 
 	private void updateClyde() {
 		Creature clyde = ghosts[3];
-		if (state == GameState.SCATTERING) {
+		if (state == GameState.READY) {
+			clyde.targetTile = null;
+		} else if (state == GameState.SCATTERING) {
 			clyde.targetTile = clyde.scatterTile;
 		} else if (state == GameState.CHASING) {
 			clyde.targetTile = distance(clyde.tile, pacMan.tile) > 8 ? pacMan.tile : clyde.scatterTile;
@@ -369,7 +404,9 @@ public class PacManGame {
 	}
 
 	private void updateGhostSpeed(Creature ghost) {
-		if (world.isInsideTunnel(ghost.tile)) {
+		if (state == GameState.READY) {
+			ghost.speed = 0;
+		} else if (world.isInsideTunnel(ghost.tile)) {
 			ghost.speed = (int) levelData.get(5) / 100f;
 		} else if (pacManPowerTimer > 0) {
 			ghost.speed = (int) levelData.get(12) / 100f;
@@ -379,6 +416,9 @@ public class PacManGame {
 	}
 
 	private void updateGhostDirection(Creature ghost) {
+		if (ghost.targetTile == null) {
+			return;
+		}
 		if (!ghost.tileChanged) {
 			return;
 		}

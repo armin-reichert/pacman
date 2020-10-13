@@ -158,7 +158,12 @@ public class PacManGameUI {
 				}
 			}
 		}
-
+		if (game.messageText != null) {
+			g.setFont(scoreFont);
+			g.setColor(Color.YELLOW);
+			int textLength = g.getFontMetrics().stringWidth(game.messageText);
+			g.drawString(game.messageText, WORLD_WIDTH / 2 - textLength / 2, 21 * TS);
+		}
 		if (debugDraw) {
 //			g.setColor(new Color(200, 200, 200, 100));
 //			g.setStroke(new BasicStroke(0.1f));
@@ -176,11 +181,11 @@ public class PacManGameUI {
 
 			long timer = 0;
 			if (game.state == GameState.CHANGING_LEVEL) {
-				timer = game.levelChangeTimer;
+				timer = game.levelChangeStateTimer;
 			} else if (game.state == GameState.SCATTERING) {
-				timer = game.scatteringTimer;
+				timer = game.scatteringStateTimer;
 			} else if (game.state == GameState.CHASING) {
-				timer = game.chasingTimer;
+				timer = game.chasingStateTimer;
 			}
 			g.drawString(String.format("%s %d ticks remaining", game.state, timer), 12 * TS, 3 * TS);
 		}
@@ -192,7 +197,7 @@ public class PacManGameUI {
 		BufferedImage sprite;
 		long interval = game.framesTotal % 15;
 		int frame = (int) interval / 5;
-		if (game.state == GameState.CHANGING_LEVEL) {
+		if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL) {
 			sprite = spriteSheet.getSubimage(2 * 16, 0, 16, 16);
 		} else if (pacMan.stuck) {
 			sprite = spriteSheet.getSubimage(0, dirIndex(pacMan.dir) * 16, 16, 16);
@@ -225,7 +230,9 @@ public class PacManGameUI {
 		if (debugDraw) {
 //		g.fillRect((int) position.x, (int) position.y, (int) ghost.size.x, (int) ghost.size.y);
 			g.drawRect((int) ghost.scatterTile.x * TS, (int) ghost.scatterTile.y * TS, TS, TS);
-			g.fillRect((int) ghost.targetTile.x * TS + TS / 4, (int) ghost.targetTile.y * TS + TS / 4, HTS, HTS);
+			if (ghost.targetTile != null) {
+				g.fillRect((int) ghost.targetTile.x * TS + TS / 4, (int) ghost.targetTile.y * TS + TS / 4, HTS, HTS);
+			}
 		}
 	}
 
