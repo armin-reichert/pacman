@@ -158,25 +158,27 @@ public class PacManGame {
 		pacMan.dir = pacMan.intendedDir = V2.RIGHT;
 		pacMan.speed = 0;
 		pacMan.stuck = false;
-		ghosts[0].dir = ghosts[0].intendedDir = V2.LEFT;
-		ghosts[1].dir = ghosts[1].intendedDir = V2.DOWN;
-		ghosts[2].dir = ghosts[2].intendedDir = V2.UP;
-		ghosts[3].dir = ghosts[3].intendedDir = V2.UP;
 		for (int i = 0; i < ghosts.length; ++i) {
 			Creature ghost = ghosts[i];
 			ghost.tile = ghost.homeTile;
+			ghost.targetTile = null;
 			ghost.offset = new V2(HTS, 0);
 			ghost.speed = 0;
 			ghost.tileChanged = true;
 			ghost.stuck = false;
 			ghost.forceTurnBack = false;
 		}
+		ghosts[0].dir = ghosts[0].intendedDir = V2.LEFT;
+		ghosts[1].dir = ghosts[1].intendedDir = V2.DOWN;
+		ghosts[2].dir = ghosts[2].intendedDir = V2.UP;
+		ghosts[3].dir = ghosts[3].intendedDir = V2.UP;
 	}
 
 	private void initGame() {
 		points = 0;
 		eatenFood = new BitSet();
 		initLevel(1);
+		enterReadyState();
 	}
 
 	private void initLevel(int n) {
@@ -188,8 +190,6 @@ public class PacManGame {
 		chasingStateTimer = 0;
 		levelChangeStateTimer = 0;
 		attackWave = 0;
-		initEntities();
-		enterReadyState();
 	}
 
 	private void gameLoop() {
@@ -230,12 +230,24 @@ public class PacManGame {
 			pacMan.intendedDir = V2.DOWN;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_D)) {
 			ui.debugDraw = !ui.debugDraw;
+		} else if (ui.pressedKeys.get(KeyEvent.VK_E)) {
+			for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
+				for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+					if (world.isFoodTile(x, y) && !eatenFood.get(world.index(x, y))) {
+						eatenFood.set(world.index(x, y));
+						foodRemaining = 0;
+					}
+				}
+			}
 		}
 	}
 
 	private void update() {
 		readInput();
 		if (state == GameState.READY) {
+			updateInky();
+			updatePinky();
+			updateClyde();
 			if (readyStateTimer == 0) {
 				exitReadyState();
 				enterScatteringState();
@@ -283,8 +295,9 @@ public class PacManGame {
 
 	private void enterReadyState() {
 		state = GameState.READY;
-		readyStateTimer = sec(5);
+		readyStateTimer = sec(10);
 		messageText = "Ready!";
+		initEntities();
 	}
 
 	private void exitReadyState() {
@@ -292,7 +305,8 @@ public class PacManGame {
 		// TODO move ghosts out of house
 		for (int i = 1; i < ghosts.length; ++i) {
 			ghosts[i].tile = ghosts[0].homeTile;
-			ghosts[1].offset = new V2(HTS, 0);
+			ghosts[i].offset = new V2(HTS, 0);
+			ghosts[i].tileChanged = true;
 		}
 	}
 
@@ -348,8 +362,9 @@ public class PacManGame {
 	private void updateBlinky() {
 		Creature blinky = ghosts[0];
 		if (state == GameState.READY) {
-			blinky.targetTile = null;
-		} else if (state == GameState.SCATTERING) {
+			return;
+		}
+		if (state == GameState.SCATTERING) {
 			blinky.targetTile = blinky.scatterTile;
 		} else if (state == GameState.CHASING) {
 			blinky.targetTile = pacMan.tile;
@@ -362,7 +377,7 @@ public class PacManGame {
 	private void updatePinky() {
 		Creature pinky = ghosts[1];
 		if (state == GameState.READY) {
-			pinky.targetTile = null;
+			bounce(pinky);
 		} else if (state == GameState.SCATTERING) {
 			pinky.targetTile = pinky.scatterTile;
 		} else if (state == GameState.CHASING) {
@@ -381,7 +396,7 @@ public class PacManGame {
 		Creature inky = ghosts[2];
 		Creature blinky = ghosts[0];
 		if (state == GameState.READY) {
-			inky.targetTile = null;
+			bounce(inky);
 		} else if (state == GameState.SCATTERING) {
 			inky.targetTile = inky.scatterTile;
 		} else if (state == GameState.CHASING) {
@@ -395,7 +410,7 @@ public class PacManGame {
 	private void updateClyde() {
 		Creature clyde = ghosts[3];
 		if (state == GameState.READY) {
-			clyde.targetTile = null;
+			bounce(clyde);
 		} else if (state == GameState.SCATTERING) {
 			clyde.targetTile = clyde.scatterTile;
 		} else if (state == GameState.CHASING) {
@@ -407,9 +422,7 @@ public class PacManGame {
 	}
 
 	private void updateGhostSpeed(Creature ghost) {
-		if (state == GameState.READY) {
-			ghost.speed = 0;
-		} else if (world.isInsideTunnel(ghost.tile)) {
+		if (world.isInsideTunnel(ghost.tile)) {
 			ghost.speed = (int) levelData.get(5) / 100f;
 		} else if (pacManPowerTimer > 0) {
 			ghost.speed = (int) levelData.get(12) / 100f;
@@ -465,6 +478,12 @@ public class PacManGame {
 	private void forceGhostsTurnBack() {
 		for (Creature ghost : ghosts) {
 			ghost.forceTurnBack = true;
+		}
+	}
+
+	private void bounce(Creature guy) {
+		if (guy.stuck) {
+			guy.intendedDir = guy.intendedDir.inverse();
 		}
 	}
 
