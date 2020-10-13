@@ -116,33 +116,6 @@ public class PacManGame {
 	public long chasingTimer;
 	public long levelChangeTimer;
 
-	private void gameLoop() {
-		long start = 0;
-		long frames = 0;
-		while (true) {
-			long time = System.nanoTime();
-			update();
-			ui.render(this);
-			time = System.nanoTime() - time;
-			++frames;
-			++framesTotal;
-			if (System.nanoTime() - start >= 1_000_000_000) {
-				log("Time: %-18s %3d frames/sec", LocalTime.now(), fps);
-				fps = frames;
-				frames = 0;
-				start = System.nanoTime();
-			}
-			long sleep = Math.max(1_000_000_000 / FPS - time, 0);
-			if (sleep > 0) {
-				try {
-					Thread.sleep(sleep / 1_000_000); // millis
-				} catch (InterruptedException x) {
-					x.printStackTrace();
-				}
-			}
-		}
-	}
-
 	public PacManGame() {
 		world = new World();
 	}
@@ -218,6 +191,33 @@ public class PacManGame {
 		enterScatteringState();
 	}
 
+	private void gameLoop() {
+		long start = 0;
+		long frames = 0;
+		while (true) {
+			long time = System.nanoTime();
+			update();
+			ui.render(this);
+			time = System.nanoTime() - time;
+			++frames;
+			++framesTotal;
+			if (System.nanoTime() - start >= 1_000_000_000) {
+				log("Time: %-18s %3d frames/sec", LocalTime.now(), fps);
+				fps = frames;
+				frames = 0;
+				start = System.nanoTime();
+			}
+			long sleep = Math.max(1_000_000_000 / FPS - time, 0);
+			if (sleep > 0) {
+				try {
+					Thread.sleep(sleep / 1_000_000); // millis
+				} catch (InterruptedException x) {
+					x.printStackTrace();
+				}
+			}
+		}
+	}
+
 	private void readInput() {
 		if (ui.pressedKeys.get(KeyEvent.VK_LEFT)) {
 			pacMan.intendedDir = V2.LEFT;
@@ -234,10 +234,6 @@ public class PacManGame {
 
 	private void update() {
 		readInput();
-		updateGame();
-	}
-
-	private void updateGame() {
 		if (state == GameState.CHASING) {
 			updateGuys();
 			if (foodRemaining == 0) {
