@@ -123,7 +123,6 @@ public class PacManGame {
 	}
 
 	private void start() {
-		createEntities();
 		initGame();
 		ui = new PacManGameUI(this, 2);
 		new Thread(this::gameLoop, "GameLoop").start();
@@ -178,6 +177,7 @@ public class PacManGame {
 		points = 0;
 		eatenFood = new BitSet();
 		initLevel(1);
+		createEntities();
 		enterReadyState();
 	}
 
