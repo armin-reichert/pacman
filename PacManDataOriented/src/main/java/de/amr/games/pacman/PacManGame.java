@@ -297,7 +297,7 @@ public class PacManGame {
 
 	private void enterReadyState() {
 		state = GameState.READY;
-		readyStateTimer = sec(10);
+		readyStateTimer = sec(5);
 		messageText = "Ready!";
 		initEntities();
 	}
