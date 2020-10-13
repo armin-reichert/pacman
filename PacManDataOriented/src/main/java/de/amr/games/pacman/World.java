@@ -58,6 +58,14 @@ public class World {
 		"1111111111111111111111111111",
 		//@formatter:on
 		};
+		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
+			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+				char c = content(x, y);
+				if (c == '2') {
+					food.set(index(x, y));
+				}
+			}
+		}
 	}
 
 	public char content(int x, int y) {

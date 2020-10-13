@@ -35,11 +35,6 @@ public class PacManGame {
 		System.err.println(String.format(msg, args));
 	}
 
-	public static void placeAtTile(Creature guy, float tile_x, float tile_y, float offset_x, float offset_y) {
-		guy.tile = new V2(tile_x, tile_y);
-		guy.offset = new V2(offset_x, offset_y);
-	}
-
 	public static int sec(float seconds) {
 		return (int) (seconds * FPS);
 	}
@@ -154,7 +149,6 @@ public class PacManGame {
 
 	private void start() {
 		createEntities();
-		initEntities();
 		initGame();
 		ui = new PacManGameUI(this, 2);
 		new Thread(this::gameLoop, "GameLoop").start();
@@ -185,7 +179,8 @@ public class PacManGame {
 	}
 
 	private void initEntities() {
-		placeAtTile(pacMan, pacMan.homeTile.x, pacMan.homeTile.y, HTS, 0);
+		pacMan.tile = pacMan.homeTile;
+		pacMan.offset = new V2(HTS, 0);
 		pacMan.dir = pacMan.intendedDir = V2.RIGHT;
 		pacMan.speed = 0;
 		pacMan.stuck = false;
@@ -195,7 +190,8 @@ public class PacManGame {
 		clyde.dir = clyde.intendedDir = V2.UP;
 		for (int i = 0; i < ghosts.length; ++i) {
 			Creature ghost = ghosts[i];
-			placeAtTile(ghost, ghost.homeTile.x, ghost.homeTile.y, HTS, 0);
+			ghost.tile = ghost.homeTile;
+			ghost.offset = new V2(HTS, 0);
 			ghost.speed = 0;
 			ghost.tileChanged = true;
 			ghost.stuck = false;
@@ -211,14 +207,6 @@ public class PacManGame {
 	private void initLevel(int n) {
 		level = n;
 		levelData = levelData(level);
-		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
-			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				char c = world.content(x, y);
-				if (c == '2') {
-					world.food.set(world.index(x, y));
-				}
-			}
-		}
 		world.eaten.clear();
 		foodRemaining = 244;
 		pacManPowerTimer = 0;
@@ -253,8 +241,7 @@ public class PacManGame {
 			updateGuys();
 			if (foodRemaining == 0) {
 				enterChangingLevelState();
-			}
-			if (chasingTimer == 0) {
+			} else if (chasingTimer == 0) {
 				++attackWave;
 				enterScatteringState();
 			} else {
@@ -266,8 +253,7 @@ public class PacManGame {
 			updateGuys();
 			if (foodRemaining == 0) {
 				enterChangingLevelState();
-			}
-			if (scatteringTimer == 0) {
+			} else if (scatteringTimer == 0) {
 				enterChasingState();
 			} else {
 				if (pacManPowerTimer == 0) {
@@ -450,11 +436,13 @@ public class PacManGame {
 
 		// portal
 		if (guy.tile.equals(new V2(28, 17)) && dir.equals(V2.RIGHT)) {
-			placeAtTile(guy, -1, 17, 0, 0);
+			guy.tile = new V2(-1, 17);
+			guy.offset = V2.NULL;
 			return true;
 		}
 		if (guy.tile.equals(new V2(-1, 17)) && dir.equals(V2.LEFT)) {
-			placeAtTile(guy, 28, 17, 0, 0);
+			guy.tile = new V2(28, 17);
+			guy.offset = V2.NULL;
 			return true;
 		}
 
@@ -474,7 +462,7 @@ public class PacManGame {
 			}
 		}
 
-		V2 velocity = dir.scaled(1.25f * guy.speed); // 100% speed corresponds to 60 * 1.25 = 90 pixels / sec
+		V2 velocity = dir.scaled(1.25f * guy.speed); // 100% speed corresponds to 1.25 pixels/tick
 		V2 positionAfterMove = world.position(guy).sum(velocity);
 		V2 tileAfterMove = world.tile(positionAfterMove);
 
