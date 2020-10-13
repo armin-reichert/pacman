@@ -31,4 +31,6 @@ public class Creature {
 	public boolean tileChanged;
 	public boolean stuck;
 	public boolean forceTurnBack;
+	public boolean dead;
+	public boolean vulnerable;
 }

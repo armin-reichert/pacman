@@ -220,23 +220,24 @@ public class PacManGameUI {
 	}
 
 	private void drawGhost(Graphics2D g, PacManGame game, int ghostIndex) {
+		Creature ghost = game.ghosts[ghostIndex];
+		BufferedImage sprite;
+		int dirIndex = dirIndex(ghost.dir);
+		int frame = game.framesTotal % 60 < 30 ? 0 : 1;
 		if (game.state == GameState.CHANGING_LEVEL) {
 			return;
 		}
-		Creature ghost = game.ghosts[ghostIndex];
-		int dirIndex = dirIndex(ghost.dir);
-		int frame = game.framesTotal % 60 < 30 ? 0 : 1;
-		BufferedImage sprite;
-		if (game.pacManPowerTimer > 0) {
+		if (ghost.dead) {
+			sprite = spriteSheet.getSubimage((8 + dirIndex) * 16, 5 * 16, 16, 16);
+		} else if (ghost.vulnerable) {
 			sprite = spriteSheet.getSubimage((8 + frame) * 16, 4 * 16, 16, 16);
 		} else {
 			sprite = spriteSheet.getSubimage((2 * dirIndex + frame) * 16, (4 + ghostIndex) * 16, 16, 16);
 		}
 		V2 position = game.world.position(ghost);
-		g.setColor(ghost.color);
 		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
 		if (debugDraw) {
-//		g.fillRect((int) position.x, (int) position.y, (int) ghost.size.x, (int) ghost.size.y);
+			g.setColor(ghost.color);
 			g.drawRect((int) ghost.scatterTile.x * TS, (int) ghost.scatterTile.y * TS, TS, TS);
 			if (ghost.targetTile != null) {
 				g.fillRect((int) ghost.targetTile.x * TS + TS / 4, (int) ghost.targetTile.y * TS + TS / 4, HTS, HTS);
