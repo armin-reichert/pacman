@@ -12,7 +12,6 @@ public class World {
 	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
 	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
 
-	public BitSet food = new BitSet(244);
 	public BitSet eaten = new BitSet(244);
 
 	final String[] map;
@@ -58,14 +57,6 @@ public class World {
 		"1111111111111111111111111111",
 		//@formatter:on
 		};
-		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
-			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				char c = content(x, y);
-				if (c == '2') {
-					food.set(index(x, y));
-				}
-			}
-		}
 	}
 
 	public char content(int x, int y) {
@@ -110,7 +101,7 @@ public class World {
 	}
 
 	public boolean isFoodTile(int x, int y) {
-		return food.get(index(x, y));
+		return content(x, y) == '2';
 	}
 
 	public boolean hasEatenFood(int x, int y) {
