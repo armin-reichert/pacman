@@ -99,8 +99,8 @@ public class PacManGame {
 	}
 
 	public GameState state;
-	public Creature[] ghosts = new Creature[4];
 	public Creature pacMan;
+	public Creature[] ghosts;
 	public PacManGameUI ui;
 	public long fps;
 	public long framesTotal;
@@ -130,6 +130,8 @@ public class PacManGame {
 	private void createEntities() {
 		pacMan = new Creature("Pac-Man", Color.YELLOW);
 		pacMan.homeTile = new V2(13, 26);
+
+		ghosts = new Creature[4];
 
 		ghosts[0] = new Creature("Blinky", Color.RED);
 		ghosts[0].homeTile = new V2(13, 14);
