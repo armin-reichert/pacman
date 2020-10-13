@@ -171,6 +171,7 @@ public class PacManGameUI {
 			g.drawString(game.messageText, WORLD_WIDTH / 2 - textLength / 2, 21 * TS);
 		}
 		if (debugDraw) {
+
 //			g.setColor(new Color(200, 200, 200, 100));
 //			g.setStroke(new BasicStroke(0.1f));
 //			for (int row = 1; row < WORLD_HEIGHT_TILES; ++row) {
@@ -182,11 +183,12 @@ public class PacManGameUI {
 
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
-//			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g.drawString(String.format("%d frames/sec", game.fps), 2 * TS, 3 * TS);
 
 			long timer = 0;
-			if (game.state == GameState.CHANGING_LEVEL) {
+			if (game.state == GameState.READY) {
+				timer = game.readyStateTimer;
+			} else if (game.state == GameState.CHANGING_LEVEL) {
 				timer = game.levelChangeStateTimer;
 			} else if (game.state == GameState.SCATTERING) {
 				timer = game.scatteringStateTimer;
