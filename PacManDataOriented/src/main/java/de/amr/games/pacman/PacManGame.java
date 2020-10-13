@@ -119,6 +119,7 @@ public class PacManGame {
 	public long chasingStateTimer;
 	public long levelChangeStateTimer;
 	public long bonusTimer;
+	public long bonusValueTimer;
 
 	public PacManGame() {
 		world = new World();
@@ -195,6 +196,7 @@ public class PacManGame {
 		levelChangeStateTimer = 0;
 		attackWave = 0;
 		bonusTimer = 0;
+		bonusValueTimer = 0;
 	}
 
 	private void gameLoop() {
@@ -278,6 +280,9 @@ public class PacManGame {
 				if (bonusTimer > 0) {
 					--bonusTimer;
 				}
+				if (bonusValueTimer > 0) {
+					--bonusValueTimer;
+				}
 			}
 		}
 
@@ -293,6 +298,9 @@ public class PacManGame {
 				}
 				if (bonusTimer > 0) {
 					--bonusTimer;
+				}
+				if (bonusValueTimer > 0) {
+					--bonusValueTimer;
 				}
 			}
 		}
@@ -371,6 +379,16 @@ public class PacManGame {
 					ghost.vulnerable = !ghost.dead;
 				}
 				forceGhostsTurnBack();
+			}
+		}
+		if (bonusTimer > 0) {
+			if (pacMan.tile.x == 13 && pacMan.tile.y == 20) {
+				bonusTimer = 0;
+				bonusValueTimer = sec(3);
+				String bonusName = (String) levelData.get(0);
+				int bonusValue = (int) levelData.get(1);
+				points += bonusValue;
+				log("Pac-Man found bonus %s of value %d", bonusName, bonusValue);
 			}
 		}
 		if (pacManPowerTimer > 0) {

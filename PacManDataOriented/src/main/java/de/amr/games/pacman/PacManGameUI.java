@@ -37,6 +37,7 @@ public class PacManGameUI {
 	private BufferedImage imageMaze;
 	private BufferedImage spriteSheet;
 	private Map<String, BufferedImage> levelSymbols;
+	private Map<Integer, BufferedImage> numbers;
 	private Font scoreFont;
 
 	public PacManGameUI(PacManGame game, float scaling) {
@@ -76,6 +77,7 @@ public class PacManGameUI {
 		try {
 			spriteSheet = image("/sprites.png");
 			imageMaze = image("/maze_full.png");
+
 			levelSymbols = new HashMap<>();
 			levelSymbols.put("CHERRIES", sheet(2, 3));
 			levelSymbols.put("STRAWBERRY", sheet(3, 3));
@@ -85,6 +87,17 @@ public class PacManGameUI {
 			levelSymbols.put("GALAXIAN", sheet(7, 3));
 			levelSymbols.put("BELL", sheet(8, 3));
 			levelSymbols.put("KEY", sheet(9, 3));
+
+			numbers = new HashMap<>();
+			numbers.put(100, sheet(0, 9));
+			numbers.put(300, sheet(1, 9));
+			numbers.put(500, sheet(2, 9));
+			numbers.put(700, sheet(3, 9));
+			numbers.put(1000, sheet(4, 9));
+			numbers.put(2000, sheet(4, 10));
+			numbers.put(3000, sheet(4, 11));
+			numbers.put(5000, sheet(4, 12));
+
 			scoreFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/PressStart2P-Regular.ttf"))
 					.deriveFont((float) TS);
 		} catch (Exception x) {
@@ -167,6 +180,10 @@ public class PacManGameUI {
 		if (game.bonusTimer > 0) {
 			String symbolName = (String) game.levelData.get(0);
 			g.drawImage(levelSymbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
+		}
+		if (game.bonusValueTimer > 0) {
+			int value = (int) game.levelData.get(1);
+			g.drawImage(numbers.get(value), 13 * TS, 20 * TS - HTS, null);
 		}
 		if (game.messageText != null) {
 			g.setFont(scoreFont);
