@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * My attempt at writing a minimal Pac-Man game with faithful behavior.
@@ -117,6 +118,7 @@ public class PacManGame {
 	public long scatteringStateTimer;
 	public long chasingStateTimer;
 	public long levelChangeStateTimer;
+	public long bonusTimer;
 
 	public PacManGame() {
 		world = new World();
@@ -192,6 +194,7 @@ public class PacManGame {
 		chasingStateTimer = 0;
 		levelChangeStateTimer = 0;
 		attackWave = 0;
+		bonusTimer = 0;
 	}
 
 	private void gameLoop() {
@@ -260,6 +263,9 @@ public class PacManGame {
 
 		else if (state == GameState.CHASING) {
 			updateGuys();
+			if (foodRemaining == 70 || foodRemaining == 170) {
+				bonusTimer = sec(9) + new Random().nextInt(FPS);
+			}
 			if (foodRemaining == 0) {
 				enterChangingLevelState();
 			} else if (chasingStateTimer == 0) {
@@ -268,6 +274,9 @@ public class PacManGame {
 			} else {
 				if (pacManPowerTimer == 0) {
 					--chasingStateTimer;
+				}
+				if (bonusTimer > 0) {
+					--bonusTimer;
 				}
 			}
 		}
@@ -281,6 +290,9 @@ public class PacManGame {
 			} else {
 				if (pacManPowerTimer == 0) {
 					--scatteringStateTimer;
+				}
+				if (bonusTimer > 0) {
+					--bonusTimer;
 				}
 			}
 		}
@@ -369,6 +381,7 @@ public class PacManGame {
 				}
 			}
 		}
+		// TODO handle Pac-Man death, reset timers when that happens
 		if (pacManPowerTimer == 1) {
 			for (Creature ghost : ghosts) {
 				ghost.vulnerable = false;

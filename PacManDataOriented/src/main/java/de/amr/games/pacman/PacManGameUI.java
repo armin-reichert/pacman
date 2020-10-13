@@ -164,6 +164,10 @@ public class PacManGameUI {
 				}
 			}
 		}
+		if (game.bonusTimer > 0) {
+			String symbolName = (String) game.levelData.get(0);
+			g.drawImage(levelSymbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
+		}
 		if (game.messageText != null) {
 			g.setFont(scoreFont);
 			g.setColor(Color.YELLOW);
