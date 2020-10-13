@@ -100,7 +100,7 @@ public class PacManGame {
 
 	public GameState state;
 	public Creature[] ghosts = new Creature[4];
-	public Creature pacMan, blinky, inky, pinky, clyde;
+	public Creature pacMan;
 	public PacManGameUI ui;
 	public long fps;
 	public long framesTotal;
@@ -131,24 +131,24 @@ public class PacManGame {
 		pacMan = new Creature("Pac-Man", Color.YELLOW);
 		pacMan.homeTile = new V2(13, 26);
 
-		ghosts[0] = blinky = new Creature("Blinky", Color.RED);
-		blinky.homeTile = new V2(13, 14);
-		blinky.scatterTile = new V2(WORLD_WIDTH_TILES - 3, 0);
+		ghosts[0] = new Creature("Blinky", Color.RED);
+		ghosts[0].homeTile = new V2(13, 14);
+		ghosts[0].scatterTile = new V2(WORLD_WIDTH_TILES - 3, 0);
 
-		ghosts[1] = pinky = new Creature("Pinky", Color.PINK);
-//		pinky.homeTile = new V2(13, 17);
-		pinky.homeTile = new V2(13, 14);
-		pinky.scatterTile = new V2(2, 0);
+		ghosts[1] = new Creature("Pinky", Color.PINK);
+//		ghosts[1].homeTile = new V2(13, 17);
+		ghosts[1].homeTile = new V2(13, 14);
+		ghosts[1].scatterTile = new V2(2, 0);
 
-		ghosts[2] = inky = new Creature("Inky", Color.CYAN);
-//		inky.homeTile = new V2(11, 17);
-		inky.homeTile = new V2(13, 14);
-		inky.scatterTile = new V2(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
+		ghosts[2] = new Creature("Inky", Color.CYAN);
+//		ghosts[2].homeTile = new V2(11, 17);
+		ghosts[2].homeTile = new V2(13, 14);
+		ghosts[2].scatterTile = new V2(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
 
-		ghosts[3] = clyde = new Creature("Clyde", Color.ORANGE);
-//		clyde.homeTile = new V2(15, 17);
-		clyde.homeTile = new V2(13, 14);
-		clyde.scatterTile = new V2(0, WORLD_HEIGHT_TILES - 1);
+		ghosts[3] = new Creature("Clyde", Color.ORANGE);
+//		ghosts[3].homeTile = new V2(15, 17);
+		ghosts[3].homeTile = new V2(13, 14);
+		ghosts[3].scatterTile = new V2(0, WORLD_HEIGHT_TILES - 1);
 	}
 
 	private void initEntities() {
@@ -157,10 +157,10 @@ public class PacManGame {
 		pacMan.dir = pacMan.intendedDir = V2.RIGHT;
 		pacMan.speed = 0;
 		pacMan.stuck = false;
-		blinky.dir = blinky.intendedDir = V2.LEFT;
-		inky.dir = inky.intendedDir = V2.UP;
-		pinky.dir = pinky.intendedDir = V2.DOWN;
-		clyde.dir = clyde.intendedDir = V2.UP;
+		ghosts[0].dir = ghosts[0].intendedDir = V2.LEFT;
+		ghosts[1].dir = ghosts[1].intendedDir = V2.DOWN;
+		ghosts[2].dir = ghosts[2].intendedDir = V2.UP;
+		ghosts[3].dir = ghosts[3].intendedDir = V2.UP;
 		for (int i = 0; i < ghosts.length; ++i) {
 			Creature ghost = ghosts[i];
 			ghost.tile = ghost.homeTile;
@@ -314,6 +314,7 @@ public class PacManGame {
 	}
 
 	private void updateBlinky() {
+		Creature blinky = ghosts[0];
 		if (state == GameState.SCATTERING) {
 			blinky.targetTile = blinky.scatterTile;
 		} else if (state == GameState.CHASING) {
@@ -325,6 +326,7 @@ public class PacManGame {
 	}
 
 	private void updatePinky() {
+		Creature pinky = ghosts[1];
 		if (state == GameState.SCATTERING) {
 			pinky.targetTile = pinky.scatterTile;
 		} else if (state == GameState.CHASING) {
@@ -340,6 +342,8 @@ public class PacManGame {
 	}
 
 	private void updateInky() {
+		Creature inky = ghosts[2];
+		Creature blinky = ghosts[0];
 		if (state == GameState.SCATTERING) {
 			inky.targetTile = inky.scatterTile;
 		} else if (state == GameState.CHASING) {
@@ -351,6 +355,7 @@ public class PacManGame {
 	}
 
 	private void updateClyde() {
+		Creature clyde = ghosts[3];
 		if (state == GameState.SCATTERING) {
 			clyde.targetTile = clyde.scatterTile;
 		} else if (state == GameState.CHASING) {
