@@ -17,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import de.amr.games.pacman.PacManGame.GameState;
 public class PacManGameUI {
 
 	public boolean debugDraw;
+	public BitSet pressedKeys = new BitSet(256);
 
 	private final float scaling;
 	private final Canvas canvas;
@@ -48,12 +50,12 @@ public class PacManGameUI {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				game.pressedKeys.set(e.getKeyCode());
+				pressedKeys.set(e.getKeyCode());
 			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {
-				game.pressedKeys.clear(e.getKeyCode());
+				pressedKeys.clear(e.getKeyCode());
 			}
 		});
 

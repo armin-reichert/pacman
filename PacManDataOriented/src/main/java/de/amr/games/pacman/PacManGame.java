@@ -99,7 +99,6 @@ public class PacManGame {
 	}
 
 	public GameState state;
-	public BitSet pressedKeys = new BitSet(256);
 	public Creature[] ghosts = new Creature[4];
 	public Creature pacMan, blinky, inky, pinky, clyde;
 	public PacManGameUI ui;
@@ -220,15 +219,15 @@ public class PacManGame {
 	}
 
 	private void readInput() {
-		if (pressedKeys.get(KeyEvent.VK_LEFT)) {
+		if (ui.pressedKeys.get(KeyEvent.VK_LEFT)) {
 			pacMan.intendedDir = V2.LEFT;
-		} else if (pressedKeys.get(KeyEvent.VK_RIGHT)) {
+		} else if (ui.pressedKeys.get(KeyEvent.VK_RIGHT)) {
 			pacMan.intendedDir = V2.RIGHT;
-		} else if (pressedKeys.get(KeyEvent.VK_UP)) {
+		} else if (ui.pressedKeys.get(KeyEvent.VK_UP)) {
 			pacMan.intendedDir = V2.UP;
-		} else if (pressedKeys.get(KeyEvent.VK_DOWN)) {
+		} else if (ui.pressedKeys.get(KeyEvent.VK_DOWN)) {
 			pacMan.intendedDir = V2.DOWN;
-		} else if (pressedKeys.get(KeyEvent.VK_D)) {
+		} else if (ui.pressedKeys.get(KeyEvent.VK_D)) {
 			ui.debugDraw = !ui.debugDraw;
 		}
 	}

@@ -76,6 +76,10 @@ public class World {
 		return new V2(guy.tile.x * TS + guy.offset.x, guy.tile.y * TS + guy.offset.y);
 	}
 
+	public boolean inMapRange(int x, int y) {
+		return 0 <= x && x < WORLD_WIDTH_TILES && 0 <= y && y < WORLD_HEIGHT_TILES;
+	}
+
 	public boolean isGhostHouseDoor(V2 tile) {
 		return tile.y == 15 && (tile.x == 13 || tile.x == 14);
 	}
@@ -98,7 +102,7 @@ public class World {
 	}
 
 	public boolean isFoodTile(int x, int y) {
-		return content(x, y) == '2';
+		return inMapRange(x, y) && content(x, y) == '2';
 	}
 
 	public boolean isEnergizerTile(V2 tile) {
