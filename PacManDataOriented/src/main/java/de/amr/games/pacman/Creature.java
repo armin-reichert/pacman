@@ -14,7 +14,7 @@ public class Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%s tile %s offset %s", name, tile, offset);
+		return String.format("%s tile=%s offset=%s", name, tile, offset);
 	}
 
 	public final String name;

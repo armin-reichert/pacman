@@ -121,14 +121,32 @@ public class PacManGame {
 	public long bonusTimer;
 	public long bonusValueTimer;
 
-	public PacManGame() {
-		world = new World();
-	}
-
 	private void start() {
+		world = new World();
+		eatenFood = new BitSet();
+		createEntities();
 		initGame();
 		ui = new PacManGameUI(this, 2);
 		new Thread(this::gameLoop, "GameLoop").start();
+	}
+
+	private void initGame() {
+		points = 0;
+		initLevel(1);
+		enterReadyState();
+	}
+
+	private void initLevel(int n) {
+		level = n;
+		levelData = levelData(level);
+		eatenFood.clear();
+		foodRemaining = 244;
+		pacManPowerTimer = 0;
+		chasingStateTimer = 0;
+		levelChangeStateTimer = 0;
+		attackWave = 0;
+		bonusTimer = 0;
+		bonusValueTimer = 0;
 	}
 
 	private void createEntities() {
@@ -176,27 +194,6 @@ public class PacManGame {
 		ghosts[1].dir = ghosts[1].intendedDir = V2.DOWN;
 		ghosts[2].dir = ghosts[2].intendedDir = V2.UP;
 		ghosts[3].dir = ghosts[3].intendedDir = V2.UP;
-	}
-
-	private void initGame() {
-		points = 0;
-		eatenFood = new BitSet();
-		initLevel(7);
-		createEntities();
-		enterReadyState();
-	}
-
-	private void initLevel(int n) {
-		level = n;
-		levelData = levelData(level);
-		eatenFood.clear();
-		foodRemaining = 244;
-		pacManPowerTimer = 0;
-		chasingStateTimer = 0;
-		levelChangeStateTimer = 0;
-		attackWave = 0;
-		bonusTimer = 0;
-		bonusValueTimer = 0;
 	}
 
 	private void gameLoop() {
@@ -265,9 +262,6 @@ public class PacManGame {
 
 		else if (state == GameState.CHASING) {
 			updateGuys();
-			if (foodRemaining == 70 || foodRemaining == 170) {
-				bonusTimer = sec(9) + new Random().nextInt(FPS);
-			}
 			if (foodRemaining == 0) {
 				enterChangingLevelState();
 			} else if (chasingStateTimer == 0) {
@@ -277,12 +271,7 @@ public class PacManGame {
 				if (pacManPowerTimer == 0) {
 					--chasingStateTimer;
 				}
-				if (bonusTimer > 0) {
-					--bonusTimer;
-				}
-				if (bonusValueTimer > 0) {
-					--bonusValueTimer;
-				}
+				updateBonus();
 			}
 		}
 
@@ -296,12 +285,7 @@ public class PacManGame {
 				if (pacManPowerTimer == 0) {
 					--scatteringStateTimer;
 				}
-				if (bonusTimer > 0) {
-					--bonusTimer;
-				}
-				if (bonusValueTimer > 0) {
-					--bonusValueTimer;
-				}
+				updateBonus();
 			}
 		}
 
@@ -415,7 +399,18 @@ public class PacManGame {
 		} else {
 			ghost.targetTile = ghosts[0].homeTile;
 		}
+	}
 
+	private void updateBonus() {
+		if (bonusTimer > 0) {
+			--bonusTimer;
+		}
+		if (bonusValueTimer > 0) {
+			--bonusValueTimer;
+		}
+		if (foodRemaining == 70 || foodRemaining == 170) {
+			bonusTimer = sec(9) + new Random().nextInt(FPS);
+		}
 	}
 
 	private void updateBlinky() {
