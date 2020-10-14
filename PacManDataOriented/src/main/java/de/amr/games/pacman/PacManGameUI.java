@@ -139,8 +139,10 @@ public class PacManGameUI {
 		drawScore(g);
 		drawMaze(g);
 		drawPacMan(g);
-		for (int i = 0; i < game.ghosts.length; ++i) {
-			drawGhost(g, i);
+		if (game.state != GameState.CHANGING_LEVEL) {
+			for (int i = 0; i < game.ghosts.length; ++i) {
+				drawGhost(g, i);
+			}
 		}
 		drawLevelCounter(g);
 	}
@@ -162,7 +164,7 @@ public class PacManGameUI {
 		}
 	}
 
-	private void drawTileHidden(Graphics2D g, int x, int y) {
+	private void hideTile(Graphics2D g, int x, int y) {
 		g.setColor(Color.BLACK);
 		g.fillRect(x * TS, y * TS, TS, TS);
 	}
@@ -173,15 +175,14 @@ public class PacManGameUI {
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				V2 tile = new V2(x, y);
-				// hide eaten food
 				if (game.hasEatenFood(x, y)) {
-					drawTileHidden(g, x, y);
+					hideTile(g, x, y);
 					continue;
 				}
-				// uneaten energizer blinking
+				// energizer blinking
 				if (game.world.isEnergizerTile(tile) && game.framesTotal % 20 < 10
 						&& (game.state == GameState.CHASING || game.state == GameState.SCATTERING)) {
-					drawTileHidden(g, x, y);
+					hideTile(g, x, y);
 				}
 			}
 		}
@@ -233,43 +234,39 @@ public class PacManGameUI {
 		Creature pacMan = game.pacMan;
 		BufferedImage sprite;
 		long interval = game.framesTotal % 15;
-		int frame = (int) interval / 5;
+		int animationFrame = (int) interval / 5;
 		if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL) {
-			sprite = spriteSheet.getSubimage(2 * 16, 0, 16, 16);
+			sprite = sheet(2, 0);
 		} else if (pacMan.stuck) {
-			sprite = spriteSheet.getSubimage(0, dirIndex(pacMan.dir) * 16, 16, 16);
-		} else if (frame == 2) {
-			sprite = spriteSheet.getSubimage(2 * 16, 0, 16, 16);
+			sprite = sheet(0, dirIndex(pacMan.dir));
+		} else if (animationFrame == 2) {
+			sprite = sheet(2, 0);
 		} else {
-			sprite = spriteSheet.getSubimage(frame * 16, dirIndex(pacMan.dir) * 16, 16, 16);
+			sprite = sheet(animationFrame, dirIndex(pacMan.dir));
 		}
 		V2 position = game.world.position(pacMan);
 		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
-//	g.fillRect((int) position.x, (int) position.y, (int) pacMan.size.x, (int) pacMan.size.y);
 	}
 
 	private void drawGhost(Graphics2D g, int ghostIndex) {
 		Creature ghost = game.ghosts[ghostIndex];
+		int animationFrame = game.framesTotal % 60 < 30 ? 0 : 1;
 		BufferedImage sprite;
-		int dirIndex = dirIndex(ghost.dir);
-		int frame = game.framesTotal % 60 < 30 ? 0 : 1;
-		if (game.state == GameState.CHANGING_LEVEL) {
-			return;
-		}
 		if (ghost.dead) {
-			sprite = spriteSheet.getSubimage((8 + dirIndex) * 16, 5 * 16, 16, 16);
+			sprite = sheet(8 + dirIndex(ghost.dir), 5);
 		} else if (ghost.vulnerable) {
 			if (game.pacManPowerTimer < sec(2)) {
 				int k = game.framesTotal % 20 < 10 ? 8 : 10;
-				sprite = spriteSheet.getSubimage((k + frame) * 16, 4 * 16, 16, 16);
+				sprite = sheet(k + animationFrame, 4);
 			} else {
-				sprite = spriteSheet.getSubimage(8 * 16, 4 * 16, 16, 16);
+				sprite = sheet(8, 4);
 			}
 		} else {
-			sprite = spriteSheet.getSubimage((2 * dirIndex + frame) * 16, (4 + ghostIndex) * 16, 16, 16);
+			sprite = sheet(2 * dirIndex(ghost.dir) + animationFrame, 4 + ghostIndex);
 		}
 		V2 position = game.world.position(ghost);
-		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
+		g.drawImage(sprite, (int) position.x - HTS, (int) position.y - HTS, null);
+
 		if (debugDraw) {
 			g.setColor(ghost.color);
 			g.drawRect((int) ghost.scatterTile.x * TS, (int) ghost.scatterTile.y * TS, TS, TS);
