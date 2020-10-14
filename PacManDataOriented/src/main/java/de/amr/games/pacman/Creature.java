@@ -20,6 +20,7 @@ public class Creature {
 	public final String name;
 	public final Color color;
 	public float speed;
+	public int lives;
 	public V2 size;
 	public V2 tile;
 	public V2 offset;

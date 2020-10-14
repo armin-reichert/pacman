@@ -135,6 +135,7 @@ public class PacManGame {
 
 	private void initGame() {
 		points = 0;
+		pacMan.lives = 3;
 		initLevel(1);
 		enterReadyState();
 	}

@@ -128,29 +128,37 @@ public class PacManGameUI {
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
-				draw(g);
+				drawBoard(g);
 				g.dispose();
 			} while (strategy.contentsRestored());
 			strategy.show();
 		} while (strategy.contentsLost());
 	}
 
-	private void draw(Graphics2D g) {
+	private void drawBoard(Graphics2D g) {
 		drawScore(g);
+		drawLivesCounter(g);
+		drawLevelCounter(g);
 		drawMaze(g);
 		drawPacMan(g);
 		if (game.state != GameState.CHANGING_LEVEL) {
-			for (int i = 0; i < game.ghosts.length; ++i) {
+			for (int i = 0; i < 4; ++i) {
 				drawGhost(g, i);
 			}
 		}
-		drawLevelCounter(g);
 	}
 
 	private void drawScore(Graphics2D g) {
 		g.setFont(scoreFont);
 		g.setColor(Color.WHITE);
 		g.drawString(String.format("SCORE %d", game.points), 16, 16);
+	}
+
+	private void drawLivesCounter(Graphics2D g) {
+		BufferedImage sprite = sheet(8, 1);
+		for (int i = 0; i < game.pacMan.lives; ++i) {
+			g.drawImage(sprite, 2 * (i + 1) * TS, World.WORLD_HEIGHT - 2 * TS, null);
+		}
 	}
 
 	private void drawLevelCounter(Graphics2D g) {
