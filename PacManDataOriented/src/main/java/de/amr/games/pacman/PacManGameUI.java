@@ -18,7 +18,6 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.BitSet;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -79,29 +78,30 @@ public class PacManGameUI {
 		try {
 			spriteSheet = image("/sprites.png");
 			imageMaze = image("/maze_full.png");
-
-			levelSymbols = new HashMap<>();
-			levelSymbols.put("CHERRIES", sheet(2, 3));
-			levelSymbols.put("STRAWBERRY", sheet(3, 3));
-			levelSymbols.put("PEACH", sheet(4, 3));
-			levelSymbols.put("APPLE", sheet(5, 3));
-			levelSymbols.put("GRAPES", sheet(6, 3));
-			levelSymbols.put("GALAXIAN", sheet(7, 3));
-			levelSymbols.put("BELL", sheet(8, 3));
-			levelSymbols.put("KEY", sheet(9, 3));
-
-			numbers = new HashMap<>();
-			numbers.put(100, sheet(0, 9));
-			numbers.put(300, sheet(1, 9));
-			numbers.put(500, sheet(2, 9));
-			numbers.put(700, sheet(3, 9));
-			numbers.put(1000, sheet(4, 9, 2, 1));
-			numbers.put(2000, sheet(4, 10, 2, 1));
-			numbers.put(3000, sheet(4, 11, 2, 1));
-			numbers.put(5000, sheet(4, 12, 2, 1));
-
 			scoreFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/PressStart2P-Regular.ttf"))
 					.deriveFont((float) TS);
+			//@formatter:off
+			levelSymbols = Map.of(
+				"CHERRIES",   sheet(2, 3),
+				"STRAWBERRY", sheet(3, 3),
+				"PEACH",      sheet(4, 3),
+				"APPLE",      sheet(5, 3),
+				"GRAPES",     sheet(6, 3),
+				"GALAXIAN",   sheet(7, 3),
+				"BELL",       sheet(8, 3),
+				"KEY",        sheet(9, 3)
+			);
+			numbers = Map.of(
+				100,  sheet(0, 9),
+				300,  sheet(1, 9),
+				500,  sheet(2, 9),
+				700,  sheet(3, 9),
+				1000, sheet(4, 9, 2, 1),
+				2000, sheet(4, 10, 2, 1),
+				3000, sheet(4, 11, 2, 1),
+				5000, sheet(4, 12, 2, 1)
+			);
+			//@formatter:on
 		} catch (Exception x) {
 			x.printStackTrace();
 		}

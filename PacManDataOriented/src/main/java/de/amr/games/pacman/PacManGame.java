@@ -635,7 +635,7 @@ public class PacManGame {
 		}
 	}
 
-	public boolean canAccessTile(Creature guy, V2 tile) {
+	private boolean canAccessTile(Creature guy, V2 tile) {
 		if (tile.y == 17 && (tile.x < 0 || tile.x >= WORLD_WIDTH_TILES)) {
 			return true;
 		}
@@ -651,7 +651,7 @@ public class PacManGame {
 		return world.content((int) tile.x, (int) tile.y) != '1';
 	}
 
-	public V2 randomAccessibleDir(Creature guy) {
+	private V2 randomAccessibleDir(Creature guy) {
 		List<V2> dirs = new ArrayList<>(3);
 		for (V2 dir : List.of(V2.DOWN, V2.LEFT, V2.RIGHT, V2.UP)) {
 			if (dir.equals(guy.dir.inverse())) {
