@@ -238,68 +238,33 @@ public class PacManGame {
 		} else if (ui.pressedKeys.get(KeyEvent.VK_D)) {
 			ui.debugDraw = !ui.debugDraw;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_E)) {
-			for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
-				for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-					if (world.isFoodTile(x, y) && !eatenFood.get(world.index(x, y))) {
-						eatenFood.set(world.index(x, y));
-						foodRemaining = 0;
-					}
-				}
-			}
+			eatAllFood();
 		}
 	}
 
 	private void update() {
 		readInput();
 		if (state == GameState.READY) {
-			updateInky();
-			updatePinky();
-			updateClyde();
-			if (readyStateTimer == 0) {
-				exitReadyState();
-				enterScatteringState();
-			} else {
-				--readyStateTimer;
-			}
+			handleReadyState();
+		} else if (state == GameState.CHASING) {
+			handleChasingState();
+		} else if (state == GameState.SCATTERING) {
+			handleScatteringState();
+		} else if (state == GameState.CHANGING_LEVEL) {
+			handleChangingLevelState();
 		}
+	}
 
-		else if (state == GameState.CHASING) {
-			updateGuys();
-			if (foodRemaining == 0) {
-				enterChangingLevelState();
-			} else if (chasingStateTimer == 0) {
-				++attackWave;
-				enterScatteringState();
-			} else {
-				if (pacManPowerTimer == 0) {
-					--chasingStateTimer;
-				}
-				updateBonus();
-			}
+	private void handleReadyState() {
+		if (readyStateTimer == 0) {
+			exitReadyState();
+			enterScatteringState();
+			return;
 		}
-
-		else if (state == GameState.SCATTERING) {
-			updateGuys();
-			if (foodRemaining == 0) {
-				enterChangingLevelState();
-			} else if (scatteringStateTimer == 0) {
-				enterChasingState();
-			} else {
-				if (pacManPowerTimer == 0) {
-					--scatteringStateTimer;
-				}
-				updateBonus();
-			}
-		}
-
-		else if (state == GameState.CHANGING_LEVEL) {
-			if (levelChangeStateTimer == 0) {
-				exitChangingLevelState();
-				enterReadyState();
-			} else {
-				--levelChangeStateTimer;
-			}
-		}
+		updateInky();
+		updatePinky();
+		updateClyde();
+		--readyStateTimer;
 	}
 
 	private void enterReadyState() {
@@ -319,10 +284,43 @@ public class PacManGame {
 		}
 	}
 
+	private void handleScatteringState() {
+		if (foodRemaining == 0) {
+			enterChangingLevelState();
+			return;
+		}
+		if (scatteringStateTimer == 0) {
+			enterChasingState();
+			return;
+		}
+		if (pacManPowerTimer == 0) {
+			--scatteringStateTimer;
+		}
+		updateGuys();
+		updateBonus();
+	}
+
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
 		scatteringStateTimer = SCATTERING_TIMES[attackWaveIndex(level)][attackWave];
 		forceGhostsTurnBack();
+	}
+
+	private void handleChasingState() {
+		if (foodRemaining == 0) {
+			enterChangingLevelState();
+			return;
+		}
+		if (chasingStateTimer == 0) {
+			++attackWave;
+			enterScatteringState();
+			return;
+		}
+		if (pacManPowerTimer == 0) {
+			--chasingStateTimer;
+		}
+		updateGuys();
+		updateBonus();
 	}
 
 	private void enterChasingState() {
@@ -331,14 +329,19 @@ public class PacManGame {
 		forceGhostsTurnBack();
 	}
 
+	private void handleChangingLevelState() {
+		if (levelChangeStateTimer == 0) {
+			log("Level %d complete, entering level %d", level, level + 1);
+			initLevel(++level);
+			enterReadyState();
+			return;
+		}
+		--levelChangeStateTimer;
+	}
+
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
 		levelChangeStateTimer = sec(3);
-	}
-
-	private void exitChangingLevelState() {
-		log("Level %d complete, entering level %d", level, level + 1);
-		initLevel(++level);
 	}
 
 	private void updateGuys() {
@@ -395,15 +398,6 @@ public class PacManGame {
 		pacManPowerTimer = Math.max(0, pacManPowerTimer - 1);
 	}
 
-	private void updateDeadGhost(Creature ghost) {
-		if (ghost.tile.equals(ghosts[0].homeTile) && ghost.offset.x - HTS < 2) {
-			ghost.dead = false;
-			ghost.vulnerable = false;
-		} else {
-			ghost.targetTile = ghosts[0].homeTile;
-		}
-	}
-
 	private void updateBonus() {
 		if (bonusTimer > 0) {
 			--bonusTimer;
@@ -416,11 +410,17 @@ public class PacManGame {
 		}
 	}
 
+	private void updateDeadGhost(Creature ghost) {
+		if (ghost.tile.equals(ghosts[0].homeTile) && ghost.offset.x - HTS < 2) {
+			ghost.dead = false;
+			ghost.vulnerable = false;
+		} else {
+			ghost.targetTile = ghosts[0].homeTile;
+		}
+	}
+
 	private void updateBlinky() {
 		Creature blinky = ghosts[0];
-		if (state == GameState.READY) {
-			return;
-		}
 		if (blinky.dead) {
 			updateDeadGhost(blinky);
 		} else if (state == GameState.SCATTERING) {
@@ -622,6 +622,17 @@ public class PacManGame {
 		guy.tile = tileAfterMove;
 		guy.offset = offsetAfterMove;
 		return true;
+	}
+
+	private void eatAllFood() {
+		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
+			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+				if (world.isFoodTile(x, y) && !eatenFood.get(world.index(x, y))) {
+					eatenFood.set(world.index(x, y));
+					foodRemaining = 0;
+				}
+			}
+		}
 	}
 
 	public boolean canAccessTile(Creature guy, V2 tile) {
