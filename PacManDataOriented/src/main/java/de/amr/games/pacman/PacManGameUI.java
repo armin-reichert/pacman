@@ -31,6 +31,7 @@ public class PacManGameUI {
 	public boolean debugDraw;
 	public BitSet pressedKeys = new BitSet(256);
 
+	private final PacManGame game;
 	private final float scaling;
 	private final Canvas canvas;
 
@@ -41,6 +42,7 @@ public class PacManGameUI {
 	private Font scoreFont;
 
 	public PacManGameUI(PacManGame game, float scaling) {
+		this.game = game;
 		this.scaling = scaling;
 		loadResources();
 
@@ -117,7 +119,7 @@ public class PacManGameUI {
 		return ImageIO.read(getClass().getResourceAsStream(path));
 	}
 
-	public void render(PacManGame game) {
+	public void render() {
 		BufferStrategy strategy = canvas.getBufferStrategy();
 		do {
 			do {
@@ -125,30 +127,30 @@ public class PacManGameUI {
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
-				draw(g, game);
+				draw(g);
 				g.dispose();
 			} while (strategy.contentsRestored());
 			strategy.show();
 		} while (strategy.contentsLost());
 	}
 
-	private void draw(Graphics2D g, PacManGame game) {
-		drawScore(g, game);
-		drawMaze(g, game);
-		drawPacMan(g, game);
+	private void draw(Graphics2D g) {
+		drawScore(g);
+		drawMaze(g);
+		drawPacMan(g);
 		for (int i = 0; i < game.ghosts.length; ++i) {
-			drawGhost(g, game, i);
+			drawGhost(g, i);
 		}
-		drawLevelCounter(g, game);
+		drawLevelCounter(g);
 	}
 
-	private void drawScore(Graphics2D g, PacManGame game) {
+	private void drawScore(Graphics2D g) {
 		g.setFont(scoreFont);
 		g.setColor(Color.WHITE);
 		g.drawString(String.format("SCORE %d", game.points), 16, 16);
 	}
 
-	private void drawLevelCounter(Graphics2D g, PacManGame game) {
+	private void drawLevelCounter(Graphics2D g) {
 		int x = WORLD_WIDTH - 4 * TS;
 		int y = WORLD_HEIGHT - 2 * TS;
 		for (int i = 1; i <= game.level; ++i) {
@@ -163,7 +165,7 @@ public class PacManGameUI {
 		g.fillRect(x * TS, y * TS, TS, TS);
 	}
 
-	private void drawMaze(Graphics2D g, PacManGame game) {
+	private void drawMaze(Graphics2D g) {
 		g = (Graphics2D) g.create();
 		g.drawImage(imageMaze, 0, 3 * TS, null);
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
@@ -225,7 +227,7 @@ public class PacManGameUI {
 		g.dispose();
 	}
 
-	private void drawPacMan(Graphics2D g, PacManGame game) {
+	private void drawPacMan(Graphics2D g) {
 		Creature pacMan = game.pacMan;
 		BufferedImage sprite;
 		long interval = game.framesTotal % 15;
@@ -244,7 +246,7 @@ public class PacManGameUI {
 //	g.fillRect((int) position.x, (int) position.y, (int) pacMan.size.x, (int) pacMan.size.y);
 	}
 
-	private void drawGhost(Graphics2D g, PacManGame game, int ghostIndex) {
+	private void drawGhost(Graphics2D g, int ghostIndex) {
 		Creature ghost = game.ghosts[ghostIndex];
 		BufferedImage sprite;
 		int dirIndex = dirIndex(ghost.dir);

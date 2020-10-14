@@ -205,7 +205,7 @@ public class PacManGame {
 		while (true) {
 			long time = System.nanoTime();
 			update();
-			ui.render(this);
+			ui.render();
 			time = System.nanoTime() - time;
 			++frames;
 			++framesTotal;
