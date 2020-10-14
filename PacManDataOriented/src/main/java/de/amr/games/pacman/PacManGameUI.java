@@ -163,11 +163,10 @@ public class PacManGameUI {
 
 	private void drawLevelCounter(Graphics2D g) {
 		int x = WORLD_WIDTH - 4 * TS;
-		int y = WORLD_HEIGHT - 2 * TS;
 		int firstIndex = Math.max(1, game.level - 6);
 		for (int i = firstIndex; i <= game.level; ++i) {
 			BufferedImage symbol = levelSymbols.get(levelData(i).get(0));
-			g.drawImage(symbol, x, y, null);
+			g.drawImage(symbol, x, WORLD_HEIGHT - 2 * TS, null);
 			x -= 2 * TS;
 		}
 	}
