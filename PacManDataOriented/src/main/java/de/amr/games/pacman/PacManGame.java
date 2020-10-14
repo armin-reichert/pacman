@@ -210,10 +210,10 @@ public class PacManGame {
 			++frames;
 			++framesTotal;
 			if (System.nanoTime() - start >= 1_000_000_000) {
-				log("Time: %-18s %3d frames/sec", LocalTime.now(), fps);
 				fps = frames;
 				frames = 0;
 				start = System.nanoTime();
+				log("Time: %-18s %3d frames/sec", LocalTime.now(), fps);
 			}
 			long sleep = Math.max(1_000_000_000 / FPS - time, 0);
 			if (sleep > 0) {
@@ -245,17 +245,17 @@ public class PacManGame {
 	private void update() {
 		readInput();
 		if (state == GameState.READY) {
-			handleReadyState();
+			simReadyState();
 		} else if (state == GameState.CHASING) {
-			handleChasingState();
+			simChasingState();
 		} else if (state == GameState.SCATTERING) {
-			handleScatteringState();
+			simScatteringState();
 		} else if (state == GameState.CHANGING_LEVEL) {
-			handleChangingLevelState();
+			simChangingLevelState();
 		}
 	}
 
-	private void handleReadyState() {
+	private void simReadyState() {
 		if (readyStateTimer == 0) {
 			exitReadyState();
 			enterScatteringState();
@@ -284,7 +284,7 @@ public class PacManGame {
 		}
 	}
 
-	private void handleScatteringState() {
+	private void simScatteringState() {
 		if (foodRemaining == 0) {
 			enterChangingLevelState();
 			return;
@@ -306,7 +306,7 @@ public class PacManGame {
 		forceGhostsTurnBack();
 	}
 
-	private void handleChasingState() {
+	private void simChasingState() {
 		if (foodRemaining == 0) {
 			enterChangingLevelState();
 			return;
@@ -329,7 +329,7 @@ public class PacManGame {
 		forceGhostsTurnBack();
 	}
 
-	private void handleChangingLevelState() {
+	private void simChangingLevelState() {
 		if (levelChangeStateTimer == 0) {
 			log("Level %d complete, entering level %d", level, level + 1);
 			initLevel(++level);

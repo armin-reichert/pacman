@@ -1,6 +1,7 @@
 package de.amr.games.pacman;
 
 import static de.amr.games.pacman.PacManGame.levelData;
+import static de.amr.games.pacman.PacManGame.sec;
 import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.TS;
 import static de.amr.games.pacman.World.WORLD_HEIGHT;
@@ -258,7 +259,12 @@ public class PacManGameUI {
 		if (ghost.dead) {
 			sprite = spriteSheet.getSubimage((8 + dirIndex) * 16, 5 * 16, 16, 16);
 		} else if (ghost.vulnerable) {
-			sprite = spriteSheet.getSubimage((8 + frame) * 16, 4 * 16, 16, 16);
+			if (game.pacManPowerTimer < sec(2)) {
+				int k = game.framesTotal % 20 < 10 ? 8 : 10;
+				sprite = spriteSheet.getSubimage((k + frame) * 16, 4 * 16, 16, 16);
+			} else {
+				sprite = spriteSheet.getSubimage(8 * 16, 4 * 16, 16, 16);
+			}
 		} else {
 			sprite = spriteSheet.getSubimage((2 * dirIndex + frame) * 16, (4 + ghostIndex) * 16, 16, 16);
 		}
