@@ -23,10 +23,15 @@ import java.util.Random;
 public class PacManGame {
 
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new PacManGame()::start);
+		PacManGame game = new PacManGame();
+		EventQueue.invokeLater(() -> {
+			game.ui = new PacManGameUI(game, 2);
+			new Thread(game::gameLoop, "GameLoop").start();
+		});
 	}
 
 	public enum GameState {
+
 		READY, SCATTERING, CHASING, CHANGING_LEVEL;
 	}
 
@@ -99,6 +104,8 @@ public class PacManGame {
 		return level == 1 ? 0 : level <= 4 ? 1 : 2;
 	}
 
+	public World world;
+	public BitSet eatenFood;
 	public GameState state;
 	public Creature pacMan;
 	public Creature[] ghosts;
@@ -106,8 +113,6 @@ public class PacManGame {
 	public String messageText;
 	public long fps;
 	public long framesTotal;
-	public World world;
-	public BitSet eatenFood;
 	public int level;
 	public List<?> levelData;
 	public int attackWave;
@@ -121,13 +126,11 @@ public class PacManGame {
 	public long bonusTimer;
 	public long bonusValueTimer;
 
-	private void start() {
+	public PacManGame() {
 		world = new World();
 		eatenFood = new BitSet();
 		createEntities();
 		initGame();
-		ui = new PacManGameUI(this, 2);
-		new Thread(this::gameLoop, "GameLoop").start();
 	}
 
 	private void initGame() {
