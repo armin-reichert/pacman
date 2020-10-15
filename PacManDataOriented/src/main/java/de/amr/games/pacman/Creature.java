@@ -33,5 +33,7 @@ public class Creature {
 	public boolean stuck;
 	public boolean forceTurnBack;
 	public boolean dead;
+	public int bounty;
+	public long showBountyTimer;
 	public boolean vulnerable;
 }

@@ -39,6 +39,7 @@ public class PacManGameUI {
 	private BufferedImage spriteSheet;
 	private Map<String, BufferedImage> levelSymbols;
 	private Map<Integer, BufferedImage> numbers;
+	private Map<Integer, BufferedImage> bounties;
 	private Font scoreFont;
 
 	public PacManGameUI(PacManGame game, float scaling) {
@@ -101,6 +102,12 @@ public class PacManGameUI {
 				2000, sheet(4, 10, 2, 1),
 				3000, sheet(4, 11, 2, 1),
 				5000, sheet(4, 12, 2, 1)
+			);
+			bounties = Map.of(
+					200, sheet(0,8),
+					400, sheet(1,8),
+					800, sheet(2,8),
+					1600, sheet(3,8)
 			);
 			//@formatter:on
 		} catch (Exception x) {
@@ -260,7 +267,11 @@ public class PacManGameUI {
 		int animationFrame = game.framesTotal % 60 < 30 ? 0 : 1;
 		BufferedImage sprite;
 		if (ghost.dead) {
-			sprite = sheet(8 + dirIndex(ghost.dir), 5);
+			if (ghost.showBountyTimer > 0) {
+				sprite = bounties.get(ghost.bounty);
+			} else {
+				sprite = sheet(8 + dirIndex(ghost.dir), 5);
+			}
 		} else if (ghost.vulnerable) {
 			if (game.pacManPowerTimer < sec(2)) {
 				int k = game.framesTotal % 20 < 10 ? 8 : 10;

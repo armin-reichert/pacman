@@ -118,6 +118,7 @@ public class PacManGame {
 	public int attackWave;
 	public int foodRemaining;
 	public int points;
+	public int ghostsKilledByEnergizer;
 	public long pacManPowerTimer;
 	public long readyStateTimer;
 	public long scatteringStateTimer;
@@ -145,6 +146,7 @@ public class PacManGame {
 		levelData = levelData(level);
 		eatenFood.clear();
 		foodRemaining = 244;
+		ghostsKilledByEnergizer = 0;
 		pacManPowerTimer = 0;
 		chasingStateTimer = 0;
 		levelChangeStateTimer = 0;
@@ -193,6 +195,7 @@ public class PacManGame {
 			ghost.forceTurnBack = false;
 			ghost.dead = false;
 			ghost.vulnerable = false;
+			ghost.bounty = 0;
 		}
 		ghosts[0].dir = ghosts[0].intendedDir = V2.LEFT;
 		ghosts[1].dir = ghosts[1].intendedDir = V2.DOWN;
@@ -270,7 +273,7 @@ public class PacManGame {
 
 	private void enterReadyState() {
 		state = GameState.READY;
-		readyStateTimer = sec(5);
+		readyStateTimer = sec(3);
 		messageText = "Ready!";
 		initEntities();
 	}
@@ -369,6 +372,7 @@ public class PacManGame {
 				for (Creature ghost : ghosts) {
 					ghost.vulnerable = !ghost.dead;
 				}
+				ghostsKilledByEnergizer = 0;
 				forceGhostsTurnBack();
 			}
 		}
@@ -385,7 +389,12 @@ public class PacManGame {
 		if (pacManPowerTimer > 0) {
 			for (Creature ghost : ghosts) {
 				if (pacMan.tile.equals(ghost.tile) && ghost.vulnerable) {
+					ghostsKilledByEnergizer++;
 					ghost.dead = true;
+					ghost.vulnerable = false;
+					ghost.bounty = (int) Math.pow(2, ghostsKilledByEnergizer) * 100;
+					log("Ghost %s bounty is %d", ghost.name, ghost.bounty);
+					ghost.showBountyTimer = sec(1);
 					log("Pac-Man killed %s at location %s", ghost.name, ghost.tile);
 				}
 			}
@@ -417,6 +426,9 @@ public class PacManGame {
 			ghost.vulnerable = false;
 		} else {
 			ghost.targetTile = ghosts[0].homeTile;
+			if (ghost.showBountyTimer > 0) {
+				--ghost.showBountyTimer;
+			}
 		}
 	}
 
@@ -488,7 +500,9 @@ public class PacManGame {
 	}
 
 	private void updateGhostSpeed(Creature ghost) {
-		if (ghost.dead) {
+		if (ghost.showBountyTimer > 0) {
+			ghost.speed = 0;
+		} else if (ghost.dead) {
 			ghost.speed = 2 * (int) levelData.get(4) / 100f;
 		} else if (world.isInsideTunnel(ghost.tile)) {
 			ghost.speed = (int) levelData.get(5) / 100f;
