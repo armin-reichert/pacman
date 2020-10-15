@@ -28,7 +28,7 @@ import de.amr.games.pacman.PacManGame.GameState;
 
 public class PacManGameUI {
 
-	public boolean debugDraw;
+	public boolean debugDraw = true;
 	public BitSet pressedKeys = new BitSet(256);
 
 	private final PacManGame game;
@@ -220,19 +220,19 @@ public class PacManGameUI {
 
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
-			g.drawString(String.format("%d frames/sec", game.fps), 2 * TS, 3 * TS);
+			g.drawString(String.format("%d frames/sec", game.fps), 1 * TS, 3 * TS);
 
-			long timer = 0;
+			String text = "";
 			if (game.state == GameState.READY) {
-				timer = game.readyStateTimer;
+				text = String.format("%s %d ticks remaining", game.state, game.readyStateTimer);
 			} else if (game.state == GameState.CHANGING_LEVEL) {
-				timer = game.levelChangeStateTimer;
+				text = String.format("%s %d ticks remaining", game.state, game.levelChangeStateTimer);
 			} else if (game.state == GameState.SCATTERING) {
-				timer = game.scatteringStateTimer;
+				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.scatteringStateTimer);
 			} else if (game.state == GameState.CHASING) {
-				timer = game.chasingStateTimer;
+				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.chasingStateTimer);
 			}
-			g.drawString(String.format("%s %d ticks remaining", game.state, timer), 12 * TS, 3 * TS);
+			g.drawString(text, 8 * TS, 3 * TS);
 		}
 		g.dispose();
 	}
