@@ -285,17 +285,18 @@ public class PacManGameUI {
 		}
 	}
 
-	private int dirIndex(V2 dir) {
-		if (V2.RIGHT.equals(dir)) {
+	private int dirIndex(Direction dir) {
+		switch (dir) {
+		case RIGHT:
 			return 0;
-		} else if (V2.LEFT.equals(dir)) {
+		case LEFT:
 			return 1;
-		} else if (V2.UP.equals(dir)) {
+		case UP:
 			return 2;
-		} else if (V2.DOWN.equals(dir)) {
+		case DOWN:
 			return 3;
-		} else {
-			return 0; // TODO
+		default:
+			throw new IllegalStateException();
 		}
 	}
 }

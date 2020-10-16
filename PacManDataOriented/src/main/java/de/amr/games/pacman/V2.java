@@ -10,10 +10,6 @@ import java.util.Objects;
 public class V2 {
 
 	public static final V2 NULL = new V2(0, 0);
-	public static final V2 RIGHT = new V2(1, 0);
-	public static final V2 LEFT = new V2(-1, 0);
-	public static final V2 UP = new V2(0, -1);
-	public static final V2 DOWN = new V2(0, 1);
 
 	private static float EPS = 0.000001f;
 
@@ -61,9 +57,5 @@ public class V2 {
 
 	public V2 scaled(float s) {
 		return new V2(s * x, s * y);
-	}
-
-	public V2 inverse() {
-		return new V2(-x, -y);
 	}
 }

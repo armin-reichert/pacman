@@ -1,5 +1,9 @@
 package de.amr.games.pacman;
 
+import static de.amr.games.pacman.Direction.DOWN;
+import static de.amr.games.pacman.Direction.LEFT;
+import static de.amr.games.pacman.Direction.RIGHT;
+import static de.amr.games.pacman.Direction.UP;
 import static de.amr.games.pacman.V2.distance;
 import static de.amr.games.pacman.World.BLINKY_CORNER;
 import static de.amr.games.pacman.World.CLYDE_CORNER;
@@ -181,7 +185,7 @@ public class PacManGame {
 	private void initEntities() {
 		pacMan.tile = pacMan.homeTile;
 		pacMan.offset = new V2(HTS, 0);
-		pacMan.dir = pacMan.wishDir = V2.RIGHT;
+		pacMan.dir = pacMan.wishDir = RIGHT;
 		pacMan.speed = 0;
 		pacMan.stuck = false;
 		for (int i = 0; i < ghosts.length; ++i) {
@@ -197,10 +201,10 @@ public class PacManGame {
 			ghost.vulnerable = false;
 			ghost.bounty = 0;
 		}
-		ghosts[0].dir = ghosts[0].wishDir = V2.LEFT;
-		ghosts[1].dir = ghosts[1].wishDir = V2.DOWN;
-		ghosts[2].dir = ghosts[2].wishDir = V2.UP;
-		ghosts[3].dir = ghosts[3].wishDir = V2.UP;
+		ghosts[0].dir = ghosts[0].wishDir = LEFT;
+		ghosts[1].dir = ghosts[1].wishDir = DOWN;
+		ghosts[2].dir = ghosts[2].wishDir = UP;
+		ghosts[3].dir = ghosts[3].wishDir = UP;
 	}
 
 	private void gameLoop() {
@@ -232,13 +236,13 @@ public class PacManGame {
 
 	private void readInput() {
 		if (ui.pressedKeys.get(KeyEvent.VK_LEFT)) {
-			pacMan.wishDir = V2.LEFT;
+			pacMan.wishDir = LEFT;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_RIGHT)) {
-			pacMan.wishDir = V2.RIGHT;
+			pacMan.wishDir = RIGHT;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_UP)) {
-			pacMan.wishDir = V2.UP;
+			pacMan.wishDir = UP;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_DOWN)) {
-			pacMan.wishDir = V2.DOWN;
+			pacMan.wishDir = DOWN;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_D)) {
 			ui.debugDraw = !ui.debugDraw;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_E)) {
@@ -457,10 +461,10 @@ public class PacManGame {
 		} else if (state == GameState.SCATTERING) {
 			pinky.targetTile = PINKY_CORNER;
 		} else if (state == GameState.CHASING) {
-			pinky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(4));
-			if (pacMan.dir.equals(V2.UP)) {
+			pinky.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(4));
+			if (pacMan.dir.equals(UP)) {
 				// simulate offset bug
-				pinky.targetTile = pinky.targetTile.sum(V2.LEFT.scaled(4));
+				pinky.targetTile = pinky.targetTile.sum(LEFT.vector.scaled(4));
 			}
 		}
 		updateGhostDirection(pinky);
@@ -478,7 +482,7 @@ public class PacManGame {
 		} else if (state == GameState.SCATTERING) {
 			inky.targetTile = INKY_CORNER;
 		} else if (state == GameState.CHASING) {
-			inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.inverse());
+			inky.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
 		}
 		updateGhostDirection(inky);
 		updateGhostSpeed(inky);
@@ -534,16 +538,16 @@ public class PacManGame {
 			ghost.wishDir = randomAccessibleDir(ghost);
 			return;
 		}
-		V2 newDir = null;
+		Direction newDir = null;
 		double min = Double.MAX_VALUE;
-		for (V2 dir : List.of(V2.RIGHT, V2.DOWN, V2.LEFT, V2.UP)) {
+		for (Direction dir : List.of(RIGHT, DOWN, LEFT, UP)) {
 			if (dir.equals(ghost.dir.inverse())) {
 				continue;
 			}
-			if (dir.equals(V2.UP) && world.isUpwardsBlocked(ghost.tile.sum(V2.UP))) {
+			if (dir.equals(UP) && world.isUpwardsBlocked(ghost.tile.sum(UP.vector))) {
 				continue;
 			}
-			V2 neighbor = ghost.tile.sum(dir);
+			V2 neighbor = ghost.tile.sum(dir.vector);
 			if (!canAccessTile(ghost, neighbor)) {
 				continue;
 			}
@@ -582,29 +586,29 @@ public class PacManGame {
 		return move(guy, guy.dir);
 	}
 
-	private boolean move(Creature guy, V2 dir) {
+	private boolean move(Creature guy, Direction dir) {
 
 		// portal
-		if (guy.tile.equals(new V2(28, 17)) && dir.equals(V2.RIGHT)) {
-			guy.tile = new V2(-1, 17);
+		if (guy.tile.equals(World.PORTAL_RIGHT_ENTRY) && dir.equals(RIGHT)) {
+			guy.tile = World.PORTAL_LEFT_ENTRY;
 			guy.offset = V2.NULL;
 			return true;
 		}
-		if (guy.tile.equals(new V2(-1, 17)) && dir.equals(V2.LEFT)) {
-			guy.tile = new V2(28, 17);
+		if (guy.tile.equals(World.PORTAL_LEFT_ENTRY) && dir.equals(LEFT)) {
+			guy.tile = World.PORTAL_RIGHT_ENTRY;
 			guy.offset = V2.NULL;
 			return true;
 		}
 
 		// turns
-		if (!world.isInsideGhostHouse(guy.tile) && canAccessTile(guy, guy.tile.sum(dir))) {
-			if (dir.equals(V2.LEFT) || dir.equals(V2.RIGHT)) {
+		if (!world.isInsideGhostHouse(guy.tile) && canAccessTile(guy, guy.tile.sum(dir.vector))) {
+			if (dir.equals(LEFT) || dir.equals(RIGHT)) {
 				if (Math.abs(guy.offset.y) > 1) {
 					return false;
 				}
 				guy.offset = new V2(guy.offset.x, 0);
 			}
-			if (dir.equals(V2.UP) || dir.equals(V2.DOWN)) {
+			if (dir.equals(UP) || dir.equals(DOWN)) {
 				if (Math.abs(guy.offset.x) > 1) {
 					return false;
 				}
@@ -612,7 +616,7 @@ public class PacManGame {
 			}
 		}
 
-		V2 velocity = dir.scaled(1.25f * guy.speed); // 100% speed corresponds to 1.25 pixels/tick
+		V2 velocity = dir.vector.scaled(1.25f * guy.speed); // 100% speed corresponds to 1.25 pixels/tick
 		V2 positionAfterMove = world.position(guy).sum(velocity);
 		V2 tileAfterMove = world.tile(positionAfterMove);
 
@@ -624,12 +628,12 @@ public class PacManGame {
 
 		// avoid moving partially into inaccessible tile
 		if (tileAfterMove.equals(guy.tile)) {
-			if (!canAccessTile(guy, guy.tile.sum(dir))) {
-				if (dir.equals(V2.RIGHT) && offsetAfterMove.x > 0 || dir.equals(V2.LEFT) && offsetAfterMove.x < 0) {
+			if (!canAccessTile(guy, guy.tile.sum(dir.vector))) {
+				if (dir.equals(RIGHT) && offsetAfterMove.x > 0 || dir.equals(LEFT) && offsetAfterMove.x < 0) {
 					guy.offset = new V2(0, guy.offset.y);
 					return false;
 				}
-				if (dir.equals(V2.DOWN) && offsetAfterMove.y > 0 || dir.equals(V2.UP) && offsetAfterMove.y < 0) {
+				if (dir.equals(DOWN) && offsetAfterMove.y > 0 || dir.equals(UP) && offsetAfterMove.y < 0) {
 					guy.offset = new V2(guy.offset.x, 0);
 					return false;
 				}
@@ -668,13 +672,13 @@ public class PacManGame {
 		return world.content((int) tile.x, (int) tile.y) != '1';
 	}
 
-	private V2 randomAccessibleDir(Creature guy) {
-		List<V2> dirs = new ArrayList<>(3);
-		for (V2 dir : List.of(V2.DOWN, V2.LEFT, V2.RIGHT, V2.UP)) {
+	private Direction randomAccessibleDir(Creature guy) {
+		List<Direction> dirs = new ArrayList<>(3);
+		for (Direction dir : List.of(DOWN, LEFT, RIGHT, UP)) {
 			if (dir.equals(guy.dir.inverse())) {
 				continue;
 			}
-			if (world.isAccessibleTile(guy.tile.sum(dir))) {
+			if (world.isAccessibleTile(guy.tile.sum(dir.vector))) {
 				dirs.add(dir);
 			}
 		}

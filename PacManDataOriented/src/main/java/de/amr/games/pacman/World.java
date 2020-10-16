@@ -1,5 +1,10 @@
 package de.amr.games.pacman;
 
+import static de.amr.games.pacman.Direction.DOWN;
+import static de.amr.games.pacman.Direction.LEFT;
+import static de.amr.games.pacman.Direction.RIGHT;
+import static de.amr.games.pacman.Direction.UP;
+
 import java.util.List;
 
 public class World {
@@ -14,6 +19,8 @@ public class World {
 	public static final V2 INKY_CORNER = new V2(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
 	public static final V2 PINKY_CORNER = new V2(2, 0);
 	public static final V2 BLINKY_CORNER = new V2(WORLD_WIDTH_TILES - 3, 0);
+	public static final V2 PORTAL_LEFT_ENTRY = new V2(-1, 17);
+	public static final V2 PORTAL_RIGHT_ENTRY = new V2(28, 17);
 
 	private final String[] map;
 
@@ -120,8 +127,8 @@ public class World {
 
 	public boolean isIntersectionTile(V2 tile) {
 		int accessibleNeighbors = 0;
-		for (V2 dir : List.of(V2.DOWN, V2.LEFT, V2.RIGHT, V2.UP)) {
-			V2 neighbor = tile.sum(dir);
+		for (Direction dir : List.of(DOWN, LEFT, RIGHT, UP)) {
+			V2 neighbor = tile.sum(dir.vector);
 			if (isAccessibleTile(neighbor)) {
 				++accessibleNeighbors;
 			}

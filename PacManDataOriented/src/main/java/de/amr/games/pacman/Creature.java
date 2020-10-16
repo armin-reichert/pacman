@@ -21,8 +21,8 @@ public class Creature {
 	public final Color color;
 	public final V2 size;
 	public float speed;
-	public V2 dir;
-	public V2 wishDir;
+	public Direction dir;
+	public Direction wishDir;
 	public V2 tile;
 	public V2 offset;
 	public V2 homeTile;
