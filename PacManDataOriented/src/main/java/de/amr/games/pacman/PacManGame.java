@@ -356,13 +356,17 @@ public class PacManGame {
 	}
 
 	private void updatePacMan() {
+
 		pacMan.speed = (int) levelData.get(2) / 100f;
 		pacMan.stuck = !move(pacMan);
+
+		// food found?
 		int x = (int) pacMan.tile.x, y = (int) pacMan.tile.y;
 		if (world.isFoodTile(x, y) && !hasEatenFood(x, y)) {
 			eatenFood.set(world.index(x, y));
 			foodRemaining--;
 			points += 10;
+			// energizer found?
 			if (world.isEnergizerTile(pacMan.tile)) {
 				points += 40;
 				int powerSeconds = (int) levelData.get(13);
@@ -374,11 +378,13 @@ public class PacManGame {
 				ghostsKilledByEnergizer = 0;
 				forceGhostsTurnBack();
 			}
+			// bonus reached?
+			if (bonusAvailableTimer == 0 && (foodRemaining == 70 || foodRemaining == 170)) {
+				bonusAvailableTimer = sec(9) + new Random().nextInt(FPS);
+			}
 		}
-		if (bonusAvailableTimer == 0 && (foodRemaining == 70 || foodRemaining == 170)) {
-			bonusAvailableTimer = sec(9) + new Random().nextInt(FPS);
-		}
-		if (bonusAvailableTimer > 0 && pacMan.tile.x == 13 && pacMan.tile.y == 20) {
+		// bonus found?
+		if (bonusAvailableTimer > 0 && x == 13 && y == 20) {
 			bonusAvailableTimer = 0;
 			bonusConsumedTimer = sec(3);
 			String bonusName = (String) levelData.get(0);
@@ -386,6 +392,7 @@ public class PacManGame {
 			points += bonusValue;
 			log("Pac-Man found bonus %s of value %d", bonusName, bonusValue);
 		}
+		// ghost killed?
 		if (pacManPowerTimer > 0) {
 			for (Creature ghost : ghosts) {
 				if (ghost.vulnerable && pacMan.tile.equals(ghost.tile)) {
@@ -393,18 +400,18 @@ public class PacManGame {
 					ghost.dead = true;
 					ghost.vulnerable = false;
 					ghost.bounty = (int) Math.pow(2, ghostsKilledByEnergizer) * 100;
-					ghost.bountyTimer = sec(1f);
+					ghost.bountyTimer = sec(0.5f);
+					ghost.targetTile = ghosts[0].homeTile;
 					log("Pac-Man killed %s at location %s and won %d points", ghost.name, ghost.tile, ghost.bounty);
 				}
 			}
-		}
-		// TODO handle Pac-Man death, reset timers when that happens
-		if (pacManPowerTimer == 1) {
-			for (Creature ghost : ghosts) {
-				ghost.vulnerable = false;
+			pacManPowerTimer--;
+			if (pacManPowerTimer == 0) {
+				for (Creature ghost : ghosts) {
+					ghost.vulnerable = false;
+				}
 			}
 		}
-		pacManPowerTimer = Math.max(0, pacManPowerTimer - 1);
 	}
 
 	private void updateBonus() {
@@ -419,9 +426,7 @@ public class PacManGame {
 	private void updateDeadGhost(Creature ghost) {
 		if (ghost.tile.equals(ghosts[0].homeTile) && ghost.offset.x - HTS < 2) {
 			ghost.dead = false;
-			ghost.vulnerable = false;
 		} else {
-			ghost.targetTile = ghosts[0].homeTile;
 			if (ghost.bountyTimer > 0) {
 				--ghost.bountyTimer;
 			}
