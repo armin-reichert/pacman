@@ -171,6 +171,8 @@ public class PacManGameUI {
 				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.scatteringStateTimer);
 			} else if (game.state == GameState.CHASING) {
 				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.chasingStateTimer);
+			} else if (game.state == GameState.PACMAN_DYING) {
+				text = String.format("%s %d ticks remaining", game.state, game.pacManDyingStateTimer);
 			}
 			g.drawString(text, 8 * TS, 3 * TS);
 		}
@@ -241,7 +243,16 @@ public class PacManGameUI {
 		BufferedImage sprite;
 		long interval = game.framesTotal % 15;
 		int animationFrame = (int) interval / 5;
-		if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL) {
+		if (pacMan.dead) {
+			if (game.pacManDyingStateTimer >= sec(2) + 11 * 8) {
+				sprite = sheet(2, 0);
+			} else if (game.pacManDyingStateTimer >= sec(2)) {
+				int frame = (int) (game.pacManDyingStateTimer - sec(2)) / 8;
+				sprite = sheet(13 - frame, 0);
+			} else {
+				sprite = sheet(13, 0);
+			}
+		} else if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL) {
 			sprite = sheet(2, 0);
 		} else if (pacMan.stuck) {
 			sprite = sheet(0, dirIndex(pacMan.dir));
@@ -256,6 +267,9 @@ public class PacManGameUI {
 
 	private void drawGhost(Graphics2D g, int ghostIndex) {
 		Creature ghost = game.ghosts[ghostIndex];
+		if (!ghost.visible) {
+			return;
+		}
 		int animationFrame = game.framesTotal % 60 < 30 ? 0 : 1;
 		BufferedImage sprite;
 		if (ghost.dead) {

@@ -34,4 +34,5 @@ public class Creature {
 	public int bounty;
 	public long bountyTimer;
 	public boolean vulnerable;
+	public boolean visible;
 }

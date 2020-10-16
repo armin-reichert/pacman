@@ -39,7 +39,7 @@ public class PacManGame {
 
 	public enum GameState {
 
-		READY, SCATTERING, CHASING, CHANGING_LEVEL;
+		READY, SCATTERING, CHASING, CHANGING_LEVEL, PACMAN_DYING;
 	}
 
 	public static final int FPS = 60;
@@ -154,6 +154,7 @@ public class PacManGame {
 	public long levelChangeStateTimer;
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
+	public long pacManDyingStateTimer;
 
 	public PacManGame() {
 		world = new World();
@@ -207,6 +208,8 @@ public class PacManGame {
 		pacMan.dir = pacMan.wishDir = RIGHT;
 		pacMan.speed = 0;
 		pacMan.stuck = false;
+		pacMan.dead = false;
+		pacMan.visible = true;
 		for (int i = 0; i < ghosts.length; ++i) {
 			Creature ghost = ghosts[i];
 			ghost.tile = ghost.homeTile;
@@ -219,11 +222,15 @@ public class PacManGame {
 			ghost.dead = false;
 			ghost.vulnerable = false;
 			ghost.bounty = 0;
+			ghost.visible = true;
 		}
 		ghosts[0].dir = ghosts[0].wishDir = LEFT;
 		ghosts[1].dir = ghosts[1].wishDir = DOWN;
 		ghosts[2].dir = ghosts[2].wishDir = UP;
 		ghosts[3].dir = ghosts[3].wishDir = UP;
+
+		bonusAvailableTimer = 0;
+		bonusConsumedTimer = 0;
 	}
 
 	private void gameLoop() {
@@ -272,17 +279,19 @@ public class PacManGame {
 	private void update() {
 		readInput();
 		if (state == GameState.READY) {
-			simReadyState();
+			keepReadyState();
 		} else if (state == GameState.CHASING) {
-			simChasingState();
+			keepChasingState();
 		} else if (state == GameState.SCATTERING) {
-			simScatteringState();
+			keepScatteringState();
 		} else if (state == GameState.CHANGING_LEVEL) {
-			simChangingLevelState();
+			keepChangingLevelState();
+		} else if (state == GameState.PACMAN_DYING) {
+			keepPacManDyingState();
 		}
 	}
 
-	private void simReadyState() {
+	private void keepReadyState() {
 		if (readyStateTimer == 0) {
 			exitReadyState();
 			enterScatteringState();
@@ -311,7 +320,11 @@ public class PacManGame {
 		}
 	}
 
-	private void simScatteringState() {
+	private void keepScatteringState() {
+		if (pacMan.dead) {
+			enterPacManDyingState();
+			return;
+		}
 		if (foodRemaining == 0) {
 			enterChangingLevelState();
 			return;
@@ -333,7 +346,11 @@ public class PacManGame {
 		forceGhostsTurnBack();
 	}
 
-	private void simChasingState() {
+	private void keepChasingState() {
+		if (pacMan.dead) {
+			enterPacManDyingState();
+			return;
+		}
 		if (foodRemaining == 0) {
 			enterChangingLevelState();
 			return;
@@ -356,7 +373,26 @@ public class PacManGame {
 		forceGhostsTurnBack();
 	}
 
-	private void simChangingLevelState() {
+	private void enterPacManDyingState() {
+		state = GameState.PACMAN_DYING;
+		// 11 animation frames, 8 ticks each, 2 seconds before animation, 2 seconds after
+		pacManDyingStateTimer = sec(2) + 88 + sec(2);
+	}
+
+	private void keepPacManDyingState() {
+		if (pacManDyingStateTimer == 0) {
+			enterReadyState();
+			return;
+		}
+		if (pacManDyingStateTimer == sec(2.5f) + 88) {
+			for (Creature ghost : ghosts) {
+				ghost.visible = false;
+			}
+		}
+		pacManDyingStateTimer--;
+	}
+
+	private void keepChangingLevelState() {
 		if (levelChangeStateTimer == 0) {
 			log("Level %d complete, entering level %d", level, level + 1);
 			initLevel(++level);
@@ -383,6 +419,16 @@ public class PacManGame {
 
 		pacMan.speed = levelData(level).percentValue(2);
 		pacMan.stuck = !move(pacMan);
+
+		// Pac-man power expiring?
+		if (pacManPowerTimer > 0) {
+			pacManPowerTimer--;
+			if (pacManPowerTimer == 0) {
+				for (Creature ghost : ghosts) {
+					ghost.vulnerable = false;
+				}
+			}
+		}
 
 		// food found?
 		int x = (int) pacMan.tile.x, y = (int) pacMan.tile.y;
@@ -416,24 +462,26 @@ public class PacManGame {
 			points += bonusValue;
 			log("Pac-Man found bonus %s of value %d", bonusName, bonusValue);
 		}
-		// ghost killed?
-		if (pacManPowerTimer > 0) {
-			for (Creature ghost : ghosts) {
-				if (ghost.vulnerable && pacMan.tile.equals(ghost.tile)) {
-					ghostsKilledByEnergizer++;
-					ghost.dead = true;
-					ghost.vulnerable = false;
-					ghost.bounty = (int) Math.pow(2, ghostsKilledByEnergizer) * 100;
-					ghost.bountyTimer = sec(0.5f);
-					ghost.targetTile = ghosts[0].homeTile;
-					log("Pac-Man killed %s at location %s and won %d points", ghost.name, ghost.tile, ghost.bounty);
-				}
+		// meeting ghost?
+		for (Creature ghost : ghosts) {
+			if (!pacMan.tile.equals(ghost.tile)) {
+				continue;
 			}
-			pacManPowerTimer--;
-			if (pacManPowerTimer == 0) {
-				for (Creature ghost : ghosts) {
-					ghost.vulnerable = false;
-				}
+			// killing ghost?
+			if (ghost.vulnerable) {
+				ghost.dead = true;
+				ghost.vulnerable = false;
+				ghost.targetTile = ghosts[0].homeTile;
+				ghostsKilledByEnergizer++;
+				ghost.bounty = (int) Math.pow(2, ghostsKilledByEnergizer) * 100;
+				ghost.bountyTimer = sec(0.5f);
+				log("Ghost %s killed at location %s, Pac-Man wins %d points", ghost.name, ghost.tile, ghost.bounty);
+			}
+			// getting killed by ghost?
+			if (pacManPowerTimer == 0 && !ghost.dead) {
+				log("Pac-Man killed by %s at location %s", ghost.name, ghost.tile);
+				pacMan.dead = true;
+				break;
 			}
 		}
 	}
