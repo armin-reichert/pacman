@@ -12,12 +12,14 @@ import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.BitSet;
 import java.util.Map;
 
@@ -37,7 +39,7 @@ public class PacManGameUI {
 
 	private BufferedImage imageMaze;
 	private BufferedImage spriteSheet;
-	private Map<String, BufferedImage> levelSymbols;
+	private Map<String, BufferedImage> symbols;
 	private Map<Integer, BufferedImage> numbers;
 	private Map<Integer, BufferedImage> bounties;
 	private Font scoreFont;
@@ -45,7 +47,12 @@ public class PacManGameUI {
 	public PacManGameUI(PacManGame game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
-		loadResources();
+
+		try {
+			loadResources();
+		} catch (IOException | FontFormatException x) {
+			x.printStackTrace();
+		}
 
 		JFrame window = new JFrame("Pac-Man");
 		window.setResizable(false);
@@ -76,43 +83,40 @@ public class PacManGameUI {
 		canvas.createBufferStrategy(2);
 	}
 
-	public void loadResources() {
-		try {
-			spriteSheet = image("/sprites.png");
-			imageMaze = image("/maze_full.png");
-			scoreFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/PressStart2P-Regular.ttf"))
-					.deriveFont((float) TS);
-			//@formatter:off
-			levelSymbols = Map.of(
-				"CHERRIES",   sheet(2, 3),
-				"STRAWBERRY", sheet(3, 3),
-				"PEACH",      sheet(4, 3),
-				"APPLE",      sheet(5, 3),
-				"GRAPES",     sheet(6, 3),
-				"GALAXIAN",   sheet(7, 3),
-				"BELL",       sheet(8, 3),
-				"KEY",        sheet(9, 3)
-			);
-			numbers = Map.of(
-				100,  sheet(0, 9),
-				300,  sheet(1, 9),
-				500,  sheet(2, 9),
-				700,  sheet(3, 9),
-				1000, sheet(4, 9, 2, 1),
-				2000, sheet(4, 10, 2, 1),
-				3000, sheet(4, 11, 2, 1),
-				5000, sheet(4, 12, 2, 1)
-			);
-			bounties = Map.of(
-					200, sheet(0,8),
-					400, sheet(1,8),
-					800, sheet(2,8),
-					1600, sheet(3,8)
-			);
-			//@formatter:on
-		} catch (Exception x) {
-			x.printStackTrace();
+	public void loadResources() throws IOException, FontFormatException {
+		spriteSheet = image("/sprites.png");
+		imageMaze = image("/maze_full.png");
+		try (InputStream fontData = getClass().getResourceAsStream("/PressStart2P-Regular.ttf")) {
+			scoreFont = Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) TS);
 		}
+		//@formatter:off
+		symbols = Map.of(
+			"CHERRIES",   sheet(2, 3),
+			"STRAWBERRY", sheet(3, 3),
+			"PEACH",      sheet(4, 3),
+			"APPLE",      sheet(5, 3),
+			"GRAPES",     sheet(6, 3),
+			"GALAXIAN",   sheet(7, 3),
+			"BELL",       sheet(8, 3),
+			"KEY",        sheet(9, 3)
+		);
+		numbers = Map.of(
+			100,  sheet(0, 9),
+			300,  sheet(1, 9),
+			500,  sheet(2, 9),
+			700,  sheet(3, 9),
+			1000, sheet(4, 9, 2, 1),
+			2000, sheet(4, 10, 2, 1),
+			3000, sheet(4, 11, 2, 1),
+			5000, sheet(4, 12, 2, 1)
+		);
+		bounties = Map.of(
+			200,  sheet(0, 8),
+			400,  sheet(1, 8),
+			800,  sheet(2, 8),
+			1600, sheet(3, 8)
+		);
+		//@formatter:on
 	}
 
 	private BufferedImage sheet(int x, int y, int w, int h) {
@@ -153,6 +157,23 @@ public class PacManGameUI {
 				drawGhost(g, i);
 			}
 		}
+		if (debugDraw) {
+			g.setColor(Color.WHITE);
+			g.setFont(new Font("Arial", Font.PLAIN, 6));
+			g.drawString(String.format("%d frames/sec", game.fps), 1 * TS, 3 * TS);
+
+			String text = "";
+			if (game.state == GameState.READY) {
+				text = String.format("%s %d ticks remaining", game.state, game.readyStateTimer);
+			} else if (game.state == GameState.CHANGING_LEVEL) {
+				text = String.format("%s %d ticks remaining", game.state, game.levelChangeStateTimer);
+			} else if (game.state == GameState.SCATTERING) {
+				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.scatteringStateTimer);
+			} else if (game.state == GameState.CHASING) {
+				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.chasingStateTimer);
+			}
+			g.drawString(text, 8 * TS, 3 * TS);
+		}
 	}
 
 	private void drawScore(Graphics2D g) {
@@ -172,7 +193,7 @@ public class PacManGameUI {
 		int x = WORLD_WIDTH - 4 * TS;
 		int firstIndex = Math.max(1, game.level - 6);
 		for (int i = firstIndex; i <= game.level; ++i) {
-			BufferedImage symbol = levelSymbols.get(levelData(i).get(0));
+			BufferedImage symbol = symbols.get(levelData(i).get(0));
 			g.drawImage(symbol, x, WORLD_HEIGHT - 2 * TS, null);
 			x -= 2 * TS;
 		}
@@ -184,7 +205,6 @@ public class PacManGameUI {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		g = (Graphics2D) g.create();
 		g.drawImage(imageMaze, 0, 3 * TS, null);
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
@@ -202,7 +222,7 @@ public class PacManGameUI {
 		}
 		if (game.bonusAvailableTimer > 0) {
 			String symbolName = (String) game.levelData.get(0);
-			g.drawImage(levelSymbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
+			g.drawImage(symbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
 		}
 		if (game.bonusConsumedTimer > 0) {
 			int value = (int) game.levelData.get(1);
@@ -214,34 +234,6 @@ public class PacManGameUI {
 			int textLength = g.getFontMetrics().stringWidth(game.messageText);
 			g.drawString(game.messageText, WORLD_WIDTH / 2 - textLength / 2, 21 * TS);
 		}
-		if (debugDraw) {
-
-//			g.setColor(new Color(200, 200, 200, 100));
-//			g.setStroke(new BasicStroke(0.1f));
-//			for (int row = 1; row < WORLD_HEIGHT_TILES; ++row) {
-//				g.drawLine(0, row * TS, WORLD_WIDTH, row * TS);
-//			}
-//			for (int col = 1; col < WORLD_WIDTH_TILES; ++col) {
-//				g.drawLine(col * TS, 0, col * TS, WORLD_HEIGHT);
-//			}
-
-			g.setColor(Color.WHITE);
-			g.setFont(new Font("Arial", Font.PLAIN, 6));
-			g.drawString(String.format("%d frames/sec", game.fps), 1 * TS, 3 * TS);
-
-			String text = "";
-			if (game.state == GameState.READY) {
-				text = String.format("%s %d ticks remaining", game.state, game.readyStateTimer);
-			} else if (game.state == GameState.CHANGING_LEVEL) {
-				text = String.format("%s %d ticks remaining", game.state, game.levelChangeStateTimer);
-			} else if (game.state == GameState.SCATTERING) {
-				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.scatteringStateTimer);
-			} else if (game.state == GameState.CHASING) {
-				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.chasingStateTimer);
-			}
-			g.drawString(text, 8 * TS, 3 * TS);
-		}
-		g.dispose();
 	}
 
 	private void drawPacMan(Graphics2D g) {
