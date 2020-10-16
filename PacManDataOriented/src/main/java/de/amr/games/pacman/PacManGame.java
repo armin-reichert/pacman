@@ -1,7 +1,11 @@
 package de.amr.games.pacman;
 
 import static de.amr.games.pacman.V2.distance;
+import static de.amr.games.pacman.World.BLINKY_CORNER;
+import static de.amr.games.pacman.World.CLYDE_CORNER;
 import static de.amr.games.pacman.World.HTS;
+import static de.amr.games.pacman.World.INKY_CORNER;
+import static de.amr.games.pacman.World.PINKY_CORNER;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 
@@ -116,6 +120,7 @@ public class PacManGame {
 	public List<?> levelData;
 	public int attackWave;
 	public int foodRemaining;
+	public int lives;
 	public int points;
 	public int ghostsKilledByEnergizer;
 	public long pacManPowerTimer;
@@ -135,7 +140,7 @@ public class PacManGame {
 
 	private void initGame() {
 		points = 0;
-		pacMan.lives = 3;
+		lives = 3;
 		initLevel(1);
 		enterReadyState();
 	}
@@ -162,25 +167,21 @@ public class PacManGame {
 
 		ghosts[0] = new Creature("Blinky", Color.RED);
 		ghosts[0].homeTile = new V2(13, 14);
-		ghosts[0].scatterTile = new V2(WORLD_WIDTH_TILES - 3, 0);
 
 		ghosts[1] = new Creature("Pinky", Color.PINK);
 		ghosts[1].homeTile = new V2(13, 17);
-		ghosts[1].scatterTile = new V2(2, 0);
 
 		ghosts[2] = new Creature("Inky", Color.CYAN);
 		ghosts[2].homeTile = new V2(11, 17);
-		ghosts[2].scatterTile = new V2(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
 
 		ghosts[3] = new Creature("Clyde", Color.ORANGE);
 		ghosts[3].homeTile = new V2(15, 17);
-		ghosts[3].scatterTile = new V2(0, WORLD_HEIGHT_TILES - 1);
 	}
 
 	private void initEntities() {
 		pacMan.tile = pacMan.homeTile;
 		pacMan.offset = new V2(HTS, 0);
-		pacMan.dir = pacMan.intendedDir = V2.RIGHT;
+		pacMan.dir = pacMan.wishDir = V2.RIGHT;
 		pacMan.speed = 0;
 		pacMan.stuck = false;
 		for (int i = 0; i < ghosts.length; ++i) {
@@ -196,10 +197,10 @@ public class PacManGame {
 			ghost.vulnerable = false;
 			ghost.bounty = 0;
 		}
-		ghosts[0].dir = ghosts[0].intendedDir = V2.LEFT;
-		ghosts[1].dir = ghosts[1].intendedDir = V2.DOWN;
-		ghosts[2].dir = ghosts[2].intendedDir = V2.UP;
-		ghosts[3].dir = ghosts[3].intendedDir = V2.UP;
+		ghosts[0].dir = ghosts[0].wishDir = V2.LEFT;
+		ghosts[1].dir = ghosts[1].wishDir = V2.DOWN;
+		ghosts[2].dir = ghosts[2].wishDir = V2.UP;
+		ghosts[3].dir = ghosts[3].wishDir = V2.UP;
 	}
 
 	private void gameLoop() {
@@ -231,13 +232,13 @@ public class PacManGame {
 
 	private void readInput() {
 		if (ui.pressedKeys.get(KeyEvent.VK_LEFT)) {
-			pacMan.intendedDir = V2.LEFT;
+			pacMan.wishDir = V2.LEFT;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_RIGHT)) {
-			pacMan.intendedDir = V2.RIGHT;
+			pacMan.wishDir = V2.RIGHT;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_UP)) {
-			pacMan.intendedDir = V2.UP;
+			pacMan.wishDir = V2.UP;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_DOWN)) {
-			pacMan.intendedDir = V2.DOWN;
+			pacMan.wishDir = V2.DOWN;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_D)) {
 			ui.debugDraw = !ui.debugDraw;
 		} else if (ui.pressedKeys.get(KeyEvent.VK_E)) {
@@ -438,7 +439,7 @@ public class PacManGame {
 		if (blinky.dead) {
 			updateDeadGhost(blinky);
 		} else if (state == GameState.SCATTERING) {
-			blinky.targetTile = blinky.scatterTile;
+			blinky.targetTile = BLINKY_CORNER;
 		} else if (state == GameState.CHASING) {
 			blinky.targetTile = pacMan.tile;
 		}
@@ -454,7 +455,7 @@ public class PacManGame {
 		} else if (state == GameState.READY) {
 			bounce(pinky);
 		} else if (state == GameState.SCATTERING) {
-			pinky.targetTile = pinky.scatterTile;
+			pinky.targetTile = PINKY_CORNER;
 		} else if (state == GameState.CHASING) {
 			pinky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(4));
 			if (pacMan.dir.equals(V2.UP)) {
@@ -475,7 +476,7 @@ public class PacManGame {
 		} else if (state == GameState.READY) {
 			bounce(inky);
 		} else if (state == GameState.SCATTERING) {
-			inky.targetTile = inky.scatterTile;
+			inky.targetTile = INKY_CORNER;
 		} else if (state == GameState.CHASING) {
 			inky.targetTile = pacMan.tile.sum(pacMan.dir.scaled(2)).scaled(2).sum(blinky.tile.inverse());
 		}
@@ -491,9 +492,9 @@ public class PacManGame {
 		} else if (state == GameState.READY) {
 			bounce(clyde);
 		} else if (state == GameState.SCATTERING) {
-			clyde.targetTile = clyde.scatterTile;
+			clyde.targetTile = CLYDE_CORNER;
 		} else if (state == GameState.CHASING) {
-			clyde.targetTile = distance(clyde.tile, pacMan.tile) > 8 ? pacMan.tile : clyde.scatterTile;
+			clyde.targetTile = distance(clyde.tile, pacMan.tile) > 8 ? pacMan.tile : CLYDE_CORNER;
 		}
 		updateGhostDirection(clyde);
 		updateGhostSpeed(clyde);
@@ -525,12 +526,12 @@ public class PacManGame {
 			return;
 		}
 		if (ghost.forceTurnBack) {
-			ghost.intendedDir = ghost.intendedDir.inverse();
+			ghost.wishDir = ghost.wishDir.inverse();
 			ghost.forceTurnBack = false;
 			return;
 		}
 		if (pacManPowerTimer > 0 && world.isIntersectionTile(ghost.tile)) {
-			ghost.intendedDir = randomAccessibleDir(ghost);
+			ghost.wishDir = randomAccessibleDir(ghost);
 			return;
 		}
 		V2 newDir = null;
@@ -553,7 +554,7 @@ public class PacManGame {
 			}
 		}
 		if (newDir != null) {
-			ghost.intendedDir = newDir;
+			ghost.wishDir = newDir;
 //			log("%s's intended direction is %s", ghost.name, ghost.intendedDir);
 		}
 	}
@@ -566,7 +567,7 @@ public class PacManGame {
 
 	private void bounce(Creature guy) {
 		if (guy.stuck) {
-			guy.intendedDir = guy.intendedDir.inverse();
+			guy.wishDir = guy.wishDir.inverse();
 		}
 	}
 
@@ -574,8 +575,8 @@ public class PacManGame {
 		if (guy.speed == 0) {
 			return false;
 		}
-		if (move(guy, guy.intendedDir)) {
-			guy.dir = guy.intendedDir;
+		if (move(guy, guy.wishDir)) {
+			guy.dir = guy.wishDir;
 			return true;
 		}
 		return move(guy, guy.dir);

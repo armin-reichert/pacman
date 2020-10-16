@@ -19,16 +19,14 @@ public class Creature {
 
 	public final String name;
 	public final Color color;
+	public final V2 size;
 	public float speed;
-	public int lives;
-	public V2 size;
+	public V2 dir;
+	public V2 wishDir;
 	public V2 tile;
 	public V2 offset;
-	public V2 dir;
-	public V2 intendedDir;
 	public V2 homeTile;
 	public V2 targetTile;
-	public V2 scatterTile;
 	public boolean tileChanged;
 	public boolean stuck;
 	public boolean forceTurnBack;

@@ -184,7 +184,7 @@ public class PacManGameUI {
 
 	private void drawLivesCounter(Graphics2D g) {
 		BufferedImage sprite = sheet(8, 1);
-		for (int i = 0; i < game.pacMan.lives; ++i) {
+		for (int i = 0; i < game.lives; ++i) {
 			g.drawImage(sprite, 2 * (i + 1) * TS, World.WORLD_HEIGHT - 2 * TS, null);
 		}
 	}
@@ -279,7 +279,6 @@ public class PacManGameUI {
 
 		if (debugDraw) {
 			g.setColor(ghost.color);
-			g.drawRect((int) ghost.scatterTile.x * TS, (int) ghost.scatterTile.y * TS, TS, TS);
 			if (ghost.targetTile != null) {
 				g.fillRect((int) ghost.targetTile.x * TS + TS / 4, (int) ghost.targetTile.y * TS + TS / 4, HTS, HTS);
 			}

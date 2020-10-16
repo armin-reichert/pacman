@@ -10,8 +10,12 @@ public class World {
 	public static final int WORLD_HEIGHT_TILES = 36;
 	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
 	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
+	public static final V2 CLYDE_CORNER = new V2(0, WORLD_HEIGHT_TILES - 1);
+	public static final V2 INKY_CORNER = new V2(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
+	public static final V2 PINKY_CORNER = new V2(2, 0);
+	public static final V2 BLINKY_CORNER = new V2(WORLD_WIDTH_TILES - 3, 0);
 
-	final String[] map;
+	private final String[] map;
 
 	public World() {
 		map = new String[] {
