@@ -82,7 +82,7 @@ public class PacManGame {
 	 * 
 	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
 	 */
-	public static final List<LevelData> LEVEL_DATA = List.of(
+	private static final List<LevelData> LEVEL_DATA = List.of(
 	/*@formatter:off*/
 		LevelData.of("CHERRIES",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
 		LevelData.of("STRAWBERRY", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
