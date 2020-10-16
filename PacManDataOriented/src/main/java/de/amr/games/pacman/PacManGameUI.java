@@ -200,11 +200,11 @@ public class PacManGameUI {
 				}
 			}
 		}
-		if (game.bonusTimer > 0) {
+		if (game.bonusAvailableTimer > 0) {
 			String symbolName = (String) game.levelData.get(0);
 			g.drawImage(levelSymbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
 		}
-		if (game.bonusValueTimer > 0) {
+		if (game.bonusConsumedTimer > 0) {
 			int value = (int) game.levelData.get(1);
 			g.drawImage(numbers.get(value), 13 * TS, 20 * TS - HTS, null);
 		}
@@ -267,7 +267,7 @@ public class PacManGameUI {
 		int animationFrame = game.framesTotal % 60 < 30 ? 0 : 1;
 		BufferedImage sprite;
 		if (ghost.dead) {
-			if (ghost.showBountyTimer > 0) {
+			if (ghost.bountyTimer > 0) {
 				sprite = bounties.get(ghost.bounty);
 			} else {
 				sprite = sheet(8 + dirIndex(ghost.dir), 5);

@@ -8,7 +8,6 @@ import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -124,8 +123,8 @@ public class PacManGame {
 	public long scatteringStateTimer;
 	public long chasingStateTimer;
 	public long levelChangeStateTimer;
-	public long bonusTimer;
-	public long bonusValueTimer;
+	public long bonusAvailableTimer;
+	public long bonusConsumedTimer;
 
 	public PacManGame() {
 		world = new World();
@@ -151,8 +150,8 @@ public class PacManGame {
 		chasingStateTimer = 0;
 		levelChangeStateTimer = 0;
 		attackWave = 0;
-		bonusTimer = 0;
-		bonusValueTimer = 0;
+		bonusAvailableTimer = 0;
+		bonusConsumedTimer = 0;
 	}
 
 	private void createEntities() {
@@ -217,7 +216,7 @@ public class PacManGame {
 				fps = frames;
 				frames = 0;
 				start = System.nanoTime();
-				log("Time: %-18s %3d frames/sec", LocalTime.now(), fps);
+//				log("Time: %-18s %3d frames/sec", LocalTime.now(), fps);
 			}
 			long sleep = Math.max(1_000_000_000 / FPS - time, 0);
 			if (sleep > 0) {
@@ -376,26 +375,26 @@ public class PacManGame {
 				forceGhostsTurnBack();
 			}
 		}
-		if (bonusTimer > 0) {
-			if (pacMan.tile.x == 13 && pacMan.tile.y == 20) {
-				bonusTimer = 0;
-				bonusValueTimer = sec(3);
-				String bonusName = (String) levelData.get(0);
-				int bonusValue = (int) levelData.get(1);
-				points += bonusValue;
-				log("Pac-Man found bonus %s of value %d", bonusName, bonusValue);
-			}
+		if (bonusAvailableTimer == 0 && (foodRemaining == 70 || foodRemaining == 170)) {
+			bonusAvailableTimer = sec(9) + new Random().nextInt(FPS);
+		}
+		if (bonusAvailableTimer > 0 && pacMan.tile.x == 13 && pacMan.tile.y == 20) {
+			bonusAvailableTimer = 0;
+			bonusConsumedTimer = sec(3);
+			String bonusName = (String) levelData.get(0);
+			int bonusValue = (int) levelData.get(1);
+			points += bonusValue;
+			log("Pac-Man found bonus %s of value %d", bonusName, bonusValue);
 		}
 		if (pacManPowerTimer > 0) {
 			for (Creature ghost : ghosts) {
-				if (pacMan.tile.equals(ghost.tile) && ghost.vulnerable) {
+				if (ghost.vulnerable && pacMan.tile.equals(ghost.tile)) {
 					ghostsKilledByEnergizer++;
 					ghost.dead = true;
 					ghost.vulnerable = false;
 					ghost.bounty = (int) Math.pow(2, ghostsKilledByEnergizer) * 100;
-					log("Ghost %s bounty is %d", ghost.name, ghost.bounty);
-					ghost.showBountyTimer = sec(1);
-					log("Pac-Man killed %s at location %s", ghost.name, ghost.tile);
+					ghost.bountyTimer = sec(1f);
+					log("Pac-Man killed %s at location %s and won %d points", ghost.name, ghost.tile, ghost.bounty);
 				}
 			}
 		}
@@ -409,14 +408,11 @@ public class PacManGame {
 	}
 
 	private void updateBonus() {
-		if (bonusTimer > 0) {
-			--bonusTimer;
+		if (bonusAvailableTimer > 0) {
+			--bonusAvailableTimer;
 		}
-		if (bonusValueTimer > 0) {
-			--bonusValueTimer;
-		}
-		if (foodRemaining == 70 || foodRemaining == 170) {
-			bonusTimer = sec(9) + new Random().nextInt(FPS);
+		if (bonusConsumedTimer > 0) {
+			--bonusConsumedTimer;
 		}
 	}
 
@@ -426,8 +422,8 @@ public class PacManGame {
 			ghost.vulnerable = false;
 		} else {
 			ghost.targetTile = ghosts[0].homeTile;
-			if (ghost.showBountyTimer > 0) {
-				--ghost.showBountyTimer;
+			if (ghost.bountyTimer > 0) {
+				--ghost.bountyTimer;
 			}
 		}
 	}
@@ -500,7 +496,7 @@ public class PacManGame {
 	}
 
 	private void updateGhostSpeed(Creature ghost) {
-		if (ghost.showBountyTimer > 0) {
+		if (ghost.bountyTimer > 0) {
 			ghost.speed = 0;
 		} else if (ghost.dead) {
 			ghost.speed = 2 * (int) levelData.get(4) / 100f;

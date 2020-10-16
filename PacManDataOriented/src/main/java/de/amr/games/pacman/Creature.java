@@ -34,6 +34,6 @@ public class Creature {
 	public boolean forceTurnBack;
 	public boolean dead;
 	public int bounty;
-	public long showBountyTimer;
+	public long bountyTimer;
 	public boolean vulnerable;
 }
