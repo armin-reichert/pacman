@@ -193,7 +193,7 @@ public class PacManGameUI {
 		int x = WORLD_WIDTH - 4 * TS;
 		int firstIndex = Math.max(1, game.level - 6);
 		for (int i = firstIndex; i <= game.level; ++i) {
-			BufferedImage symbol = symbols.get(levelData(i).get(0));
+			BufferedImage symbol = symbols.get(levelData(i).stringValue(0));
 			g.drawImage(symbol, x, WORLD_HEIGHT - 2 * TS, null);
 			x -= 2 * TS;
 		}
@@ -221,11 +221,11 @@ public class PacManGameUI {
 			}
 		}
 		if (game.bonusAvailableTimer > 0) {
-			String symbolName = (String) game.levelData.get(0);
+			String symbolName = levelData(game.level).stringValue(0);
 			g.drawImage(symbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
 		}
 		if (game.bonusConsumedTimer > 0) {
-			int value = (int) game.levelData.get(1);
+			int value = levelData(game.level).intValue(1);
 			g.drawImage(numbers.get(value), 13 * TS, 20 * TS - HTS, null);
 		}
 		if (game.messageText != null) {

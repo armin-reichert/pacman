@@ -52,43 +52,64 @@ public class PacManGame {
 		return (int) (seconds * FPS);
 	}
 
+	public static class LevelData {
+
+		private final List<?> data;
+
+		private LevelData(Object... values) {
+			data = List.of(values);
+		}
+
+		public static LevelData of(Object... values) {
+			return new LevelData(values);
+		}
+
+		public float percentValue(int index) {
+			return intValue(index) / 100f;
+		}
+
+		public int intValue(int index) {
+			return (int) data.get(index);
+		}
+
+		public String stringValue(int index) {
+			return (String) data.get(index);
+		}
+	}
+
 	/**
-	 * Returns the level-specific data.
+	 * The level-specific data.
 	 * 
 	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
-	 * 
-	 * @param level level number (1..)
-	 * @return data for level with given number
 	 */
-	public static List<?> levelData(int level) {
-		if (level < 1) {
-			throw new IllegalArgumentException("Illegal game level number: " + level);
-		}
-		switch (level) {
-		/*@formatter:off*/
-		case  1: return List.of("CHERRIES",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5);
-		case  2: return List.of("STRAWBERRY", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5);
-		case  3: return List.of("PEACH",      500,  90,  79,  85, 45,  40,  90, 20,  95,  95, 83, 55, 4, 5);
-		case  4: return List.of("PEACH",      500,  90,  79,  85, 50,  40, 100, 20,  95,  95, 83, 55, 3, 5);
-		case  5: return List.of("APPLE",      700, 100,  87,  95, 50,  40, 100, 20, 105, 100, 87, 60, 2, 5);
-		case  6: return List.of("APPLE",      700, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 5, 5);
-		case  7: return List.of("GRAPES",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5);
-		case  8: return List.of("GRAPES",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5);
-		case  9: return List.of("GALAXIAN",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 1, 3);
-		case 10: return List.of("GALAXIAN",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 5, 5);
-		case 11: return List.of("BELL",      3000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 2, 5);
-		case 12: return List.of("BELL",      3000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3);
-		case 13: return List.of("KEY",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3);
-		case 14: return List.of("KEY",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 3, 5);
-		case 15: return List.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 1, 3);
-		case 16: return List.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,  0,  0, 1, 3);
-		case 17: return List.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 0, 0);
-		case 18: return List.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,   0, 0, 1, 0);
-		case 19: return List.of("KEY",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
-		case 20: return List.of("KEY",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
-		default: return List.of("KEY",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0);
+	public static final List<LevelData> LEVEL_DATA = List.of(
+	/*@formatter:off*/
+		LevelData.of("CHERRIES",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
+		LevelData.of("STRAWBERRY", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
+		LevelData.of("PEACH",      500,  90,  79,  85, 45,  40,  90, 20,  95,  95, 83, 55, 4, 5),
+		LevelData.of("PEACH",      500,  90,  79,  85, 50,  40, 100, 20,  95,  95, 83, 55, 3, 5),
+		LevelData.of("APPLE",      700, 100,  87,  95, 50,  40, 100, 20, 105, 100, 87, 60, 2, 5),
+		LevelData.of("APPLE",      700, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 5, 5),
+		LevelData.of("GRAPES",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
+		LevelData.of("GRAPES",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
+		LevelData.of("GALAXIAN",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 1, 3),
+		LevelData.of("GALAXIAN",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 5, 5),
+		LevelData.of("BELL",      3000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 2, 5),
+		LevelData.of("BELL",      3000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
+		LevelData.of("KEY",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
+		LevelData.of("KEY",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 3, 5),
+		LevelData.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 1, 3),
+		LevelData.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,  0,  0, 1, 3),
+		LevelData.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 0, 0),
+		LevelData.of("KEY",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,   0, 0, 1, 0),
+		LevelData.of("KEY",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
+		LevelData.of("KEY",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
+		LevelData.of("KEY",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0)
 		//@formatter:on
-		}
+	);
+
+	public static LevelData levelData(int level) {
+		return level < 22 ? LEVEL_DATA.get(level - 1) : LEVEL_DATA.get(20);
 	}
 
 	static final long[][] SCATTERING_TIMES = {
@@ -121,7 +142,6 @@ public class PacManGame {
 	public long fps;
 	public long framesTotal;
 	public int level;
-	public List<?> levelData;
 	public int attackWave;
 	public int foodRemaining;
 	public int lives;
@@ -151,7 +171,6 @@ public class PacManGame {
 
 	private void initLevel(int n) {
 		level = n;
-		levelData = levelData(level);
 		eatenFood.clear();
 		foodRemaining = 244;
 		ghostsKilledByEnergizer = 0;
@@ -362,7 +381,7 @@ public class PacManGame {
 
 	private void updatePacMan() {
 
-		pacMan.speed = (int) levelData.get(2) / 100f;
+		pacMan.speed = levelData(level).percentValue(2);
 		pacMan.stuck = !move(pacMan);
 
 		// food found?
@@ -374,7 +393,7 @@ public class PacManGame {
 			// energizer found?
 			if (world.isEnergizerTile(pacMan.tile)) {
 				points += 40;
-				int powerSeconds = (int) levelData.get(13);
+				int powerSeconds = levelData(level).intValue(13);
 				pacManPowerTimer = sec(powerSeconds);
 				log("Pac-Man got power for %d seconds", powerSeconds);
 				for (Creature ghost : ghosts) {
@@ -392,8 +411,8 @@ public class PacManGame {
 		if (bonusAvailableTimer > 0 && x == 13 && y == 20) {
 			bonusAvailableTimer = 0;
 			bonusConsumedTimer = sec(3);
-			String bonusName = (String) levelData.get(0);
-			int bonusValue = (int) levelData.get(1);
+			String bonusName = levelData(level).stringValue(0);
+			int bonusValue = levelData(level).intValue(1);
 			points += bonusValue;
 			log("Pac-Man found bonus %s of value %d", bonusName, bonusValue);
 		}
@@ -509,13 +528,13 @@ public class PacManGame {
 		if (ghost.bountyTimer > 0) {
 			ghost.speed = 0;
 		} else if (ghost.dead) {
-			ghost.speed = 2 * (int) levelData.get(4) / 100f;
+			ghost.speed = 2 * levelData(level).percentValue(4);
 		} else if (world.isInsideTunnel(ghost.tile)) {
-			ghost.speed = (int) levelData.get(5) / 100f;
+			ghost.speed = levelData(level).percentValue(5);
 		} else if (pacManPowerTimer > 0) {
-			ghost.speed = (int) levelData.get(12) / 100f;
+			ghost.speed = levelData(level).percentValue(12);
 		} else {
-			ghost.speed = (int) levelData.get(4) / 100f;
+			ghost.speed = levelData(level).percentValue(4);
 		}
 	}
 
