@@ -535,7 +535,7 @@ public class PacManGame {
 			return;
 		}
 		if (pacManPowerTimer > 0 && world.isIntersectionTile(ghost.tile)) {
-			ghost.wishDir = randomAccessibleDir(ghost);
+			ghost.wishDir = randomMoveDir(ghost);
 			return;
 		}
 		Direction newDir = null;
@@ -672,13 +672,10 @@ public class PacManGame {
 		return world.content((int) tile.x, (int) tile.y) != '1';
 	}
 
-	private Direction randomAccessibleDir(Creature guy) {
+	private Direction randomMoveDir(Creature guy) {
 		List<Direction> dirs = new ArrayList<>(3);
-		for (Direction dir : List.of(DOWN, LEFT, RIGHT, UP)) {
-			if (dir.equals(guy.dir.inverse())) {
-				continue;
-			}
-			if (world.isAccessibleTile(guy.tile.sum(dir.vector))) {
+		for (Direction dir : Direction.values()) {
+			if (!dir.equals(guy.dir.inverse()) && world.isAccessibleTile(guy.tile.sum(dir.vector))) {
 				dirs.add(dir);
 			}
 		}
