@@ -151,9 +151,9 @@ public class PacManGame {
 	public long scatteringStateTimer;
 	public long chasingStateTimer;
 	public long levelChangeStateTimer;
+	public long pacManDyingStateTimer;
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
-	public long pacManDyingStateTimer;
 
 	public PacManGame() {
 		world = new World();
@@ -172,11 +172,14 @@ public class PacManGame {
 		level = n;
 		eatenFood.clear();
 		foodRemaining = 244;
+		attackWave = 0;
 		ghostsKilledByEnergizer = 0;
 		pacManPowerTimer = 0;
+		readyStateTimer = 0;
+		scatteringStateTimer = 0;
 		chasingStateTimer = 0;
 		levelChangeStateTimer = 0;
-		attackWave = 0;
+		pacManDyingStateTimer = 0;
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
 	}
