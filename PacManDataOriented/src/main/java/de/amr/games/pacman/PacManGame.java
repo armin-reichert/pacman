@@ -47,7 +47,7 @@ public class PacManGame {
 	public static final int FPS = 60;
 
 	public static void log(String msg, Object... args) {
-		System.err.println(String.format("%-16s: %s", LocalTime.now(), String.format(msg, args)));
+		System.err.println(String.format("%-20s: %s", LocalTime.now(), String.format(msg, args)));
 	}
 
 	public static int sec(float seconds) {
@@ -422,7 +422,7 @@ public class PacManGame {
 
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
-		levelChangeStateTimer = sec(3);
+		levelChangeStateTimer = sec(7);
 		mazeFlashes = levelData(level).intValue(14);
 		log("Maze flashes: %d", mazeFlashes);
 		for (Creature ghost : ghosts) {

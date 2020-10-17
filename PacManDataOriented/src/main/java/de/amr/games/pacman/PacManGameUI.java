@@ -228,7 +228,7 @@ public class PacManGameUI {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (game.levelChangeStateTimer > 0) {
+		if (game.levelChangeStateTimer > 0 && game.levelChangeStateTimer <= sec(4f)) {
 			drawMazeFlashing(g);
 			return;
 		}
