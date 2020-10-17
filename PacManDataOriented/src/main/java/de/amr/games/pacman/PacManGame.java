@@ -279,21 +279,21 @@ public class PacManGame {
 	private void update() {
 		readInput();
 		if (state == GameState.READY) {
-			keepReadyState();
+			runReadyState();
 		} else if (state == GameState.CHASING) {
-			keepChasingState();
+			runChasingState();
 		} else if (state == GameState.SCATTERING) {
-			keepScatteringState();
+			runScatteringState();
 		} else if (state == GameState.CHANGING_LEVEL) {
-			keepChangingLevelState();
+			runChangingLevelState();
 		} else if (state == GameState.PACMAN_DYING) {
-			keepPacManDyingState();
+			runPacManDyingState();
 		} else if (state == GameState.GAME_OVER) {
-			keepGameOverState();
+			runGameOverState();
 		}
 	}
 
-	private void keepReadyState() {
+	private void runReadyState() {
 		if (readyStateTimer == 0) {
 			exitReadyState();
 			enterScatteringState();
@@ -323,7 +323,7 @@ public class PacManGame {
 		}
 	}
 
-	private void keepScatteringState() {
+	private void runScatteringState() {
 		if (pacMan.dead) {
 			enterPacManDyingState();
 			return;
@@ -349,7 +349,7 @@ public class PacManGame {
 		forceGhostsTurnBack();
 	}
 
-	private void keepChasingState() {
+	private void runChasingState() {
 		if (pacMan.dead) {
 			enterPacManDyingState();
 			return;
@@ -382,7 +382,7 @@ public class PacManGame {
 		pacManDyingStateTimer = sec(2) + 88 + sec(2);
 	}
 
-	private void keepPacManDyingState() {
+	private void runPacManDyingState() {
 		if (pacManDyingStateTimer == 0) {
 			if (lives > 0) {
 				enterReadyState();
@@ -399,7 +399,7 @@ public class PacManGame {
 		pacManDyingStateTimer--;
 	}
 
-	private void keepChangingLevelState() {
+	private void runChangingLevelState() {
 		if (levelChangeStateTimer == 0) {
 			log("Level %d complete, entering level %d", level, level + 1);
 			initLevel(++level);
@@ -414,7 +414,7 @@ public class PacManGame {
 		levelChangeStateTimer = sec(3);
 	}
 
-	private void keepGameOverState() {
+	private void runGameOverState() {
 		if (ui.pressedKeys.get(KeyEvent.VK_SPACE)) {
 			exitGameOverState();
 			initGame();
