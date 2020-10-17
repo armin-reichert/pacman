@@ -16,6 +16,7 @@ import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -46,7 +47,7 @@ public class PacManGame {
 	public static final int FPS = 60;
 
 	public static void log(String msg, Object... args) {
-		System.err.println(String.format(msg, args));
+		System.err.println(String.format("%-16s: %s", LocalTime.now(), String.format(msg, args)));
 	}
 
 	public static int sec(float seconds) {
@@ -146,6 +147,7 @@ public class PacManGame {
 	public int lives;
 	public int points;
 	public int ghostsKilledByEnergizer;
+	public int mazeFlashes;
 	public long pacManPowerTimer;
 	public long readyStateTimer;
 	public long scatteringStateTimer;
@@ -173,6 +175,7 @@ public class PacManGame {
 		eatenFood.clear();
 		foodRemaining = 244;
 		attackWave = 0;
+		mazeFlashes = 0;
 		ghostsKilledByEnergizer = 0;
 		pacManPowerTimer = 0;
 		readyStateTimer = 0;
@@ -420,6 +423,8 @@ public class PacManGame {
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
 		levelChangeStateTimer = sec(3);
+		mazeFlashes = levelData(level).intValue(14);
+		log("Maze flashes: %d", mazeFlashes);
 		for (Creature ghost : ghosts) {
 			ghost.visible = false;
 		}

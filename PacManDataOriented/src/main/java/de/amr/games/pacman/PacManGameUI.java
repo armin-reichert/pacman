@@ -1,6 +1,7 @@
 package de.amr.games.pacman;
 
 import static de.amr.games.pacman.PacManGame.levelData;
+import static de.amr.games.pacman.PacManGame.log;
 import static de.amr.games.pacman.PacManGame.sec;
 import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.TS;
@@ -39,7 +40,9 @@ public class PacManGameUI {
 	private final float scaling;
 	private final Canvas canvas;
 
-	private BufferedImage imageMaze;
+	private BufferedImage imageMazeFull;
+	private BufferedImage imageMazeEmpty;
+	private BufferedImage imageMazeEmptyWhite;
 	private BufferedImage spriteSheet;
 	private Map<String, BufferedImage> symbols;
 	private Map<Integer, BufferedImage> numbers;
@@ -89,7 +92,9 @@ public class PacManGameUI {
 
 	public void loadResources() throws IOException, FontFormatException {
 		spriteSheet = image("/sprites.png");
-		imageMaze = image("/maze_full.png");
+		imageMazeFull = image("/maze_full.png");
+		imageMazeEmpty = image("/maze_empty.png");
+		imageMazeEmptyWhite = image("/maze_empty_white.png");
 		try (InputStream fontData = getClass().getResourceAsStream("/PressStart2P-Regular.ttf")) {
 			scoreFont = Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) TS);
 		}
@@ -210,8 +215,24 @@ public class PacManGameUI {
 		g.fillRect(x * TS, y * TS, TS, TS);
 	}
 
+	private void drawMazeFlashing(Graphics2D g) {
+		if (game.mazeFlashes > 0 && game.framesTotal % 30 < 15) {
+			g.drawImage(imageMazeEmptyWhite, 0, 3 * TS, null);
+			if (game.framesTotal % 30 == 14) {
+				--game.mazeFlashes;
+				log("Maze flashes: %d", game.mazeFlashes);
+			}
+		} else {
+			g.drawImage(imageMazeEmpty, 0, 3 * TS, null);
+		}
+	}
+
 	private void drawMaze(Graphics2D g) {
-		g.drawImage(imageMaze, 0, 3 * TS, null);
+		if (game.levelChangeStateTimer > 0) {
+			drawMazeFlashing(g);
+			return;
+		}
+		g.drawImage(imageMazeFull, 0, 3 * TS, null);
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				V2 tile = new V2(x, y);
