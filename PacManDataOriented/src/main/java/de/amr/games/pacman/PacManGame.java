@@ -595,6 +595,17 @@ public class PacManGame {
 			ghost.speed = levelData(level).percentValue(12);
 		} else {
 			ghost.speed = levelData(level).percentValue(4);
+			if (ghost == ghosts[0]) {
+				checkElroySpeed(ghost);
+			}
+		}
+	}
+
+	private void checkElroySpeed(Creature blinky) {
+		if (foodRemaining <= levelData(level).intValue(8)) {
+			blinky.speed = levelData(level).percentValue(9);
+		} else if (foodRemaining <= levelData(level).intValue(6)) {
+			blinky.speed = levelData(level).percentValue(7);
 		}
 	}
 
