@@ -55,14 +55,12 @@ public class PacManGame {
 
 	public static class LevelData {
 
-		private final List<?> data;
-
-		private LevelData(Object... values) {
-			data = List.of(values);
-		}
+		private List<?> values;
 
 		public static LevelData of(Object... values) {
-			return new LevelData(values);
+			LevelData data = new LevelData();
+			data.values = List.of(values);
+			return data;
 		}
 
 		public float percentValue(int index) {
@@ -70,11 +68,11 @@ public class PacManGame {
 		}
 
 		public int intValue(int index) {
-			return (int) data.get(index);
+			return (int) values.get(index);
 		}
 
 		public String stringValue(int index) {
-			return (String) data.get(index);
+			return (String) values.get(index);
 		}
 	}
 
