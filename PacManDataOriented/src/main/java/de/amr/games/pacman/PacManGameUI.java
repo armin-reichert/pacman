@@ -43,7 +43,7 @@ public class PacManGameUI {
 	private BufferedImage spriteSheet;
 	private Map<String, BufferedImage> symbols;
 	private Map<Integer, BufferedImage> numbers;
-	private Map<Integer, BufferedImage> bounties;
+	private Map<Integer, BufferedImage> bountyNumbers;
 	private Font scoreFont;
 
 	public PacManGameUI(PacManGame game, float scaling) {
@@ -114,7 +114,7 @@ public class PacManGameUI {
 			3000, sheet(4, 11, 2, 1),
 			5000, sheet(4, 12, 2, 1)
 		);
-		bounties = Map.of(
+		bountyNumbers = Map.of(
 			200,  sheet(0, 8),
 			400,  sheet(1, 8),
 			800,  sheet(2, 8),
@@ -245,65 +245,68 @@ public class PacManGameUI {
 	private void drawPacMan(Graphics2D g) {
 		Creature pacMan = game.pacMan;
 		BufferedImage sprite;
-		long interval = game.framesTotal % 15;
-		int animationFrame = (int) interval / 5;
+		int mouthFrame = (int) game.framesTotal % 15 / 5;
 		if (pacMan.dead) {
+			// 2 seconds full sprite before collapsing animation starts
 			if (game.pacManDyingStateTimer >= sec(2) + 11 * 8) {
 				sprite = sheet(2, 0);
 			} else if (game.pacManDyingStateTimer >= sec(2)) {
+				// collapsing animation
 				int frame = (int) (game.pacManDyingStateTimer - sec(2)) / 8;
 				sprite = sheet(13 - frame, 0);
 			} else {
+				// collapsed sprite after collapsing
 				sprite = sheet(13, 0);
 			}
 		} else if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL) {
+			// full sprite
 			sprite = sheet(2, 0);
 		} else if (pacMan.stuck) {
-			sprite = sheet(0, dirIndex(pacMan.dir));
-		} else if (animationFrame == 2) {
-			sprite = sheet(2, 0);
+			// wide open mouth
+			sprite = sheet(0, directionFrame(pacMan.dir));
 		} else {
-			sprite = sheet(animationFrame, dirIndex(pacMan.dir));
+			// closed mouth or open mouth pointing to move direction
+			sprite = mouthFrame == 2 ? sheet(mouthFrame, 0) : sheet(mouthFrame, directionFrame(pacMan.dir));
 		}
 		V2 position = game.world.position(pacMan);
-		g.drawImage(sprite, (int) position.x - 4, (int) position.y - 4, null);
+		g.drawImage(sprite, (int) position.x - HTS, (int) position.y - HTS, null);
 	}
 
 	private void drawGhost(Graphics2D g, int ghostIndex) {
+		BufferedImage sprite;
 		Creature ghost = game.ghosts[ghostIndex];
 		if (!ghost.visible) {
 			return;
 		}
-		int animationFrame = game.framesTotal % 60 < 30 ? 0 : 1;
-		BufferedImage sprite;
 		if (ghost.dead) {
-			if (ghost.bountyTimer > 0) {
-				sprite = bounties.get(ghost.bounty);
-			} else {
-				sprite = sheet(8 + dirIndex(ghost.dir), 5);
-			}
+			// number (bounty) or eyes looking into move direction
+			sprite = ghost.bountyTimer > 0 ? bountyNumbers.get(ghost.bounty) : sheet(8 + directionFrame(ghost.dir), 5);
 		} else if (ghost.vulnerable) {
+			int walkingFrame = game.framesTotal % 60 < 30 ? 0 : 1;
 			if (game.pacManPowerTimer < sec(2)) {
-				int k = game.framesTotal % 20 < 10 ? 8 : 10;
-				sprite = sheet(k + animationFrame, 4);
+				// flashing blue/white, walking
+				int flashingFrame = game.framesTotal % 20 < 10 ? 8 : 10;
+				sprite = sheet(flashingFrame + walkingFrame, 4);
 			} else {
-				sprite = sheet(8, 4);
+				// blue, walking
+				sprite = sheet(8 + walkingFrame, 4);
 			}
 		} else {
-			sprite = sheet(2 * dirIndex(ghost.dir) + animationFrame, 4 + ghostIndex);
+			int walkingFrame = game.framesTotal % 60 < 30 ? 0 : 1;
+			sprite = sheet(2 * directionFrame(ghost.dir) + walkingFrame, 4 + ghostIndex);
 		}
 		V2 position = game.world.position(ghost);
 		g.drawImage(sprite, (int) position.x - HTS, (int) position.y - HTS, null);
 
 		if (debugDraw) {
-			g.setColor(ghost.color);
 			if (ghost.targetTile != null) {
+				g.setColor(ghost.color);
 				g.fillRect((int) ghost.targetTile.x * TS + TS / 4, (int) ghost.targetTile.y * TS + TS / 4, HTS, HTS);
 			}
 		}
 	}
 
-	private int dirIndex(Direction dir) {
+	private int directionFrame(Direction dir) {
 		switch (dir) {
 		case RIGHT:
 			return 0;
