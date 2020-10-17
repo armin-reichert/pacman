@@ -377,14 +377,9 @@ public class PacManGame {
 		forceGhostsTurnBack();
 	}
 
-	private void enterPacManDyingState() {
-		state = GameState.PACMAN_DYING;
-		// 11 animation frames, 8 ticks each, 2 seconds before animation, 2 seconds after
-		pacManDyingStateTimer = sec(2) + 88 + sec(2);
-	}
-
 	private void runPacManDyingState() {
 		if (pacManDyingStateTimer == 0) {
+			exitPacManDyingState();
 			if (lives > 0) {
 				enterReadyState();
 			} else {
@@ -400,6 +395,18 @@ public class PacManGame {
 		pacManDyingStateTimer--;
 	}
 
+	private void enterPacManDyingState() {
+		state = GameState.PACMAN_DYING;
+		// 11 animation frames, 8 ticks each, 2 seconds before animation, 2 seconds after
+		pacManDyingStateTimer = sec(2) + 88 + sec(2);
+	}
+
+	private void exitPacManDyingState() {
+		for (Creature ghost : ghosts) {
+			ghost.visible = true;
+		}
+	}
+
 	private void runChangingLevelState() {
 		if (levelChangeStateTimer == 0) {
 			log("Level %d complete, entering level %d", level, level + 1);
@@ -413,6 +420,9 @@ public class PacManGame {
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
 		levelChangeStateTimer = sec(3);
+		for (Creature ghost : ghosts) {
+			ghost.visible = false;
+		}
 	}
 
 	private void runGameOverState() {
@@ -441,7 +451,6 @@ public class PacManGame {
 	}
 
 	private void updatePacMan() {
-
 		pacMan.speed = levelData(level).percentValue(2);
 		pacMan.stuck = !move(pacMan);
 

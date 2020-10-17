@@ -143,23 +143,21 @@ public class PacManGameUI {
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
-				drawBoard(g);
+				drawGame(g);
 				g.dispose();
 			} while (strategy.contentsRestored());
 			strategy.show();
 		} while (strategy.contentsLost());
 	}
 
-	private void drawBoard(Graphics2D g) {
+	private void drawGame(Graphics2D g) {
 		drawScore(g);
 		drawLivesCounter(g);
 		drawLevelCounter(g);
 		drawMaze(g);
 		drawPacMan(g);
-		if (game.state != GameState.CHANGING_LEVEL) {
-			for (int i = 0; i < 4; ++i) {
-				drawGhost(g, i);
-			}
+		for (int i = 0; i < 4; ++i) {
+			drawGhost(g, i);
 		}
 		if (debugDraw) {
 			g.setColor(Color.WHITE);
@@ -177,6 +175,8 @@ public class PacManGameUI {
 				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.chasingStateTimer);
 			} else if (game.state == GameState.PACMAN_DYING) {
 				text = String.format("%s %d ticks remaining", game.state, game.pacManDyingStateTimer);
+			} else if (game.state == GameState.GAME_OVER) {
+				text = String.format("%s", game.state);
 			}
 			g.drawString(text, 8 * TS, 3 * TS);
 		}
