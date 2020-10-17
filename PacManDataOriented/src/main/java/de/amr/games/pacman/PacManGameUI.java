@@ -27,8 +27,6 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
-import de.amr.games.pacman.PacManGame.GameState;
-
 public class PacManGameUI {
 
 	public boolean debugDraw = true;

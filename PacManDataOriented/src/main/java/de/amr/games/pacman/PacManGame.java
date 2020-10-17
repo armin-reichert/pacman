@@ -39,11 +39,6 @@ public class PacManGame {
 		});
 	}
 
-	public enum GameState {
-
-		READY, SCATTERING, CHASING, CHANGING_LEVEL, PACMAN_DYING, GAME_OVER;
-	}
-
 	public static final int FPS = 60;
 
 	public static void log(String msg, Object... args) {
@@ -54,33 +49,10 @@ public class PacManGame {
 		return (int) (seconds * FPS);
 	}
 
-	public static class LevelData {
-
-		private List<?> values;
-
-		public static LevelData of(Object... values) {
-			LevelData data = new LevelData();
-			data.values = List.of(values);
-			return data;
-		}
-
-		public float percentValue(int index) {
-			return intValue(index) / 100f;
-		}
-
-		public int intValue(int index) {
-			return (int) values.get(index);
-		}
-
-		public String stringValue(int index) {
-			return (String) values.get(index);
-		}
-	}
-
 	/**
 	 * The level-specific data.
 	 * 
-	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
+	 * <img src="../../../../../resources/levels.png">
 	 */
 	private static final List<LevelData> LEVEL_DATA = List.of(
 	/*@formatter:off*/
