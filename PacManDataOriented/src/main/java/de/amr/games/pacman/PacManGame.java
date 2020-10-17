@@ -33,13 +33,14 @@ public class PacManGame {
 		PacManGame game = new PacManGame();
 		EventQueue.invokeLater(() -> {
 			game.ui = new PacManGameUI(game, 2);
+			game.initGame();
 			new Thread(game::gameLoop, "GameLoop").start();
 		});
 	}
 
 	public enum GameState {
 
-		READY, SCATTERING, CHASING, CHANGING_LEVEL, PACMAN_DYING;
+		READY, SCATTERING, CHASING, CHANGING_LEVEL, PACMAN_DYING, GAME_OVER;
 	}
 
 	public static final int FPS = 60;
@@ -160,7 +161,6 @@ public class PacManGame {
 		world = new World();
 		eatenFood = new BitSet();
 		createEntities();
-		initGame();
 	}
 
 	private void initGame() {
@@ -288,6 +288,8 @@ public class PacManGame {
 			keepChangingLevelState();
 		} else if (state == GameState.PACMAN_DYING) {
 			keepPacManDyingState();
+		} else if (state == GameState.GAME_OVER) {
+			keepGameOverState();
 		}
 	}
 
@@ -307,6 +309,7 @@ public class PacManGame {
 		state = GameState.READY;
 		readyStateTimer = sec(3);
 		messageText = "Ready!";
+		ui.messageColor = Color.YELLOW;
 		initEntities();
 	}
 
@@ -381,7 +384,11 @@ public class PacManGame {
 
 	private void keepPacManDyingState() {
 		if (pacManDyingStateTimer == 0) {
-			enterReadyState();
+			if (lives > 0) {
+				enterReadyState();
+			} else {
+				enterGameOverState();
+			}
 			return;
 		}
 		if (pacManDyingStateTimer == sec(2.5f) + 88) {
@@ -405,6 +412,23 @@ public class PacManGame {
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
 		levelChangeStateTimer = sec(3);
+	}
+
+	private void keepGameOverState() {
+		if (ui.pressedKeys.get(KeyEvent.VK_SPACE)) {
+			exitGameOverState();
+			initGame();
+		}
+	}
+
+	private void enterGameOverState() {
+		state = GameState.GAME_OVER;
+		messageText = "Game Over!";
+		ui.messageColor = Color.RED;
+	}
+
+	private void exitGameOverState() {
+		messageText = null;
 	}
 
 	private void updateGuys() {
@@ -481,6 +505,7 @@ public class PacManGame {
 			if (pacManPowerTimer == 0 && !ghost.dead) {
 				log("Pac-Man killed by %s at location %s", ghost.name, ghost.tile);
 				pacMan.dead = true;
+				--lives;
 				break;
 			}
 		}

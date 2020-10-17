@@ -33,6 +33,8 @@ public class PacManGameUI {
 	public boolean debugDraw = true;
 	public BitSet pressedKeys = new BitSet(256);
 
+	public Color messageColor;
+
 	private final PacManGame game;
 	private final float scaling;
 	private final Canvas canvas;
@@ -47,6 +49,8 @@ public class PacManGameUI {
 	public PacManGameUI(PacManGame game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
+
+		messageColor = Color.YELLOW;
 
 		try {
 			loadResources();
@@ -232,7 +236,7 @@ public class PacManGameUI {
 		}
 		if (game.messageText != null) {
 			g.setFont(scoreFont);
-			g.setColor(Color.YELLOW);
+			g.setColor(messageColor);
 			int textLength = g.getFontMetrics().stringWidth(game.messageText);
 			g.drawString(game.messageText, WORLD_WIDTH / 2 - textLength / 2, 21 * TS);
 		}
