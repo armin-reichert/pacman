@@ -279,9 +279,9 @@ public class PacManGame {
 			enterScatteringState();
 			return;
 		}
-		behaveLikeSpeedyGhost(ghosts[1]);
-		behaveLikeBashfulGhost(ghosts[2]);
-		behaveLikePokeyGhost(ghosts[3]);
+		for (int i = 1; i <= 3; ++i) {
+			bounce(ghosts[i]);
+		}
 		--readyStateTimer;
 	}
 
@@ -319,7 +319,8 @@ public class PacManGame {
 		if (pacManPowerTimer == 0) {
 			--scatteringStateTimer;
 		}
-		updateGuys();
+		updatePacMan();
+		updateGhosts();
 		updateBonus();
 	}
 
@@ -346,7 +347,8 @@ public class PacManGame {
 		if (pacManPowerTimer == 0) {
 			--chasingStateTimer;
 		}
-		updateGuys();
+		updatePacMan();
+		updateGhosts();
 		updateBonus();
 	}
 
@@ -423,12 +425,23 @@ public class PacManGame {
 		messageText = null;
 	}
 
-	private void updateGuys() {
-		updatePacMan();
-		behaveLikeShadowGhost(ghosts[0]);
-		behaveLikeSpeedyGhost(ghosts[1]);
-		behaveLikeBashfulGhost(ghosts[2]);
-		behaveLikePokeyGhost(ghosts[3]);
+	private void updateGhosts() {
+		for (Creature ghost : ghosts) {
+			if (ghost.dead) {
+				updateDeadGhost(ghost);
+			} else if (ghost == ghosts[0]) {
+				behaveLikeShadowGhost(ghost);
+			} else if (ghost == ghosts[1]) {
+				behaveLikeSpeedyGhost(ghost);
+			} else if (ghost == ghosts[2]) {
+				behaveLikeBashfulGhost(ghost);
+			} else if (ghost == ghosts[3]) {
+				behaveLikePokeyGhost(ghost);
+			}
+			updateGhostDir(ghost);
+			updateGhostSpeed(ghost);
+			updatePosition(ghost);
+		}
 	}
 
 	private void updatePacMan() {
@@ -529,16 +542,11 @@ public class PacManGame {
 		} else if (state == GameState.CHASING) {
 			blinky.targetTile = pacMan.tile;
 		}
-		updateGhostDirection(blinky);
-		updateGhostSpeed(blinky);
-		updatePosition(blinky);
 	}
 
 	private void behaveLikeSpeedyGhost(Creature pinky) {
 		if (pinky.dead) {
 			updateDeadGhost(pinky);
-		} else if (state == GameState.READY) {
-			bounce(pinky);
 		} else if (state == GameState.SCATTERING) {
 			pinky.targetTile = PINKY_CORNER;
 		} else if (state == GameState.CHASING) {
@@ -549,40 +557,27 @@ public class PacManGame {
 				pinky.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(4));
 			}
 		}
-		updateGhostDirection(pinky);
-		updateGhostSpeed(pinky);
-		updatePosition(pinky);
 	}
 
 	private void behaveLikeBashfulGhost(Creature inky) {
 		if (inky.dead) {
 			updateDeadGhost(inky);
-		} else if (state == GameState.READY) {
-			bounce(inky);
 		} else if (state == GameState.SCATTERING) {
 			inky.targetTile = INKY_CORNER;
 		} else if (state == GameState.CHASING) {
 			Creature blinky = ghosts[0];
 			inky.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
 		}
-		updateGhostDirection(inky);
-		updateGhostSpeed(inky);
-		updatePosition(inky);
 	}
 
 	private void behaveLikePokeyGhost(Creature clyde) {
 		if (clyde.dead) {
 			updateDeadGhost(clyde);
-		} else if (state == GameState.READY) {
-			bounce(clyde);
 		} else if (state == GameState.SCATTERING) {
 			clyde.targetTile = CLYDE_CORNER;
 		} else if (state == GameState.CHASING) {
 			clyde.targetTile = distance(clyde.tile, pacMan.tile) > 8 ? pacMan.tile : CLYDE_CORNER;
 		}
-		updateGhostDirection(clyde);
-		updateGhostSpeed(clyde);
-		updatePosition(clyde);
 	}
 
 	private void updateGhostSpeed(Creature ghost) {
@@ -610,7 +605,7 @@ public class PacManGame {
 		}
 	}
 
-	private void updateGhostDirection(Creature ghost) {
+	private void updateGhostDir(Creature ghost) {
 		if (ghost.targetTile == null) {
 			return;
 		}
@@ -660,10 +655,12 @@ public class PacManGame {
 		}
 	}
 
-	private void bounce(Creature guy) {
-		if (guy.stuck) {
-			guy.wishDir = guy.wishDir.inverse();
+	private void bounce(Creature ghost) {
+		if (ghost.stuck) {
+			ghost.wishDir = ghost.wishDir.inverse();
 		}
+		ghost.speed = levelData().percentValue(4);
+		updatePosition(ghost);
 	}
 
 	private void updatePosition(Creature guy) {
