@@ -767,7 +767,8 @@ public class PacManGame {
 	private Direction randomMoveDir(Creature guy) {
 		List<Direction> dirs = new ArrayList<>(3);
 		for (Direction dir : Direction.values()) {
-			if (!dir.equals(guy.dir.inverse()) && world.isAccessibleTile(guy.tile.sum(dir.vector))) {
+			V2 neighbor = guy.tile.sum(dir.vector);
+			if (!dir.equals(guy.dir.inverse()) && world.isAccessibleTile(neighbor)) {
 				dirs.add(dir);
 			}
 		}

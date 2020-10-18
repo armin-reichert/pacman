@@ -1,12 +1,5 @@
 package de.amr.games.pacman;
 
-import static de.amr.games.pacman.Direction.DOWN;
-import static de.amr.games.pacman.Direction.LEFT;
-import static de.amr.games.pacman.Direction.RIGHT;
-import static de.amr.games.pacman.Direction.UP;
-
-import java.util.List;
-
 public class World {
 
 	public static final int TS = 8;
@@ -92,23 +85,27 @@ public class World {
 	}
 
 	public boolean isGhostHouseDoor(V2 tile) {
-		return tile.y == 15 && (tile.x == 13 || tile.x == 14);
+		int x = tile.x_int(), y = tile.y_int();
+		return y == 15 && (x == 13 || x == 14);
 	}
 
 	public boolean isInsideGhostHouse(V2 tile) {
-		return tile.x >= 10 && tile.x <= 17 && tile.y >= 15 && tile.y <= 22;
+		int x = tile.x_int(), y = tile.y_int();
+		return x >= 10 && x <= 17 && y >= 15 && y <= 22;
 	}
 
 	public boolean isInsideTunnel(V2 tile) {
-		return tile.y == 17 && (tile.x <= 5 || tile.x >= 21);
+		int x = tile.x_int(), y = tile.y_int();
+		return y == 17 && (x <= 5 || x >= 21);
 	}
 
 	public boolean isUpwardsBlocked(V2 tile) {
+		int x = tile.x_int(), y = tile.y_int();
 		//@formatter:off
-		return tile.x == 12 && tile.y == 13
-	  	|| tile.x == 15 && tile.y == 13
-		  || tile.x == 12 && tile.y == 25
-		  || tile.x == 15 && tile.y == 25;
+		return x == 12 && y == 13
+        || x == 15 && y == 13
+        || x == 12 && y == 25
+        || x == 15 && y == 25;
 		//@formatter:on
 	}
 
@@ -117,17 +114,18 @@ public class World {
 	}
 
 	public boolean isEnergizerTile(V2 tile) {
+		int x = tile.x_int(), y = tile.y_int();
 		//@formatter:off
-		return tile.x == 1  && tile.y == 6
-	  	|| tile.x == 26 && tile.y == 6
-		  || tile.x == 1  && tile.y == 26
-		  || tile.x == 26 && tile.y == 26;
+		return x == 1  && y == 6
+        || x == 26 && y == 6
+        || x == 1  && y == 26
+        || x == 26 && y == 26;
 		//@formatter:on
 	}
 
 	public boolean isIntersectionTile(V2 tile) {
 		int accessibleNeighbors = 0;
-		for (Direction dir : List.of(DOWN, LEFT, RIGHT, UP)) {
+		for (Direction dir : Direction.values()) {
 			V2 neighbor = tile.sum(dir.vector);
 			if (isAccessibleTile(neighbor)) {
 				++accessibleNeighbors;
@@ -140,7 +138,7 @@ public class World {
 		if (isPortalTile(tile)) {
 			return true;
 		}
-		int x = (int) tile.x, y = (int) tile.y;
+		int x = tile.x_int(), y = tile.y_int();
 		if (x >= 0 && x < WORLD_WIDTH_TILES && y > 0 && y < WORLD_HEIGHT_TILES) {
 			return false;
 		}
@@ -148,7 +146,9 @@ public class World {
 	}
 
 	public boolean isPortalTile(V2 tile) {
-		return tile.equals(PORTAL_RIGHT_ENTRY) || tile.equals(PORTAL_LEFT_ENTRY);
+		int x = tile.x_int(), y = tile.y_int();
+		return x == PORTAL_RIGHT_ENTRY.x && y == PORTAL_RIGHT_ENTRY.y
+				|| x == PORTAL_LEFT_ENTRY.x && y == PORTAL_LEFT_ENTRY.y;
 	}
 
 	public boolean isBonusTile(int x, int y) {

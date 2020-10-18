@@ -58,4 +58,12 @@ public class V2 {
 	public V2 scaled(float s) {
 		return new V2(s * x, s * y);
 	}
+
+	public int x_int() {
+		return (int) x;
+	}
+
+	public int y_int() {
+		return (int) y;
+	}
 }
