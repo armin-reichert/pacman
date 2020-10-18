@@ -32,8 +32,6 @@ public class PacManGameUI {
 	public boolean debugDraw = true;
 	public BitSet pressedKeys = new BitSet(256);
 
-	public Color messageColor;
-
 	private final PacManGame game;
 	private final float scaling;
 	private final Canvas canvas;
@@ -46,6 +44,7 @@ public class PacManGameUI {
 	private Map<Integer, BufferedImage> numbers;
 	private Map<Integer, BufferedImage> bountyNumbers;
 	private Font scoreFont;
+	private Color messageColor;
 
 	public PacManGameUI(PacManGame game, float scaling) {
 		this.game = game;
@@ -151,6 +150,14 @@ public class PacManGameUI {
 			} while (strategy.contentsRestored());
 			strategy.show();
 		} while (strategy.contentsLost());
+	}
+
+	public void yellowText() {
+		messageColor = Color.YELLOW;
+	}
+
+	public void redText() {
+		messageColor = Color.RED;
 	}
 
 	private void drawGame(Graphics2D g) {

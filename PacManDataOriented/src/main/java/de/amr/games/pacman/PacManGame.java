@@ -108,11 +108,11 @@ public class PacManGame {
 		return level == 1 ? 0 : level <= 4 ? 1 : 2;
 	}
 
-	public World world;
-	public BitSet eatenFood;
+	public final World world;
+	public final BitSet eatenFood;
+	public final Creature pacMan;
+	public final Creature[] ghosts;
 	public GameState state;
-	public Creature pacMan;
-	public Creature[] ghosts;
 	public PacManGameUI ui;
 	public String messageText;
 	public long fps;
@@ -136,7 +136,15 @@ public class PacManGame {
 	public PacManGame() {
 		world = new World();
 		eatenFood = new BitSet();
-		createEntities();
+		pacMan = new Creature("Pac-Man", Color.YELLOW, new V2(13, 26));
+		ghosts = new Creature[] {
+			//@formatter:off
+			new Creature("Blinky", Color.RED,    new V2(13, 14)),
+			new Creature("Pinky",  Color.PINK,   new V2(13, 17)), 
+			new Creature("Inky",   Color.CYAN,   new V2(11, 17)),
+			new Creature("Clyde",  Color.ORANGE, new V2(15, 17))
+			//@formatter:on
+		};
 	}
 
 	private void initGame() {
@@ -161,18 +169,6 @@ public class PacManGame {
 		pacManDyingStateTimer = 0;
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
-	}
-
-	private void createEntities() {
-		pacMan = new Creature("Pac-Man", Color.YELLOW, new V2(13, 26));
-		ghosts = new Creature[] {
-			//@formatter:off
-			new Creature("Blinky", Color.RED,    new V2(13, 14)),
-			new Creature("Pinky",  Color.PINK,   new V2(13, 17)), 
-			new Creature("Inky",   Color.CYAN,   new V2(11, 17)),
-			new Creature("Clyde",  Color.ORANGE, new V2(15, 17))
-			//@formatter:on
-		};
 	}
 
 	private void initEntities() {
@@ -281,8 +277,8 @@ public class PacManGame {
 	private void enterReadyState() {
 		state = GameState.READY;
 		readyStateTimer = sec(3);
+		ui.yellowText();
 		messageText = "Ready!";
-		ui.messageColor = Color.YELLOW;
 		initEntities();
 	}
 
@@ -410,8 +406,8 @@ public class PacManGame {
 
 	private void enterGameOverState() {
 		state = GameState.GAME_OVER;
+		ui.redText();
 		messageText = "Game Over!";
-		ui.messageColor = Color.RED;
 	}
 
 	private void exitGameOverState() {
