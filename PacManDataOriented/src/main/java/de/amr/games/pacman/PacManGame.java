@@ -118,7 +118,7 @@ public class PacManGame {
 	public int foodRemaining;
 	public int lives;
 	public int points;
-	public int ghostsKilledByEnergizer;
+	public int ghostsKilledUsingEnergizer;
 	public int mazeFlashes;
 	public long pacManPowerTimer;
 	public long readyStateTimer;
@@ -148,7 +148,7 @@ public class PacManGame {
 		foodRemaining = 244;
 		attackWave = 0;
 		mazeFlashes = 0;
-		ghostsKilledByEnergizer = 0;
+		ghostsKilledUsingEnergizer = 0;
 		pacManPowerTimer = 0;
 		readyStateTimer = 0;
 		scatteringStateTimer = 0;
@@ -275,9 +275,9 @@ public class PacManGame {
 			enterScatteringState();
 			return;
 		}
-		updateInky();
-		updatePinky();
-		updateClyde();
+		behaveLikeSpeedyGhost(ghosts[1]);
+		behaveLikeBashfulGhost(ghosts[2]);
+		behaveLikePokeyGhost(ghosts[3]);
 		--readyStateTimer;
 	}
 
@@ -421,10 +421,10 @@ public class PacManGame {
 
 	private void updateGuys() {
 		updatePacMan();
-		updateBlinky();
-		updatePinky();
-		updateInky();
-		updateClyde();
+		behaveLikeShadowGhost(ghosts[0]);
+		behaveLikeSpeedyGhost(ghosts[1]);
+		behaveLikeBashfulGhost(ghosts[2]);
+		behaveLikePokeyGhost(ghosts[3]);
 	}
 
 	private void updatePacMan() {
@@ -456,7 +456,7 @@ public class PacManGame {
 				for (Creature ghost : ghosts) {
 					ghost.vulnerable = !ghost.dead;
 				}
-				ghostsKilledByEnergizer = 0;
+				ghostsKilledUsingEnergizer = 0;
 				forceGhostsTurnBack();
 			}
 			// bonus reached?
@@ -483,8 +483,8 @@ public class PacManGame {
 				ghost.dead = true;
 				ghost.vulnerable = false;
 				ghost.targetTile = ghosts[0].homeTile;
-				ghostsKilledByEnergizer++;
-				ghost.bounty = (int) Math.pow(2, ghostsKilledByEnergizer) * 100;
+				ghostsKilledUsingEnergizer++;
+				ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
 				ghost.bountyTimer = sec(0.5f);
 				log("Ghost %s killed at location %s, Pac-Man wins %d points", ghost.name, ghost.tile, ghost.bounty);
 			}
@@ -517,8 +517,7 @@ public class PacManGame {
 		}
 	}
 
-	private void updateBlinky() {
-		Creature blinky = ghosts[0];
+	private void behaveLikeShadowGhost(Creature blinky) {
 		if (blinky.dead) {
 			updateDeadGhost(blinky);
 		} else if (state == GameState.SCATTERING) {
@@ -531,8 +530,7 @@ public class PacManGame {
 		updatePosition(blinky);
 	}
 
-	private void updatePinky() {
-		Creature pinky = ghosts[1];
+	private void behaveLikeSpeedyGhost(Creature pinky) {
 		if (pinky.dead) {
 			updateDeadGhost(pinky);
 		} else if (state == GameState.READY) {
@@ -551,8 +549,7 @@ public class PacManGame {
 		updatePosition(pinky);
 	}
 
-	private void updateInky() {
-		Creature inky = ghosts[2];
+	private void behaveLikeBashfulGhost(Creature inky) {
 		Creature blinky = ghosts[0];
 		if (inky.dead) {
 			updateDeadGhost(inky);
@@ -568,8 +565,7 @@ public class PacManGame {
 		updatePosition(inky);
 	}
 
-	private void updateClyde() {
-		Creature clyde = ghosts[3];
+	private void behaveLikePokeyGhost(Creature clyde) {
 		if (clyde.dead) {
 			updateDeadGhost(clyde);
 		} else if (state == GameState.READY) {
