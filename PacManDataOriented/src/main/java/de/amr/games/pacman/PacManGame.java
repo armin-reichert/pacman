@@ -429,7 +429,7 @@ public class PacManGame {
 
 	private void updatePacMan() {
 		pacMan.speed = levelData(level).percentValue(2);
-		pacMan.stuck = !move(pacMan);
+		updatePosition(pacMan);
 
 		// Pac-man power expiring?
 		if (pacManPowerTimer > 0) {
@@ -528,7 +528,7 @@ public class PacManGame {
 		}
 		updateGhostDirection(blinky);
 		updateGhostSpeed(blinky);
-		blinky.stuck = !move(blinky);
+		updatePosition(blinky);
 	}
 
 	private void updatePinky() {
@@ -548,7 +548,7 @@ public class PacManGame {
 		}
 		updateGhostDirection(pinky);
 		updateGhostSpeed(pinky);
-		pinky.stuck = !move(pinky);
+		updatePosition(pinky);
 	}
 
 	private void updateInky() {
@@ -565,7 +565,7 @@ public class PacManGame {
 		}
 		updateGhostDirection(inky);
 		updateGhostSpeed(inky);
-		inky.stuck = !move(inky);
+		updatePosition(inky);
 	}
 
 	private void updateClyde() {
@@ -581,7 +581,7 @@ public class PacManGame {
 		}
 		updateGhostDirection(clyde);
 		updateGhostSpeed(clyde);
-		clyde.stuck = !move(clyde);
+		updatePosition(clyde);
 	}
 
 	private void updateGhostSpeed(Creature ghost) {
@@ -665,42 +665,47 @@ public class PacManGame {
 		}
 	}
 
-	private boolean move(Creature guy) {
+	private void updatePosition(Creature guy) {
 		if (guy.speed == 0) {
-			return false;
+			return;
 		}
-		if (move(guy, guy.wishDir)) {
+		move(guy, guy.wishDir);
+		if (!guy.stuck) {
 			guy.dir = guy.wishDir;
-			return true;
+		} else {
+			move(guy, guy.dir);
 		}
-		return move(guy, guy.dir);
 	}
 
-	private boolean move(Creature guy, Direction dir) {
+	private void move(Creature guy, Direction dir) {
 
 		// portal
 		if (guy.tile.equals(World.PORTAL_RIGHT_ENTRY) && dir.equals(RIGHT)) {
 			guy.tile = World.PORTAL_LEFT_ENTRY;
 			guy.offset = V2.NULL;
-			return true;
+			guy.stuck = false;
+			return;
 		}
 		if (guy.tile.equals(World.PORTAL_LEFT_ENTRY) && dir.equals(LEFT)) {
 			guy.tile = World.PORTAL_RIGHT_ENTRY;
 			guy.offset = V2.NULL;
-			return true;
+			guy.stuck = false;
+			return;
 		}
 
 		// turns
 		if (!world.isInsideGhostHouse(guy.tile) && canAccessTile(guy, guy.tile.sum(dir.vector))) {
 			if (dir.equals(LEFT) || dir.equals(RIGHT)) {
 				if (Math.abs(guy.offset.y) > 1) {
-					return false;
+					guy.stuck = true;
+					return;
 				}
 				guy.offset = new V2(guy.offset.x, 0);
 			}
 			if (dir.equals(UP) || dir.equals(DOWN)) {
 				if (Math.abs(guy.offset.x) > 1) {
-					return false;
+					guy.stuck = true;
+					return;
 				}
 				guy.offset = new V2(0, guy.offset.y);
 			}
@@ -709,37 +714,40 @@ public class PacManGame {
 		V2 velocity = dir.vector.scaled(1.25f * guy.speed); // 100% speed corresponds to 1.25 pixels/tick
 		V2 positionAfterMove = world.position(guy).sum(velocity);
 		V2 tileAfterMove = world.tile(positionAfterMove);
+		V2 offsetAfterMove = world.offset(positionAfterMove, tileAfterMove);
 
 		if (!canAccessTile(guy, tileAfterMove)) {
-			return false;
+			guy.stuck = true;
+			return;
 		}
-
-		V2 offsetAfterMove = world.offset(positionAfterMove, tileAfterMove);
 
 		// avoid moving partially into inaccessible tile
 		if (tileAfterMove.equals(guy.tile)) {
 			if (!canAccessTile(guy, guy.tile.sum(dir.vector))) {
 				if (dir.equals(RIGHT) && offsetAfterMove.x > 0 || dir.equals(LEFT) && offsetAfterMove.x < 0) {
 					guy.offset = new V2(0, guy.offset.y);
-					return false;
+					guy.stuck = true;
+					return;
 				}
 				if (dir.equals(DOWN) && offsetAfterMove.y > 0 || dir.equals(UP) && offsetAfterMove.y < 0) {
 					guy.offset = new V2(guy.offset.x, 0);
-					return false;
+					guy.stuck = true;
+					return;
 				}
 			}
 		}
 		guy.tileChanged = !guy.tile.equals(tileAfterMove);
 		guy.tile = tileAfterMove;
 		guy.offset = offsetAfterMove;
-		return true;
+		guy.stuck = false;
 	}
 
 	private void eatAllFood() {
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				if (world.isFoodTile(x, y) && !eatenFood.get(world.index(x, y))) {
-					eatenFood.set(world.index(x, y));
+				int index = world.index(x, y);
+				if (world.isFoodTile(x, y) && !eatenFood.get(index)) {
+					eatenFood.set(index);
 					foodRemaining = 0;
 				}
 			}
