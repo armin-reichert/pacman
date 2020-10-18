@@ -771,6 +771,6 @@ public class PacManGame {
 	}
 
 	public boolean hasEatenFood(int x, int y) {
-		return world.isFoodTile(x, y) && eatenFood.get(world.index(x, y));
+		return eatenFood.get(world.index(x, y));
 	}
 }
