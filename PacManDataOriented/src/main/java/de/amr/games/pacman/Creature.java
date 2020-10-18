@@ -6,10 +6,11 @@ import java.awt.Color;
 
 public class Creature {
 
-	public Creature(String name, Color color) {
+	public Creature(String name, Color color, V2 homeTile) {
 		this.name = name;
 		this.color = color;
-		size = new V2(TS, TS);
+		this.homeTile = homeTile;
+		this.size = new V2(TS, TS);
 	}
 
 	@Override
@@ -20,12 +21,12 @@ public class Creature {
 	public final String name;
 	public final Color color;
 	public final V2 size;
+	public final V2 homeTile;
 	public float speed;
 	public Direction dir;
 	public Direction wishDir;
 	public V2 tile;
 	public V2 offset;
-	public V2 homeTile;
 	public V2 targetTile;
 	public boolean tileChanged;
 	public boolean stuck;

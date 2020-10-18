@@ -164,22 +164,15 @@ public class PacManGame {
 	}
 
 	private void createEntities() {
-		pacMan = new Creature("Pac-Man", Color.YELLOW);
-		pacMan.homeTile = new V2(13, 26);
-
-		ghosts = new Creature[4];
-
-		ghosts[0] = new Creature("Blinky", Color.RED);
-		ghosts[0].homeTile = new V2(13, 14);
-
-		ghosts[1] = new Creature("Pinky", Color.PINK);
-		ghosts[1].homeTile = new V2(13, 17);
-
-		ghosts[2] = new Creature("Inky", Color.CYAN);
-		ghosts[2].homeTile = new V2(11, 17);
-
-		ghosts[3] = new Creature("Clyde", Color.ORANGE);
-		ghosts[3].homeTile = new V2(15, 17);
+		pacMan = new Creature("Pac-Man", Color.YELLOW, new V2(13, 26));
+		ghosts = new Creature[] {
+			//@formatter:off
+			new Creature("Blinky", Color.RED,    new V2(13, 14)),
+			new Creature("Pinky",  Color.PINK,   new V2(13, 17)), 
+			new Creature("Inky",   Color.CYAN,   new V2(11, 17)),
+			new Creature("Clyde",  Color.ORANGE, new V2(15, 17))
+			//@formatter:on
+		};
 	}
 
 	private void initEntities() {
