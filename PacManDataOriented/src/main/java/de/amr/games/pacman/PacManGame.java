@@ -465,7 +465,7 @@ public class PacManGame {
 			}
 		}
 		// bonus found?
-		if (bonusAvailableTimer > 0 && x == 13 && y == 20) {
+		if (bonusAvailableTimer > 0 && world.isBonusTile(x, y)) {
 			bonusAvailableTimer = 0;
 			bonusConsumedTimer = sec(3);
 			String bonusName = levelData(level).stringValue(0);
@@ -538,10 +538,11 @@ public class PacManGame {
 		} else if (state == GameState.SCATTERING) {
 			pinky.targetTile = PINKY_CORNER;
 		} else if (state == GameState.CHASING) {
-			pinky.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(4));
 			if (pacMan.dir.equals(UP)) {
 				// simulate offset bug
-				pinky.targetTile = pinky.targetTile.sum(LEFT.vector.scaled(4));
+				pinky.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(4)).sum(LEFT.vector.scaled(4));
+			} else {
+				pinky.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(4));
 			}
 		}
 		updateGhostDirection(pinky);
@@ -550,7 +551,6 @@ public class PacManGame {
 	}
 
 	private void behaveLikeBashfulGhost(Creature inky) {
-		Creature blinky = ghosts[0];
 		if (inky.dead) {
 			updateDeadGhost(inky);
 		} else if (state == GameState.READY) {
@@ -558,6 +558,7 @@ public class PacManGame {
 		} else if (state == GameState.SCATTERING) {
 			inky.targetTile = INKY_CORNER;
 		} else if (state == GameState.CHASING) {
+			Creature blinky = ghosts[0];
 			inky.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
 		}
 		updateGhostDirection(inky);
@@ -626,18 +627,18 @@ public class PacManGame {
 		}
 		Direction newDir = null;
 		double min = Double.MAX_VALUE;
-		for (Direction dir : List.of(RIGHT, DOWN, LEFT, UP)) {
+		for (Direction dir : List.of(RIGHT, DOWN, LEFT, UP) /* order matters! */) {
 			if (dir.equals(ghost.dir.inverse())) {
 				continue;
 			}
-			if (dir.equals(UP) && world.isUpwardsBlocked(ghost.tile.sum(UP.vector))) {
+			V2 neighbor = ghost.tile.sum(dir.vector);
+			if (dir.equals(UP) && world.isUpwardsBlocked(neighbor)) {
 				continue;
 			}
-			V2 neighbor = ghost.tile.sum(dir.vector);
 			if (!canAccessTile(ghost, neighbor)) {
 				continue;
 			}
-			double d = V2.distance(neighbor, ghost.targetTile);
+			double d = distance(neighbor, ghost.targetTile);
 			if (d <= min) {
 				newDir = dir;
 				min = d;
@@ -751,11 +752,8 @@ public class PacManGame {
 	}
 
 	private boolean canAccessTile(Creature guy, V2 tile) {
-		if (tile.y == 17 && (tile.x < 0 || tile.x >= WORLD_WIDTH_TILES)) {
-			return true;
-		}
 		if (tile.x < 0 || tile.x >= WORLD_WIDTH_TILES) {
-			return false;
+			return tile.y == 17; // can leave world through horizontal tunnel
 		}
 		if (tile.y < 0 || tile.y >= WORLD_HEIGHT_TILES) {
 			return false;

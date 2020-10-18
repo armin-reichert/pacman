@@ -150,4 +150,8 @@ public class World {
 	public boolean isPortalTile(V2 tile) {
 		return tile.equals(PORTAL_RIGHT_ENTRY) || tile.equals(PORTAL_LEFT_ENTRY);
 	}
+
+	public boolean isBonusTile(int x, int y) {
+		return x == 13 && y == 20;
+	}
 }
