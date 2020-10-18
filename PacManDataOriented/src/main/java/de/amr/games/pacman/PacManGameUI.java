@@ -200,8 +200,8 @@ public class PacManGameUI {
 
 	private void drawLevelCounter(Graphics2D g) {
 		int x = WORLD_WIDTH - 4 * TS;
-		int firstIndex = Math.max(1, game.level - 6);
-		for (int i = firstIndex; i <= game.level; ++i) {
+		int first = Math.max(1, game.level - 6);
+		for (int i = first; i <= game.level; ++i) {
 			BufferedImage symbol = symbols.get(levelData(i).stringValue(0));
 			g.drawImage(symbol, x, WORLD_HEIGHT - 2 * TS, null);
 			x -= 2 * TS;
@@ -246,11 +246,11 @@ public class PacManGameUI {
 			}
 		}
 		if (game.bonusAvailableTimer > 0) {
-			String symbolName = levelData(game.level).stringValue(0);
+			String symbolName = game.levelData().stringValue(0);
 			g.drawImage(symbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
 		}
 		if (game.bonusConsumedTimer > 0) {
-			int value = levelData(game.level).intValue(1);
+			int value = game.levelData().intValue(1);
 			g.drawImage(numbers.get(value), 13 * TS, 20 * TS - HTS, null);
 		}
 		if (game.messageText != null) {

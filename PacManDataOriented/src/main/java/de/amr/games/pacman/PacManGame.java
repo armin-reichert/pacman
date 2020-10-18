@@ -84,7 +84,11 @@ public class PacManGame {
 		return level < 22 ? LEVEL_DATA.get(level - 1) : LEVEL_DATA.get(20);
 	}
 
-	static final long[][] SCATTERING_TIMES = {
+	public LevelData levelData() {
+		return levelData(level);
+	}
+
+	private static final long[][] SCATTERING_TIMES = {
 		//@formatter:off
 		{ sec(7), sec(7), sec(5), sec(5) },
 		{ sec(7), sec(7), sec(5), 1      },
@@ -92,7 +96,7 @@ public class PacManGame {
 		//@formatter:on
 	};
 
-	static final long[][] CHASING_TIMES = {
+	private static final long[][] CHASING_TIMES = {
 		//@formatter:off
 		{ sec(20), sec(20), sec(20),   Long.MAX_VALUE },
 		{ sec(20), sec(20), sec(1033), Long.MAX_VALUE },
@@ -395,7 +399,7 @@ public class PacManGame {
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
 		levelChangeStateTimer = sec(7);
-		mazeFlashes = levelData(level).intValue(14);
+		mazeFlashes = levelData().intValue(14);
 		log("Maze flashes: %d", mazeFlashes);
 		for (Creature ghost : ghosts) {
 			ghost.visible = false;
@@ -428,7 +432,7 @@ public class PacManGame {
 	}
 
 	private void updatePacMan() {
-		pacMan.speed = levelData(level).percentValue(2);
+		pacMan.speed = levelData().percentValue(2);
 		updatePosition(pacMan);
 
 		// Pac-man power expiring?
@@ -450,7 +454,7 @@ public class PacManGame {
 			// energizer found?
 			if (world.isEnergizerTile(pacMan.tile)) {
 				points += 40;
-				int powerSeconds = levelData(level).intValue(13);
+				int powerSeconds = levelData().intValue(13);
 				pacManPowerTimer = sec(powerSeconds);
 				log("Pac-Man got power for %d seconds", powerSeconds);
 				for (Creature ghost : ghosts) {
@@ -468,8 +472,8 @@ public class PacManGame {
 		if (bonusAvailableTimer > 0 && world.isBonusTile(x, y)) {
 			bonusAvailableTimer = 0;
 			bonusConsumedTimer = sec(3);
-			String bonusName = levelData(level).stringValue(0);
-			int bonusValue = levelData(level).intValue(1);
+			String bonusName = levelData().stringValue(0);
+			int bonusValue = levelData().intValue(1);
 			points += bonusValue;
 			log("Pac-Man found bonus %s of value %d", bonusName, bonusValue);
 		}
@@ -585,13 +589,13 @@ public class PacManGame {
 		if (ghost.bountyTimer > 0) {
 			ghost.speed = 0;
 		} else if (ghost.dead) {
-			ghost.speed = 2 * levelData(level).percentValue(4);
+			ghost.speed = 2 * levelData().percentValue(4);
 		} else if (world.isInsideTunnel(ghost.tile)) {
-			ghost.speed = levelData(level).percentValue(5);
+			ghost.speed = levelData().percentValue(5);
 		} else if (pacManPowerTimer > 0) {
-			ghost.speed = levelData(level).percentValue(12);
+			ghost.speed = levelData().percentValue(12);
 		} else {
-			ghost.speed = levelData(level).percentValue(4);
+			ghost.speed = levelData().percentValue(4);
 			if (ghost == ghosts[0]) {
 				checkElroySpeed(ghost);
 			}
@@ -599,10 +603,10 @@ public class PacManGame {
 	}
 
 	private void checkElroySpeed(Creature blinky) {
-		if (foodRemaining <= levelData(level).intValue(8)) {
-			blinky.speed = levelData(level).percentValue(9);
-		} else if (foodRemaining <= levelData(level).intValue(6)) {
-			blinky.speed = levelData(level).percentValue(7);
+		if (foodRemaining <= levelData().intValue(8)) {
+			blinky.speed = levelData().percentValue(9);
+		} else if (foodRemaining <= levelData().intValue(6)) {
+			blinky.speed = levelData().percentValue(7);
 		}
 	}
 
