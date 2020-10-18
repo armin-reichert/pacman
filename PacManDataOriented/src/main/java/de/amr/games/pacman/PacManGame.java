@@ -419,13 +419,13 @@ public class PacManGame {
 			if (ghost.dead) {
 				updateDeadGhost(ghost);
 			} else if (ghost == ghosts[0]) {
-				behaveLikeShadowGhost(ghost);
+				beShadow(ghost);
 			} else if (ghost == ghosts[1]) {
-				behaveLikeSpeedyGhost(ghost);
+				beSpeedy(ghost);
 			} else if (ghost == ghosts[2]) {
-				behaveLikeBashfulGhost(ghost);
+				beBashful(ghost);
 			} else if (ghost == ghosts[3]) {
-				behaveLikePokeyGhost(ghost);
+				bePokey(ghost);
 			}
 			updateGhostDir(ghost);
 			updateGhostSpeed(ghost);
@@ -523,20 +523,16 @@ public class PacManGame {
 		}
 	}
 
-	private void behaveLikeShadowGhost(Creature blinky) {
-		if (blinky.dead) {
-			updateDeadGhost(blinky);
-		} else if (state == GameState.SCATTERING) {
+	private void beShadow(Creature blinky) {
+		if (state == GameState.SCATTERING) {
 			blinky.targetTile = BLINKY_CORNER;
 		} else if (state == GameState.CHASING) {
 			blinky.targetTile = pacMan.tile;
 		}
 	}
 
-	private void behaveLikeSpeedyGhost(Creature pinky) {
-		if (pinky.dead) {
-			updateDeadGhost(pinky);
-		} else if (state == GameState.SCATTERING) {
+	private void beSpeedy(Creature pinky) {
+		if (state == GameState.SCATTERING) {
 			pinky.targetTile = PINKY_CORNER;
 		} else if (state == GameState.CHASING) {
 			if (pacMan.dir.equals(UP)) {
@@ -548,10 +544,8 @@ public class PacManGame {
 		}
 	}
 
-	private void behaveLikeBashfulGhost(Creature inky) {
-		if (inky.dead) {
-			updateDeadGhost(inky);
-		} else if (state == GameState.SCATTERING) {
+	private void beBashful(Creature inky) {
+		if (state == GameState.SCATTERING) {
 			inky.targetTile = INKY_CORNER;
 		} else if (state == GameState.CHASING) {
 			Creature blinky = ghosts[0];
@@ -559,10 +553,8 @@ public class PacManGame {
 		}
 	}
 
-	private void behaveLikePokeyGhost(Creature clyde) {
-		if (clyde.dead) {
-			updateDeadGhost(clyde);
-		} else if (state == GameState.SCATTERING) {
+	private void bePokey(Creature clyde) {
+		if (state == GameState.SCATTERING) {
 			clyde.targetTile = CLYDE_CORNER;
 		} else if (state == GameState.CHASING) {
 			clyde.targetTile = distance(clyde.tile, pacMan.tile) > 8 ? pacMan.tile : CLYDE_CORNER;
