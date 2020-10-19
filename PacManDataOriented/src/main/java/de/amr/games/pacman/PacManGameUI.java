@@ -87,7 +87,30 @@ public class PacManGameUI {
 		canvas.createBufferStrategy(2);
 	}
 
-	public void loadResources() throws IOException, FontFormatException {
+	public void render() {
+		BufferStrategy strategy = canvas.getBufferStrategy();
+		do {
+			do {
+				Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
+				g.setColor(Color.BLACK);
+				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+				g.scale(scaling, scaling);
+				drawGame(g);
+				g.dispose();
+			} while (strategy.contentsRestored());
+			strategy.show();
+		} while (strategy.contentsLost());
+	}
+
+	public void yellowText() {
+		messageColor = Color.YELLOW;
+	}
+
+	public void redText() {
+		messageColor = Color.RED;
+	}
+
+	private void loadResources() throws IOException, FontFormatException {
 		spriteSheet = image("/sprites.png");
 		imageMazeFull = image("/maze_full.png");
 		imageMazeEmpty = image("/maze_empty.png");
@@ -137,29 +160,6 @@ public class PacManGameUI {
 		return ImageIO.read(getClass().getResourceAsStream(path));
 	}
 
-	public void render() {
-		BufferStrategy strategy = canvas.getBufferStrategy();
-		do {
-			do {
-				Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
-				g.setColor(Color.BLACK);
-				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-				g.scale(scaling, scaling);
-				drawGame(g);
-				g.dispose();
-			} while (strategy.contentsRestored());
-			strategy.show();
-		} while (strategy.contentsLost());
-	}
-
-	public void yellowText() {
-		messageColor = Color.YELLOW;
-	}
-
-	public void redText() {
-		messageColor = Color.RED;
-	}
-
 	private void drawGame(Graphics2D g) {
 		drawScore(g);
 		drawLivesCounter(g);
@@ -169,6 +169,10 @@ public class PacManGameUI {
 		for (int i = 0; i < 4; ++i) {
 			drawGhost(g, i);
 		}
+		drawDebugInfo(g);
+	}
+
+	private void drawDebugInfo(Graphics2D g) {
 		if (debugDraw) {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
@@ -189,6 +193,12 @@ public class PacManGameUI {
 				text = String.format("%s", game.state);
 			}
 			g.drawString(text, 8 * TS, 3 * TS);
+			for (Creature ghost : game.ghosts) {
+				if (ghost.targetTile != null) {
+					g.setColor(ghost.color);
+					g.fillRect(ghost.targetTile.x_int() * TS + HTS / 2, ghost.targetTile.y_int() * TS + HTS / 2, HTS, HTS);
+				}
+			}
 		}
 	}
 
@@ -323,13 +333,6 @@ public class PacManGameUI {
 		}
 		V2 position = game.world.position(ghost);
 		g.drawImage(sprite, (int) position.x - HTS, (int) position.y - HTS, null);
-
-		if (debugDraw) {
-			if (ghost.targetTile != null) {
-				g.setColor(ghost.color);
-				g.fillRect((int) ghost.targetTile.x * TS + TS / 4, (int) ghost.targetTile.y * TS + TS / 4, HTS, HTS);
-			}
-		}
 	}
 
 	private int directionFrame(Direction dir) {
