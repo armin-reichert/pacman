@@ -230,17 +230,17 @@ public class PacManGame {
 	}
 
 	private void readInput() {
-		if (ui.pressedKeys.get(KeyEvent.VK_LEFT)) {
+		if (ui.keyPressed(KeyEvent.VK_LEFT)) {
 			pacMan.wishDir = LEFT;
-		} else if (ui.pressedKeys.get(KeyEvent.VK_RIGHT)) {
+		} else if (ui.keyPressed(KeyEvent.VK_RIGHT)) {
 			pacMan.wishDir = RIGHT;
-		} else if (ui.pressedKeys.get(KeyEvent.VK_UP)) {
+		} else if (ui.keyPressed(KeyEvent.VK_UP)) {
 			pacMan.wishDir = UP;
-		} else if (ui.pressedKeys.get(KeyEvent.VK_DOWN)) {
+		} else if (ui.keyPressed(KeyEvent.VK_DOWN)) {
 			pacMan.wishDir = DOWN;
-		} else if (ui.pressedKeys.get(KeyEvent.VK_D)) {
+		} else if (ui.keyPressed(KeyEvent.VK_D)) {
 			ui.debugDraw = !ui.debugDraw;
-		} else if (ui.pressedKeys.get(KeyEvent.VK_E)) {
+		} else if (ui.keyPressed(KeyEvent.VK_E)) {
 			eatAllFood();
 		}
 	}
@@ -398,7 +398,7 @@ public class PacManGame {
 	}
 
 	private void runGameOverState() {
-		if (ui.pressedKeys.get(KeyEvent.VK_SPACE)) {
+		if (ui.keyPressed(KeyEvent.VK_SPACE)) {
 			exitGameOverState();
 			initGame();
 		}

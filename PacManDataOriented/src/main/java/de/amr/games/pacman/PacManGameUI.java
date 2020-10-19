@@ -30,11 +30,11 @@ import javax.swing.JFrame;
 public class PacManGameUI {
 
 	public boolean debugDraw = true;
-	public BitSet pressedKeys = new BitSet(256);
 
 	private final PacManGame game;
 	private final float scaling;
 	private final Canvas canvas;
+	private BitSet pressedKeys = new BitSet(256);
 
 	private BufferedImage imageMazeFull;
 	private BufferedImage imageMazeEmpty;
@@ -108,6 +108,10 @@ public class PacManGameUI {
 
 	public void redText() {
 		messageColor = Color.RED;
+	}
+
+	public boolean keyPressed(int keyCode) {
+		return pressedKeys.get(keyCode);
 	}
 
 	private void loadResources() throws IOException, FontFormatException {
