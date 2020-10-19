@@ -38,6 +38,8 @@ public class PacManGame {
 		});
 	}
 
+	private static final V2 HCENTER = new V2(HTS, 0);
+
 	public static final int FPS = 60;
 
 	public static void log(String msg, Object... args) {
@@ -174,7 +176,7 @@ public class PacManGame {
 		pacMan.speed = 0;
 		pacMan.dir = pacMan.wishDir = RIGHT;
 		pacMan.tile = pacMan.homeTile;
-		pacMan.offset = new V2(HTS, 0);
+		pacMan.offset = HCENTER;
 		pacMan.stuck = false;
 		pacMan.dead = false;
 		pacMan.visible = true;
@@ -183,7 +185,7 @@ public class PacManGame {
 		for (Creature ghost : ghosts) {
 			ghost.speed = 0;
 			ghost.tile = ghost.homeTile;
-			ghost.offset = new V2(HTS, 0);
+			ghost.offset = HCENTER;
 			ghost.targetTile = null;
 			ghost.tileChanged = true;
 			ghost.stuck = false;
@@ -288,15 +290,16 @@ public class PacManGame {
 
 	private void exitReadyState() {
 		messageText = null;
-		// TODO move ghosts out of house
-		for (int i = 1; i < ghosts.length; ++i) {
-			ghosts[i].tile = ghosts[0].homeTile;
-			ghosts[i].offset = new V2(HTS, 0);
-			ghosts[i].tileChanged = true;
-		}
 		for (Creature ghost : ghosts) {
-			ghost.forceOnTrack = true;
+			if (ghost != ghosts[0]) {
+				ghost.leavingHouse = true;
+				// TODO
+				ghost.tile = ghosts[1].homeTile;
+				ghost.offset = new V2(HTS, 0);
+				ghost.wishDir = UP;
+			}
 		}
+		ghosts[0].forceOnTrack = true;
 	}
 
 	private void runScatteringState() {
@@ -572,7 +575,7 @@ public class PacManGame {
 			ghost.leavingHouse = false;
 			ghost.wishDir = LEFT;
 			ghost.forceOnTrack = true;
-			ghost.offset = new V2(HTS, 0);
+			ghost.offset = HCENTER;
 			return;
 		}
 		updateGhostSpeed(ghost);
