@@ -19,7 +19,7 @@ public class World {
 
 	public World() {
 		map = new String[] {
-		//@formatter:off
+			//@formatter:off
 			"1111111111111111111111111111",
 			"1111111111111111111111111111",
 			"1111111111111111111111111111",
@@ -56,11 +56,11 @@ public class World {
 			"1111111111111111111111111111",
 			"1111111111111111111111111111",
 			"1111111111111111111111111111",
-		//@formatter:on
+			//@formatter:on
 		};
 	}
 
-	public char content(int x, int y) {
+	public char map(int x, int y) {
 		return map[y].charAt(x);
 	}
 
@@ -103,23 +103,23 @@ public class World {
 		int x = tile.x_int(), y = tile.y_int();
 		//@formatter:off
 		return x == 12 && y == 13
-        || x == 15 && y == 13
-        || x == 12 && y == 25
-        || x == 15 && y == 25;
+		|| x == 15 && y == 13
+		|| x == 12 && y == 25
+		|| x == 15 && y == 25;
 		//@formatter:on
 	}
 
 	public boolean isFoodTile(int x, int y) {
-		return inMapRange(x, y) && content(x, y) == '2';
+		return inMapRange(x, y) && map(x, y) == '2';
 	}
 
 	public boolean isEnergizerTile(V2 tile) {
 		int x = tile.x_int(), y = tile.y_int();
 		//@formatter:off
 		return x == 1  && y == 6
-        || x == 26 && y == 6
-        || x == 1  && y == 26
-        || x == 26 && y == 26;
+		|| x == 26 && y == 6
+		|| x == 1  && y == 26
+		|| x == 26 && y == 26;
 		//@formatter:on
 	}
 
@@ -142,7 +142,7 @@ public class World {
 		if (x >= 0 && x < WORLD_WIDTH_TILES && y > 0 && y < WORLD_HEIGHT_TILES) {
 			return false;
 		}
-		return content(x, y) != '1';
+		return map(x, y) != '1';
 	}
 
 	public boolean isPortalTile(V2 tile) {

@@ -13,15 +13,11 @@ public class Creature {
 		this.size = new V2(TS, TS);
 	}
 
-	@Override
-	public String toString() {
-		return String.format("%s tile=%s offset=%s", name, tile, offset);
-	}
-
 	public final String name;
 	public final Color color;
 	public final V2 size;
 	public final V2 homeTile;
+
 	public float speed;
 	public Direction dir;
 	public Direction wishDir;
@@ -32,8 +28,13 @@ public class Creature {
 	public boolean stuck;
 	public boolean forceTurnBack;
 	public boolean dead;
-	public int bounty;
-	public long bountyTimer;
 	public boolean vulnerable;
 	public boolean visible;
+	public int bounty;
+	public long bountyTimer;
+
+	@Override
+	public String toString() {
+		return String.format("%s tile=%s offset=%s", name, tile, offset);
+	}
 }

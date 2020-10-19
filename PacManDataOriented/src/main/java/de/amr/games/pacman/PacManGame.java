@@ -19,7 +19,6 @@ import java.awt.event.KeyEvent;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -81,7 +80,7 @@ public class PacManGame {
 	);
 
 	public static LevelData levelData(int level) {
-		return level < 22 ? LEVEL_DATA.get(level - 1) : LEVEL_DATA.get(20);
+		return level <= 21 ? LEVEL_DATA.get(level - 1) : LEVEL_DATA.get(20);
 	}
 
 	public LevelData levelData() {
@@ -104,7 +103,7 @@ public class PacManGame {
 		//@formatter:on
 	};
 
-	private static int attackWaveIndex(int level) {
+	private static int attackingTimesRow(int level) {
 		return level == 1 ? 0 : level <= 4 ? 1 : 2;
 	}
 
@@ -172,26 +171,27 @@ public class PacManGame {
 	}
 
 	private void initEntities() {
+		pacMan.speed = 0;
+		pacMan.dir = pacMan.wishDir = RIGHT;
 		pacMan.tile = pacMan.homeTile;
 		pacMan.offset = new V2(HTS, 0);
-		pacMan.dir = pacMan.wishDir = RIGHT;
-		pacMan.speed = 0;
 		pacMan.stuck = false;
 		pacMan.dead = false;
 		pacMan.visible = true;
-		for (int i = 0; i < ghosts.length; ++i) {
-			Creature ghost = ghosts[i];
-			ghost.tile = ghost.homeTile;
-			ghost.targetTile = null;
-			ghost.offset = new V2(HTS, 0);
+
+		for (Creature ghost : ghosts) {
 			ghost.speed = 0;
+			ghost.tile = ghost.homeTile;
+			ghost.offset = new V2(HTS, 0);
+			ghost.targetTile = null;
 			ghost.tileChanged = true;
 			ghost.stuck = false;
 			ghost.forceTurnBack = false;
 			ghost.dead = false;
 			ghost.vulnerable = false;
-			ghost.bounty = 0;
 			ghost.visible = true;
+			ghost.bounty = 0;
+			ghost.bountyTimer = 0;
 		}
 		ghosts[0].dir = ghosts[0].wishDir = LEFT;
 		ghosts[1].dir = ghosts[1].wishDir = DOWN;
@@ -315,7 +315,7 @@ public class PacManGame {
 
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
-		scatteringStateTimer = SCATTERING_TIMES[attackWaveIndex(level)][attackWave];
+		scatteringStateTimer = SCATTERING_TIMES[attackingTimesRow(level)][attackWave];
 		forceGhostsTurnBack();
 	}
 
@@ -343,7 +343,7 @@ public class PacManGame {
 
 	private void enterChasingState() {
 		state = GameState.CHASING;
-		chasingStateTimer = CHASING_TIMES[attackWaveIndex(level)][attackWave];
+		chasingStateTimer = CHASING_TIMES[attackingTimesRow(level)][attackWave];
 		forceGhostsTurnBack();
 	}
 
@@ -448,7 +448,7 @@ public class PacManGame {
 		}
 
 		// food found?
-		int x = (int) pacMan.tile.x, y = (int) pacMan.tile.y;
+		int x = pacMan.tile.x_int(), y = pacMan.tile.y_int();
 		if (world.isFoodTile(x, y) && !hasEatenFood(x, y)) {
 			eatenFood.set(world.index(x, y));
 			foodRemaining--;
@@ -734,28 +734,31 @@ public class PacManGame {
 	}
 
 	private boolean canAccessTile(Creature guy, V2 tile) {
-		if (tile.x < 0 || tile.x >= WORLD_WIDTH_TILES) {
-			return tile.y == 17; // can leave world through horizontal tunnel
+		int x = tile.x_int(), y = tile.y_int();
+		if (x < 0 || x >= WORLD_WIDTH_TILES) {
+			return y == 17; // can leave world through horizontal tunnel
 		}
-		if (tile.y < 0 || tile.y >= WORLD_HEIGHT_TILES) {
+		if (y < 0 || y >= WORLD_HEIGHT_TILES) {
 			return false;
 		}
 		if (world.isGhostHouseDoor(tile)) {
 			return false; // TODO ghost can access door when leaving or entering ghosthouse
 		}
-		return world.content((int) tile.x, (int) tile.y) != '1';
+		return world.map(x, y) != '1';
 	}
 
 	private Direction randomMoveDir(Creature guy) {
 		List<Direction> dirs = new ArrayList<>(3);
 		for (Direction dir : Direction.values()) {
+			if (dir.equals(guy.dir.inverse())) {
+				continue;
+			}
 			V2 neighbor = guy.tile.sum(dir.vector);
-			if (!dir.equals(guy.dir.inverse()) && world.isAccessibleTile(neighbor)) {
+			if (world.isAccessibleTile(neighbor)) {
 				dirs.add(dir);
 			}
 		}
-		Collections.shuffle(dirs);
-		return dirs.get(0);
+		return dirs.get(new Random().nextInt(dirs.size()));
 	}
 
 	public boolean hasEatenFood(int x, int y) {
