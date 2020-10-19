@@ -38,6 +38,12 @@ public class PacManGame {
 		});
 	}
 
+	private static final int BLINKY = 0;
+	private static final int PINKY = 1;
+	private static final int INKY = 2;
+	private static final int CLYDE = 3;
+
+	private static final int TOTAL_FOOD_COUNT = 244;
 	private static final V2 HCENTER = new V2(HTS, 0);
 
 	public static final int FPS = 60;
@@ -109,10 +115,11 @@ public class PacManGame {
 		return level == 1 ? 0 : level <= 4 ? 1 : 2;
 	}
 
-	public final World world;
-	public final BitSet eatenFood;
+	public final World world = new World();
+	public final BitSet eatenFood = new BitSet(244);
 	public final Creature pacMan;
-	public final Creature[] ghosts;
+	public final Creature[] ghosts = new Creature[4];
+
 	public GameState state;
 	public PacManGameUI ui;
 	public String messageText;
@@ -135,17 +142,11 @@ public class PacManGame {
 	public long bonusConsumedTimer;
 
 	public PacManGame() {
-		world = new World();
-		eatenFood = new BitSet();
 		pacMan = new Creature("Pac-Man", Color.YELLOW, new V2(13, 26));
-		ghosts = new Creature[] {
-			//@formatter:off
-			new Creature("Blinky", Color.RED,    new V2(13, 14)),
-			new Creature("Pinky",  Color.PINK,   new V2(13, 17)), 
-			new Creature("Inky",   Color.CYAN,   new V2(11, 17)),
-			new Creature("Clyde",  Color.ORANGE, new V2(15, 17))
-			//@formatter:on
-		};
+		ghosts[BLINKY] = new Creature("Blinky", Color.RED, new V2(13, 14));
+		ghosts[PINKY] = new Creature("Pinky", Color.PINK, new V2(13, 17));
+		ghosts[INKY] = new Creature("Inky", Color.CYAN, new V2(11, 17));
+		ghosts[CLYDE] = new Creature("Clyde", Color.ORANGE, new V2(15, 17));
 	}
 
 	private void initGame() {
@@ -158,7 +159,7 @@ public class PacManGame {
 	private void initLevel(int n) {
 		level = n;
 		eatenFood.clear();
-		foodRemaining = 244;
+		foodRemaining = TOTAL_FOOD_COUNT;
 		attackWave = 0;
 		mazeFlashes = 0;
 		ghostsKilledUsingEnergizer = 0;
@@ -199,38 +200,40 @@ public class PacManGame {
 			ghost.bounty = 0;
 			ghost.bountyTimer = 0;
 		}
-		ghosts[0].dir = ghosts[0].wishDir = LEFT;
-		ghosts[1].dir = ghosts[1].wishDir = DOWN;
-		ghosts[2].dir = ghosts[2].wishDir = UP;
-		ghosts[3].dir = ghosts[3].wishDir = UP;
+		ghosts[BLINKY].dir = ghosts[BLINKY].wishDir = LEFT;
+		ghosts[PINKY].dir = ghosts[PINKY].wishDir = DOWN;
+		ghosts[INKY].dir = ghosts[INKY].wishDir = UP;
+		ghosts[CLYDE].dir = ghosts[CLYDE].wishDir = UP;
 
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
 	}
 
 	private void gameLoop() {
-		long start = 0;
+		final long intendedFrameDuration = 1_000_000_000 / FPS;
+		long fpsCountStart = 0;
 		long frames = 0;
 		while (true) {
-			long time = System.nanoTime();
+			long frameStartTime = System.nanoTime();
 			update();
 			ui.render();
-			time = System.nanoTime() - time;
-			++frames;
-			++framesTotal;
-			if (System.nanoTime() - start >= 1_000_000_000) {
-				fps = frames;
-				frames = 0;
-				start = System.nanoTime();
-//				log("Time: %-18s %3d frames/sec", LocalTime.now(), fps);
-			}
-			long sleep = Math.max(1_000_000_000 / FPS - time, 0);
+			long frameEndTime = System.nanoTime();
+			long frameDuration = frameEndTime - frameStartTime;
+			long sleep = Math.max(intendedFrameDuration - frameDuration, 0);
 			if (sleep > 0) {
 				try {
-					Thread.sleep(sleep / 1_000_000); // millis
+					Thread.sleep(sleep / 1_000_000); // milliseconds
 				} catch (InterruptedException x) {
 					x.printStackTrace();
 				}
+			}
+
+			++frames;
+			++framesTotal;
+			if (frameEndTime - fpsCountStart >= 1_000_000_000) {
+				fps = frames;
+				frames = 0;
+				fpsCountStart = System.nanoTime();
 			}
 		}
 	}
@@ -509,7 +512,8 @@ public class PacManGame {
 	}
 
 	private void updateGhosts() {
-		for (Creature ghost : ghosts) {
+		for (int i = 0; i < 4; ++i) {
+			Creature ghost = ghosts[i];
 			if (ghost.bountyTimer > 0) {
 				--ghost.bountyTimer;
 			} else if (ghost.enteringHouse) {
@@ -518,17 +522,43 @@ public class PacManGame {
 				letGhostLeaveHouse(ghost);
 			} else if (ghost.dead) {
 				letGhostReturnHome(ghost);
-			} else if (ghost == ghosts[0]) {
-				computeShadowGhostTarget(ghost);
-				letGhostHeadForTargetTile(ghost);
-			} else if (ghost == ghosts[1]) {
-				computeSpeedyGhostTarget(ghost);
-				letGhostHeadForTargetTile(ghost);
-			} else if (ghost == ghosts[2]) {
-				computeBashfulGhostTarget(ghost);
-				letGhostHeadForTargetTile(ghost);
-			} else if (ghost == ghosts[3]) {
-				computePokeyGhostTarget(ghost);
+			} else {
+				switch (i) {
+				case BLINKY:
+					if (state == GameState.SCATTERING) {
+						ghost.targetTile = BLINKY_CORNER;
+					} else if (state == GameState.CHASING) {
+						ghost.targetTile = pacMan.tile;
+					}
+					break;
+				case PINKY:
+					if (state == GameState.SCATTERING) {
+						ghost.targetTile = PINKY_CORNER;
+					} else if (state == GameState.CHASING) {
+						if (pacMan.dir.equals(UP)) {
+							// simulate offset bug
+							ghost.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(4)).sum(LEFT.vector.scaled(4));
+						} else {
+							ghost.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(4));
+						}
+					}
+					break;
+				case INKY:
+					if (state == GameState.SCATTERING) {
+						ghost.targetTile = INKY_CORNER;
+					} else if (state == GameState.CHASING) {
+						ghost.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(2)).scaled(2).sum(ghosts[0].tile.scaled(-1));
+					}
+					break;
+				case CLYDE:
+					if (state == GameState.SCATTERING) {
+						ghost.targetTile = CLYDE_CORNER;
+					} else if (state == GameState.CHASING) {
+						ghost.targetTile = distance(ghost.tile, pacMan.tile) > 8 ? pacMan.tile : CLYDE_CORNER;
+					}
+				default:
+					break;
+				}
 				letGhostHeadForTargetTile(ghost);
 			}
 		}
@@ -580,44 +610,6 @@ public class PacManGame {
 		}
 		updateGhostSpeed(ghost);
 		updatePosition(ghost);
-	}
-
-	private void computeShadowGhostTarget(Creature blinky) {
-		if (state == GameState.SCATTERING) {
-			blinky.targetTile = BLINKY_CORNER;
-		} else if (state == GameState.CHASING) {
-			blinky.targetTile = pacMan.tile;
-		}
-	}
-
-	private void computeSpeedyGhostTarget(Creature pinky) {
-		if (state == GameState.SCATTERING) {
-			pinky.targetTile = PINKY_CORNER;
-		} else if (state == GameState.CHASING) {
-			if (pacMan.dir.equals(UP)) {
-				// simulate offset bug
-				pinky.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(4)).sum(LEFT.vector.scaled(4));
-			} else {
-				pinky.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(4));
-			}
-		}
-	}
-
-	private void computeBashfulGhostTarget(Creature inky) {
-		if (state == GameState.SCATTERING) {
-			inky.targetTile = INKY_CORNER;
-		} else if (state == GameState.CHASING) {
-			Creature blinky = ghosts[0];
-			inky.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(2)).scaled(2).sum(blinky.tile.scaled(-1));
-		}
-	}
-
-	private void computePokeyGhostTarget(Creature clyde) {
-		if (state == GameState.SCATTERING) {
-			clyde.targetTile = CLYDE_CORNER;
-		} else if (state == GameState.CHASING) {
-			clyde.targetTile = distance(clyde.tile, pacMan.tile) > 8 ? pacMan.tile : CLYDE_CORNER;
-		}
 	}
 
 	private void updateGhostSpeed(Creature ghost) {
