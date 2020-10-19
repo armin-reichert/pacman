@@ -46,7 +46,7 @@ public class PacManGame {
 	private static final int TOTAL_FOOD_COUNT = 244;
 	private static final V2 HCENTER = new V2(HTS, 0);
 
-	public static final int FPS = 60;
+	public static final int FPS = 30;
 
 	public static void log(String msg, Object... args) {
 		System.err.println(String.format("%-20s: %s", LocalTime.now(), String.format(msg, args)));
@@ -251,6 +251,10 @@ public class PacManGame {
 			ui.debugDraw = !ui.debugDraw;
 		} else if (ui.keyPressed(KeyEvent.VK_E)) {
 			eatAllFood();
+		} else if (ui.keyPressed(KeyEvent.VK_X)) {
+			for (Creature ghost : ghosts) {
+				killGhost(ghost);
+			}
 		}
 	}
 
@@ -572,9 +576,9 @@ public class PacManGame {
 
 	private void letGhostReturnHome(Creature ghost) {
 		// house entry reached?
-		if (ghost.tile.equals(ghosts[0].homeTile) && Math.abs(ghost.offset.x - HTS) <= 2) {
+		if (ghost.tile.equals(ghosts[BLINKY].homeTile) && Math.abs(ghost.offset.x - HTS) <= 2) {
 			ghost.offset = new V2(HTS - 1, 0);
-			ghost.targetTile = new V2(13, 17);
+			ghost.targetTile = ghost == ghosts[BLINKY] ? ghosts[PINKY].homeTile : ghost.homeTile;
 			ghost.wishDir = DOWN;
 			ghost.forceOnTrack = false;
 			ghost.enteringHouse = true;
@@ -586,16 +590,19 @@ public class PacManGame {
 
 	private void letGhostEnterHouse(Creature ghost) {
 		// reached target in house?
-		if (ghost.tile.equals(ghost.targetTile) && ghost.offset.y > 0) {
+		if (ghost.tile.equals(ghost.targetTile) && ghost.offset.y >= 0 && Math.abs(ghost.offset.x - HTS) <= 2) {
 			ghost.dead = false;
-			ghost.wishDir = UP;
+			ghost.wishDir = ghost.wishDir.inverse();
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = true;
 			log("%s leaving house", ghost);
 			return;
 		}
+		if (ghost.tile.equals(ghosts[PINKY].homeTile) && ghost.offset.y >= 0) {
+			ghost.wishDir = ghost.homeTile.x < ghosts[PINKY].homeTile.x ? LEFT : RIGHT;
+		}
 		updateGhostSpeed(ghost);
-		updatePosition(ghost);
+		move(ghost, ghost.wishDir);
 		log("%s entering house", ghost);
 	}
 
@@ -607,6 +614,10 @@ public class PacManGame {
 			ghost.forceOnTrack = true;
 			ghost.offset = HCENTER;
 			return;
+		}
+		if (ghost.tile.equals(ghosts[PINKY].homeTile) && Math.abs(ghost.offset.x - 3) <= 1) {
+			ghost.wishDir = UP;
+			ghost.offset = HCENTER;
 		}
 		updateGhostSpeed(ghost);
 		updatePosition(ghost);
