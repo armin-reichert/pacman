@@ -124,14 +124,14 @@ public class PacManGameUI {
 		}
 		//@formatter:off
 		symbols = Map.of(
-			"CHERRIES",   sheet(2, 3),
-			"STRAWBERRY", sheet(3, 3),
-			"PEACH",      sheet(4, 3),
-			"APPLE",      sheet(5, 3),
-			"GRAPES",     sheet(6, 3),
-			"GALAXIAN",   sheet(7, 3),
-			"BELL",       sheet(8, 3),
-			"KEY",        sheet(9, 3)
+			"Cherries",   sheet(2, 3),
+			"Strawberry", sheet(3, 3),
+			"Peach",      sheet(4, 3),
+			"Apple",      sheet(5, 3),
+			"Grapes",     sheet(6, 3),
+			"Galaxian",   sheet(7, 3),
+			"Bell",       sheet(8, 3),
+			"Key",        sheet(9, 3)
 		);
 		numbers = Map.of(
 			100,  sheet(0, 9),
