@@ -26,15 +26,18 @@ public class Creature {
 	public V2 targetTile;
 	public boolean tileChanged;
 	public boolean stuck;
+	public boolean forceOnTrack;
 	public boolean forceTurnBack;
 	public boolean dead;
 	public boolean vulnerable;
 	public boolean visible;
+	public boolean enteringHouse;
+	public boolean leavingHouse;
 	public int bounty;
 	public long bountyTimer;
 
 	@Override
 	public String toString() {
-		return String.format("%s tile=%s offset=%s", name, tile, offset);
+		return String.format("%s tile=%s offset=%s target=%s", name, tile, offset, targetTile);
 	}
 }

@@ -178,6 +178,7 @@ public class PacManGame {
 		pacMan.stuck = false;
 		pacMan.dead = false;
 		pacMan.visible = true;
+		pacMan.forceOnTrack = true;
 
 		for (Creature ghost : ghosts) {
 			ghost.speed = 0;
@@ -187,9 +188,12 @@ public class PacManGame {
 			ghost.tileChanged = true;
 			ghost.stuck = false;
 			ghost.forceTurnBack = false;
+			ghost.forceOnTrack = false;
 			ghost.dead = false;
 			ghost.vulnerable = false;
 			ghost.visible = true;
+			ghost.enteringHouse = false;
+			ghost.leavingHouse = false;
 			ghost.bounty = 0;
 			ghost.bountyTimer = 0;
 		}
@@ -289,6 +293,9 @@ public class PacManGame {
 			ghosts[i].tile = ghosts[0].homeTile;
 			ghosts[i].offset = new V2(HTS, 0);
 			ghosts[i].tileChanged = true;
+		}
+		for (Creature ghost : ghosts) {
+			ghost.forceOnTrack = true;
 		}
 	}
 
@@ -414,25 +421,6 @@ public class PacManGame {
 		messageText = null;
 	}
 
-	private void updateGhosts() {
-		for (Creature ghost : ghosts) {
-			if (ghost.dead) {
-				updateDeadGhost(ghost);
-			} else if (ghost == ghosts[0]) {
-				beShadow(ghost);
-			} else if (ghost == ghosts[1]) {
-				beSpeedy(ghost);
-			} else if (ghost == ghosts[2]) {
-				beBashful(ghost);
-			} else if (ghost == ghosts[3]) {
-				bePokey(ghost);
-			}
-			updateGhostDir(ghost);
-			updateGhostSpeed(ghost);
-			updatePosition(ghost);
-		}
-	}
-
 	private void updatePacMan() {
 		pacMan.speed = levelData().percentValue(2);
 		updatePosition(pacMan);
@@ -486,13 +474,7 @@ public class PacManGame {
 			}
 			// killing ghost?
 			if (ghost.vulnerable) {
-				ghost.dead = true;
-				ghost.vulnerable = false;
-				ghost.targetTile = ghosts[0].homeTile;
-				ghostsKilledUsingEnergizer++;
-				ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
-				ghost.bountyTimer = sec(0.5f);
-				log("Ghost %s killed at location %s, Pac-Man wins %d points", ghost.name, ghost.tile, ghost.bounty);
+				killGhost(ghost);
 			}
 			// getting killed by ghost?
 			if (pacManPowerTimer == 0 && !ghost.dead) {
@@ -513,17 +495,91 @@ public class PacManGame {
 		}
 	}
 
-	private void updateDeadGhost(Creature ghost) {
-		if (ghost.tile.equals(ghosts[0].homeTile) && ghost.offset.x - HTS < 2) {
-			ghost.dead = false;
-		} else {
+	private void killGhost(Creature ghost) {
+		ghost.dead = true;
+		ghost.vulnerable = false;
+		ghost.targetTile = ghosts[0].homeTile;
+		ghostsKilledUsingEnergizer++;
+		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
+		ghost.bountyTimer = sec(0.5f);
+		log("Ghost %s killed at location %s, Pac-Man wins %d points", ghost.name, ghost.tile, ghost.bounty);
+	}
+
+	private void updateGhosts() {
+		for (Creature ghost : ghosts) {
 			if (ghost.bountyTimer > 0) {
 				--ghost.bountyTimer;
+			} else if (ghost.enteringHouse) {
+				letGhostEnterHouse(ghost);
+			} else if (ghost.leavingHouse) {
+				letGhostLeaveHouse(ghost);
+			} else if (ghost.dead) {
+				letGhostReturnHome(ghost);
+			} else if (ghost == ghosts[0]) {
+				computeShadowGhostTarget(ghost);
+				letGhostHeadForTargetTile(ghost);
+			} else if (ghost == ghosts[1]) {
+				computeSpeedyGhostTarget(ghost);
+				letGhostHeadForTargetTile(ghost);
+			} else if (ghost == ghosts[2]) {
+				computeBashfulGhostTarget(ghost);
+				letGhostHeadForTargetTile(ghost);
+			} else if (ghost == ghosts[3]) {
+				computePokeyGhostTarget(ghost);
+				letGhostHeadForTargetTile(ghost);
 			}
 		}
 	}
 
-	private void beShadow(Creature blinky) {
+	private void letGhostHeadForTargetTile(Creature ghost) {
+		updateGhostDir(ghost);
+		updateGhostSpeed(ghost);
+		updatePosition(ghost);
+	}
+
+	private void letGhostReturnHome(Creature ghost) {
+		// house entry reached?
+		if (ghost.tile.equals(ghosts[0].homeTile) && Math.abs(ghost.offset.x - HTS) <= 2) {
+			ghost.offset = new V2(HTS - 1, 0);
+			ghost.targetTile = new V2(13, 17);
+			ghost.wishDir = DOWN;
+			ghost.forceOnTrack = false;
+			ghost.enteringHouse = true;
+			log("%s entering house", ghost);
+			return;
+		}
+		letGhostHeadForTargetTile(ghost);
+	}
+
+	private void letGhostEnterHouse(Creature ghost) {
+		// reached target in house?
+		if (ghost.tile.equals(ghost.targetTile)) {
+			ghost.dead = false;
+			ghost.wishDir = UP;
+			ghost.enteringHouse = false;
+			ghost.leavingHouse = true;
+			log("%s leaving house", ghost);
+			return;
+		}
+		updateGhostSpeed(ghost);
+		updatePosition(ghost);
+		log("%s entering house", ghost);
+	}
+
+	private void letGhostLeaveHouse(Creature ghost) {
+		// has left house?
+		if (ghost.stuck) {
+			ghost.leavingHouse = false;
+			ghost.wishDir = LEFT;
+			ghost.forceOnTrack = true;
+			ghost.offset = new V2(HTS, 0);
+			return;
+		}
+		updateGhostSpeed(ghost);
+		updatePosition(ghost);
+	}
+
+	private void computeShadowGhostTarget(Creature blinky) {
 		if (state == GameState.SCATTERING) {
 			blinky.targetTile = BLINKY_CORNER;
 		} else if (state == GameState.CHASING) {
@@ -531,7 +587,7 @@ public class PacManGame {
 		}
 	}
 
-	private void beSpeedy(Creature pinky) {
+	private void computeSpeedyGhostTarget(Creature pinky) {
 		if (state == GameState.SCATTERING) {
 			pinky.targetTile = PINKY_CORNER;
 		} else if (state == GameState.CHASING) {
@@ -544,7 +600,7 @@ public class PacManGame {
 		}
 	}
 
-	private void beBashful(Creature inky) {
+	private void computeBashfulGhostTarget(Creature inky) {
 		if (state == GameState.SCATTERING) {
 			inky.targetTile = INKY_CORNER;
 		} else if (state == GameState.CHASING) {
@@ -553,7 +609,7 @@ public class PacManGame {
 		}
 	}
 
-	private void bePokey(Creature clyde) {
+	private void computePokeyGhostTarget(Creature clyde) {
 		if (state == GameState.SCATTERING) {
 			clyde.targetTile = CLYDE_CORNER;
 		} else if (state == GameState.CHASING) {
@@ -673,15 +729,14 @@ public class PacManGame {
 		}
 
 		// turns
-		if (!world.isInsideGhostHouse(guy.tile) && canAccessTile(guy, guy.tile.sum(dir.vector))) {
+		if (guy.forceOnTrack && canAccessTile(guy, guy.tile.sum(dir.vector))) {
 			if (dir.equals(LEFT) || dir.equals(RIGHT)) {
 				if (Math.abs(guy.offset.y) > 1) {
 					guy.stuck = true;
 					return;
 				}
 				guy.offset = new V2(guy.offset.x, 0);
-			}
-			if (dir.equals(UP) || dir.equals(DOWN)) {
+			} else if (dir.equals(UP) || dir.equals(DOWN)) {
 				if (Math.abs(guy.offset.x) > 1) {
 					guy.stuck = true;
 					return;
@@ -742,7 +797,7 @@ public class PacManGame {
 			return false;
 		}
 		if (world.isGhostHouseDoor(tile)) {
-			return false; // TODO ghost can access door when leaving or entering ghosthouse
+			return guy.enteringHouse || guy.leavingHouse;
 		}
 		return world.map(x, y) != '1';
 	}
