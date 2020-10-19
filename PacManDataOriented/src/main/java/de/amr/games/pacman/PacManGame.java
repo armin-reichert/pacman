@@ -46,7 +46,7 @@ public class PacManGame {
 	private static final int TOTAL_FOOD_COUNT = 244;
 	private static final V2 HCENTER = new V2(HTS, 0);
 
-	public static final int FPS = 30;
+	public static final int FPS = 60;
 
 	public static void log(String msg, Object... args) {
 		System.err.println(String.format("%-20s: %s", LocalTime.now(), String.format(msg, args)));
