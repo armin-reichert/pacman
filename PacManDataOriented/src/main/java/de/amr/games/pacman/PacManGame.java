@@ -553,7 +553,7 @@ public class PacManGame {
 
 	private void letGhostEnterHouse(Creature ghost) {
 		// reached target in house?
-		if (ghost.tile.equals(ghost.targetTile)) {
+		if (ghost.tile.equals(ghost.targetTile) && ghost.offset.y > 0) {
 			ghost.dead = false;
 			ghost.wishDir = UP;
 			ghost.enteringHouse = false;
@@ -620,11 +620,13 @@ public class PacManGame {
 	private void updateGhostSpeed(Creature ghost) {
 		if (ghost.bountyTimer > 0) {
 			ghost.speed = 0;
+		} else if (ghost.enteringHouse || ghost.leavingHouse) {
+			ghost.speed = levelData().percentValue(4);
 		} else if (ghost.dead) {
 			ghost.speed = 2 * levelData().percentValue(4);
 		} else if (world.isInsideTunnel(ghost.tile)) {
 			ghost.speed = levelData().percentValue(5);
-		} else if (pacManPowerTimer > 0) {
+		} else if (ghost.vulnerable) {
 			ghost.speed = levelData().percentValue(12);
 		} else {
 			ghost.speed = levelData().percentValue(4);
