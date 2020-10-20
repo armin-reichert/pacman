@@ -445,9 +445,8 @@ public class PacManGame {
 			// energizer found?
 			if (world.isEnergizerTile(pacMan.tile)) {
 				points += 40;
-				int powerSeconds = levelData().ghostFrightenedSeconds();
-				pacManPowerTimer = sec(powerSeconds);
-				log("Pac-Man got power for %d seconds", powerSeconds);
+				pacManPowerTimer = sec(levelData().ghostFrightenedSeconds());
+				log("Pac-Man got power for %d seconds", levelData().ghostFrightenedSeconds());
 				for (Creature ghost : ghosts) {
 					ghost.frightened = !ghost.dead;
 				}
@@ -463,10 +462,8 @@ public class PacManGame {
 		if (bonusAvailableTimer > 0 && world.isBonusTile(x, y)) {
 			bonusAvailableTimer = 0;
 			bonusConsumedTimer = sec(3);
-			String bonusSymbol = levelData().bonusSymbol();
-			int bonusPoints = levelData().bonusPoints();
-			points += bonusPoints;
-			log("Pac-Man found bonus %s of value %d", bonusSymbol, bonusPoints);
+			points += levelData().bonusPoints();
+			log("Pac-Man found bonus %s of value %d", levelData().bonusSymbol(), levelData().bonusPoints());
 		}
 		// meeting ghost?
 		for (Creature ghost : ghosts) {
@@ -698,7 +695,7 @@ public class PacManGame {
 
 	private void bounce(Creature ghost) {
 		if (ghost.stuck) {
-			ghost.wishDir = ghost.wishDir.inverse();
+			ghost.dir = ghost.wishDir = ghost.wishDir.inverse();
 		}
 		ghost.speed = levelData().ghostSpeed();
 		move(ghost, ghost.wishDir);
