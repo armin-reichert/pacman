@@ -26,10 +26,10 @@ public class Creature {
 	public V2 targetTile;
 	public boolean tileChanged;
 	public boolean stuck;
-	public boolean forceOnTrack;
-	public boolean forceTurnBack;
+	public boolean forcedOnTrack;
+	public boolean forcedTurningBack;
 	public boolean dead;
-	public boolean vulnerable;
+	public boolean edible;
 	public boolean visible;
 	public boolean enteringHouse;
 	public boolean leavingHouse;

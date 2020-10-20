@@ -111,7 +111,7 @@ public class PacManGame {
 		//@formatter:on
 	};
 
-	private static int attackingTimesRow(int level) {
+	private static int waveTimes(int level) {
 		return level == 1 ? 0 : level <= 4 ? 1 : 2;
 	}
 
@@ -181,7 +181,7 @@ public class PacManGame {
 		pacMan.stuck = false;
 		pacMan.dead = false;
 		pacMan.visible = true;
-		pacMan.forceOnTrack = true;
+		pacMan.forcedOnTrack = true;
 
 		for (Creature ghost : ghosts) {
 			ghost.speed = 0;
@@ -190,10 +190,10 @@ public class PacManGame {
 			ghost.targetTile = null;
 			ghost.tileChanged = true;
 			ghost.stuck = false;
-			ghost.forceTurnBack = false;
-			ghost.forceOnTrack = false;
+			ghost.forcedTurningBack = false;
+			ghost.forcedOnTrack = false;
 			ghost.dead = false;
-			ghost.vulnerable = false;
+			ghost.edible = false;
 			ghost.visible = true;
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = false;
@@ -252,6 +252,7 @@ public class PacManGame {
 		} else if (ui.keyPressed(KeyEvent.VK_E)) {
 			eatAllFood();
 		} else if (ui.keyPressed(KeyEvent.VK_X)) {
+			ghostsKilledUsingEnergizer = 0;
 			for (Creature ghost : ghosts) {
 				killGhost(ghost);
 			}
@@ -298,15 +299,10 @@ public class PacManGame {
 	private void exitReadyState() {
 		messageText = null;
 		for (Creature ghost : ghosts) {
-			if (ghost != ghosts[0]) {
-				ghost.leavingHouse = true;
-				// TODO
-				ghost.tile = ghosts[1].homeTile;
-				ghost.offset = new V2(HTS, 0);
-				ghost.wishDir = UP;
-			}
+			ghost.leavingHouse = true;
 		}
-		ghosts[0].forceOnTrack = true;
+		ghosts[0].leavingHouse = false;
+		ghosts[0].forcedOnTrack = true;
 	}
 
 	private void runScatteringState() {
@@ -332,8 +328,8 @@ public class PacManGame {
 
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
-		scatteringStateTimer = SCATTERING_TIMES[attackingTimesRow(level)][attackWave];
-		forceGhostsTurnBack();
+		scatteringStateTimer = SCATTERING_TIMES[waveTimes(level)][attackWave];
+		forceGhostsTurningBack();
 	}
 
 	private void runChasingState() {
@@ -360,8 +356,8 @@ public class PacManGame {
 
 	private void enterChasingState() {
 		state = GameState.CHASING;
-		chasingStateTimer = CHASING_TIMES[attackingTimesRow(level)][attackWave];
-		forceGhostsTurnBack();
+		chasingStateTimer = CHASING_TIMES[waveTimes(level)][attackWave];
+		forceGhostsTurningBack();
 	}
 
 	private void runPacManDyingState() {
@@ -433,14 +429,14 @@ public class PacManGame {
 
 	private void updatePacMan() {
 		pacMan.speed = levelData().percentValue(2);
-		updatePosition(pacMan);
+		move(pacMan);
 
 		// Pac-man power expiring?
 		if (pacManPowerTimer > 0) {
 			pacManPowerTimer--;
 			if (pacManPowerTimer == 0) {
 				for (Creature ghost : ghosts) {
-					ghost.vulnerable = false;
+					ghost.edible = false;
 				}
 			}
 		}
@@ -458,10 +454,10 @@ public class PacManGame {
 				pacManPowerTimer = sec(powerSeconds);
 				log("Pac-Man got power for %d seconds", powerSeconds);
 				for (Creature ghost : ghosts) {
-					ghost.vulnerable = !ghost.dead;
+					ghost.edible = !ghost.dead;
 				}
 				ghostsKilledUsingEnergizer = 0;
-				forceGhostsTurnBack();
+				forceGhostsTurningBack();
 			}
 			// bonus reached?
 			if (bonusAvailableTimer == 0 && (foodRemaining == 70 || foodRemaining == 170)) {
@@ -483,7 +479,7 @@ public class PacManGame {
 				continue;
 			}
 			// killing ghost?
-			if (ghost.vulnerable) {
+			if (ghost.edible) {
 				killGhost(ghost);
 			}
 			// getting killed by ghost?
@@ -507,7 +503,7 @@ public class PacManGame {
 
 	private void killGhost(Creature ghost) {
 		ghost.dead = true;
-		ghost.vulnerable = false;
+		ghost.edible = false;
 		ghost.targetTile = ghosts[0].homeTile;
 		ghostsKilledUsingEnergizer++;
 		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
@@ -518,6 +514,7 @@ public class PacManGame {
 	private void updateGhosts() {
 		for (int i = 0; i < 4; ++i) {
 			Creature ghost = ghosts[i];
+			log("%s", ghost);
 			if (ghost.bountyTimer > 0) {
 				--ghost.bountyTimer;
 			} else if (ghost.enteringHouse) {
@@ -560,6 +557,7 @@ public class PacManGame {
 					} else if (state == GameState.CHASING) {
 						ghost.targetTile = distance(ghost.tile, pacMan.tile) > 8 ? pacMan.tile : CLYDE_CORNER;
 					}
+					break;
 				default:
 					break;
 				}
@@ -571,7 +569,7 @@ public class PacManGame {
 	private void letGhostHeadForTargetTile(Creature ghost) {
 		updateGhostDir(ghost);
 		updateGhostSpeed(ghost);
-		updatePosition(ghost);
+		move(ghost);
 	}
 
 	private void letGhostReturnHome(Creature ghost) {
@@ -580,7 +578,7 @@ public class PacManGame {
 			ghost.offset = new V2(HTS - 1, 0);
 			ghost.targetTile = ghost == ghosts[BLINKY] ? ghosts[PINKY].homeTile : ghost.homeTile;
 			ghost.wishDir = DOWN;
-			ghost.forceOnTrack = false;
+			ghost.forcedOnTrack = false;
 			ghost.enteringHouse = true;
 			log("%s entering house", ghost);
 			return;
@@ -608,31 +606,47 @@ public class PacManGame {
 
 	private void letGhostLeaveHouse(Creature ghost) {
 		// has left house?
-		if (ghost.stuck) {
+		if (ghost.tile.equals(ghosts[BLINKY].homeTile) && Math.abs(ghost.offset.y) <= 1) {
 			ghost.leavingHouse = false;
 			ghost.wishDir = LEFT;
-			ghost.forceOnTrack = true;
+			ghost.forcedOnTrack = true;
 			ghost.offset = HCENTER;
 			return;
 		}
+		// has reached middle of house?
 		if (ghost.tile.equals(ghosts[PINKY].homeTile) && Math.abs(ghost.offset.x - 3) <= 1) {
 			ghost.wishDir = UP;
 			ghost.offset = HCENTER;
+			updateGhostSpeed(ghost);
+			move(ghost);
+			return;
+		}
+		// keep bouncing until ghost can move towards middle of house
+		if (ghost.wishDir.equals(UP) || ghost.wishDir.equals(DOWN)) {
+			if (ghost.tile.equals(ghost.homeTile)) {
+				ghost.offset = HCENTER;
+				ghost.wishDir = ghost.homeTile.x < ghosts[PINKY].homeTile.x ? RIGHT : LEFT;
+				return;
+			}
+			bounce(ghost);
+			return;
 		}
 		updateGhostSpeed(ghost);
-		updatePosition(ghost);
+		move(ghost);
 	}
 
 	private void updateGhostSpeed(Creature ghost) {
 		if (ghost.bountyTimer > 0) {
 			ghost.speed = 0;
-		} else if (ghost.enteringHouse || ghost.leavingHouse) {
+		} else if (ghost.enteringHouse) {
 			ghost.speed = levelData().percentValue(4);
+		} else if (ghost.leavingHouse) {
+			ghost.speed = 0.5f * levelData().percentValue(4);
 		} else if (ghost.dead) {
-			ghost.speed = 2 * levelData().percentValue(4);
+			ghost.speed = 1 * levelData().percentValue(4);
 		} else if (world.isInsideTunnel(ghost.tile)) {
 			ghost.speed = levelData().percentValue(5);
-		} else if (ghost.vulnerable) {
+		} else if (ghost.edible) {
 			ghost.speed = levelData().percentValue(12);
 		} else {
 			ghost.speed = levelData().percentValue(4);
@@ -654,15 +668,15 @@ public class PacManGame {
 		if (ghost.targetTile == null) {
 			return;
 		}
-		if (!ghost.tileChanged) {
+		if (!ghost.stuck && !ghost.tileChanged) {
 			return;
 		}
 		if (world.isPortalTile(ghost.tile)) {
 			return;
 		}
-		if (ghost.forceTurnBack) {
+		if (ghost.forcedTurningBack) {
 			ghost.wishDir = ghost.wishDir.inverse();
-			ghost.forceTurnBack = false;
+			ghost.forcedTurningBack = false;
 			return;
 		}
 		if (pacManPowerTimer > 0 && world.isIntersectionTile(ghost.tile)) {
@@ -694,9 +708,12 @@ public class PacManGame {
 		}
 	}
 
-	private void forceGhostsTurnBack() {
+	private void forceGhostsTurningBack() {
 		for (Creature ghost : ghosts) {
-			ghost.forceTurnBack = true;
+			if (ghost.dead) {
+				continue;
+			}
+			ghost.forcedTurningBack = true;
 		}
 	}
 
@@ -705,10 +722,10 @@ public class PacManGame {
 			ghost.wishDir = ghost.wishDir.inverse();
 		}
 		ghost.speed = levelData().percentValue(4);
-		updatePosition(ghost);
+		move(ghost, ghost.wishDir);
 	}
 
-	private void updatePosition(Creature guy) {
+	private void move(Creature guy) {
 		if (guy.speed == 0) {
 			return;
 		}
@@ -737,7 +754,7 @@ public class PacManGame {
 		}
 
 		// turns
-		if (guy.forceOnTrack && canAccessTile(guy, guy.tile.sum(dir.vector))) {
+		if (guy.forcedOnTrack && canAccessTile(guy, guy.tile.sum(dir.vector))) {
 			if (dir.equals(LEFT) || dir.equals(RIGHT)) {
 				if (Math.abs(guy.offset.y) > 1) {
 					guy.stuck = true;

@@ -69,11 +69,11 @@ public class World {
 	}
 
 	public V2 tile(V2 position) {
-		return new V2((int) (position.x + HTS) / TS, (int) (position.y + HTS) / TS);
+		return new V2(position.x_int() / TS, position.y_int() / TS);
 	}
 
 	public V2 offset(V2 position, V2 tile) {
-		return new V2(position.x - tile.x * TS, position.y - tile.y * TS);
+		return new V2(position.x - tile.x_int() * TS, position.y - tile.y_int() * TS);
 	}
 
 	public V2 position(Creature guy) {

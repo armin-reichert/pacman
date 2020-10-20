@@ -321,7 +321,7 @@ public class PacManGameUI {
 		if (ghost.dead) {
 			// number (bounty) or eyes looking into move direction
 			sprite = ghost.bountyTimer > 0 ? bountyNumbers.get(ghost.bounty) : sheet(8 + directionFrame(ghost.dir), 5);
-		} else if (ghost.vulnerable) {
+		} else if (ghost.edible) {
 			int walkingFrame = game.framesTotal % 60 < 30 ? 0 : 1;
 			if (game.pacManPowerTimer < sec(2)) {
 				// flashing blue/white, walking
