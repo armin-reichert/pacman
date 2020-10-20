@@ -137,11 +137,11 @@ public class PacManGame {
 	public long bonusConsumedTimer;
 
 	public PacManGame() {
-		pacMan = new Creature("Pac-Man", Color.YELLOW, new V2(13, 26));
-		ghosts[BLINKY] = new Creature("Blinky", Color.RED, new V2(13, 14));
-		ghosts[PINKY] = new Creature("Pinky", Color.PINK, new V2(13, 17));
-		ghosts[INKY] = new Creature("Inky", Color.CYAN, new V2(11, 17));
-		ghosts[CLYDE] = new Creature("Clyde", Color.ORANGE, new V2(15, 17));
+		pacMan = new Creature("Pac-Man", Color.YELLOW, new V2(13, 26), null);
+		ghosts[BLINKY] = new Creature("Blinky", Color.RED, new V2(13, 14), BLINKY_CORNER);
+		ghosts[PINKY] = new Creature("Pinky", Color.PINK, new V2(13, 17), PINKY_CORNER);
+		ghosts[INKY] = new Creature("Inky", Color.CYAN, new V2(11, 17), INKY_CORNER);
+		ghosts[CLYDE] = new Creature("Clyde", Color.ORANGE, new V2(15, 17), CLYDE_CORNER);
 	}
 
 	private void initGame() {
@@ -518,46 +518,30 @@ public class PacManGame {
 				letGhostLeaveHouse(ghost);
 			} else if (ghost.dead) {
 				letGhostReturnHome(ghost);
-			} else {
-				switch (i) {
-				case BLINKY:
-					if (state == GameState.SCATTERING) {
-						ghost.targetTile = BLINKY_CORNER;
-					} else if (state == GameState.CHASING) {
-						ghost.targetTile = pacMan.tile;
-					}
-					break;
-				case PINKY:
-					if (state == GameState.SCATTERING) {
-						ghost.targetTile = PINKY_CORNER;
-					} else if (state == GameState.CHASING) {
-						if (pacMan.dir.equals(UP)) {
-							// simulate offset bug
-							ghost.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(4)).sum(LEFT.vector.scaled(4));
-						} else {
-							ghost.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(4));
-						}
-					}
-					break;
-				case INKY:
-					if (state == GameState.SCATTERING) {
-						ghost.targetTile = INKY_CORNER;
-					} else if (state == GameState.CHASING) {
-						ghost.targetTile = pacMan.tile.sum(pacMan.dir.vector.scaled(2)).scaled(2).sum(ghosts[0].tile.scaled(-1));
-					}
-					break;
-				case CLYDE:
-					if (state == GameState.SCATTERING) {
-						ghost.targetTile = CLYDE_CORNER;
-					} else if (state == GameState.CHASING) {
-						ghost.targetTile = distance(ghost.tile, pacMan.tile) > 8 ? pacMan.tile : CLYDE_CORNER;
-					}
-					break;
-				default:
-					break;
-				}
+			} else if (state == GameState.SCATTERING) {
+				ghost.targetTile = ghost.scatterTile;
+				letGhostHeadForTargetTile(ghost);
+			} else if (state == GameState.CHASING) {
+				ghost.targetTile = computeChasingTarget(i);
 				letGhostHeadForTargetTile(ghost);
 			}
+		}
+	}
+
+	private V2 computeChasingTarget(int ghostIndex) {
+		switch (ghostIndex) {
+		case BLINKY:
+			return pacMan.tile;
+		case PINKY:
+			// simulate offset bug when Pac-Man is looking UP
+			return pacMan.dir.equals(UP) ? pacMan.tile.sum(pacMan.dir.vector.scaled(4)).sum(LEFT.vector.scaled(4))
+					: pacMan.tile.sum(pacMan.dir.vector.scaled(4));
+		case INKY:
+			return pacMan.tile.sum(pacMan.dir.vector.scaled(2)).scaled(2).sum(ghosts[BLINKY].tile.scaled(-1));
+		case CLYDE:
+			return distance(ghosts[CLYDE].tile, pacMan.tile) > 8 ? pacMan.tile : ghosts[CLYDE].scatterTile;
+		default:
+			throw new IllegalArgumentException("Unknown ghost index: " + ghostIndex);
 		}
 	}
 

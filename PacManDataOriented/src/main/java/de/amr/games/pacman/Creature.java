@@ -6,10 +6,11 @@ import java.awt.Color;
 
 public class Creature {
 
-	public Creature(String name, Color color, V2 homeTile) {
+	public Creature(String name, Color color, V2 homeTile, V2 scatterTile) {
 		this.name = name;
 		this.color = color;
 		this.homeTile = homeTile;
+		this.scatterTile = scatterTile;
 		this.size = new V2(TS, TS);
 	}
 
@@ -17,6 +18,7 @@ public class Creature {
 	public final Color color;
 	public final V2 size;
 	public final V2 homeTile;
+	public final V2 scatterTile;
 
 	public float speed;
 	public Direction dir;
