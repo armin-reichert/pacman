@@ -222,8 +222,8 @@ public class PacManGameUI {
 	private void drawLevelCounter(Graphics2D g) {
 		int x = WORLD_WIDTH - 4 * TS;
 		int first = Math.max(1, game.level - 6);
-		for (int i = first; i <= game.level; ++i) {
-			BufferedImage symbol = symbols.get(levelData(i).stringValue(0));
+		for (int level = first; level <= game.level; ++level) {
+			BufferedImage symbol = symbols.get(levelData(level).bonusSymbol());
 			g.drawImage(symbol, x, WORLD_HEIGHT - 2 * TS, null);
 			x -= 2 * TS;
 		}
@@ -267,12 +267,12 @@ public class PacManGameUI {
 			}
 		}
 		if (game.bonusAvailableTimer > 0) {
-			String symbolName = game.levelData().stringValue(0);
+			String symbolName = game.levelData().bonusSymbol();
 			g.drawImage(symbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
 		}
 		if (game.bonusConsumedTimer > 0) {
-			int value = game.levelData().intValue(1);
-			g.drawImage(numbers.get(value), 13 * TS, 20 * TS - HTS, null);
+			int bonusPoints = game.levelData().bonusPoints();
+			g.drawImage(numbers.get(bonusPoints), 13 * TS, 20 * TS - HTS, null);
 		}
 		if (game.messageText != null) {
 			g.setFont(scoreFont);
@@ -321,7 +321,7 @@ public class PacManGameUI {
 		if (ghost.dead) {
 			// number (bounty) or eyes looking into move direction
 			sprite = ghost.bountyTimer > 0 ? bountyNumbers.get(ghost.bounty) : sheet(8 + directionFrame(ghost.dir), 5);
-		} else if (ghost.edible) {
+		} else if (ghost.frightened) {
 			int walkingFrame = game.framesTotal % 60 < 30 ? 0 : 1;
 			if (game.pacManPowerTimer < sec(2)) {
 				// flashing blue/white, walking

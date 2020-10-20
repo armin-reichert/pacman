@@ -29,7 +29,7 @@ public class Creature {
 	public boolean forcedOnTrack;
 	public boolean forcedTurningBack;
 	public boolean dead;
-	public boolean edible;
+	public boolean frightened;
 	public boolean visible;
 	public boolean enteringHouse;
 	public boolean leavingHouse;
@@ -38,6 +38,6 @@ public class Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%s tile=%s offset=%s target=%s", name, tile, offset, targetTile);
+		return String.format("%8s tile=%s offset=%s target=%s", name, tile, offset, targetTile);
 	}
 }

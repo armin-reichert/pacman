@@ -44,7 +44,7 @@ public class PacManGame {
 	private static final int CLYDE = 3;
 
 	private static final int TOTAL_FOOD_COUNT = 244;
-	private static final V2 HCENTER = new V2(HTS, 0);
+	private static final V2 BETWEEN_TILES = new V2(HTS, 0);
 
 	public static final int FPS = 60;
 
@@ -56,35 +56,30 @@ public class PacManGame {
 		return (int) (seconds * FPS);
 	}
 
-	/**
-	 * The level-specific data.
-	 * 
-	 * <img src="../../../../../resources/levels.png">
-	 */
 	private static final List<LevelData> LEVEL_DATA = List.of(
 	/*@formatter:off*/
-		LevelData.of("Cherries",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
-		LevelData.of("Strawberry", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
-		LevelData.of("Peach",      500,  90,  79,  85, 45,  40,  90, 20,  95,  95, 83, 55, 4, 5),
-		LevelData.of("Peach",      500,  90,  79,  85, 50,  40, 100, 20,  95,  95, 83, 55, 3, 5),
-		LevelData.of("Apple",      700, 100,  87,  95, 50,  40, 100, 20, 105, 100, 87, 60, 2, 5),
-		LevelData.of("Apple",      700, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 5, 5),
-		LevelData.of("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
-		LevelData.of("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
-		LevelData.of("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 1, 3),
-		LevelData.of("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 5, 5),
-		LevelData.of("Bell",      3000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 2, 5),
-		LevelData.of("Bell",      3000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
-		LevelData.of("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
-		LevelData.of("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 3, 5),
-		LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 1, 3),
-		LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,  0,  0, 1, 3),
-		LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 0, 0),
-		LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,   0, 0, 1, 0),
-		LevelData.of("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
-		LevelData.of("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
-		LevelData.of("Key",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0)
-		//@formatter:on
+	LevelData.of("Cherries",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
+	LevelData.of("Strawberry", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
+	LevelData.of("Peach",      500,  90,  79,  85, 45,  40,  90, 20,  95,  95, 83, 55, 4, 5),
+	LevelData.of("Peach",      500,  90,  79,  85, 50,  40, 100, 20,  95,  95, 83, 55, 3, 5),
+	LevelData.of("Apple",      700, 100,  87,  95, 50,  40, 100, 20, 105, 100, 87, 60, 2, 5),
+	LevelData.of("Apple",      700, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 5, 5),
+	LevelData.of("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
+	LevelData.of("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
+	LevelData.of("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 1, 3),
+	LevelData.of("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 5, 5),
+	LevelData.of("Bell",      3000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 2, 5),
+	LevelData.of("Bell",      3000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
+	LevelData.of("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
+	LevelData.of("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 3, 5),
+	LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 1, 3),
+	LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,  0,  0, 1, 3),
+	LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 0, 0),
+	LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,   0, 0, 1, 0),
+	LevelData.of("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
+	LevelData.of("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
+	LevelData.of("Key",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0)
+	//@formatter:on
 	);
 
 	public static LevelData levelData(int level) {
@@ -177,7 +172,7 @@ public class PacManGame {
 		pacMan.speed = 0;
 		pacMan.dir = pacMan.wishDir = RIGHT;
 		pacMan.tile = pacMan.homeTile;
-		pacMan.offset = HCENTER;
+		pacMan.offset = BETWEEN_TILES;
 		pacMan.stuck = false;
 		pacMan.dead = false;
 		pacMan.visible = true;
@@ -186,14 +181,14 @@ public class PacManGame {
 		for (Creature ghost : ghosts) {
 			ghost.speed = 0;
 			ghost.tile = ghost.homeTile;
-			ghost.offset = HCENTER;
+			ghost.offset = BETWEEN_TILES;
 			ghost.targetTile = null;
 			ghost.tileChanged = true;
 			ghost.stuck = false;
 			ghost.forcedTurningBack = false;
 			ghost.forcedOnTrack = false;
 			ghost.dead = false;
-			ghost.edible = false;
+			ghost.frightened = false;
 			ghost.visible = true;
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = false;
@@ -403,7 +398,7 @@ public class PacManGame {
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
 		levelChangeStateTimer = sec(7);
-		mazeFlashes = levelData().intValue(14);
+		mazeFlashes = levelData().numFlashes();
 		log("Maze flashes: %d", mazeFlashes);
 		for (Creature ghost : ghosts) {
 			ghost.visible = false;
@@ -428,7 +423,7 @@ public class PacManGame {
 	}
 
 	private void updatePacMan() {
-		pacMan.speed = levelData().percentValue(2);
+		pacMan.speed = levelData().pacManSpeed();
 		move(pacMan);
 
 		// Pac-man power expiring?
@@ -436,7 +431,7 @@ public class PacManGame {
 			pacManPowerTimer--;
 			if (pacManPowerTimer == 0) {
 				for (Creature ghost : ghosts) {
-					ghost.edible = false;
+					ghost.frightened = false;
 				}
 			}
 		}
@@ -450,11 +445,11 @@ public class PacManGame {
 			// energizer found?
 			if (world.isEnergizerTile(pacMan.tile)) {
 				points += 40;
-				int powerSeconds = levelData().intValue(13);
+				int powerSeconds = levelData().ghostFrightenedSeconds();
 				pacManPowerTimer = sec(powerSeconds);
 				log("Pac-Man got power for %d seconds", powerSeconds);
 				for (Creature ghost : ghosts) {
-					ghost.edible = !ghost.dead;
+					ghost.frightened = !ghost.dead;
 				}
 				ghostsKilledUsingEnergizer = 0;
 				forceGhostsTurningBack();
@@ -468,10 +463,10 @@ public class PacManGame {
 		if (bonusAvailableTimer > 0 && world.isBonusTile(x, y)) {
 			bonusAvailableTimer = 0;
 			bonusConsumedTimer = sec(3);
-			String bonusName = levelData().stringValue(0);
-			int bonusValue = levelData().intValue(1);
-			points += bonusValue;
-			log("Pac-Man found bonus %s of value %d", bonusName, bonusValue);
+			String bonusSymbol = levelData().bonusSymbol();
+			int bonusPoints = levelData().bonusPoints();
+			points += bonusPoints;
+			log("Pac-Man found bonus %s of value %d", bonusSymbol, bonusPoints);
 		}
 		// meeting ghost?
 		for (Creature ghost : ghosts) {
@@ -479,7 +474,7 @@ public class PacManGame {
 				continue;
 			}
 			// killing ghost?
-			if (ghost.edible) {
+			if (ghost.frightened) {
 				killGhost(ghost);
 			}
 			// getting killed by ghost?
@@ -503,7 +498,7 @@ public class PacManGame {
 
 	private void killGhost(Creature ghost) {
 		ghost.dead = true;
-		ghost.edible = false;
+		ghost.frightened = false;
 		ghost.targetTile = ghosts[0].homeTile;
 		ghostsKilledUsingEnergizer++;
 		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
@@ -610,13 +605,13 @@ public class PacManGame {
 			ghost.leavingHouse = false;
 			ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
-			ghost.offset = HCENTER;
+			ghost.offset = BETWEEN_TILES;
 			return;
 		}
 		// has reached middle of house?
 		if (ghost.tile.equals(ghosts[PINKY].homeTile) && Math.abs(ghost.offset.x - 3) <= 1) {
 			ghost.wishDir = UP;
-			ghost.offset = HCENTER;
+			ghost.offset = BETWEEN_TILES;
 			updateGhostSpeed(ghost);
 			move(ghost);
 			return;
@@ -624,7 +619,7 @@ public class PacManGame {
 		// keep bouncing until ghost can move towards middle of house
 		if (ghost.wishDir.equals(UP) || ghost.wishDir.equals(DOWN)) {
 			if (ghost.tile.equals(ghost.homeTile)) {
-				ghost.offset = HCENTER;
+				ghost.offset = BETWEEN_TILES;
 				ghost.wishDir = ghost.homeTile.x < ghosts[PINKY].homeTile.x ? RIGHT : LEFT;
 				return;
 			}
@@ -639,17 +634,17 @@ public class PacManGame {
 		if (ghost.bountyTimer > 0) {
 			ghost.speed = 0;
 		} else if (ghost.enteringHouse) {
-			ghost.speed = levelData().percentValue(4);
+			ghost.speed = levelData().ghostSpeed();
 		} else if (ghost.leavingHouse) {
-			ghost.speed = 0.5f * levelData().percentValue(4);
+			ghost.speed = 0.5f * levelData().ghostSpeed();
 		} else if (ghost.dead) {
-			ghost.speed = 1 * levelData().percentValue(4);
+			ghost.speed = 1f * levelData().ghostSpeed();
 		} else if (world.isInsideTunnel(ghost.tile)) {
-			ghost.speed = levelData().percentValue(5);
-		} else if (ghost.edible) {
-			ghost.speed = levelData().percentValue(12);
+			ghost.speed = levelData().ghostTunnelSpeed();
+		} else if (ghost.frightened) {
+			ghost.speed = levelData().frightenedGhostSpeed();
 		} else {
-			ghost.speed = levelData().percentValue(4);
+			ghost.speed = levelData().ghostSpeed();
 			if (ghost == ghosts[0]) {
 				checkElroySpeed(ghost);
 			}
@@ -657,10 +652,10 @@ public class PacManGame {
 	}
 
 	private void checkElroySpeed(Creature blinky) {
-		if (foodRemaining <= levelData().intValue(8)) {
-			blinky.speed = levelData().percentValue(9);
-		} else if (foodRemaining <= levelData().intValue(6)) {
-			blinky.speed = levelData().percentValue(7);
+		if (foodRemaining <= levelData().elroy2DotsLeft()) {
+			blinky.speed = levelData().elroy2Speed();
+		} else if (foodRemaining <= levelData().elroy1DotsLeft()) {
+			blinky.speed = levelData().elroy1Speed();
 		}
 	}
 
@@ -721,7 +716,7 @@ public class PacManGame {
 		if (ghost.stuck) {
 			ghost.wishDir = ghost.wishDir.inverse();
 		}
-		ghost.speed = levelData().percentValue(4);
+		ghost.speed = levelData().ghostSpeed();
 		move(ghost, ghost.wishDir);
 	}
 
