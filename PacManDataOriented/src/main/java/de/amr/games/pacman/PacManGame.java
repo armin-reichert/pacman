@@ -554,9 +554,9 @@ public class PacManGame {
 	private void letGhostReturnHome(Creature ghost) {
 		// house entry reached?
 		if (ghost.tile.equals(ghosts[BLINKY].homeTile) && Math.abs(ghost.offset.x - HTS) <= 2) {
-			ghost.offset = new V2(HTS - 1, 0);
+			ghost.offset = new V2(HTS, 0);
 			ghost.targetTile = ghost == ghosts[BLINKY] ? ghosts[PINKY].homeTile : ghost.homeTile;
-			ghost.wishDir = DOWN;
+			ghost.dir = ghost.wishDir = DOWN;
 			ghost.forcedOnTrack = false;
 			ghost.enteringHouse = true;
 			log("%s entering house", ghost);
@@ -569,14 +569,14 @@ public class PacManGame {
 		// reached target in house?
 		if (ghost.tile.equals(ghost.targetTile) && ghost.offset.y >= 0 && Math.abs(ghost.offset.x - HTS) <= 2) {
 			ghost.dead = false;
-			ghost.wishDir = ghost.wishDir.inverse();
+			ghost.dir = ghost.wishDir = ghost.wishDir.inverse();
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = true;
 			log("%s leaving house", ghost);
 			return;
 		}
 		if (ghost.tile.equals(ghosts[PINKY].homeTile) && ghost.offset.y >= 0) {
-			ghost.wishDir = ghost.homeTile.x < ghosts[PINKY].homeTile.x ? LEFT : RIGHT;
+			ghost.dir = ghost.wishDir = ghost.homeTile.x < ghosts[PINKY].homeTile.x ? LEFT : RIGHT;
 		}
 		updateGhostSpeed(ghost);
 		move(ghost, ghost.wishDir);
