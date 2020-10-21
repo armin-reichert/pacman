@@ -10,6 +10,8 @@ import static de.amr.games.pacman.World.CLYDE_CORNER;
 import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.INKY_CORNER;
 import static de.amr.games.pacman.World.PINKY_CORNER;
+import static de.amr.games.pacman.World.PORTAL_LEFT_ENTRY;
+import static de.amr.games.pacman.World.PORTAL_RIGHT_ENTRY;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 
@@ -706,16 +708,14 @@ public class PacManGame {
 		}
 
 		// portal
-		if (guy.tile.equals(World.PORTAL_RIGHT_ENTRY) && guy.dir.equals(RIGHT)) {
-			guy.tile = World.PORTAL_LEFT_ENTRY;
+		if (guy.tile.equals(PORTAL_RIGHT_ENTRY) && guy.dir.equals(RIGHT)) {
+			guy.tile = PORTAL_LEFT_ENTRY;
 			guy.offset = V2.NULL;
-			guy.stuck = false;
 			return;
 		}
-		if (guy.tile.equals(World.PORTAL_LEFT_ENTRY) && guy.dir.equals(LEFT)) {
-			guy.tile = World.PORTAL_RIGHT_ENTRY;
+		if (guy.tile.equals(PORTAL_LEFT_ENTRY) && guy.dir.equals(LEFT)) {
+			guy.tile = PORTAL_RIGHT_ENTRY;
 			guy.offset = V2.NULL;
-			guy.stuck = false;
 			return;
 		}
 
