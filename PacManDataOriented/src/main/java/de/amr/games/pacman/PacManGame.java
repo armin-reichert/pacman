@@ -680,7 +680,6 @@ public class PacManGame {
 		}
 		if (newDir != null) {
 			ghost.wishDir = newDir;
-//			log("%s's intended direction is %s", ghost.name, ghost.intendedDir);
 		}
 	}
 
@@ -705,6 +704,21 @@ public class PacManGame {
 		if (guy.speed == 0) {
 			return;
 		}
+
+		// portal
+		if (guy.tile.equals(World.PORTAL_RIGHT_ENTRY) && guy.dir.equals(RIGHT)) {
+			guy.tile = World.PORTAL_LEFT_ENTRY;
+			guy.offset = V2.NULL;
+			guy.stuck = false;
+			return;
+		}
+		if (guy.tile.equals(World.PORTAL_LEFT_ENTRY) && guy.dir.equals(LEFT)) {
+			guy.tile = World.PORTAL_RIGHT_ENTRY;
+			guy.offset = V2.NULL;
+			guy.stuck = false;
+			return;
+		}
+
 		move(guy, guy.wishDir);
 		if (!guy.stuck) {
 			guy.dir = guy.wishDir;
@@ -714,20 +728,6 @@ public class PacManGame {
 	}
 
 	private void move(Creature guy, Direction dir) {
-
-		// portal
-		if (guy.tile.equals(World.PORTAL_RIGHT_ENTRY) && dir.equals(RIGHT)) {
-			guy.tile = World.PORTAL_LEFT_ENTRY;
-			guy.offset = V2.NULL;
-			guy.stuck = false;
-			return;
-		}
-		if (guy.tile.equals(World.PORTAL_LEFT_ENTRY) && dir.equals(LEFT)) {
-			guy.tile = World.PORTAL_RIGHT_ENTRY;
-			guy.offset = V2.NULL;
-			guy.stuck = false;
-			return;
-		}
 
 		// turns
 		if (guy.forcedOnTrack && canAccessTile(guy, guy.tile.sum(dir.vector))) {
