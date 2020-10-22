@@ -34,7 +34,7 @@ public class PacManGameUI {
 	private final PacManGame game;
 	private final float scaling;
 	private final Canvas canvas;
-	private BitSet pressedKeys = new BitSet(256);
+	private final BitSet pressedKeys = new BitSet(256);
 
 	private BufferedImage imageMazeFull;
 	private BufferedImage imageMazeEmpty;
