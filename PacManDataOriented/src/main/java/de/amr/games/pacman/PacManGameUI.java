@@ -197,9 +197,9 @@ public class PacManGameUI {
 			}
 			g.drawString(text, 8 * TS, 3 * TS);
 			for (Ghost ghost : game.ghosts) {
-				if (ghost.targetTile != null) {
+				if (ghost.targetTileX != -1) {
 					g.setColor(ghost.color);
-					g.fillRect(ghost.targetTile.x_int() * TS + HTS / 2, ghost.targetTile.y_int() * TS + HTS / 2, HTS, HTS);
+					g.fillRect(ghost.targetTileX * TS + HTS / 2, ghost.targetTileY * TS + HTS / 2, HTS, HTS);
 				}
 			}
 		}
@@ -253,13 +253,12 @@ public class PacManGameUI {
 		g.drawImage(imageMazeFull, 0, 3 * TS, null);
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				V2 tile = new V2(x, y);
 				if (game.hasEatenFood(x, y)) {
 					hideTile(g, x, y);
 					continue;
 				}
 				// energizer blinking
-				if (game.world.isEnergizerTile(tile) && game.framesTotal % 20 < 10
+				if (game.world.isEnergizerTile(x, y) && game.framesTotal % 20 < 10
 						&& (game.state == GameState.CHASING || game.state == GameState.SCATTERING)) {
 					hideTile(g, x, y);
 				}

@@ -5,22 +5,26 @@ import java.awt.Color;
 public class Ghost extends Creature {
 
 	public final Color color;
-	public final V2 scatterTile;
-	public V2 targetTile;
+	public final int scatterTileX;
+	public final int scatterTileY;
+	public int targetTileX;
+	public int targetTileY;
 	public boolean frightened;
 	public boolean enteringHouse;
 	public boolean leavingHouse;
 	public int bounty;
 	public long bountyTimer;
 
-	public Ghost(String name, Color color, V2 homeTile, V2 scatterTile) {
-		super(name, homeTile);
+	public Ghost(String name, Color color, int homeTileX, int homeTileY, int scatterTileX, int scatterTileY) {
+		super(name, homeTileX, homeTileY);
 		this.color = color;
-		this.scatterTile = scatterTile;
+		this.scatterTileX = scatterTileX;
+		this.scatterTileY = scatterTileY;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("%8s tile=%s offset=%s target=%s", name, tile, offset, targetTile);
+		return String.format("%8s tile=(%d,%d) offset=%s target=(%d,%d)", name, tileX, tileY, offset, targetTileX,
+				targetTileY);
 	}
 }

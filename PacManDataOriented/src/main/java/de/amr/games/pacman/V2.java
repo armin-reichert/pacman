@@ -13,8 +13,8 @@ public class V2 {
 
 	private static float EPS = 0.000001f;
 
-	public static double distance(V2 v1, V2 v2) {
-		return Math.hypot(v1.x - v2.x, v1.y - v2.y);
+	public static double distance(int x1, int y1, int x2, int y2) {
+		return Math.hypot(x1 - x2, y1 - y2);
 	}
 
 	public final float x;
