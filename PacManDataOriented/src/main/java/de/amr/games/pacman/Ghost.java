@@ -24,7 +24,7 @@ public class Ghost extends Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%8s tile=(%d,%d) offset=%s target=(%d,%d)", name, tileX, tileY, offset, targetTileX,
-				targetTileY);
+		return String.format("%8s tile=(%d,%d) offset=(%.2f,%.2f) target=(%d,%d)", name, tileX, tileY, offsetX, offsetY,
+				targetTileX, targetTileY);
 	}
 }

@@ -18,7 +18,8 @@ public class Creature {
 	public Direction wishDir;
 	public int tileX;
 	public int tileY;
-	public V2 offset;
+	public float offsetX;
+	public float offsetY;
 	public boolean tileChanged;
 	public boolean stuck;
 	public boolean forcedOnTrack;
@@ -27,6 +28,6 @@ public class Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%8s tile=(%d,%d) offset=%s", name, tileX, tileY, offset);
+		return String.format("%8s tile=(%d,%d) offset=(%.2f,%.2f)", name, tileX, tileY, offsetX, offsetY);
 	}
 }

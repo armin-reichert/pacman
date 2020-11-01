@@ -82,12 +82,16 @@ public class World {
 		return position.y_int() / TS;
 	}
 
-	public V2 offset(V2 position, int tileX, int tileY) {
-		return new V2(position.x - tileX * TS, position.y - tileY * TS);
+	public float offsetX(V2 position, int tileX, int tileY) {
+		return position.x - tileX * TS;
+	}
+
+	public float offsetY(V2 position, int tileX, int tileY) {
+		return position.y - tileY * TS;
 	}
 
 	public V2 position(Creature guy) {
-		return new V2(guy.tileX * TS + guy.offset.x, guy.tileY * TS + guy.offset.y);
+		return new V2(guy.tileX * TS + guy.offsetX, guy.tileY * TS + guy.offsetY);
 	}
 
 	public boolean inMapRange(int x, int y) {
