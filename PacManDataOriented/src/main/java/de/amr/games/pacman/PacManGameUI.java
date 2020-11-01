@@ -196,7 +196,7 @@ public class PacManGameUI {
 				text = String.format("%s", game.state);
 			}
 			g.drawString(text, 8 * TS, 3 * TS);
-			for (Creature ghost : game.ghosts) {
+			for (Ghost ghost : game.ghosts) {
 				if (ghost.targetTile != null) {
 					g.setColor(ghost.color);
 					g.fillRect(ghost.targetTile.x_int() * TS + HTS / 2, ghost.targetTile.y_int() * TS + HTS / 2, HTS, HTS);
@@ -313,7 +313,7 @@ public class PacManGameUI {
 
 	private void drawGhost(Graphics2D g, int ghostIndex) {
 		BufferedImage sprite;
-		Creature ghost = game.ghosts[ghostIndex];
+		Ghost ghost = game.ghosts[ghostIndex];
 		if (!ghost.visible) {
 			return;
 		}

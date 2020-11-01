@@ -115,7 +115,7 @@ public class PacManGame {
 	public final World world = new World();
 	public final BitSet eatenFood = new BitSet(244);
 	public final Creature pacMan;
-	public final Creature[] ghosts = new Creature[4];
+	public final Ghost[] ghosts = new Ghost[4];
 
 	public GameState state;
 	public PacManGameUI ui;
@@ -138,11 +138,11 @@ public class PacManGame {
 	public long bonusConsumedTimer;
 
 	public PacManGame() {
-		pacMan = new Creature("Pac-Man", Color.YELLOW, new V2(13, 26), null);
-		ghosts[BLINKY] = new Creature("Blinky", Color.RED, new V2(13, 14), BLINKY_CORNER);
-		ghosts[PINKY] = new Creature("Pinky", Color.PINK, new V2(13, 17), PINKY_CORNER);
-		ghosts[INKY] = new Creature("Inky", Color.CYAN, new V2(11, 17), INKY_CORNER);
-		ghosts[CLYDE] = new Creature("Clyde", Color.ORANGE, new V2(15, 17), CLYDE_CORNER);
+		pacMan = new Creature("Pac-Man", new V2(13, 26));
+		ghosts[BLINKY] = new Ghost("Blinky", Color.RED, new V2(13, 14), BLINKY_CORNER);
+		ghosts[PINKY] = new Ghost("Pinky", Color.PINK, new V2(13, 17), PINKY_CORNER);
+		ghosts[INKY] = new Ghost("Inky", Color.CYAN, new V2(11, 17), INKY_CORNER);
+		ghosts[CLYDE] = new Ghost("Clyde", Color.ORANGE, new V2(15, 17), CLYDE_CORNER);
 	}
 
 	private void initGame() {
@@ -179,7 +179,7 @@ public class PacManGame {
 		pacMan.visible = true;
 		pacMan.forcedOnTrack = true;
 
-		for (Creature ghost : ghosts) {
+		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
 			ghost.tile = ghost.homeTile;
 			ghost.offset = HALF_TILE_RIGHT;
@@ -249,7 +249,7 @@ public class PacManGame {
 			eatAllFood();
 		} else if (ui.keyPressed(KeyEvent.VK_X)) {
 			ghostsKilledUsingEnergizer = 0;
-			for (Creature ghost : ghosts) {
+			for (Ghost ghost : ghosts) {
 				killGhost(ghost);
 			}
 		}
@@ -293,7 +293,7 @@ public class PacManGame {
 
 	private void exitReadyState() {
 		ui.setMessage(null, false);
-		for (Creature ghost : ghosts) {
+		for (Ghost ghost : ghosts) {
 			ghost.leavingHouse = true;
 		}
 		ghosts[0].leavingHouse = false;
@@ -429,7 +429,7 @@ public class PacManGame {
 		if (pacManPowerTimer > 0) {
 			pacManPowerTimer--;
 			if (pacManPowerTimer == 0) {
-				for (Creature ghost : ghosts) {
+				for (Ghost ghost : ghosts) {
 					ghost.frightened = false;
 				}
 			}
@@ -446,7 +446,7 @@ public class PacManGame {
 				points += 40;
 				pacManPowerTimer = sec(levelData().ghostFrightenedSeconds());
 				log("Pac-Man got power for %d seconds", levelData().ghostFrightenedSeconds());
-				for (Creature ghost : ghosts) {
+				for (Ghost ghost : ghosts) {
 					ghost.frightened = !ghost.dead;
 				}
 				ghostsKilledUsingEnergizer = 0;
@@ -465,7 +465,7 @@ public class PacManGame {
 			log("Pac-Man found bonus %s of value %d", levelData().bonusSymbol(), levelData().bonusPoints());
 		}
 		// meeting ghost?
-		for (Creature ghost : ghosts) {
+		for (Ghost ghost : ghosts) {
 			if (!pacMan.tile.equals(ghost.tile)) {
 				continue;
 			}
@@ -492,7 +492,7 @@ public class PacManGame {
 		}
 	}
 
-	private void killGhost(Creature ghost) {
+	private void killGhost(Ghost ghost) {
 		ghost.dead = true;
 		ghost.frightened = false;
 		ghost.targetTile = ghosts[0].homeTile;
@@ -504,7 +504,7 @@ public class PacManGame {
 
 	private void updateGhosts() {
 		for (int i = 0; i < 4; ++i) {
-			Creature ghost = ghosts[i];
+			Ghost ghost = ghosts[i];
 			log("%s", ghost);
 			if (ghost.bountyTimer > 0) {
 				--ghost.bountyTimer;
@@ -541,13 +541,13 @@ public class PacManGame {
 		}
 	}
 
-	private void letGhostHeadForTargetTile(Creature ghost) {
+	private void letGhostHeadForTargetTile(Ghost ghost) {
 		updateGhostDir(ghost);
 		updateGhostSpeed(ghost);
 		move(ghost);
 	}
 
-	private void letGhostReturnHome(Creature ghost) {
+	private void letGhostReturnHome(Ghost ghost) {
 		// house entry reached?
 		if (ghost.tile.equals(ghosts[BLINKY].homeTile) && Math.abs(ghost.offset.x - HTS) <= 2) {
 			ghost.offset = new V2(HTS, 0);
@@ -561,7 +561,7 @@ public class PacManGame {
 		letGhostHeadForTargetTile(ghost);
 	}
 
-	private void letGhostEnterHouse(Creature ghost) {
+	private void letGhostEnterHouse(Ghost ghost) {
 		// reached target in house?
 		if (ghost.tile.equals(ghost.targetTile) && ghost.offset.y >= 0 && Math.abs(ghost.offset.x - HTS) <= 2) {
 			ghost.dead = false;
@@ -579,7 +579,7 @@ public class PacManGame {
 		log("%s entering house", ghost);
 	}
 
-	private void letGhostLeaveHouse(Creature ghost) {
+	private void letGhostLeaveHouse(Ghost ghost) {
 		// has left house?
 		if (ghost.tile.equals(ghosts[BLINKY].homeTile) && Math.abs(ghost.offset.y) <= 1) {
 			ghost.leavingHouse = false;
@@ -610,7 +610,7 @@ public class PacManGame {
 		move(ghost);
 	}
 
-	private void updateGhostSpeed(Creature ghost) {
+	private void updateGhostSpeed(Ghost ghost) {
 		if (ghost.bountyTimer > 0) {
 			ghost.speed = 0;
 		} else if (ghost.enteringHouse) {
@@ -639,7 +639,7 @@ public class PacManGame {
 		}
 	}
 
-	private void updateGhostDir(Creature ghost) {
+	private void updateGhostDir(Ghost ghost) {
 		if (ghost.targetTile == null) {
 			return;
 		}
@@ -794,8 +794,9 @@ public class PacManGame {
 		if (y < 0 || y >= WORLD_HEIGHT_TILES) {
 			return false;
 		}
-		if (world.isGhostHouseDoor(tile)) {
-			return guy.enteringHouse || guy.leavingHouse;
+		if (guy instanceof Ghost && world.isGhostHouseDoor(tile)) {
+			Ghost ghost = (Ghost) guy;
+			return ghost.enteringHouse || ghost.leavingHouse;
 		}
 		return world.map(x, y) != '1';
 	}
