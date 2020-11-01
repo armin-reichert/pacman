@@ -46,7 +46,7 @@ public class PacManGame {
 	private static final int CLYDE = 3;
 
 	private static final int TOTAL_FOOD_COUNT = 244;
-	private static final V2 BETWEEN_TILES = new V2(HTS, 0);
+	private static final V2 HALF_TILE_RIGHT = new V2(HTS, 0);
 
 	public static final int FPS = 60;
 
@@ -119,7 +119,6 @@ public class PacManGame {
 
 	public GameState state;
 	public PacManGameUI ui;
-	public String messageText;
 	public long fps;
 	public long framesTotal;
 	public int level;
@@ -174,7 +173,7 @@ public class PacManGame {
 		pacMan.speed = 0;
 		pacMan.dir = pacMan.wishDir = RIGHT;
 		pacMan.tile = pacMan.homeTile;
-		pacMan.offset = BETWEEN_TILES;
+		pacMan.offset = HALF_TILE_RIGHT;
 		pacMan.stuck = false;
 		pacMan.dead = false;
 		pacMan.visible = true;
@@ -183,7 +182,7 @@ public class PacManGame {
 		for (Creature ghost : ghosts) {
 			ghost.speed = 0;
 			ghost.tile = ghost.homeTile;
-			ghost.offset = BETWEEN_TILES;
+			ghost.offset = HALF_TILE_RIGHT;
 			ghost.targetTile = null;
 			ghost.tileChanged = true;
 			ghost.stuck = false;
@@ -288,13 +287,12 @@ public class PacManGame {
 	private void enterReadyState() {
 		state = GameState.READY;
 		readyStateTimer = sec(3);
-		ui.yellowText();
-		messageText = "Ready!";
+		ui.setMessage("Ready!", false);
 		initEntities();
 	}
 
 	private void exitReadyState() {
-		messageText = null;
+		ui.setMessage(null, false);
 		for (Creature ghost : ghosts) {
 			ghost.leavingHouse = true;
 		}
@@ -416,12 +414,11 @@ public class PacManGame {
 
 	private void enterGameOverState() {
 		state = GameState.GAME_OVER;
-		ui.redText();
-		messageText = "Game Over!";
+		ui.setMessage("Game Over!", true);
 	}
 
 	private void exitGameOverState() {
-		messageText = null;
+		ui.setMessage(null, false);
 	}
 
 	private void updatePacMan() {
@@ -588,13 +585,13 @@ public class PacManGame {
 			ghost.leavingHouse = false;
 			ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
-			ghost.offset = BETWEEN_TILES;
+			ghost.offset = HALF_TILE_RIGHT;
 			return;
 		}
 		// has reached middle of house?
 		if (ghost.tile.equals(ghosts[PINKY].homeTile) && Math.abs(ghost.offset.x - 3) <= 1) {
 			ghost.wishDir = UP;
-			ghost.offset = BETWEEN_TILES;
+			ghost.offset = HALF_TILE_RIGHT;
 			updateGhostSpeed(ghost);
 			move(ghost);
 			return;
@@ -602,7 +599,7 @@ public class PacManGame {
 		// keep bouncing until ghost can move towards middle of house
 		if (ghost.wishDir.equals(UP) || ghost.wishDir.equals(DOWN)) {
 			if (ghost.tile.equals(ghost.homeTile)) {
-				ghost.offset = BETWEEN_TILES;
+				ghost.offset = HALF_TILE_RIGHT;
 				ghost.wishDir = ghost.homeTile.x < ghosts[PINKY].homeTile.x ? RIGHT : LEFT;
 				return;
 			}

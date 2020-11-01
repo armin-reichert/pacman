@@ -44,12 +44,14 @@ public class PacManGameUI {
 	private Map<Integer, BufferedImage> numbers;
 	private Map<Integer, BufferedImage> bountyNumbers;
 	private Font scoreFont;
+	private String messageText;
 	private Color messageColor;
 
 	public PacManGameUI(PacManGame game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
 
+		messageText = null;
 		messageColor = Color.YELLOW;
 
 		try {
@@ -102,12 +104,9 @@ public class PacManGameUI {
 		} while (strategy.contentsLost());
 	}
 
-	public void yellowText() {
-		messageColor = Color.YELLOW;
-	}
-
-	public void redText() {
-		messageColor = Color.RED;
+	public void setMessage(String text, boolean red) {
+		messageColor = red ? Color.RED : Color.YELLOW;
+		messageText = text;
 	}
 
 	public boolean keyPressed(int keyCode) {
@@ -274,11 +273,11 @@ public class PacManGameUI {
 			int bonusPoints = game.levelData().bonusPoints();
 			g.drawImage(numbers.get(bonusPoints), 13 * TS, 20 * TS - HTS, null);
 		}
-		if (game.messageText != null) {
+		if (messageText != null) {
 			g.setFont(scoreFont);
 			g.setColor(messageColor);
-			int textLength = g.getFontMetrics().stringWidth(game.messageText);
-			g.drawString(game.messageText, WORLD_WIDTH / 2 - textLength / 2, 21 * TS);
+			int textLength = g.getFontMetrics().stringWidth(messageText);
+			g.drawString(messageText, WORLD_WIDTH / 2 - textLength / 2, 21 * TS);
 		}
 	}
 
