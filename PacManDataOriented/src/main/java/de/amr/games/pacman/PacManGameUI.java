@@ -198,10 +198,25 @@ public class PacManGameUI {
 			g.drawString(text, 8 * TS, 3 * TS);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.targetTile != null) {
-					g.setColor(ghost.color);
+					g.setColor(color(ghost.character));
 					g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
 				}
 			}
+		}
+	}
+
+	private Color color(GhostCharacter character) {
+		switch (character) {
+		case HARMFUL:
+			return Color.CYAN;
+		case POKEY:
+			return Color.ORANGE;
+		case SHADOW:
+			return Color.RED;
+		case SPEEDY:
+			return Color.PINK;
+		default:
+			throw new IllegalArgumentException();
 		}
 	}
 

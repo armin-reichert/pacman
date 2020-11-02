@@ -1,10 +1,8 @@
 package de.amr.games.pacman;
 
-import java.awt.Color;
-
 public class Ghost extends Creature {
 
-	public final Color color;
+	public final GhostCharacter character;
 	public final V2i scatterTile;
 	public V2i targetTile;
 	public boolean frightened;
@@ -13,9 +11,9 @@ public class Ghost extends Creature {
 	public int bounty;
 	public long bountyTimer;
 
-	public Ghost(String name, Color color, V2i homeTile, V2i scatterTile) {
+	public Ghost(String name, GhostCharacter character, V2i homeTile, V2i scatterTile) {
 		super(name, homeTile);
-		this.color = color;
+		this.character = character;
 		this.scatterTile = scatterTile;
 	}
 

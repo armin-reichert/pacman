@@ -14,7 +14,6 @@ import static de.amr.games.pacman.World.PORTAL_RIGHT_ENTRY;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 import java.time.LocalTime;
@@ -137,10 +136,10 @@ public class PacManGame {
 
 	public PacManGame() {
 		pacMan = new Creature("Pac-Man", new V2i(13, 26));
-		ghosts[BLINKY] = new Ghost("Blinky", Color.RED, new V2i(13, 14), BLINKY_CORNER);
-		ghosts[PINKY] = new Ghost("Pinky", Color.PINK, new V2i(13, 17), PINKY_CORNER);
-		ghosts[INKY] = new Ghost("Inky", Color.CYAN, new V2i(11, 17), INKY_CORNER);
-		ghosts[CLYDE] = new Ghost("Clyde", Color.ORANGE, new V2i(15, 17), CLYDE_CORNER);
+		ghosts[BLINKY] = new Ghost("Blinky", GhostCharacter.SHADOW, new V2i(13, 14), BLINKY_CORNER);
+		ghosts[PINKY] = new Ghost("Pinky", GhostCharacter.SPEEDY, new V2i(13, 17), PINKY_CORNER);
+		ghosts[INKY] = new Ghost("Inky", GhostCharacter.HARMFUL, new V2i(11, 17), INKY_CORNER);
+		ghosts[CLYDE] = new Ghost("Clyde", GhostCharacter.POKEY, new V2i(15, 17), CLYDE_CORNER);
 	}
 
 	private void initGame() {

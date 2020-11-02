@@ -2,6 +2,11 @@ package de.amr.games.pacman;
 
 import java.util.Objects;
 
+/**
+ * Immutable int 2D vector.
+ * 
+ * @author Armin Reichert
+ */
 public class V2i {
 
 	public final int x;
