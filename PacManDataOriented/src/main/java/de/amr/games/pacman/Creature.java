@@ -15,8 +15,7 @@ public class Creature {
 	public Direction dir;
 	public Direction wishDir;
 	public V2i tile;
-	public float offsetX;
-	public float offsetY;
+	public V2f offset;
 	public boolean tileChanged;
 	public boolean stuck;
 	public boolean forcedOnTrack;
@@ -25,7 +24,7 @@ public class Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%8s tile=%s offset=(%.2f,%.2f)", name, tile, offsetX, offsetY);
+		return String.format("%8s tile=%s offset=%s", name, tile, offset);
 	}
 
 	public boolean at(V2i tile) {

@@ -73,16 +73,12 @@ public class World {
 		return new V2i((int) position.x / TS, (int) position.y / TS);
 	}
 
-	public float offsetX(V2f position, int tileX, int tileY) {
-		return position.x - tileX * TS;
-	}
-
-	public float offsetY(V2f position, int tileX, int tileY) {
-		return position.y - tileY * TS;
+	public V2f offset(V2f position, V2i tile) {
+		return new V2f(position.x - tile.x * TS, position.y - tile.y * TS);
 	}
 
 	public V2f position(Creature guy) {
-		return new V2f(guy.tile.x * TS + guy.offsetX, guy.tile.y * TS + guy.offsetY);
+		return new V2f(guy.tile.x * TS + guy.offset.x, guy.tile.y * TS + guy.offset.y);
 	}
 
 	public boolean inMapRange(int x, int y) {

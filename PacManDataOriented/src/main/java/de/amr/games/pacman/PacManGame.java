@@ -171,8 +171,7 @@ public class PacManGame {
 		pacMan.speed = 0;
 		pacMan.dir = pacMan.wishDir = RIGHT;
 		pacMan.tile = pacMan.homeTile;
-		pacMan.offsetX = HTS;
-		pacMan.offsetY = 0;
+		pacMan.offset = new V2f(HTS, 0);
 		pacMan.stuck = false;
 		pacMan.dead = false;
 		pacMan.visible = true;
@@ -181,8 +180,7 @@ public class PacManGame {
 		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
 			ghost.tile = ghost.homeTile;
-			ghost.offsetX = HTS;
-			ghost.offsetY = 0;
+			ghost.offset = new V2f(HTS, 0);
 			ghost.targetTile = null;
 			ghost.tileChanged = true;
 			ghost.stuck = false;
@@ -563,9 +561,8 @@ public class PacManGame {
 
 	private void letGhostReturnHome(Ghost ghost) {
 		// house entry reached?
-		if (ghost.at(ghosts[BLINKY].homeTile) && Math.abs(ghost.offsetX - HTS) <= 2) {
-			ghost.offsetX = HTS;
-			ghost.offsetY = 0;
+		if (ghost.at(ghosts[BLINKY].homeTile) && Math.abs(ghost.offset.x - HTS) <= 2) {
+			ghost.offset = new V2f(HTS, 0);
 			ghost.targetTile = ghost == ghosts[BLINKY] ? ghosts[PINKY].homeTile : ghost.homeTile;
 			ghost.dir = ghost.wishDir = DOWN;
 			ghost.forcedOnTrack = false;
@@ -578,7 +575,7 @@ public class PacManGame {
 
 	private void letGhostEnterHouse(Ghost ghost) {
 		// reached target in house?
-		if (ghost.at(ghost.targetTile) && ghost.offsetY >= 0 && Math.abs(ghost.offsetX - HTS) <= 2) {
+		if (ghost.at(ghost.targetTile) && ghost.offset.y >= 0 && Math.abs(ghost.offset.x - HTS) <= 2) {
 			ghost.dead = false;
 			ghost.dir = ghost.wishDir = ghost.wishDir.inverse();
 			ghost.enteringHouse = false;
@@ -586,7 +583,7 @@ public class PacManGame {
 			log("%s leaving house", ghost);
 			return;
 		}
-		if (ghost.at(ghosts[PINKY].homeTile) && ghost.offsetY >= 0) {
+		if (ghost.at(ghosts[PINKY].homeTile) && ghost.offset.y >= 0) {
 			ghost.dir = ghost.wishDir = ghost.homeTile.x < ghosts[PINKY].homeTile.x ? LEFT : RIGHT;
 		}
 		updateGhostSpeed(ghost);
@@ -596,19 +593,17 @@ public class PacManGame {
 
 	private void letGhostLeaveHouse(Ghost ghost) {
 		// has left house?
-		if (ghost.at(ghosts[BLINKY].homeTile) && Math.abs(ghost.offsetY) <= 1) {
+		if (ghost.at(ghosts[BLINKY].homeTile) && Math.abs(ghost.offset.y) <= 1) {
 			ghost.leavingHouse = false;
 			ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
-			ghost.offsetX = HTS;
-			ghost.offsetY = 0;
+			ghost.offset = new V2f(HTS, 0);
 			return;
 		}
 		// has reached middle of house?
-		if (ghost.at(ghosts[PINKY].homeTile) && Math.abs(ghost.offsetX - 3) <= 1) {
+		if (ghost.at(ghosts[PINKY].homeTile) && Math.abs(ghost.offset.x - 3) <= 1) {
 			ghost.wishDir = UP;
-			ghost.offsetX = HTS;
-			ghost.offsetY = 0;
+			ghost.offset = new V2f(HTS, 0);
 			updateGhostSpeed(ghost);
 			move(ghost);
 			return;
@@ -616,8 +611,7 @@ public class PacManGame {
 		// keep bouncing until ghost can move towards middle of house
 		if (ghost.wishDir.equals(UP) || ghost.wishDir.equals(DOWN)) {
 			if (ghost.at(ghost.homeTile)) {
-				ghost.offsetX = HTS;
-				ghost.offsetY = 0;
+				ghost.offset = new V2f(HTS, 0);
 				ghost.wishDir = ghost.homeTile.x < ghosts[PINKY].homeTile.x ? RIGHT : LEFT;
 				return;
 			}
@@ -725,12 +719,12 @@ public class PacManGame {
 		// portal
 		if (guy.at(PORTAL_RIGHT_ENTRY) && guy.dir.equals(RIGHT)) {
 			guy.tile = PORTAL_LEFT_ENTRY;
-			guy.offsetX = guy.offsetY = 0;
+			guy.offset = V2f.NULL;
 			return;
 		}
 		if (guy.at(PORTAL_LEFT_ENTRY) && guy.dir.equals(LEFT)) {
 			guy.tile = PORTAL_RIGHT_ENTRY;
-			guy.offsetX = guy.offsetY = 0;
+			guy.offset = V2f.NULL;
 			return;
 		}
 
@@ -746,17 +740,17 @@ public class PacManGame {
 		// turns
 		if (guy.forcedOnTrack && canAccessTile(guy, guy.tile.x + dir.vec.x, guy.tile.y + dir.vec.y)) {
 			if (dir.equals(LEFT) || dir.equals(RIGHT)) {
-				if (Math.abs(guy.offsetY) > 1) {
+				if (Math.abs(guy.offset.y) > 1) {
 					guy.stuck = true;
 					return;
 				}
-				guy.offsetY = 0;
+				guy.offset = new V2f(guy.offset.x, 0);
 			} else if (dir.equals(UP) || dir.equals(DOWN)) {
-				if (Math.abs(guy.offsetX) > 1) {
+				if (Math.abs(guy.offset.x) > 1) {
 					guy.stuck = true;
 					return;
 				}
-				guy.offsetX = 0;
+				guy.offset = new V2f(0, guy.offset.y);
 			}
 		}
 
@@ -764,8 +758,7 @@ public class PacManGame {
 		V2f velocity = new V2f(dir.vec.x * 1.25f * guy.speed, dir.vec.y * 1.25f * guy.speed);
 		V2f positionAfterMove = world.position(guy).sum(velocity);
 		V2i tileAfterMove = world.tile(positionAfterMove);
-		float offsetAfterMoveX = world.offsetX(positionAfterMove, tileAfterMove.x, tileAfterMove.y);
-		float offsetAfterMoveY = world.offsetY(positionAfterMove, tileAfterMove.x, tileAfterMove.y);
+		V2f offsetAfterMove = world.offset(positionAfterMove, tileAfterMove);
 
 		if (!canAccessTile(guy, tileAfterMove.x, tileAfterMove.y)) {
 			guy.stuck = true;
@@ -775,13 +768,13 @@ public class PacManGame {
 		// avoid moving partially into inaccessible tile
 		if (guy.at(tileAfterMove)) {
 			if (!canAccessTile(guy, guy.tile.x + dir.vec.x, guy.tile.y + dir.vec.y)) {
-				if (dir.equals(RIGHT) && offsetAfterMoveX > 0 || dir.equals(LEFT) && offsetAfterMoveX < 0) {
-					guy.offsetX = 0;
+				if (dir.equals(RIGHT) && offsetAfterMove.x > 0 || dir.equals(LEFT) && offsetAfterMove.x < 0) {
+					guy.offset = new V2f(0, guy.offset.y);
 					guy.stuck = true;
 					return;
 				}
-				if (dir.equals(DOWN) && offsetAfterMoveY > 0 || dir.equals(UP) && offsetAfterMoveY < 0) {
-					guy.offsetY = 0;
+				if (dir.equals(DOWN) && offsetAfterMove.y > 0 || dir.equals(UP) && offsetAfterMove.y < 0) {
+					guy.offset = new V2f(guy.offset.x, 0);
 					guy.stuck = true;
 					return;
 				}
@@ -789,8 +782,7 @@ public class PacManGame {
 		}
 		guy.tileChanged = !guy.at(tileAfterMove);
 		guy.tile = tileAfterMove;
-		guy.offsetX = offsetAfterMoveX;
-		guy.offsetY = offsetAfterMoveY;
+		guy.offset = offsetAfterMove;
 		guy.stuck = false;
 	}
 
