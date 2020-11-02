@@ -306,7 +306,7 @@ public class PacManGameUI {
 			// closed mouth or open mouth pointing to move direction
 			sprite = mouthFrame == 2 ? sheet(mouthFrame, 0) : sheet(mouthFrame, directionFrame(pacMan.dir));
 		}
-		V2 position = game.world.position(pacMan);
+		V2f position = game.world.position(pacMan);
 		g.drawImage(sprite, (int) position.x - HTS, (int) position.y - HTS, null);
 	}
 
@@ -333,7 +333,7 @@ public class PacManGameUI {
 			int walkingFrame = game.framesTotal % 60 < 30 ? 0 : 1;
 			sprite = sheet(2 * directionFrame(ghost.dir) + walkingFrame, 4 + ghostIndex);
 		}
-		V2 position = game.world.position(ghost);
+		V2f position = game.world.position(ghost);
 		g.drawImage(sprite, (int) position.x - HTS, (int) position.y - HTS, null);
 	}
 

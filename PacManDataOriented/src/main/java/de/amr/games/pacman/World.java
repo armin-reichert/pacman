@@ -1,7 +1,5 @@
 package de.amr.games.pacman;
 
-import java.awt.Point;
-
 public class World {
 
 	public static final int TS = 8;
@@ -11,12 +9,12 @@ public class World {
 	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
 	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
 
-	public static final Point CLYDE_CORNER = new Point(0, WORLD_HEIGHT_TILES - 1);
-	public static final Point INKY_CORNER = new Point(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
-	public static final Point PINKY_CORNER = new Point(2, 0);
-	public static final Point BLINKY_CORNER = new Point(WORLD_WIDTH_TILES - 3, 0);
-	public static final Point PORTAL_LEFT_ENTRY = new Point(-1, 17);
-	public static final Point PORTAL_RIGHT_ENTRY = new Point(WORLD_WIDTH_TILES, 17);
+	public static final V2i CLYDE_CORNER = new V2i(0, WORLD_HEIGHT_TILES - 1);
+	public static final V2i INKY_CORNER = new V2i(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
+	public static final V2i PINKY_CORNER = new V2i(2, 0);
+	public static final V2i BLINKY_CORNER = new V2i(WORLD_WIDTH_TILES - 3, 0);
+	public static final V2i PORTAL_LEFT_ENTRY = new V2i(-1, 17);
+	public static final V2i PORTAL_RIGHT_ENTRY = new V2i(WORLD_WIDTH_TILES, 17);
 
 	private final String[] map;
 
@@ -71,20 +69,20 @@ public class World {
 		return y * WORLD_WIDTH_TILES + x;
 	}
 
-	public Point tile(V2 position) {
-		return new Point(position.x_int() / TS, position.y_int() / TS);
+	public V2i tile(V2f position) {
+		return new V2i(position.x_int() / TS, position.y_int() / TS);
 	}
 
-	public float offsetX(V2 position, int tileX, int tileY) {
+	public float offsetX(V2f position, int tileX, int tileY) {
 		return position.x - tileX * TS;
 	}
 
-	public float offsetY(V2 position, int tileX, int tileY) {
+	public float offsetY(V2f position, int tileX, int tileY) {
 		return position.y - tileY * TS;
 	}
 
-	public V2 position(Creature guy) {
-		return new V2(guy.tile.x * TS + guy.offsetX, guy.tile.y * TS + guy.offsetY);
+	public V2f position(Creature guy) {
+		return new V2f(guy.tile.x * TS + guy.offsetX, guy.tile.y * TS + guy.offsetY);
 	}
 
 	public boolean inMapRange(int x, int y) {
