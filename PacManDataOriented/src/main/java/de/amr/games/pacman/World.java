@@ -7,6 +7,7 @@ public class World {
 
 	public static final int WORLD_WIDTH_TILES = 28;
 	public static final int WORLD_HEIGHT_TILES = 36;
+
 	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
 	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
 
@@ -131,9 +132,7 @@ public class World {
 	public boolean isIntersectionTile(int x, int y) {
 		int accessibleNeighbors = 0;
 		for (Direction dir : Direction.values()) {
-			int neighborX = x + dir.vec.x;
-			int neighborY = y + dir.vec.y;
-			if (isAccessibleTile(neighborX, neighborY)) {
+			if (isAccessibleTile(x + dir.vec.x, y + dir.vec.y)) {
 				++accessibleNeighbors;
 			}
 		}
@@ -144,7 +143,7 @@ public class World {
 		if (isPortalTile(x, y)) {
 			return true;
 		}
-		if (x >= 0 && x < WORLD_WIDTH_TILES && y > 0 && y < WORLD_HEIGHT_TILES) {
+		if (inMapRange(x, y)) {
 			return map(x, y) != '1';
 		}
 		return false;

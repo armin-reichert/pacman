@@ -229,7 +229,7 @@ public class PacManGameUI {
 	private void drawLivesCounter(Graphics2D g) {
 		BufferedImage sprite = sheet(8, 1);
 		for (int i = 0; i < game.lives; ++i) {
-			g.drawImage(sprite, 2 * (i + 1) * TS, World.WORLD_HEIGHT - 2 * TS, null);
+			g.drawImage(sprite, 2 * (i + 1) * TS, WORLD_HEIGHT - 2 * TS, null);
 		}
 	}
 
