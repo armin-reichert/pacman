@@ -35,14 +35,14 @@ import java.util.Random;
  * 
  * @author Armin Reichert
  */
-public class PacManGame {
+public class PacManGame implements Runnable {
 
 	public static void main(String[] args) {
 		PacManGame game = new PacManGame();
 		EventQueue.invokeLater(() -> {
 			game.ui = new PacManGameUI(game, 2);
 			game.initGame();
-			new Thread(game::gameLoop, "GameLoop").start();
+			new Thread(game, "GameLoop").start();
 		});
 	}
 
@@ -210,7 +210,8 @@ public class PacManGame {
 		bonusConsumedTimer = 0;
 	}
 
-	private void gameLoop() {
+	@Override
+	public void run() {
 		final long intendedFrameDuration = 1_000_000_000 / FPS;
 		long fpsCountStart = 0;
 		long frames = 0;
