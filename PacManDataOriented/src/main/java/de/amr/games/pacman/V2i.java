@@ -36,7 +36,7 @@ public class V2i {
 
 	@Override
 	public String toString() {
-		return String.format("V2i(%d,%d)", x, y);
+		return String.format("V2i(%2d,%2d)", x, y);
 	}
 
 	@Override
