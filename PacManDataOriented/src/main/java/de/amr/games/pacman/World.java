@@ -1,5 +1,7 @@
 package de.amr.games.pacman;
 
+import java.awt.Point;
+
 public class World {
 
 	public static final int TS = 8;
@@ -8,18 +10,13 @@ public class World {
 	public static final int WORLD_HEIGHT_TILES = 36;
 	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
 	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
-	public static final int CLYDE_CORNER_X = 0;
-	public static final int CLYDE_CORNER_Y = WORLD_HEIGHT_TILES - 1;
-	public static final int INKY_CORNER_X = WORLD_WIDTH_TILES - 1;
-	public static final int INKY_CORNER_Y = WORLD_HEIGHT_TILES - 1;
-	public static final int PINKY_CORNER_X = 2;
-	public static final int PINKY_CORNER_Y = 0;
-	public static final int BLINKY_CORNER_X = WORLD_WIDTH_TILES - 3;
-	public static final int BLINKY_CORNER_Y = 0;
-	public static final int PORTAL_LEFT_ENTRY_X = -1;
-	public static final int PORTAL_LEFT_ENTRY_Y = 17;
-	public static final int PORTAL_RIGHT_ENTRY_X = WORLD_WIDTH_TILES;
-	public static final int PORTAL_RIGHT_ENTRY_Y = 17;
+
+	public static final Point CLYDE_CORNER = new Point(0, WORLD_HEIGHT_TILES - 1);
+	public static final Point INKY_CORNER = new Point(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
+	public static final Point PINKY_CORNER = new Point(2, 0);
+	public static final Point BLINKY_CORNER = new Point(WORLD_WIDTH_TILES - 3, 0);
+	public static final Point PORTAL_LEFT_ENTRY = new Point(-1, 17);
+	public static final Point PORTAL_RIGHT_ENTRY = new Point(WORLD_WIDTH_TILES, 17);
 
 	private final String[] map;
 
@@ -74,12 +71,8 @@ public class World {
 		return y * WORLD_WIDTH_TILES + x;
 	}
 
-	public int tileX(V2 position) {
-		return position.x_int() / TS;
-	}
-
-	public int tileY(V2 position) {
-		return position.y_int() / TS;
+	public Point tile(V2 position) {
+		return new Point(position.x_int() / TS, position.y_int() / TS);
 	}
 
 	public float offsetX(V2 position, int tileX, int tileY) {
@@ -91,7 +84,7 @@ public class World {
 	}
 
 	public V2 position(Creature guy) {
-		return new V2(guy.tileX * TS + guy.offsetX, guy.tileY * TS + guy.offsetY);
+		return new V2(guy.tile.x * TS + guy.offsetX, guy.tile.y * TS + guy.offsetY);
 	}
 
 	public boolean inMapRange(int x, int y) {
@@ -135,8 +128,8 @@ public class World {
 	public boolean isIntersectionTile(int x, int y) {
 		int accessibleNeighbors = 0;
 		for (Direction dir : Direction.values()) {
-			int neighborX = x + dir.vector.x_int();
-			int neighborY = y + dir.vector.y_int();
+			int neighborX = x + dir.vec.x;
+			int neighborY = y + dir.vec.y;
 			if (isAccessibleTile(neighborX, neighborY)) {
 				++accessibleNeighbors;
 			}
@@ -149,14 +142,14 @@ public class World {
 			return true;
 		}
 		if (x >= 0 && x < WORLD_WIDTH_TILES && y > 0 && y < WORLD_HEIGHT_TILES) {
-			return false;
+			return map(x, y) != '1';
 		}
-		return map(x, y) != '1';
+		return false;
 	}
 
 	public boolean isPortalTile(int x, int y) {
-		return x == PORTAL_RIGHT_ENTRY_X && y == PORTAL_RIGHT_ENTRY_Y
-				|| x == PORTAL_LEFT_ENTRY_X && y == PORTAL_LEFT_ENTRY_Y;
+		return x == PORTAL_RIGHT_ENTRY.x && y == PORTAL_RIGHT_ENTRY.x
+				|| x == PORTAL_LEFT_ENTRY.x && y == PORTAL_LEFT_ENTRY.y;
 	}
 
 	public boolean isBonusTile(int x, int y) {

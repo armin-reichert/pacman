@@ -197,9 +197,9 @@ public class PacManGameUI {
 			}
 			g.drawString(text, 8 * TS, 3 * TS);
 			for (Ghost ghost : game.ghosts) {
-				if (ghost.targetTileX != -1) {
+				if (ghost.targetTile != null) {
 					g.setColor(ghost.color);
-					g.fillRect(ghost.targetTileX * TS + HTS / 2, ghost.targetTileY * TS + HTS / 2, HTS, HTS);
+					g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
 				}
 			}
 		}

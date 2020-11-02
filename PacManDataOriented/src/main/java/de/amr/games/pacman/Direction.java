@@ -1,10 +1,12 @@
 package de.amr.games.pacman;
 
+import java.awt.Point;
+
 public enum Direction {
 
 	LEFT(-1, 0), RIGHT(1, 0), UP(0, -1), DOWN(0, 1);
 
-	public final V2 vector;
+	public final Point vec;
 
 	public Direction inverse() {
 		switch (this) {
@@ -22,6 +24,6 @@ public enum Direction {
 	}
 
 	private Direction(int x, int y) {
-		this.vector = new V2(x, y);
+		this.vec = new Point(x, y);
 	}
 }

@@ -1,23 +1,22 @@
 package de.amr.games.pacman;
 
+import java.awt.Point;
+
 public class Creature {
 
-	public Creature(String name, int homeTileX, int homeTileY) {
+	public Creature(String name, Point homeTile) {
 		this.name = name;
-		this.homeTileX = homeTileX;
-		this.homeTileY = homeTileY;
+		this.homeTile = homeTile;
 	}
 
 	public final String name;
-	public final int homeTileX;
-	public final int homeTileY;
+	public final Point homeTile;
 
 	public boolean visible;
 	public float speed;
 	public Direction dir;
 	public Direction wishDir;
-	public int tileX;
-	public int tileY;
+	public Point tile;
 	public float offsetX;
 	public float offsetY;
 	public boolean tileChanged;
@@ -28,6 +27,6 @@ public class Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%8s tile=(%d,%d) offset=(%.2f,%.2f)", name, tileX, tileY, offsetX, offsetY);
+		return String.format("%8s tile=%s offset=(%.2f,%.2f)", name, tile, offsetX, offsetY);
 	}
 }
