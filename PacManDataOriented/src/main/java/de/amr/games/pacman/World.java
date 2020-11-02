@@ -26,10 +26,9 @@ public class World {
 	public static final V2i INKY_HOME = new V2i(11, 17);
 	public static final V2i CLYDE_HOME = new V2i(15, 17);
 
-	private final String[] map;
+	public static final int TOTAL_FOOD_COUNT = 244;
 
-	public World() {
-		map = new String[] {
+	private static final String[] MAP = {
 			//@formatter:off
 			"1111111111111111111111111111",
 			"1111111111111111111111111111",
@@ -68,11 +67,10 @@ public class World {
 			"1111111111111111111111111111",
 			"1111111111111111111111111111",
 			//@formatter:on
-		};
-	}
+	};
 
 	public char map(int x, int y) {
-		return map[y].charAt(x);
+		return MAP[y].charAt(x);
 	}
 
 	public int index(int x, int y) {

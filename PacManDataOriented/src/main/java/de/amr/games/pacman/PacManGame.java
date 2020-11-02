@@ -19,6 +19,7 @@ import static de.amr.games.pacman.World.PINKY_CORNER;
 import static de.amr.games.pacman.World.PINKY_HOME;
 import static de.amr.games.pacman.World.PORTAL_LEFT_ENTRY;
 import static de.amr.games.pacman.World.PORTAL_RIGHT_ENTRY;
+import static de.amr.games.pacman.World.TOTAL_FOOD_COUNT;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 
@@ -50,8 +51,6 @@ public class PacManGame implements Runnable {
 	private static final int PINKY = 1;
 	private static final int INKY = 2;
 	private static final int CLYDE = 3;
-
-	private static final int TOTAL_FOOD_COUNT = 244;
 
 	public static final int FPS = 60;
 
