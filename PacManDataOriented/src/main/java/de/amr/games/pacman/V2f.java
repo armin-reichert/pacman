@@ -13,10 +13,6 @@ public class V2f {
 
 	private static float EPS = 0.000001f;
 
-	public static double distance(int x1, int y1, int x2, int y2) {
-		return Math.hypot(x1 - x2, y1 - y2);
-	}
-
 	public final float x;
 	public final float y;
 
@@ -57,13 +53,5 @@ public class V2f {
 
 	public V2f scaled(float s) {
 		return new V2f(s * x, s * y);
-	}
-
-	public int x_int() {
-		return (int) x;
-	}
-
-	public int y_int() {
-		return (int) y;
 	}
 }

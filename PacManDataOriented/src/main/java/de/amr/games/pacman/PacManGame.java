@@ -4,7 +4,6 @@ import static de.amr.games.pacman.Direction.DOWN;
 import static de.amr.games.pacman.Direction.LEFT;
 import static de.amr.games.pacman.Direction.RIGHT;
 import static de.amr.games.pacman.Direction.UP;
-import static de.amr.games.pacman.V2f.distance;
 import static de.amr.games.pacman.World.BLINKY_CORNER;
 import static de.amr.games.pacman.World.CLYDE_CORNER;
 import static de.amr.games.pacman.World.HTS;
@@ -683,15 +682,14 @@ public class PacManGame {
 			if (dir.equals(ghost.dir.inverse())) {
 				continue;
 			}
-			int neighborX = ghost.tile.x + dir.vec.x;
-			int neighborY = ghost.tile.y + dir.vec.y;
-			if (dir.equals(UP) && world.isUpwardsBlocked(neighborX, neighborY)) {
+			V2i neighbor = ghost.tile.sum(dir.vec);
+			if (dir.equals(UP) && world.isUpwardsBlocked(neighbor.x, neighbor.y)) {
 				continue;
 			}
-			if (!canAccessTile(ghost, neighborX, neighborY)) {
+			if (!canAccessTile(ghost, neighbor.x, neighbor.y)) {
 				continue;
 			}
-			double d = distance(neighborX, neighborY, ghost.targetTile.x, ghost.targetTile.y);
+			double d = neighbor.distance(ghost.targetTile);
 			if (d <= min) {
 				newDir = dir;
 				min = d;

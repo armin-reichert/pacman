@@ -70,7 +70,7 @@ public class World {
 	}
 
 	public V2i tile(V2f position) {
-		return new V2i(position.x_int() / TS, position.y_int() / TS);
+		return new V2i((int) position.x / TS, (int) position.y / TS);
 	}
 
 	public float offsetX(V2f position, int tileX, int tileY) {
