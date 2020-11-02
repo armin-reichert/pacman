@@ -189,7 +189,7 @@ public class PacManGame {
 			ghost.tile = ghost.homeTile;
 			ghost.offset = new V2f(HTS, 0);
 			ghost.targetTile = null;
-			ghost.tileChanged = true;
+			ghost.changedTile = true;
 			ghost.stuck = false;
 			ghost.forcedTurningBack = false;
 			ghost.forcedOnTrack = false;
@@ -654,7 +654,7 @@ public class PacManGame {
 		if (ghost.targetTile == null) {
 			return;
 		}
-		if (!ghost.stuck && !ghost.tileChanged) {
+		if (!ghost.stuck && !ghost.changedTile) {
 			return;
 		}
 		if (world.isPortalTile(ghost.tile.x, ghost.tile.y)) {
@@ -779,7 +779,7 @@ public class PacManGame {
 				}
 			}
 		}
-		guy.tileChanged = !guy.at(newTile);
+		guy.changedTile = !guy.at(newTile);
 		guy.tile = newTile;
 		guy.offset = newOffset;
 		guy.stuck = false;
