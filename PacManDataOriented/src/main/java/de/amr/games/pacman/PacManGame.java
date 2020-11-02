@@ -4,11 +4,19 @@ import static de.amr.games.pacman.Direction.DOWN;
 import static de.amr.games.pacman.Direction.LEFT;
 import static de.amr.games.pacman.Direction.RIGHT;
 import static de.amr.games.pacman.Direction.UP;
+import static de.amr.games.pacman.GhostCharacter.HARMFUL;
+import static de.amr.games.pacman.GhostCharacter.POKEY;
+import static de.amr.games.pacman.GhostCharacter.SHADOW;
+import static de.amr.games.pacman.GhostCharacter.SPEEDY;
 import static de.amr.games.pacman.World.BLINKY_CORNER;
+import static de.amr.games.pacman.World.BLINKY_HOME;
 import static de.amr.games.pacman.World.CLYDE_CORNER;
+import static de.amr.games.pacman.World.CLYDE_HOME;
 import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.INKY_CORNER;
+import static de.amr.games.pacman.World.INKY_HOME;
 import static de.amr.games.pacman.World.PINKY_CORNER;
+import static de.amr.games.pacman.World.PINKY_HOME;
 import static de.amr.games.pacman.World.PORTAL_LEFT_ENTRY;
 import static de.amr.games.pacman.World.PORTAL_RIGHT_ENTRY;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
@@ -136,10 +144,10 @@ public class PacManGame {
 
 	public PacManGame() {
 		pacMan = new Creature("Pac-Man", new V2i(13, 26));
-		ghosts[BLINKY] = new Ghost("Blinky", GhostCharacter.SHADOW, new V2i(13, 14), BLINKY_CORNER);
-		ghosts[PINKY] = new Ghost("Pinky", GhostCharacter.SPEEDY, new V2i(13, 17), PINKY_CORNER);
-		ghosts[INKY] = new Ghost("Inky", GhostCharacter.HARMFUL, new V2i(11, 17), INKY_CORNER);
-		ghosts[CLYDE] = new Ghost("Clyde", GhostCharacter.POKEY, new V2i(15, 17), CLYDE_CORNER);
+		ghosts[BLINKY] = new Ghost("Blinky", SHADOW, BLINKY_HOME, BLINKY_CORNER);
+		ghosts[PINKY] = new Ghost("Pinky", SPEEDY, PINKY_HOME, PINKY_CORNER);
+		ghosts[INKY] = new Ghost("Inky", HARMFUL, INKY_HOME, INKY_CORNER);
+		ghosts[CLYDE] = new Ghost("Clyde", POKEY, CLYDE_HOME, CLYDE_CORNER);
 	}
 
 	private void initGame() {

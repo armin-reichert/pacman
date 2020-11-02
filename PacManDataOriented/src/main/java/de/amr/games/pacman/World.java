@@ -9,12 +9,18 @@ public class World {
 	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
 	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
 
-	public static final V2i CLYDE_CORNER = new V2i(0, WORLD_HEIGHT_TILES - 1);
-	public static final V2i INKY_CORNER = new V2i(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
-	public static final V2i PINKY_CORNER = new V2i(2, 0);
-	public static final V2i BLINKY_CORNER = new V2i(WORLD_WIDTH_TILES - 3, 0);
 	public static final V2i PORTAL_LEFT_ENTRY = new V2i(-1, 17);
 	public static final V2i PORTAL_RIGHT_ENTRY = new V2i(WORLD_WIDTH_TILES, 17);
+
+	public static final V2i BLINKY_CORNER = new V2i(WORLD_WIDTH_TILES - 3, 0);
+	public static final V2i PINKY_CORNER = new V2i(2, 0);
+	public static final V2i INKY_CORNER = new V2i(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
+	public static final V2i CLYDE_CORNER = new V2i(0, WORLD_HEIGHT_TILES - 1);
+
+	public static final V2i BLINKY_HOME = new V2i(13, 14);
+	public static final V2i PINKY_HOME = new V2i(13, 17);
+	public static final V2i INKY_HOME = new V2i(11, 17);
+	public static final V2i CLYDE_HOME = new V2i(15, 17);
 
 	private final String[] map;
 
