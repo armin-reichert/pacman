@@ -47,6 +47,10 @@ public class V2f {
 		this.y = y;
 	}
 
+	public V2f(V2i v) {
+		this(v.x, v.y);
+	}
+
 	public V2f sum(V2f v) {
 		return new V2f(x + v.x, y + v.y);
 	}

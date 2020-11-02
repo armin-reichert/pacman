@@ -762,34 +762,34 @@ public class PacManGame {
 		}
 
 		// 100% speed corresponds to 1.25 pixels/tick
-		V2f velocity = new V2f(dir.vec.x * 1.25f * guy.speed, dir.vec.y * 1.25f * guy.speed);
-		V2f positionAfterMove = world.position(guy).sum(velocity);
-		V2i tileAfterMove = world.tile(positionAfterMove);
-		V2f offsetAfterMove = world.offset(positionAfterMove, tileAfterMove);
+		V2f velocity = new V2f(dir.vec).scaled(1.25f * guy.speed);
+		V2f newPosition = world.position(guy).sum(velocity);
+		V2i newTile = world.tile(newPosition);
+		V2f newOffset = world.offset(newPosition, newTile);
 
-		if (!canAccessTile(guy, tileAfterMove.x, tileAfterMove.y)) {
+		if (!canAccessTile(guy, newTile.x, newTile.y)) {
 			guy.stuck = true;
 			return;
 		}
 
 		// avoid moving partially into inaccessible tile
-		if (guy.at(tileAfterMove)) {
+		if (guy.at(newTile)) {
 			if (!canAccessTile(guy, guy.tile.x + dir.vec.x, guy.tile.y + dir.vec.y)) {
-				if (dir.equals(RIGHT) && offsetAfterMove.x > 0 || dir.equals(LEFT) && offsetAfterMove.x < 0) {
+				if (dir.equals(RIGHT) && newOffset.x > 0 || dir.equals(LEFT) && newOffset.x < 0) {
 					guy.offset = new V2f(0, guy.offset.y);
 					guy.stuck = true;
 					return;
 				}
-				if (dir.equals(DOWN) && offsetAfterMove.y > 0 || dir.equals(UP) && offsetAfterMove.y < 0) {
+				if (dir.equals(DOWN) && newOffset.y > 0 || dir.equals(UP) && newOffset.y < 0) {
 					guy.offset = new V2f(guy.offset.x, 0);
 					guy.stuck = true;
 					return;
 				}
 			}
 		}
-		guy.tileChanged = !guy.at(tileAfterMove);
-		guy.tile = tileAfterMove;
-		guy.offset = offsetAfterMove;
+		guy.tileChanged = !guy.at(newTile);
+		guy.tile = newTile;
+		guy.offset = newOffset;
 		guy.stuck = false;
 	}
 
