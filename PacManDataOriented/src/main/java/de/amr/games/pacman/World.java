@@ -4,6 +4,7 @@ public class World {
 
 	public static final int TS = 8;
 	public static final int HTS = TS / 2;
+
 	public static final int WORLD_WIDTH_TILES = 28;
 	public static final int WORLD_HEIGHT_TILES = 36;
 	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
@@ -11,6 +12,8 @@ public class World {
 
 	public static final V2i PORTAL_LEFT_ENTRY = new V2i(-1, 17);
 	public static final V2i PORTAL_RIGHT_ENTRY = new V2i(WORLD_WIDTH_TILES, 17);
+
+	public static final V2i PACMAN_HOME = new V2i(13, 26);
 
 	public static final V2i BLINKY_CORNER = new V2i(WORLD_WIDTH_TILES - 3, 0);
 	public static final V2i PINKY_CORNER = new V2i(2, 0);

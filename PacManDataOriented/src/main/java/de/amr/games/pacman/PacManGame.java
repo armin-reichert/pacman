@@ -143,7 +143,7 @@ public class PacManGame {
 	public long bonusConsumedTimer;
 
 	public PacManGame() {
-		pacMan = new Creature("Pac-Man", new V2i(13, 26));
+		pacMan = new Creature("Pac-Man", World.PACMAN_HOME);
 		ghosts[BLINKY] = new Ghost("Blinky", SHADOW, BLINKY_HOME, BLINKY_CORNER);
 		ghosts[PINKY] = new Ghost("Pinky", SPEEDY, PINKY_HOME, PINKY_CORNER);
 		ghosts[INKY] = new Ghost("Inky", HARMFUL, INKY_HOME, INKY_CORNER);
@@ -825,9 +825,8 @@ public class PacManGame {
 			if (dir.equals(guy.dir.inverse())) {
 				continue;
 			}
-			int neighborX = guy.tile.x + dir.vec.x;
-			int neighborY = guy.tile.y + dir.vec.y;
-			if (world.isAccessibleTile(neighborX, neighborY)) {
+			V2i neighbor = guy.tile.sum(dir.vec);
+			if (world.isAccessibleTile(neighbor.x, neighbor.y)) {
 				dirs.add(dir);
 			}
 		}
