@@ -31,7 +31,7 @@ public class V2i {
 
 	@Override
 	public String toString() {
-		return "V2i[x=" + x + ", y=" + y + "]";
+		return String.format("V2i(%d,%d)", x, y);
 	}
 
 	@Override

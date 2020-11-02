@@ -43,7 +43,7 @@ public class V2f {
 
 	@Override
 	public String toString() {
-		return String.format("(%.2f, %.2f)", x, y);
+		return String.format("V2f(%.2f, %.2f)", x, y);
 	}
 
 	public V2f(float x, float y) {
