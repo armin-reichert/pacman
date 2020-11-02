@@ -470,7 +470,7 @@ public class PacManGame {
 		}
 		// meeting ghost?
 		for (Ghost ghost : ghosts) {
-			if (!onSameTile(pacMan, ghost)) {
+			if (!pacMan.tile.equals(ghost.tile)) {
 				continue;
 			}
 			// killing ghost?
@@ -556,10 +556,6 @@ public class PacManGame {
 		updateGhostDir(ghost);
 		updateGhostSpeed(ghost);
 		move(ghost);
-	}
-
-	private static boolean onSameTile(Creature first, Creature second) {
-		return first.tile.equals(second.tile);
 	}
 
 	private void letGhostReturnHome(Ghost ghost) {
