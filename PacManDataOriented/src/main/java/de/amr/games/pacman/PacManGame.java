@@ -523,33 +523,29 @@ public class PacManGame {
 				ghost.targetTile = ghost.scatterTile;
 				letGhostHeadForTargetTile(ghost);
 			} else if (state == GameState.CHASING) {
-				computeChasingTarget(ghostIndex);
+				ghost.targetTile = computeChasingTarget(ghostIndex);
 				letGhostHeadForTargetTile(ghost);
 			}
 		}
 	}
 
-	private void computeChasingTarget(int ghostIndex) {
+	private V2i computeChasingTarget(int ghostIndex) {
 		switch (ghostIndex) {
 		case BLINKY: {
-			ghosts[BLINKY].targetTile = pacMan.tile;
-			break;
+			return pacMan.tile;
 		}
 		case PINKY: {
 			// simulate offset bug when Pac-Man is looking UP
 			V2i p = pacMan.tile.sum(pacMan.dir.vec.scaled(4));
-			ghosts[PINKY].targetTile = pacMan.dir.equals(UP) ? p.sum(LEFT.vec.scaled(4)) : p;
-			break;
+			return pacMan.dir.equals(UP) ? p.sum(LEFT.vec.scaled(4)) : p;
 		}
 		case INKY: {
 			V2i b = ghosts[BLINKY].tile;
 			V2i p = pacMan.tile.sum(pacMan.dir.vec.scaled(2));
-			ghosts[INKY].targetTile = p.scaled(2).sum(b.scaled(-1));
-			break;
+			return p.scaled(2).sum(b.scaled(-1));
 		}
 		case CLYDE: {
-			ghosts[CLYDE].targetTile = ghosts[CLYDE].tile.distance(pacMan.tile) < 8 ? ghosts[CLYDE].scatterTile : pacMan.tile;
-			break;
+			return ghosts[CLYDE].tile.distance(pacMan.tile) < 8 ? ghosts[CLYDE].scatterTile : pacMan.tile;
 		}
 		default:
 			throw new IllegalArgumentException("Unknown ghost index: " + ghostIndex);
