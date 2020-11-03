@@ -2,11 +2,11 @@ package de.amr.games.pacman;
 
 public enum GhostCharacter {
 	/** Blinky, the red ghost */
-	SHADOW,
+	OIKAKE,
 	/** Pinky, the pinky gost */
-	SPEEDY,
+	MACHIBUSE,
 	/** Inky, the blue ghost */
-	HARMFUL,
+	KIMAGURE,
 	/** Clyde, the orange ghost */
-	POKEY;
+	OTOBOKE;
 }

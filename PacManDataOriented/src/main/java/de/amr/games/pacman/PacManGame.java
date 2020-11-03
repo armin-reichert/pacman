@@ -4,10 +4,10 @@ import static de.amr.games.pacman.Direction.DOWN;
 import static de.amr.games.pacman.Direction.LEFT;
 import static de.amr.games.pacman.Direction.RIGHT;
 import static de.amr.games.pacman.Direction.UP;
-import static de.amr.games.pacman.GhostCharacter.HARMFUL;
-import static de.amr.games.pacman.GhostCharacter.POKEY;
-import static de.amr.games.pacman.GhostCharacter.SHADOW;
-import static de.amr.games.pacman.GhostCharacter.SPEEDY;
+import static de.amr.games.pacman.GhostCharacter.KIMAGURE;
+import static de.amr.games.pacman.GhostCharacter.OTOBOKE;
+import static de.amr.games.pacman.GhostCharacter.OIKAKE;
+import static de.amr.games.pacman.GhostCharacter.MACHIBUSE;
 import static de.amr.games.pacman.World.BLINKY_CORNER;
 import static de.amr.games.pacman.World.BLINKY_HOME;
 import static de.amr.games.pacman.World.CLYDE_CORNER;
@@ -15,6 +15,7 @@ import static de.amr.games.pacman.World.CLYDE_HOME;
 import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.INKY_CORNER;
 import static de.amr.games.pacman.World.INKY_HOME;
+import static de.amr.games.pacman.World.PACMAN_HOME;
 import static de.amr.games.pacman.World.PINKY_CORNER;
 import static de.amr.games.pacman.World.PINKY_HOME;
 import static de.amr.games.pacman.World.PORTAL_LEFT_ENTRY;
@@ -47,19 +48,16 @@ public class PacManGame implements Runnable {
 		});
 	}
 
-	private static final int BLINKY = 0;
-	private static final int PINKY = 1;
-	private static final int INKY = 2;
-	private static final int CLYDE = 3;
+	private static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 
 	public static final int FPS = 60;
 
-	public static void log(String msg, Object... args) {
-		System.err.println(String.format("%-20s: %s", LocalTime.now(), String.format(msg, args)));
-	}
-
 	public static int sec(float seconds) {
 		return (int) (seconds * FPS);
+	}
+
+	public static void log(String msg, Object... args) {
+		System.err.println(String.format("%-20s: %s", LocalTime.now(), String.format(msg, args)));
 	}
 
 	private static final List<LevelData> LEVEL_DATA = List.of(
@@ -142,11 +140,11 @@ public class PacManGame implements Runnable {
 	public long bonusConsumedTimer;
 
 	public PacManGame() {
-		pacMan = new Creature("Pac-Man", World.PACMAN_HOME);
-		ghosts[BLINKY] = new Ghost("Blinky", SHADOW, BLINKY_HOME, BLINKY_CORNER);
-		ghosts[PINKY] = new Ghost("Pinky", SPEEDY, PINKY_HOME, PINKY_CORNER);
-		ghosts[INKY] = new Ghost("Inky", HARMFUL, INKY_HOME, INKY_CORNER);
-		ghosts[CLYDE] = new Ghost("Clyde", POKEY, CLYDE_HOME, CLYDE_CORNER);
+		pacMan = new Creature("Pac-Man", PACMAN_HOME);
+		ghosts[BLINKY] = new Ghost("Blinky", OIKAKE, BLINKY_HOME, BLINKY_CORNER);
+		ghosts[PINKY] = new Ghost("Pinky", MACHIBUSE, PINKY_HOME, PINKY_CORNER);
+		ghosts[INKY] = new Ghost("Inky", KIMAGURE, INKY_HOME, INKY_CORNER);
+		ghosts[CLYDE] = new Ghost("Clyde", OTOBOKE, CLYDE_HOME, CLYDE_CORNER);
 	}
 
 	private void initGame() {

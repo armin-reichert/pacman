@@ -207,13 +207,13 @@ public class PacManGameUI {
 
 	private Color color(GhostCharacter character) {
 		switch (character) {
-		case HARMFUL:
+		case KIMAGURE:
 			return Color.CYAN;
-		case POKEY:
+		case OTOBOKE:
 			return Color.ORANGE;
-		case SHADOW:
+		case OIKAKE:
 			return Color.RED;
-		case SPEEDY:
+		case MACHIBUSE:
 			return Color.PINK;
 		default:
 			throw new IllegalArgumentException();
