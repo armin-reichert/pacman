@@ -284,7 +284,7 @@ public class PacManGame implements Runnable {
 			return;
 		}
 		for (int i = 1; i <= 3; ++i) {
-			bounce(ghosts[i]);
+			letGhostBounce(ghosts[i]);
 		}
 		--readyStateTimer;
 	}
@@ -329,7 +329,7 @@ public class PacManGame implements Runnable {
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
 		scatteringStateTimer = SCATTERING_TIMES[waveTimes(level)][attackWave];
-		forceGhostsTurningBack();
+		forceLivingGhostsTurningBack();
 	}
 
 	private void runChasingState() {
@@ -357,7 +357,7 @@ public class PacManGame implements Runnable {
 	private void enterChasingState() {
 		state = GameState.CHASING;
 		chasingStateTimer = CHASING_TIMES[waveTimes(level)][attackWave];
-		forceGhostsTurningBack();
+		forceLivingGhostsTurningBack();
 	}
 
 	private void runPacManDyingState() {
@@ -454,7 +454,7 @@ public class PacManGame implements Runnable {
 					ghost.frightened = !ghost.dead;
 				}
 				ghostsKilledUsingEnergizer = 0;
-				forceGhostsTurningBack();
+				forceLivingGhostsTurningBack();
 			}
 			// bonus reached?
 			if (bonusAvailableTimer == 0 && (foodRemaining == 70 || foodRemaining == 170)) {
@@ -535,8 +535,8 @@ public class PacManGame implements Runnable {
 			return pacMan.tile;
 		}
 		case PINKY: {
-			// simulate offset bug when Pac-Man is looking UP
 			V2i p = pacMan.tile.sum(pacMan.dir.vec.scaled(4));
+			// simulate offset bug when Pac-Man is looking UP
 			return pacMan.dir.equals(UP) ? p.sum(LEFT.vec.scaled(4)) : p;
 		}
 		case INKY: {
@@ -614,7 +614,7 @@ public class PacManGame implements Runnable {
 				ghost.wishDir = ghost.homeTile.x < ghosts[PINKY].homeTile.x ? RIGHT : LEFT;
 				return;
 			}
-			bounce(ghost);
+			letGhostBounce(ghost);
 			return;
 		}
 		updateGhostSpeed(ghost);
@@ -642,7 +642,7 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void checkElroySpeed(Creature blinky) {
+	private void checkElroySpeed(Ghost blinky) {
 		if (foodRemaining <= levelData().elroy2DotsLeft()) {
 			blinky.speed = levelData().elroy2Speed();
 		} else if (foodRemaining <= levelData().elroy1DotsLeft()) {
@@ -693,16 +693,15 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void forceGhostsTurningBack() {
-		for (Creature ghost : ghosts) {
-			if (ghost.dead) {
-				continue;
+	private void forceLivingGhostsTurningBack() {
+		for (Ghost ghost : ghosts) {
+			if (!ghost.dead) {
+				ghost.forcedTurningBack = true;
 			}
-			ghost.forcedTurningBack = true;
 		}
 	}
 
-	private void bounce(Creature ghost) {
+	private void letGhostBounce(Ghost ghost) {
 		if (ghost.stuck) {
 			ghost.dir = ghost.wishDir = ghost.wishDir.inverse();
 		}
@@ -764,7 +763,7 @@ public class PacManGame implements Runnable {
 			return;
 		}
 
-		// avoid moving partially into inaccessible tile
+		// avoid moving (partially) into inaccessible tile
 		if (guy.at(newTile)) {
 			if (!canAccessTile(guy, guy.tile.x + dir.vec.x, guy.tile.y + dir.vec.y)) {
 				if (dir.equals(RIGHT) && newOffset.x > 0 || dir.equals(LEFT) && newOffset.x < 0) {
@@ -799,7 +798,7 @@ public class PacManGame implements Runnable {
 
 	private boolean canAccessTile(Creature guy, int x, int y) {
 		if (x < 0 || x >= WORLD_WIDTH_TILES) {
-			return y == 17; // can leave world through horizontal tunnel
+			return y == PORTAL_LEFT_ENTRY.y;
 		}
 		if (y < 0 || y >= WORLD_HEIGHT_TILES) {
 			return false;
