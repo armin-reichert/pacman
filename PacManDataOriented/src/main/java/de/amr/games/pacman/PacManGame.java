@@ -5,9 +5,9 @@ import static de.amr.games.pacman.Direction.LEFT;
 import static de.amr.games.pacman.Direction.RIGHT;
 import static de.amr.games.pacman.Direction.UP;
 import static de.amr.games.pacman.GhostCharacter.KIMAGURE;
-import static de.amr.games.pacman.GhostCharacter.OTOBOKE;
-import static de.amr.games.pacman.GhostCharacter.OIKAKE;
 import static de.amr.games.pacman.GhostCharacter.MACHIBUSE;
+import static de.amr.games.pacman.GhostCharacter.OIKAKE;
+import static de.amr.games.pacman.GhostCharacter.OTOBOKE;
 import static de.amr.games.pacman.World.BLINKY_CORNER;
 import static de.amr.games.pacman.World.BLINKY_HOME;
 import static de.amr.games.pacman.World.CLYDE_CORNER;
@@ -27,6 +27,7 @@ import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -56,8 +57,11 @@ public class PacManGame implements Runnable {
 		return (int) (seconds * FPS);
 	}
 
+	private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+
 	public static void log(String msg, Object... args) {
-		System.err.println(String.format("%-20s: %s", LocalTime.now(), String.format(msg, args)));
+		String timestamp = TIME_FORMAT.format(LocalTime.now());
+		System.err.println(String.format("[%s] %s", timestamp, String.format(msg, args)));
 	}
 
 	private static final List<LevelData> LEVEL_DATA = List.of(
@@ -134,7 +138,7 @@ public class PacManGame implements Runnable {
 	public long readyStateTimer;
 	public long scatteringStateTimer;
 	public long chasingStateTimer;
-	public long levelChangeStateTimer;
+	public long changingLevelStateTimer;
 	public long pacManDyingStateTimer;
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
@@ -165,7 +169,7 @@ public class PacManGame implements Runnable {
 		readyStateTimer = 0;
 		scatteringStateTimer = 0;
 		chasingStateTimer = 0;
-		levelChangeStateTimer = 0;
+		changingLevelStateTimer = 0;
 		pacManDyingStateTimer = 0;
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
@@ -363,10 +367,11 @@ public class PacManGame implements Runnable {
 			exitPacManDyingState();
 			if (lives > 0) {
 				enterReadyState();
+				return;
 			} else {
 				enterGameOverState();
+				return;
 			}
-			return;
 		}
 		if (pacManDyingStateTimer == sec(2.5f) + 88) {
 			for (Creature ghost : ghosts) {
@@ -389,18 +394,18 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runChangingLevelState() {
-		if (levelChangeStateTimer == 0) {
+		if (changingLevelStateTimer == 0) {
 			log("Level %d complete, entering level %d", level, level + 1);
 			initLevel(++level);
 			enterReadyState();
 			return;
 		}
-		--levelChangeStateTimer;
+		--changingLevelStateTimer;
 	}
 
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
-		levelChangeStateTimer = sec(7);
+		changingLevelStateTimer = sec(7);
 		mazeFlashes = levelData().numFlashes();
 		log("Maze flashes: %d", mazeFlashes);
 		for (Creature ghost : ghosts) {
@@ -508,7 +513,7 @@ public class PacManGame implements Runnable {
 	private void updateGhosts() {
 		for (int ghostIndex = 0; ghostIndex < 4; ++ghostIndex) {
 			Ghost ghost = ghosts[ghostIndex];
-			log("%s", ghost);
+//			log("%s", ghost);
 			if (ghost.bountyTimer > 0) {
 				--ghost.bountyTimer;
 			} else if (ghost.enteringHouse) {
@@ -557,27 +562,30 @@ public class PacManGame implements Runnable {
 	}
 
 	private void letGhostReturnHome(Ghost ghost) {
-		// house entry reached?
-		if (ghost.at(ghosts[BLINKY].homeTile) && Math.abs(ghost.offset.x - HTS) <= 2) {
-			ghost.offset = new V2f(HTS, 0);
+		if (atGhostHouseDoor(ghost)) {
 			ghost.targetTile = ghost == ghosts[BLINKY] ? ghosts[PINKY].homeTile : ghost.homeTile;
+			ghost.offset = new V2f(HTS, 0);
 			ghost.dir = ghost.wishDir = DOWN;
 			ghost.forcedOnTrack = false;
 			ghost.enteringHouse = true;
-			log("%s entering house", ghost);
+			log("%s starts entering house", ghost);
 			return;
 		}
 		letGhostHeadForTargetTile(ghost);
 	}
 
+	private boolean atGhostHouseDoor(Creature guy) {
+		return guy.at(ghosts[BLINKY].homeTile) && Math.abs(guy.offset.x - HTS) <= 2;
+	}
+
 	private void letGhostEnterHouse(Ghost ghost) {
-		// reached target in house?
+		// reached target inside house?
 		if (ghost.at(ghost.targetTile) && ghost.offset.y >= 0 && Math.abs(ghost.offset.x - HTS) <= 2) {
 			ghost.dead = false;
 			ghost.dir = ghost.wishDir = ghost.wishDir.inverse();
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = true;
-			log("%s leaving house", ghost);
+			log("%s starts leaving house", ghost);
 			return;
 		}
 		if (ghost.at(ghosts[PINKY].homeTile) && ghost.offset.y >= 0) {
@@ -585,7 +593,7 @@ public class PacManGame implements Runnable {
 		}
 		updateGhostSpeed(ghost);
 		move(ghost, ghost.wishDir);
-		log("%s entering house", ghost);
+		log("%s is entering house", ghost);
 	}
 
 	private void letGhostLeaveHouse(Ghost ghost) {
@@ -595,6 +603,7 @@ public class PacManGame implements Runnable {
 			ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
 			ghost.offset = new V2f(HTS, 0);
+			log("%s has left house", ghost);
 			return;
 		}
 		// has reached middle of house?
@@ -617,6 +626,7 @@ public class PacManGame implements Runnable {
 		}
 		updateGhostSpeed(ghost);
 		move(ghost);
+		log("%s is leaving house", ghost);
 	}
 
 	private void updateGhostSpeed(Ghost ghost) {

@@ -185,7 +185,7 @@ public class PacManGameUI {
 			if (game.state == GameState.READY) {
 				text = String.format("%s %d ticks remaining", game.state, game.readyStateTimer);
 			} else if (game.state == GameState.CHANGING_LEVEL) {
-				text = String.format("%s %d ticks remaining", game.state, game.levelChangeStateTimer);
+				text = String.format("%s %d ticks remaining", game.state, game.changingLevelStateTimer);
 			} else if (game.state == GameState.SCATTERING) {
 				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.scatteringStateTimer);
 			} else if (game.state == GameState.CHASING) {
@@ -261,7 +261,7 @@ public class PacManGameUI {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (game.levelChangeStateTimer > 0 && game.levelChangeStateTimer <= sec(4f)) {
+		if (game.changingLevelStateTimer > 0 && game.changingLevelStateTimer <= sec(4f)) {
 			drawMazeFlashing(g);
 			return;
 		}

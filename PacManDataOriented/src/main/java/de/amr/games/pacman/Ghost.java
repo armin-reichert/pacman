@@ -16,9 +16,4 @@ public class Ghost extends Creature {
 		this.character = character;
 		this.scatterTile = scatterTile;
 	}
-
-	@Override
-	public String toString() {
-		return String.format("%8s tile=%s offset=%s target=%s", name, tile, offset, targetTile);
-	}
 }
