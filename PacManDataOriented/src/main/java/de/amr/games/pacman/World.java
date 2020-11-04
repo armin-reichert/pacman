@@ -23,10 +23,10 @@ public class World {
 	public static final V2i INKY_CORNER = new V2i(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
 	public static final V2i CLYDE_CORNER = new V2i(0, WORLD_HEIGHT_TILES - 1);
 
-	public static final V2i BLINKY_HOME = new V2i(13, 14);
-	public static final V2i PINKY_HOME = new V2i(13, 17);
-	public static final V2i INKY_HOME = new V2i(11, 17);
-	public static final V2i CLYDE_HOME = new V2i(15, 17);
+	public static final V2i HOUSE_ENTRY = new V2i(13, 14);
+	public static final V2i HOUSE_CENTER = new V2i(13, 17);
+	public static final V2i HOUSE_LEFT = new V2i(11, 17);
+	public static final V2i HOUSE_RIGHT = new V2i(15, 17);
 
 	public static final int TOTAL_FOOD_COUNT = 244;
 

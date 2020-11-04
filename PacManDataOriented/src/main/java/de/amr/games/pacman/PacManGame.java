@@ -9,15 +9,15 @@ import static de.amr.games.pacman.GhostCharacter.MACHIBUSE;
 import static de.amr.games.pacman.GhostCharacter.OIKAKE;
 import static de.amr.games.pacman.GhostCharacter.OTOBOKE;
 import static de.amr.games.pacman.World.BLINKY_CORNER;
-import static de.amr.games.pacman.World.BLINKY_HOME;
 import static de.amr.games.pacman.World.CLYDE_CORNER;
-import static de.amr.games.pacman.World.CLYDE_HOME;
+import static de.amr.games.pacman.World.HOUSE_CENTER;
+import static de.amr.games.pacman.World.HOUSE_ENTRY;
+import static de.amr.games.pacman.World.HOUSE_LEFT;
+import static de.amr.games.pacman.World.HOUSE_RIGHT;
 import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.INKY_CORNER;
-import static de.amr.games.pacman.World.INKY_HOME;
 import static de.amr.games.pacman.World.PACMAN_HOME;
 import static de.amr.games.pacman.World.PINKY_CORNER;
-import static de.amr.games.pacman.World.PINKY_HOME;
 import static de.amr.games.pacman.World.PORTAL_LEFT_ENTRY;
 import static de.amr.games.pacman.World.PORTAL_RIGHT_ENTRY;
 import static de.amr.games.pacman.World.TOTAL_FOOD_COUNT;
@@ -144,10 +144,10 @@ public class PacManGame implements Runnable {
 
 	public PacManGame() {
 		pacMan = new Creature("Pac-Man", PACMAN_HOME);
-		ghosts[BLINKY] = new Ghost("Blinky", OIKAKE, BLINKY_HOME, BLINKY_CORNER);
-		ghosts[PINKY] = new Ghost("Pinky", MACHIBUSE, PINKY_HOME, PINKY_CORNER);
-		ghosts[INKY] = new Ghost("Inky", KIMAGURE, INKY_HOME, INKY_CORNER);
-		ghosts[CLYDE] = new Ghost("Clyde", OTOBOKE, CLYDE_HOME, CLYDE_CORNER);
+		ghosts[BLINKY] = new Ghost("Blinky", OIKAKE, HOUSE_ENTRY, BLINKY_CORNER);
+		ghosts[PINKY] = new Ghost("Pinky", MACHIBUSE, HOUSE_CENTER, PINKY_CORNER);
+		ghosts[INKY] = new Ghost("Inky", KIMAGURE, HOUSE_LEFT, INKY_CORNER);
+		ghosts[CLYDE] = new Ghost("Clyde", OTOBOKE, HOUSE_RIGHT, CLYDE_CORNER);
 	}
 
 	private void initGame() {
@@ -302,8 +302,8 @@ public class PacManGame implements Runnable {
 		for (Ghost ghost : ghosts) {
 			ghost.leavingHouse = true;
 		}
-		ghosts[0].leavingHouse = false;
-		ghosts[0].forcedOnTrack = true;
+		ghosts[BLINKY].leavingHouse = false;
+		ghosts[BLINKY].forcedOnTrack = true;
 	}
 
 	private void runScatteringState() {
@@ -504,7 +504,7 @@ public class PacManGame implements Runnable {
 	private void killGhost(Ghost ghost) {
 		ghost.dead = true;
 		ghost.frightened = false;
-		ghost.targetTile = ghosts[BLINKY].homeTile;
+		ghost.targetTile = HOUSE_ENTRY;
 		ghostsKilledUsingEnergizer++;
 		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
 		ghost.bountyTimer = sec(0.5f);
@@ -565,7 +565,7 @@ public class PacManGame implements Runnable {
 
 	private void letGhostReturnHome(Ghost ghost) {
 		if (atGhostHouseDoor(ghost)) {
-			ghost.targetTile = ghost == ghosts[BLINKY] ? ghosts[PINKY].homeTile : ghost.homeTile;
+			ghost.targetTile = ghost == ghosts[BLINKY] ? HOUSE_CENTER : ghost.homeTile;
 			ghost.offset = new V2f(HTS, 0);
 			ghost.dir = ghost.wishDir = DOWN;
 			ghost.forcedOnTrack = false;
@@ -577,12 +577,16 @@ public class PacManGame implements Runnable {
 	}
 
 	private boolean atGhostHouseDoor(Creature guy) {
-		return guy.at(ghosts[BLINKY].homeTile) && Math.abs(guy.offset.x - HTS) <= 2;
+		return guy.at(HOUSE_ENTRY) && differsAtMost(guy.offset.x, HTS, 2);
+	}
+
+	private boolean differsAtMost(float value, float target, float deviation) {
+		return Math.abs(value - target) <= deviation;
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
 		// reached target inside house?
-		if (ghost.at(ghost.targetTile) && ghost.offset.y >= 0 && Math.abs(ghost.offset.x - HTS) <= 2) {
+		if (ghost.at(ghost.targetTile) && ghost.offset.y >= 0 && differsAtMost(ghost.offset.x, HTS, 2)) {
 			ghost.dead = false;
 			ghost.dir = ghost.wishDir = ghost.wishDir.inverse();
 			ghost.enteringHouse = false;
@@ -590,8 +594,9 @@ public class PacManGame implements Runnable {
 			log("%s starts leaving house", ghost);
 			return;
 		}
-		if (ghost.at(ghosts[PINKY].homeTile) && ghost.offset.y >= 0) {
-			ghost.dir = ghost.wishDir = ghost.homeTile.x < ghosts[PINKY].homeTile.x ? LEFT : RIGHT;
+		// have Inky or Clyde reached the house position where they start moving sidewards?
+		if (ghost.at(HOUSE_CENTER) && ghost.offset.y >= 0) {
+			ghost.dir = ghost.wishDir = ghost.homeTile.x < HOUSE_CENTER.x ? LEFT : RIGHT;
 		}
 		updateGhostSpeed(ghost);
 		move(ghost, ghost.wishDir);
@@ -600,7 +605,7 @@ public class PacManGame implements Runnable {
 
 	private void letGhostLeaveHouse(Ghost ghost) {
 		// has left house?
-		if (ghost.at(ghosts[BLINKY].homeTile) && Math.abs(ghost.offset.y) <= 1) {
+		if (ghost.at(HOUSE_ENTRY) && differsAtMost(ghost.offset.y, 0, 1)) {
 			ghost.leavingHouse = false;
 			ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
@@ -609,7 +614,7 @@ public class PacManGame implements Runnable {
 			return;
 		}
 		// has reached middle of house?
-		if (ghost.at(ghosts[PINKY].homeTile) && Math.abs(ghost.offset.x - 3) <= 1) {
+		if (ghost.at(HOUSE_CENTER) && differsAtMost(ghost.offset.x, 3, 1)) {
 			ghost.wishDir = UP;
 			ghost.offset = new V2f(HTS, 0);
 			updateGhostSpeed(ghost);
@@ -620,7 +625,7 @@ public class PacManGame implements Runnable {
 		if (ghost.wishDir.equals(UP) || ghost.wishDir.equals(DOWN)) {
 			if (ghost.at(ghost.homeTile)) {
 				ghost.offset = new V2f(HTS, 0);
-				ghost.wishDir = ghost.homeTile.x < ghosts[PINKY].homeTile.x ? RIGHT : LEFT;
+				ghost.wishDir = ghost.homeTile.x < HOUSE_CENTER.x ? RIGHT : LEFT;
 				return;
 			}
 			letGhostBounce(ghost);
@@ -646,13 +651,13 @@ public class PacManGame implements Runnable {
 			ghost.speed = levelData().frightenedGhostSpeed();
 		} else {
 			ghost.speed = levelData().ghostSpeed();
-			if (ghost == ghosts[0]) {
-				checkElroySpeed(ghost);
+			if (ghost == ghosts[BLINKY]) {
+				updateElroySpeed(ghost);
 			}
 		}
 	}
 
-	private void checkElroySpeed(Ghost blinky) {
+	private void updateElroySpeed(Ghost blinky) {
 		if (foodRemaining <= levelData().elroy2DotsLeft()) {
 			blinky.speed = levelData().elroy2Speed();
 		} else if (foodRemaining <= levelData().elroy1DotsLeft()) {
