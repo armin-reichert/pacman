@@ -268,7 +268,7 @@ public class PacManGameUI {
 		g.drawImage(imageMazeFull, 0, 3 * TS, null);
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				if (game.hasEatenFood(x, y)) {
+				if (game.world.hasEatenFood(x, y)) {
 					hideTile(g, x, y);
 					continue;
 				}

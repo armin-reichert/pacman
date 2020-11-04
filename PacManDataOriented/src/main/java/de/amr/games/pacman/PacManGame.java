@@ -29,7 +29,6 @@ import java.awt.event.KeyEvent;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
 
@@ -119,7 +118,6 @@ public class PacManGame implements Runnable {
 	}
 
 	public final World world = new World();
-	public final BitSet eatenFood = new BitSet(244);
 	public final Creature pacMan;
 	public final Ghost[] ghosts = new Ghost[4];
 
@@ -160,7 +158,7 @@ public class PacManGame implements Runnable {
 
 	private void initLevel(int n) {
 		level = n;
-		eatenFood.clear();
+		world.restoreFood();
 		foodRemaining = TOTAL_FOOD_COUNT;
 		attackWave = 0;
 		mazeFlashes = 0;
@@ -444,12 +442,13 @@ public class PacManGame implements Runnable {
 		}
 
 		// food found?
-		if (world.isFoodTile(pacMan.tile.x, pacMan.tile.y) && !hasEatenFood(pacMan.tile.x, pacMan.tile.y)) {
-			eatenFood.set(world.index(pacMan.tile.x, pacMan.tile.y));
+		int x = pacMan.tile.x, y = pacMan.tile.y;
+		if (world.isFoodTile(x, y) && !world.hasEatenFood(x, y)) {
+			world.eatFood(x, y);
 			foodRemaining--;
 			points += 10;
 			// energizer found?
-			if (world.isEnergizerTile(pacMan.tile.x, pacMan.tile.y)) {
+			if (world.isEnergizerTile(x, y)) {
 				points += 40;
 				pacManPowerTimer = sec(levelData().ghostFrightenedSeconds());
 				log("Pac-Man got power for %d seconds", levelData().ghostFrightenedSeconds());
@@ -465,7 +464,7 @@ public class PacManGame implements Runnable {
 			}
 		}
 		// bonus found?
-		if (bonusAvailableTimer > 0 && world.isBonusTile(pacMan.tile.x, pacMan.tile.y)) {
+		if (bonusAvailableTimer > 0 && world.isBonusTile(x, y)) {
 			bonusAvailableTimer = 0;
 			bonusConsumedTimer = sec(3);
 			points += levelData().bonusPoints();
@@ -795,9 +794,8 @@ public class PacManGame implements Runnable {
 	private void eatAllFood() {
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				int index = world.index(x, y);
-				if (world.isFoodTile(x, y) && !eatenFood.get(index)) {
-					eatenFood.set(index);
+				if (world.isFoodTile(x, y) && !world.hasEatenFood(x, y)) {
+					world.eatFood(x, y);
 					foodRemaining = 0;
 				}
 			}
@@ -830,9 +828,5 @@ public class PacManGame implements Runnable {
 			}
 		}
 		return dirs.get(new Random().nextInt(dirs.size()));
-	}
-
-	public boolean hasEatenFood(int x, int y) {
-		return eatenFood.get(world.index(x, y));
 	}
 }

@@ -1,5 +1,7 @@
 package de.amr.games.pacman;
 
+import java.util.BitSet;
+
 public class World {
 
 	public static final int TS = 8;
@@ -69,11 +71,13 @@ public class World {
 			//@formatter:on
 	};
 
+	private final BitSet eatenFood = new BitSet(244);
+
 	public char map(int x, int y) {
 		return MAP[y].charAt(x);
 	}
 
-	public int index(int x, int y) {
+	private int index(int x, int y) {
 		return y * WORLD_WIDTH_TILES + x;
 	}
 
@@ -154,5 +158,17 @@ public class World {
 
 	public boolean isBonusTile(int x, int y) {
 		return x == 13 && y == 20;
+	}
+
+	public boolean hasEatenFood(int x, int y) {
+		return eatenFood.get(index(x, y));
+	}
+
+	public void restoreFood() {
+		eatenFood.clear();
+	}
+
+	public void eatFood(int x, int y) {
+		eatenFood.set(index(x, y));
 	}
 }
