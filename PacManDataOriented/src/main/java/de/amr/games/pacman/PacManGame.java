@@ -30,6 +30,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -557,7 +558,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void letGhostHeadForTargetTile(Ghost ghost) {
-		ghost.wishDir = computeNewWishDir(ghost);
+		newWishDir(ghost).ifPresent(dir -> ghost.wishDir = dir);
 		updateGhostSpeed(ghost);
 		move(ghost);
 	}
@@ -659,20 +660,20 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private Direction computeNewWishDir(Ghost ghost) {
+	private Optional<Direction> newWishDir(Ghost ghost) {
 		int x = ghost.tile.x, y = ghost.tile.y;
 		if (!ghost.changedTile) {
-			return ghost.wishDir;
+			return Optional.empty();
 		}
 		if (world.isPortalTile(x, y)) {
-			return ghost.wishDir;
+			return Optional.empty();
 		}
 		if (ghost.forcedTurningBack) {
 			ghost.forcedTurningBack = false;
-			return ghost.wishDir.inverse();
+			return Optional.of(ghost.wishDir.inverse());
 		}
 		if (ghost.frightened && world.isIntersectionTile(x, y)) {
-			return randomMoveDir(ghost);
+			return Optional.of(randomMoveDir(ghost));
 		}
 
 		double minDist = Double.MAX_VALUE;
@@ -695,7 +696,7 @@ public class PacManGame implements Runnable {
 				minDist = dist;
 			}
 		}
-		return minDistDir;
+		return Optional.ofNullable(minDistDir);
 	}
 
 	private void forceLivingGhostsTurningBack() {
