@@ -660,10 +660,11 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updateGhostDir(Ghost ghost) {
+		int x = ghost.tile.x, y = ghost.tile.y;
 		if (!ghost.changedTile) {
 			return;
 		}
-		if (world.isPortalTile(ghost.tile.x, ghost.tile.y)) {
+		if (world.isPortalTile(x, y)) {
 			return;
 		}
 		if (ghost.forcedTurningBack) {
@@ -671,7 +672,7 @@ public class PacManGame implements Runnable {
 			ghost.forcedTurningBack = false;
 			return;
 		}
-		if (pacManPowerTimer > 0 && world.isIntersectionTile(ghost.tile.x, ghost.tile.y)) {
+		if (pacManPowerTimer > 0 && world.isIntersectionTile(x, y)) {
 			ghost.wishDir = randomMoveDir(ghost);
 			return;
 		}
