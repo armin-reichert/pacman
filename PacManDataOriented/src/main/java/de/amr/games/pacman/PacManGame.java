@@ -421,10 +421,12 @@ public class PacManGame implements Runnable {
 	private void enterGameOverState() {
 		state = GameState.GAME_OVER;
 		ui.setMessage("Game Over!", true);
+		log("Entered game over state");
 	}
 
 	private void exitGameOverState() {
 		ui.setMessage(null, false);
+		log("Left game over state");
 	}
 
 	private void updatePacMan() {
@@ -658,10 +660,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updateGhostDir(Ghost ghost) {
-		if (ghost.targetTile == null) {
-			return;
-		}
-		if (!ghost.stuck && !ghost.changedTile) {
+		if (!ghost.changedTile) {
 			return;
 		}
 		if (world.isPortalTile(ghost.tile.x, ghost.tile.y)) {
