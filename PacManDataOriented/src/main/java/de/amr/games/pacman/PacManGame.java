@@ -503,7 +503,7 @@ public class PacManGame implements Runnable {
 	private void killGhost(Ghost ghost) {
 		ghost.dead = true;
 		ghost.frightened = false;
-		ghost.targetTile = ghosts[0].homeTile;
+		ghost.targetTile = ghosts[BLINKY].homeTile;
 		ghostsKilledUsingEnergizer++;
 		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
 		ghost.bountyTimer = sec(0.5f);
@@ -557,7 +557,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void letGhostHeadForTargetTile(Ghost ghost) {
-		updateGhostDir(ghost);
+		ghost.wishDir = computeNewWishDir(ghost);
 		updateGhostSpeed(ghost);
 		move(ghost);
 	}
@@ -659,45 +659,43 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void updateGhostDir(Ghost ghost) {
+	private Direction computeNewWishDir(Ghost ghost) {
 		int x = ghost.tile.x, y = ghost.tile.y;
 		if (!ghost.changedTile) {
-			return;
+			return ghost.wishDir;
 		}
 		if (world.isPortalTile(x, y)) {
-			return;
+			return ghost.wishDir;
 		}
 		if (ghost.forcedTurningBack) {
-			ghost.wishDir = ghost.wishDir.inverse();
 			ghost.forcedTurningBack = false;
-			return;
+			return ghost.wishDir.inverse();
 		}
-		if (pacManPowerTimer > 0 && world.isIntersectionTile(x, y)) {
-			ghost.wishDir = randomMoveDir(ghost);
-			return;
+		if (ghost.frightened && world.isIntersectionTile(x, y)) {
+			return randomMoveDir(ghost);
 		}
-		Direction newDir = null;
-		double min = Double.MAX_VALUE;
+
+		double minDist = Double.MAX_VALUE;
+		Direction minDistDir = null;
 		for (Direction dir : List.of(RIGHT, DOWN, LEFT, UP) /* order matters! */) {
 			if (dir.equals(ghost.dir.inverse())) {
 				continue;
 			}
 			V2i neighbor = ghost.tile.sum(dir.vec);
-			if (dir.equals(UP) && world.isUpwardsBlocked(neighbor.x, neighbor.y)) {
-				continue;
-			}
 			if (!canAccessTile(ghost, neighbor.x, neighbor.y)) {
 				continue;
 			}
-			double d = neighbor.distance(ghost.targetTile);
-			if (d <= min) {
-				newDir = dir;
-				min = d;
+			if (dir.equals(UP) && world.isUpwardsBlocked(neighbor.x, neighbor.y) && !ghost.dead) {
+				continue;
+			}
+			double dist = neighbor.distance(ghost.targetTile);
+			// if more than neighbor tile has minimum target distance, most-right in list above wins!
+			if (dist <= minDist) {
+				minDistDir = dir;
+				minDist = dist;
 			}
 		}
-		if (newDir != null) {
-			ghost.wishDir = newDir;
-		}
+		return minDistDir;
 	}
 
 	private void forceLivingGhostsTurningBack() {
