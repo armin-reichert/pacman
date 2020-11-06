@@ -15,7 +15,6 @@
 		<module>PacManGame</module>
 		<module>PacManGameEnhanced</module>
 		<module>PacManTests</module>
-		<module>PacManDataOriented</module>
 	</modules>
 	<build>
 		<pluginManagement>
