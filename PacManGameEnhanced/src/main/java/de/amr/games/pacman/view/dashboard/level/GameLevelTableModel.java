@@ -26,7 +26,6 @@ public class GameLevelTableModel extends AbstractTableModel {
 			"Bonus", 
 			"Bonus value", 
 			"Pac-Man Speed", 
-			"Pac-Man Dots Speed", 
 			"Ghost Speed", 
 			"Ghost Tunnel Speed",
 			"Elroy 1 Dots Left", 
@@ -34,7 +33,6 @@ public class GameLevelTableModel extends AbstractTableModel {
 			"Elroy 2 Dots Left", 
 			"Elroy 2 Speed", 
 			"Pac-Man Power Speed",
-			"Pac-Man Power Dots Speed", 
 			"Ghost Frightened Speed", 
 			"Pac-Man Power (seconds)", 
 			"Number of Flashes", 
@@ -88,28 +86,24 @@ public class GameLevelTableModel extends AbstractTableModel {
 		case 8:
 			return percent(game.pacManSpeed);
 		case 9:
-			return percent(game.pacManDotsSpeed);
-		case 10:
 			return percent(game.ghostSpeed);
-		case 11:
+		case 10:
 			return percent(game.ghostTunnelSpeed);
-		case 12:
+		case 11:
 			return integer(game.elroy1DotsLeft);
-		case 13:
+		case 12:
 			return percent(game.elroy1Speed);
-		case 14:
+		case 13:
 			return integer(game.elroy2DotsLeft);
-		case 15:
+		case 14:
 			return percent(game.elroy2Speed);
-		case 16:
+		case 15:
 			return percent(game.pacManPowerSpeed);
-		case 17:
-			return percent(game.pacManPowerDotsSpeed);
-		case 18:
+		case 16:
 			return percent(game.ghostFrightenedSpeed);
-		case 19:
+		case 17:
 			return integer(game.pacManPowerSeconds);
-		case 20:
+		case 18:
 			return integer(game.numFlashes);
 		default:
 			return null;

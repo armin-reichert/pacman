@@ -14,6 +14,7 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.Application;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -193,11 +194,21 @@ public class PacMan extends Guy<PacManState> {
 		if (ai.is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {
 			return 0;
 		} else if (ai.is(POWERFUL)) {
-			return Timing.speed(weight > 0 ? game.pacManPowerDotsSpeed : game.pacManPowerSpeed);
+			return Timing.speed(game.pacManPowerSpeed);
 		} else if (ai.is(AWAKE)) {
-			return Timing.speed(weight > 0 ? game.pacManDotsSpeed : game.pacManSpeed);
+			return Timing.speed(game.pacManSpeed);
 		}
 		throw new IllegalStateException("Illegal Pac-Man state: " + ai.getState());
+	}
+
+	@Override
+	public void move() {
+		if (weight > 0) {
+			--weight;
+			Application.loginfo("Pac-Man lost weight, remaining %d", weight);
+		} else {
+			super.move();
+		}
 	}
 
 	private void putIntoBed(Bed bed) {
@@ -214,9 +225,6 @@ public class PacMan extends Guy<PacManState> {
 	}
 
 	private Optional<PacManGameEvent> searchForFood() {
-		if (weight > 0 && enteredNewTile) {
-			weight -= 1;
-		}
 		Tile location = tile();
 		TemporaryFood consumableBonus = world.temporaryFood().filter(bonus -> bonus.isActive() && !bonus.isConsumed())
 				.filter(bonus -> bonus.location().equals(location)).orElse(null);
@@ -224,11 +232,11 @@ public class PacMan extends Guy<PacManState> {
 			return Optional.of(new BonusFoundEvent(location, consumableBonus));
 		}
 		if (world.hasFood(ArcadeFood.ENERGIZER, location)) {
-			weight += ArcadeFood.ENERGIZER.fat();
+			weight = ArcadeFood.ENERGIZER.fat();
 			return Optional.of(new FoodFoundEvent(location, ArcadeFood.ENERGIZER));
 		}
 		if (world.hasFood(ArcadeFood.PELLET, location)) {
-			weight += ArcadeFood.PELLET.fat();
+			weight = ArcadeFood.PELLET.fat();
 			return Optional.of(new FoodFoundEvent(location, ArcadeFood.PELLET));
 		}
 		return Optional.empty();
