@@ -16,6 +16,8 @@ import java.util.List;
  */
 public class PacManGame {
 
+	public static PacManGame game;
+
 	static final int PACMAN_LIVES = 3;
 	static final int POINTS_PELLET = 10;
 	static final int POINTS_ENERGIZER = 50;
@@ -70,8 +72,6 @@ public class PacManGame {
 	private static int integer(Object value) {
 		return (int) value;
 	}
-
-	public static PacManGame game;
 
 	public static boolean started() {
 		return game != null;
