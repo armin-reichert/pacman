@@ -40,8 +40,8 @@ public class Hiscore {
 
 	public void load() {
 		loginfo("Loading highscore from file '%s'", file);
-		try {
-			data.loadFromXML(new FileInputStream(file));
+		try (FileInputStream is = new FileInputStream(file)) {
+			data.loadFromXML(is);
 			points = Integer.valueOf(data.getProperty("score"));
 			level = Integer.valueOf(data.getProperty("level"));
 			if (data.getProperty("time") != null) {
@@ -69,8 +69,8 @@ public class Hiscore {
 				time = ZonedDateTime.now();
 			}
 			data.setProperty("time", time.format(DATE_FORMAT));
-			try {
-				data.storeToXML(new FileOutputStream(file), "Pac-Man Highscore");
+			try (FileOutputStream os = new FileOutputStream(file)) {
+				data.storeToXML(os, "Pac-Man Highscore");
 				needsUpdate = false;
 				loginfo("Saved highscore file '%s'", file);
 			} catch (IOException e) {
