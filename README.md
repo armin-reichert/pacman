@@ -1,4 +1,4 @@
-**(Hint: A newer, cleaner and leaner Pac-Man game implementation can be found at [pacman-basic](http://github.com/armin-reichert/pacman-basic))**
+**(Hint: A cleaner and leaner Pac-Man + Ms. Pac-Man game implementation is at [pacman-basic](http://github.com/armin-reichert/pacman-basic))**
 
 ## A Pac-Man implementation using finite-state machines all over the place
  
