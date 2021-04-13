@@ -77,7 +77,8 @@ public class ArcadeSounds implements PacManGameSounds {
 
 	@Override
 	public boolean isMusicLoaded() {
-		return musicGameReady().isPresent() && musicGameRunning().isPresent() && musicGameOver().isPresent();
+		return musicGameReady().isPresent();
+//				&& musicGameRunning().isPresent() && musicGameOver().isPresent();
 	}
 
 	@Override

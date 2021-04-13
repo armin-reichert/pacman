@@ -22,8 +22,8 @@ import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.theme.arcade.ArcadeSpritesheet;
-import de.amr.games.pacman.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.theme.arcade.ArcadeSpritesheet.GhostColor;
+import de.amr.games.pacman.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.dashboard.util.Formatting;
 import net.miginfocom.swing.MigLayout;
 
