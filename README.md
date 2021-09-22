@@ -6,6 +6,14 @@ YouTube: https://www.youtube.com/watch?v=F4KdJvGvL1Q
 
 <img src="PacManDoc/fsm/Ghost Blinky AI.png">
 
+## Warning!
+
+Do not read any further!
+
+https://kandi.openweaver.com/java/armin-reichert/pacman writes about this project: *It has a negative sentiment in the developer community.*
+
+LOL!
+
 ## Ghost Lives Matter! Yellow man bad!
 
 *If you don't share my (or any) sense of humor, just skip this section...*
