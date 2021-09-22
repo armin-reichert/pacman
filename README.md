@@ -1,4 +1,4 @@
-**(Hint: A cleaner and leaner, UI-independent Pac-Man + Ms. Pac-Man game implementation  is at [pacman-basic](http://github.com/armin-reichert/pacman-basic)). A Swing UI is at [https://github.com/armin-reichert/pacman-ui-swing], a JavaFX UI is at https://github.com/armin-reichert/pacman-javafx.)**
+(Hint: A cleaner, UI independent Pac-Man + Ms. Pac-Man game implementation  is at [pacman-basic](http://github.com/armin-reichert/pacman-basic). There are two UIs currently available: a Swing UI at https://github.com/armin-reichert/pacman-ui-swing and a JavaFX UI at https://github.com/armin-reichert/pacman-javafx.)
 
 
 ## A Pac-Man implementation using finite-state machines all over the place
@@ -11,9 +11,11 @@ YouTube: https://www.youtube.com/watch?v=F4KdJvGvL1Q
 
 Do not read any further!
 
-https://kandi.openweaver.com/java/armin-reichert/pacman writes about this project: *It has a negative sentiment in the developer community.*
+https://kandi.openweaver.com/java/armin-reichert/pacman writes about this project:
 
-LOL!
+*It has a negative sentiment in the developer community.*
+
+**LOL**
 
 ## Ghost Lives Matter! Yellow man bad!
 
