@@ -1,4 +1,5 @@
-**(Hint: A cleaner and leaner, UI-independent Pac-Man + Ms. Pac-Man game implementation  is here: [pacman-basic](http://github.com/armin-reichert/pacman-basic))**
+**(Hint: A cleaner and leaner, UI-independent Pac-Man + Ms. Pac-Man game implementation  is at [pacman-basic](http://github.com/armin-reichert/pacman-basic)). A Swing UI is at [https://github.com/armin-reichert/pacman-ui-swing], a JavaFX UI is at https://github.com/armin-reichert/pacman-javafx.)**
+
 
 ## A Pac-Man implementation using finite-state machines all over the place
  
