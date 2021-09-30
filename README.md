@@ -51,7 +51,7 @@ or when running on Windows, run the .bat files `pacman.bat`and `pacman-enhanced.
 
 ## How to build the executable jar file
 
-Clone all used repositories (see pom.xml), build each of them using 'mvn clean install' and then enter:
+**Clone all used repositories** (see pom.xml), build each of them locally using 'mvn clean install' and then enter:
 
 ```
 cd your/path/to/git/repository/pacman
