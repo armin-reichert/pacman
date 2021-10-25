@@ -58,6 +58,10 @@ cd your/path/to/git/repository/pacman
 mvn clean package
 ```
 
+**Crappy workaround until I am able to use Maven:** 
+
+Manually add the DLL ffsampledsp-x86_64-win-0.9.32.dll to the jar file(s).
+
 [![Pac-Man](PacManDoc/app-and-f2dialog.png)](https://www.youtube.com/watch?v=JU3kmUC3T2k&t=210s)
 (Click image to play video)
 
