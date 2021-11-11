@@ -34,7 +34,7 @@ import de.amr.games.pacman.view.play.ExtendedPlayView;
 import de.amr.games.pacman.view.play.PlayView;
 
 /**
- * Game controller with additional functionaliy that is not needed for just playing the game.
+ * Game controller with additional functionality that is not needed for just playing the game.
  * 
  * @author Armin Reichert
  */
