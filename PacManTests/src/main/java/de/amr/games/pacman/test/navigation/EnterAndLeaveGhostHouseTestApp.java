@@ -37,13 +37,14 @@ public class EnterAndLeaveGhostHouseTestApp extends Application {
 
 class EnterGhostHouseTestUI extends TestController {
 
+	private static final Random RND = new Random();
 	private final List<Tile> capes = new ArrayList<>(world.capes());
 	private int visits;
 	private Tile nextCapeToVisit;
 	private boolean enteredCape, leftCape;
 
 	private Tile randomCape() {
-		return capes.get(new Random().nextInt(capes.size()));
+		return capes.get(RND.nextInt(capes.size()));
 	}
 
 	@Override

@@ -143,7 +143,6 @@ class DisplayModeModel extends DefaultTableModel {
 
 public class DisplayModeTest extends JFrame implements ActionListener, ListSelectionListener {
 
-	// private boolean waiting = false;
 	private GraphicsDevice device;
 	private DisplayMode originalDM;
 	private JButton exit = new JButton("Exit");
@@ -151,15 +150,14 @@ public class DisplayModeTest extends JFrame implements ActionListener, ListSelec
 	private JLabel currentDM = new JLabel();
 	private JTable dmList = new JTable();
 	private JScrollPane dmPane = new JScrollPane(dmList);
-	private boolean isFullScreen = false;
 
 	public static final int INDEX_WIDTH = 0;
 	public static final int INDEX_HEIGHT = 1;
 	public static final int INDEX_BITDEPTH = 2;
 	public static final int INDEX_REFRESHRATE = 3;
 
-	public static final int[] COLUMN_WIDTHS = new int[] { 100, 100, 100, 100 };
-	public static final String[] COLUMN_NAMES = new String[] { "Width", "Height", "Bit Depth", "Refresh Rate" };
+	protected static final int[] COLUMN_WIDTHS = new int[] { 100, 100, 100, 100 };
+	protected static final String[] COLUMN_NAMES = new String[] { "Width", "Height", "Bit Depth", "Refresh Rate" };
 
 	public DisplayModeTest(GraphicsDevice device) {
 		super(device.getDefaultConfiguration());
@@ -180,7 +178,7 @@ public class DisplayModeTest extends JFrame implements ActionListener, ListSelec
 		if (source == exit) {
 			device.setDisplayMode(originalDM);
 			System.exit(0);
-		} else { // if (source == changeDM)
+		} else { // source == changeDM
 			int index = dmList.getSelectionModel().getAnchorSelectionIndex();
 			if (index >= 0) {
 				DisplayModeModel model = (DisplayModeModel) dmList.getModel();
@@ -247,7 +245,8 @@ public class DisplayModeTest extends JFrame implements ActionListener, ListSelec
 	public void setDMLabel(DisplayMode newMode) {
 		int bitDepth = newMode.getBitDepth();
 		int refreshRate = newMode.getRefreshRate();
-		String bd, rr;
+		String bd;
+		String rr;
 		if (bitDepth == DisplayMode.BIT_DEPTH_MULTI) {
 			bd = "Multi";
 		} else {
@@ -264,15 +263,13 @@ public class DisplayModeTest extends JFrame implements ActionListener, ListSelec
 	}
 
 	public void begin() {
-		isFullScreen = device.isFullScreenSupported();
-		setUndecorated(isFullScreen);
-		setResizable(!isFullScreen);
-		if (isFullScreen) {
-			// Full-screen mode
+		var fullScreenSupported = device.isFullScreenSupported();
+		setUndecorated(fullScreenSupported);
+		setResizable(!fullScreenSupported);
+		if (fullScreenSupported) {
 			device.setFullScreenWindow(this);
 			validate();
 		} else {
-			// Windowed mode
 			pack();
 			setVisible(true);
 		}

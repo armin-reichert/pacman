@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -61,8 +62,8 @@ public class WorldTests {
 		assertNotNull(house.bed(2));
 		assertNotNull(house.bed(3));
 		assertEquals(1, world.portals().count());
-		assertTrue(world.portals().findFirst().get().either.equals(Tile.at(0, 17)));
-		assertTrue(world.portals().findFirst().get().other.equals(Tile.at(27, 17)));
+		assertEquals(Tile.at(0, 17), world.portals().findFirst().get().either);
+		assertEquals(Tile.at(27, 17), world.portals().findFirst().get().other);
 		assertFalse(world.isAccessible(Tile.at(0, 3)));
 		assertTrue(house.hasDoorAt(Tile.at(13, 15)));
 
@@ -80,8 +81,8 @@ public class WorldTests {
 		assertEquals(4, world.tiles().filter(world::hasFood)
 				.filter(location -> world.foodAt(location).equals(Optional.of(ENERGIZER))).count());
 		assertEquals(244, world.tiles().filter(world::hasFood).count());
-		assertTrue(world.foodAt(Tile.at(1, 4)).get() == PELLET);
-		assertTrue(world.foodAt(Tile.at(1, 6)).get() == ENERGIZER);
+		assertSame(world.foodAt(Tile.at(1, 4)).get(), PELLET);
+		assertSame(world.foodAt(Tile.at(1, 6)).get(), ENERGIZER);
 	}
 
 	@Test
