@@ -283,8 +283,7 @@ public class Ghost extends Guy {
 			return speed(game.ghostSpeed / 2);
 		case ENTERING_HOUSE:
 			return speed(game.ghostSpeed);
-		case CHASING:
-		case SCATTERING:
+		case CHASING, SCATTERING:
 			if (tunnel) {
 				return speed(game.ghostTunnelSpeed);
 			}
@@ -354,7 +353,9 @@ public class Ghost extends Guy {
 		if (ai.is(CHASING, SCATTERING)) {
 			OneWayTile oneWayNeighbor = world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst()
 					.orElse(null);
-			if (oneWayNeighbor != null && tile.dirTo(neighbor).get().equals(oneWayNeighbor.dir.opposite())) {
+			var dirToNeighbor = tile.dirTo(neighbor);
+			if (dirToNeighbor.isPresent() && oneWayNeighbor != null
+					&& dirToNeighbor.get().equals(oneWayNeighbor.dir.opposite())) {
 				return false;
 			}
 		}

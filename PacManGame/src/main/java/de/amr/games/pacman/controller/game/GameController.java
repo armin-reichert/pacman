@@ -112,11 +112,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		world = new ArcadeWorld();
 
-		folks = new Folks(world, world.house(0).get());
+		folks = new Folks(world, world.house(0).orElse(null));
 		folks.pacMan.ai.addEventListener(this::process);
 		folks.ghosts().forEach(ghost -> ghost.ai.addEventListener(this::process));
 
-		doorMan = new DoorMan(world.house(0).get(), folks);
+		doorMan = new DoorMan(world.house(0).orElse(null), folks);
 		ghostCommand = new GhostCommand(folks);
 		bonusController = new BonusFoodController(world, () -> ArcadeBonus.of(game.bonusSymbol, game.bonusValue));
 

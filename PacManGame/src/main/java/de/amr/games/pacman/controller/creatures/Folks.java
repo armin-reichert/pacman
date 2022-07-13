@@ -53,7 +53,10 @@ import de.amr.games.pacman.model.world.components.House;
 public class Folks {
 
 	public final PacMan pacMan;
-	public final Ghost blinky, pinky, inky, clyde;
+	public final Ghost blinky;
+	public final Ghost pinky;
+	public final Ghost inky;
+	public final Ghost clyde;
 
 	public Folks(TiledWorld world, House ghostHouse) {
 
@@ -76,7 +79,7 @@ public class Folks {
 		you(pacMan).followTheCursorKeys().ok();
 
 		Door door = ghostHouse.door(0);
-		Tile houseEntry = world.neighbor(door.tiles().findFirst().get(), door.intoHouse.opposite());
+		Tile houseEntry = world.neighbor(door.tiles().findFirst().orElse(null), door.intoHouse.opposite());
 
 		ghosts().forEach(ghost -> {
 			you(ghost).when(LOCKED).bounceOnBed().ok();
@@ -92,7 +95,8 @@ public class Folks {
 
 		you(inky).when(SCATTERING).headFor().tile(world.width() - 1, world.height() - 1).ok();
 		you(inky).when(CHASING).headFor().tile(() -> {
-			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
+			Tile b = blinky.tile();
+			Tile p = pacMan.tilesAhead(2);
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}).ok();
 

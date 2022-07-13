@@ -65,9 +65,11 @@ class ArcadeWorldRenderer implements WorldRenderer {
 			spriteFlashingMaze = null;
 			g.drawImage(spriteSheet.imageFullMaze(), 0, 3 * Tile.SIZE, null);
 			drawContent(g, world);
-			world.house(0).get().doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
-				g.setColor(Color.BLACK);
-				door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
+			world.house(0).ifPresent(house -> {
+				house.doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
+					g.setColor(Color.BLACK);
+					door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
+				});
 			});
 		}
 		g2.dispose();
