@@ -78,8 +78,9 @@ public class WorldPreview extends JFrame {
 		if (world.pacManBed().includes(location)) {
 			return "P";
 		}
+		var house = world.house(0).orElseThrow();
 		for (int i = 0; i < 4; ++i) {
-			if (world.house(0).get().bed(i).includes(location)) {
+			if (house.bed(i).includes(location)) {
 				return "" + i;
 			}
 		}

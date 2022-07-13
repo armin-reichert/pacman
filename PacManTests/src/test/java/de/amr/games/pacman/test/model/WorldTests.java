@@ -81,8 +81,8 @@ public class WorldTests {
 		assertEquals(4, world.tiles().filter(world::hasFood)
 				.filter(location -> world.foodAt(location).equals(Optional.of(ENERGIZER))).count());
 		assertEquals(244, world.tiles().filter(world::hasFood).count());
-		assertSame(world.foodAt(Tile.at(1, 4)).get(), PELLET);
-		assertSame(world.foodAt(Tile.at(1, 6)).get(), ENERGIZER);
+		assertSame(PELLET, world.foodAt(Tile.at(1, 4)).get());
+		assertSame(ENERGIZER, world.foodAt(Tile.at(1, 6)).get());
 	}
 
 	@Test

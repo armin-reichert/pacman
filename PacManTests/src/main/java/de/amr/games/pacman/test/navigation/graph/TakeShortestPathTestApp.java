@@ -51,7 +51,7 @@ class TakeShortestPathTestUI extends TestController {
 		super.init();
 
 		List<Tile> capes = world.capes();
-		Portal thePortal = world.portals().findAny().get();
+		Portal thePortal = world.portals().findAny().orElseThrow();
 		//@formatter:off
 		targets = Arrays.asList(
 				capes.get(2), 
