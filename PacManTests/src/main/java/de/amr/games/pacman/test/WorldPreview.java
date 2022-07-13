@@ -20,7 +20,7 @@ import de.amr.graph.grid.ui.rendering.WallPassageGridRenderer;
 
 public class WorldPreview extends JFrame {
 
-	static int TS = 16;
+	static final int TS = 16;
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(WorldPreview::new);

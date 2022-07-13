@@ -62,7 +62,7 @@ public class TestController implements VisualController {
 	@Override
 	public void init() {
 		folks.guys().forEach(Lifecycle::init);
-		folks.guys().forEach(guy -> world.exclude(guy));
+		folks.guys().forEach(world::exclude);
 		view.init();
 	}
 
@@ -103,7 +103,7 @@ public class TestController implements VisualController {
 	}
 
 	protected void include(Guy... guys) {
-		Stream.of(guys).forEach(guy -> world.include(guy));
+		Stream.of(guys).forEach(world::include);
 	}
 
 	protected Theme theme() {

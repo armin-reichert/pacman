@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.test.TestController;
@@ -54,7 +55,7 @@ class ScatteringTestUI extends TestController {
 			view.messagesView.clearMessage(2);
 		}
 		if (Keyboard.keyPressedOnce("-")) {
-			folks.ghostsInWorld().forEach(ghost -> ghost.reverseDirection());
+			folks.ghostsInWorld().forEach(Ghost::reverseDirection);
 		}
 		super.update();
 	}

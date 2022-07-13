@@ -2,6 +2,7 @@ package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
+import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.test.TestController;
 
@@ -31,9 +32,7 @@ class JumpingTestUI extends TestController {
 	public void init() {
 		super.init();
 		include(blinky, inky, pinky, clyde);
-		folks.ghostsInWorld().forEach(ghost -> {
-			ghost.init();
-		});
+		folks.ghostsInWorld().forEach(Ghost::init);
 		view.turnGridOn();
 		view.turnStatesOn();
 	}
