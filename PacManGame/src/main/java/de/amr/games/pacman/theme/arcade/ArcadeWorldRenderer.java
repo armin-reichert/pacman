@@ -58,7 +58,7 @@ class ArcadeWorldRenderer implements WorldRenderer {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		if (world.isChanging()) {
 			if (spriteFlashingMaze == null) {
-				spriteFlashingMaze = spriteSheet.makeSpriteFlashingMaze(PacManGame.game.numFlashes);
+				spriteFlashingMaze = spriteSheet.makeSpriteFlashingMaze(PacManGame.it().numFlashes);
 			}
 			spriteFlashingMaze.draw(g2, 0, 3 * Tile.SIZE);
 		} else {

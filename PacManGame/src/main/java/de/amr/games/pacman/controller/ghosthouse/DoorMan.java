@@ -30,7 +30,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.game.Timing.sec;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.confirmed;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.rejected;
-import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -39,6 +38,7 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
@@ -141,6 +141,7 @@ public class DoorMan implements Lifecycle {
 	}
 
 	public int personalDotLimit(Ghost ghost) {
+		var game = PacManGame.it();
 		if (ghost == folks.pinky) {
 			return 0;
 		}
@@ -219,7 +220,7 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private long pacManStarvingTimeLimit() {
-		return game.level < 5 ? sec(4) : sec(3);
+		return PacManGame.it().level < 5 ? sec(4) : sec(3);
 	}
 
 	/**

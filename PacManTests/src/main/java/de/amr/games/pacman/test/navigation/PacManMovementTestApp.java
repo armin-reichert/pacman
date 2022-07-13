@@ -43,13 +43,14 @@ class PacManMovementTestUI extends TestController {
 		world.restoreFood();
 		include(pacMan);
 		pacMan.ai.addEventListener(event -> {
+			var game = PacManGame.it();
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				world.removeFood(foodFound.location);
-				PacManGame.game.eatenFoodCount++;
-				if (PacManGame.game.remainingFoodCount() == 0) {
+				game.eatenFoodCount++;
+				if (game.remainingFoodCount() == 0) {
 					world.restoreFood();
-					PacManGame.game.eatenFoodCount = 0;
+					game.eatenFoodCount = 0;
 				}
 			}
 		});

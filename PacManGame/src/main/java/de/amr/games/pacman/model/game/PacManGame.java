@@ -38,7 +38,14 @@ import java.util.List;
  */
 public class PacManGame {
 
-	public static PacManGame game;
+	private static PacManGame theGame;
+
+	public static PacManGame it() {
+		if (theGame == null) {
+			throw new IllegalStateException("Cannot access game instance before is has been created.");
+		}
+		return theGame;
+	}
 
 	static final int PACMAN_LIVES = 3;
 	static final int POINTS_PELLET = 10;
@@ -96,13 +103,13 @@ public class PacManGame {
 	}
 
 	public static boolean started() {
-		return game != null;
+		return theGame != null;
 	}
 
 	public static void start(int startLevel, int totalFoodCount) {
-		game = new PacManGame(startLevel, totalFoodCount, PACMAN_LIVES, 0);
-		game.hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
-		game.levelCounter.add(game.bonusSymbol);
+		theGame = new PacManGame(startLevel, totalFoodCount, PACMAN_LIVES, 0);
+		theGame.hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
+		theGame.levelCounter.add(theGame.bonusSymbol);
 		loginfo("Game started at level %d", startLevel);
 	}
 
@@ -110,16 +117,15 @@ public class PacManGame {
 		if (!started()) {
 			throw new IllegalStateException("Cannot enter next level, game not started");
 		}
-		PacManGame next = new PacManGame(game.level + 1, game.foodCount, game.lives, game.score);
-		next.hiscore = game.hiscore;
-		next.levelCounter = game.levelCounter;
+		PacManGame next = new PacManGame(theGame.level + 1, theGame.foodCount, theGame.lives, theGame.score);
+		next.hiscore = theGame.hiscore;
+		next.levelCounter = theGame.levelCounter;
 		next.levelCounter.add(next.bonusSymbol);
-		game = next;
+		theGame = next;
 		loginfo("Game entered level %d" + "", next.level);
 	}
 
 	//@formatter:off
-	
 	public final String bonusSymbol;
 	public final int    bonusValue;
 	public final float  pacManSpeed;
@@ -144,7 +150,6 @@ public class PacManGame {
 	public int          score;
 	public Hiscore      hiscore;
 	public List<String> levelCounter;
-
 	//@formatter:on
 
 	private PacManGame(int level, int foodCount, int lives, int score) {

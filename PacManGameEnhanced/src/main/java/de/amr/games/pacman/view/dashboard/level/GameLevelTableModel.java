@@ -83,7 +83,7 @@ public class GameLevelTableModel extends AbstractTableModel {
 			return LEVEL_PARAMS[row];
 		}
 		if (col == 1) {
-			return PacManGame.started() ? levelValue(PacManGame.game, row) : null;
+			return PacManGame.started() ? levelValue(PacManGame.it(), row) : null;
 		}
 		throw new IllegalArgumentException("Illegal column index; " + col);
 	}

@@ -35,7 +35,6 @@ import static de.amr.games.pacman.controller.game.PacManGameState.GETTING_READY;
 import static de.amr.games.pacman.controller.game.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.game.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
-import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -50,6 +49,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.theme.api.Theme;
@@ -72,12 +72,9 @@ public class ExtendedGameController extends GameController {
 	public ExtendedGameController(List<Theme> themes) {
 		super(themes);
 		REGISTRY.register("Game", Stream.of(this, bonusController, ghostCommand));
-		addStateEntryListener(INTRO, state -> {
-			REGISTRY.register(currentView.getClass().getSimpleName(), currentView.machines());
-		});
-		addStateExitListener(INTRO, state -> {
-			REGISTRY.unregister(currentView.machines());
-		});
+		addStateEntryListener(INTRO,
+				state -> REGISTRY.register(currentView.getClass().getSimpleName(), currentView.machines()));
+		addStateExitListener(INTRO, state -> REGISTRY.unregister(currentView.machines()));
 		addStateEntryListener(GETTING_READY, state -> {
 			REGISTRY.register(currentView.getClass().getSimpleName(), currentView.machines());
 			REGISTRY.unregister(folks.pacMan.machines());
@@ -87,9 +84,7 @@ public class ExtendedGameController extends GameController {
 				REGISTRY.register("Ghosts", ghost.machines());
 			});
 		});
-		addStateEntryListener(GAME_OVER, state -> {
-			REGISTRY.unregister(currentView.machines());
-		});
+		addStateEntryListener(GAME_OVER, state -> REGISTRY.unregister(currentView.machines()));
 	}
 
 	@Override
@@ -315,7 +310,7 @@ public class ExtendedGameController extends GameController {
 	}
 
 	private void switchToNextLevel() {
-		loginfo("Switching to level %d", game.level + 1);
+		loginfo("Switching to level %d", PacManGame.it().level + 1);
 		enqueue(new LevelCompletedEvent());
 	}
 
@@ -325,14 +320,13 @@ public class ExtendedGameController extends GameController {
 		}
 		world.tiles().filter(location -> world.hasFood(ArcadeFood.PELLET, location)).forEach(tile -> {
 			world.removeFood(tile);
-			game.gainPelletPoints();
+			PacManGame.it().gainPelletPoints();
 			doorMan.onPacManFoundFood();
 			doorMan.update();
 		});
 		loginfo("All simple pellets have been eaten");
-		if (game.remainingFoodCount() == 0) {
+		if (PacManGame.it().remainingFoodCount() == 0) {
 			enqueue(new LevelCompletedEvent());
-			return;
 		}
 	}
 
@@ -340,9 +334,9 @@ public class ExtendedGameController extends GameController {
 		if (getState() != PLAYING) {
 			return;
 		}
-		game.ghostsKilledByEnergizer = 0;
+		PacManGame.it().ghostsKilledByEnergizer = 0;
 		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
-			game.gainGhostPoints();
+			PacManGame.it().gainGhostPoints();
 			ghost.ai.process(new GhostKilledEvent(ghost));
 		});
 		loginfo("All ghosts have been killed");

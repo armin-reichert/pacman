@@ -62,7 +62,8 @@ class ArcadePacManRenderer implements PacManRenderer {
 				}
 				int width = pacMan.tf.width;
 				int height = pacMan.tf.height;
-				float x = pacMan.tf.x - (sprite.getWidth() - width) / 2, y = pacMan.tf.y - (sprite.getHeight() - height) / 2;
+				float x = pacMan.tf.x - (sprite.getWidth() - width) / 2;
+				float y = pacMan.tf.y - (sprite.getHeight() - height) / 2;
 				sprite.draw(g, x, y);
 			});
 		}

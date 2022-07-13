@@ -32,7 +32,6 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.game.Timing.sec;
 import static de.amr.games.pacman.controller.game.Timing.speed;
-import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -274,6 +273,7 @@ public class Ghost extends Guy {
 		if (!PacManGame.started()) {
 			return 0;
 		}
+		var game = PacManGame.it();
 		Tile tile = tile();
 		boolean tunnel = world.isTunnel(tile) || world.isPortal(tile);
 		switch (ai.getState()) {
@@ -314,16 +314,16 @@ public class Ghost extends Guy {
 	}
 
 	private void computeBounty() {
-		bounty = PacManGame.started() ? game.ghostBounty() : 0;
+		bounty = PacManGame.started() ? PacManGame.it().ghostBounty() : 0;
 	}
 
 	private long getFrightenedTicks() {
-		return PacManGame.started() ? sec(game.pacManPowerSeconds) : sec(5);
+		return PacManGame.started() ? sec(PacManGame.it().pacManPowerSeconds) : sec(5);
 	}
 
 	private long getFlashTimeTicks() {
 		// assuming one flashing takes 0.5 seconds
-		return PacManGame.started() ? game.numFlashes * sec(0.5f) : 0;
+		return PacManGame.started() ? PacManGame.it().numFlashes * sec(0.5f) : 0;
 	}
 
 	private void checkPacManCollision(PacMan pacMan) {
