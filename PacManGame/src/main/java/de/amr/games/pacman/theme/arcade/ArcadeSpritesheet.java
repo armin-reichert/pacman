@@ -60,36 +60,36 @@ public class ArcadeSpritesheet extends Spritesheet {
 		return DIRECTIONS.indexOf(dir);
 	}
 
-	BufferedImage empty_maze = Assets.readImage("themes/arcade/maze_empty.png");
-	BufferedImage full_maze = Assets.readImage("themes/arcade/maze_full.png");
+	BufferedImage emptyMazeImage = Assets.readImage("themes/arcade/maze_empty.png");
+	BufferedImage fullMazeImage = Assets.readImage("themes/arcade/maze_full.png");
 
-	BufferedImage empty_white_maze;
-	BufferedImage pacMan_full;
-	BufferedImage pacMan_blocked[];
-	BufferedImage pacMan_walking[][];
-	BufferedImage pacMan_dying[];
-	BufferedImage pacMan_lives_counter;
-	BufferedImage ghost_colored[][];
-	BufferedImage ghost_frightened[];
-	BufferedImage ghost_flashing[];
-	BufferedImage ghost_eyes[];
-	BufferedImage green_numbers[];
-	BufferedImage pink_numbers[];
-	BufferedImage bonus_symbols[];
+	BufferedImage emptyWhiteMazeImage;
+	BufferedImage pacManFullImage;
+	BufferedImage[] pacManBlockedImages;
+	BufferedImage[][] pacManWalkingImages;
+	BufferedImage[] pacManDyingImages;
+	BufferedImage livesCounterImage;
+	BufferedImage[][] ghostColoredImagesById;
+	BufferedImage[] ghostFrightenedImages;
+	BufferedImage[] ghostFlashingImages;
+	BufferedImage[] ghostEyesImages;
+	BufferedImage[] greenNumberImages;
+	BufferedImage[] pinkNumberImages;
+	BufferedImage[] bonusSymbolImages;
 
 	public ArcadeSpritesheet() {
 		super("themes/arcade/sprites.png", 16);
 
 		// Debugger told me RGB value of blue color in maze image
-		empty_white_maze = exchangeColor(empty_maze, -14605825, Color.WHITE.getRGB());
+		emptyWhiteMazeImage = exchangeColor(emptyMazeImage, -14605825, Color.WHITE.getRGB());
 
 		// Symbols for bonus food
-		bonus_symbols = horizontalTiles(8, 2, 3);
+		bonusSymbolImages = horizontalTiles(8, 2, 3);
 
 		// Pac-Man
-		pacMan_full = tile(2, 0);
-		pacMan_dying = horizontalTiles(11, 3, 0);
-		pacMan_walking = new BufferedImage[][] {
+		pacManFullImage = tile(2, 0);
+		pacManDyingImages = horizontalTiles(11, 3, 0);
+		pacManWalkingImages = new BufferedImage[][] {
 			/*@formatter:off*/
 			{ tile(0, 0), tile(0, 0), tile(0, 0), tile(0, 0), tile(1, 0), tile(1, 0), tile(2, 0) }, // RIGHT
 			{ tile(0, 1), tile(0, 1), tile(0, 1), tile(0, 1), tile(1, 1), tile(1, 1), tile(2, 0) }, // LEFT
@@ -97,25 +97,25 @@ public class ArcadeSpritesheet extends Spritesheet {
 			{ tile(0, 3), tile(0, 3), tile(0, 3), tile(0, 3), tile(1, 3), tile(1, 3), tile(2, 0) }  // DOWN
 			/*@formatter:on*/
 		};
-		pacMan_blocked = new BufferedImage[] { tile(0, 0), tile(0, 1), tile(0, 2), tile(0, 3) };
-		pacMan_lives_counter = tile(8, 1);
+		pacManBlockedImages = new BufferedImage[] { tile(0, 0), tile(0, 1), tile(0, 2), tile(0, 3) };
+		livesCounterImage = tile(8, 1);
 
 		// Ghosts
-		ghost_colored = new BufferedImage[4][8];
+		ghostColoredImagesById = new BufferedImage[4][8];
 		for (int color = 0; color < 4; ++color) {
 			for (int i = 0; i < 8; ++i) {
-				ghost_colored[color][i] = tile(i, 4 + color);
+				ghostColoredImagesById[color][i] = tile(i, 4 + color);
 			}
 		}
-		ghost_frightened = horizontalTiles(2, 8, 4);
-		ghost_flashing = horizontalTiles(4, 8, 4);
-		ghost_eyes = horizontalTiles(4, 8, 5);
+		ghostFrightenedImages = horizontalTiles(2, 8, 4);
+		ghostFlashingImages = horizontalTiles(4, 8, 4);
+		ghostEyesImages = horizontalTiles(4, 8, 5);
 
 		// Green numbers (200, 400, 800, 1600)
-		green_numbers = horizontalTiles(4, 0, 8);
+		greenNumberImages = horizontalTiles(4, 0, 8);
 
 		// Pink numbers (100, 300, 500, 700, 1000, 2000, 3000, 5000)
-		pink_numbers = new BufferedImage[] {
+		pinkNumberImages = new BufferedImage[] {
 			/*@formatter:off*/
 			tile(0,9), tile(1,9), tile(2,9), tile(3,9), 
 			region(64, 144, 19, 16),
@@ -127,48 +127,48 @@ public class ArcadeSpritesheet extends Spritesheet {
 	}
 
 	public BufferedImage imageFullMaze() {
-		return full_maze;
+		return fullMazeImage;
 	}
 
 	public Sprite makeSpriteFlashingMaze(int flashes) {
 		if (flashes == 0) {
-			return Sprite.of(empty_maze);
+			return Sprite.of(emptyMazeImage);
 		}
 		BufferedImage[] frames = new BufferedImage[2 * flashes];
 		for (int i = 0; i < flashes; ++i) {
-			frames[2 * i] = empty_maze;
-			frames[2 * i + 1] = empty_white_maze;
+			frames[2 * i] = emptyMazeImage;
+			frames[2 * i + 1] = emptyWhiteMazeImage;
 		}
 		return Sprite.of(frames).animate(LINEAR, 200);
 	}
 
 	public Sprite makeSpriteBonusSymbol(String symbolName) {
 		int index = ArcadeBonus.Symbol.valueOf(symbolName).ordinal();
-		return Sprite.of(bonus_symbols[index]);
+		return Sprite.of(bonusSymbolImages[index]);
 	}
 
 	public Sprite makeSpritePacManFull() {
-		return Sprite.of(pacMan_full);
+		return Sprite.of(pacManFullImage);
 	}
 
 	public Sprite makeSpritePacManBlocked(Direction dir) {
-		return Sprite.of(pacMan_blocked[dirIndex(dir)]);
+		return Sprite.of(pacManBlockedImages[dirIndex(dir)]);
 	}
 
 	public Sprite makeSpritePacManWalking(Direction dir) {
-		return Sprite.of(pacMan_walking[dirIndex(dir)]).animate(FORWARD_BACKWARDS, 5);
+		return Sprite.of(pacManWalkingImages[dirIndex(dir)]).animate(FORWARD_BACKWARDS, 5);
 	}
 
 	public Sprite makeSpritePacManCollapsing() {
-		return Sprite.of(pacMan_dying).animate(LINEAR, 100);
+		return Sprite.of(pacManDyingImages).animate(LINEAR, 100);
 	}
 
 	public BufferedImage imageLivesCounter() {
-		return pacMan_lives_counter;
+		return livesCounterImage;
 	}
 
 	public BufferedImage imageBonusSymbol(int bonus) {
-		return bonus_symbols[bonus];
+		return bonusSymbolImages[bonus];
 	}
 
 	public BufferedImage imageNumber(int number) {
@@ -176,24 +176,24 @@ public class ArcadeSpritesheet extends Spritesheet {
 		if (index == -1) {
 			throw new IllegalArgumentException("No sprite found for number" + number);
 		}
-		return index < 4 ? green_numbers[index] : pink_numbers[index - 4];
+		return index < 4 ? greenNumberImages[index] : pinkNumberImages[index - 4];
 	}
 
 	public Sprite makeSpritGhostColored(GhostColor color, Direction dir) {
-		BufferedImage[] frames = Arrays.copyOfRange(ghost_colored[color.ordinal()], 2 * dirIndex(dir),
+		BufferedImage[] frames = Arrays.copyOfRange(ghostColoredImagesById[color.ordinal()], 2 * dirIndex(dir),
 				2 * (dirIndex(dir) + 1));
 		return Sprite.of(frames).animate(FORWARD_BACKWARDS, 300);
 	}
 
 	public Sprite makeSpriteGhostFrightened() {
-		return Sprite.of(ghost_frightened).animate(CYCLIC, 300);
+		return Sprite.of(ghostFrightenedImages).animate(CYCLIC, 300);
 	}
 
 	public Sprite makeSpriteGhostFlashing() {
-		return Sprite.of(ghost_flashing).animate(CYCLIC, 125); // 4 frames take 0.5 sec
+		return Sprite.of(ghostFlashingImages).animate(CYCLIC, 125); // 4 frames take 0.5 sec
 	}
 
 	public Sprite makeSpriteGhostEyes(Direction dir) {
-		return Sprite.of(ghost_eyes[dirIndex(dir)]);
+		return Sprite.of(ghostEyesImages[dirIndex(dir)]);
 	}
 }
