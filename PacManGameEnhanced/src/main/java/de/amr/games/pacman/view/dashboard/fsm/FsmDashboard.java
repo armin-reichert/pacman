@@ -78,7 +78,7 @@ public class FsmDashboard extends JFrame {
 		}
 	};
 
-	private final FsmModel model;
+	private final  FsmModel model;
 	private MultiPanel multiPanel;
 	private FsmGraphView[] views = new FsmGraphView[4];
 

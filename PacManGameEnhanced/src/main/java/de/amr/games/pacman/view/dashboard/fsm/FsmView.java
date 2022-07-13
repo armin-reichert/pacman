@@ -120,7 +120,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		}
 	};
 
-	private final TreeModelListener treeSelectionInitializer = new TreeModelListener() {
+	private final  TreeModelListener treeSelectionInitializer = new TreeModelListener() {
 		@Override
 		public void treeStructureChanged(TreeModelEvent e) {
 			tree.initSelection();
@@ -143,7 +143,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		}
 	};
 
-	private final FsmModel model = new FsmModel();
+	private final  FsmModel model = new FsmModel();
 	private FsmDashboard dashboard;
 	private FsmTreeModel tree;
 	private FsmTextView fsmEmbeddedTextView;

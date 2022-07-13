@@ -89,9 +89,9 @@ class GameStateTableModel extends AbstractTableModel {
 		}
 	};
 
-	private GameController gameController;
-	private TiledWorld world;
-	private GameStateRecord[] records;
+	private  GameController gameController;
+	private  TiledWorld world;
+	private  GameStateRecord[] records;
 	private boolean dummy;
 
 	public GameStateTableModel() {
@@ -200,21 +200,20 @@ class GameStateTableModel extends AbstractTableModel {
 		r.tile = null;
 		r.state = BonusFoodState.BONUS_INACTIVE.name();
 		r.ticksRemaining = r.duration = 0;
-		world.temporaryFood().filter(bonus -> bonus instanceof ArcadeBonus).map(ArcadeBonus.class::cast)
-				.ifPresent(bonus -> {
-					r.included = true;
-					r.name = bonus.symbol.name();
-					r.state = "";
-					if (bonus.isConsumed()) {
-						r.state = "Consumed";
-					} else if (bonus.isActive()) {
-						r.state = "Present";
-					} else {
-						r.state = "Absent";
-					}
-					r.ticksRemaining = gameController.bonusController.state().getTicksRemaining();
-					r.duration = gameController.bonusController.state().getDuration();
-				});
+		world.temporaryFood().filter(ArcadeBonus.class::isInstance).map(ArcadeBonus.class::cast).ifPresent(bonus -> {
+			r.included = true;
+			r.name = bonus.symbol.name();
+			r.state = "";
+			if (bonus.isConsumed()) {
+				r.state = "Consumed";
+			} else if (bonus.isActive()) {
+				r.state = "Present";
+			} else {
+				r.state = "Absent";
+			}
+			r.ticksRemaining = gameController.bonusController.state().getTicksRemaining();
+			r.duration = gameController.bonusController.state().getDuration();
+		});
 	}
 
 	@Override
@@ -250,13 +249,9 @@ class GameStateTableModel extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object value, int row, int col) {
-		switch (ColumnInfo.at(col)) {
-		case ON_STAGE:
+		if (ColumnInfo.at(col) == ColumnInfo.ON_STAGE) {
 			records[row].included = (boolean) value;
 			fireTableCellUpdated(row, col);
-			break;
-		default:
-			break;
 		}
 	}
 

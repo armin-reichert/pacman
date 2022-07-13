@@ -119,6 +119,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
+		// nothing to do
 	}
 
 	@Override
