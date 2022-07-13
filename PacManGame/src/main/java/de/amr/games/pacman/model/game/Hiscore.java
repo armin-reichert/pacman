@@ -98,7 +98,6 @@ public class Hiscore {
 				loginfo("Saved highscore file '%s'", file);
 			} catch (IOException e) {
 				loginfo("Could not save hiscore file '%s'", file);
-				throw new RuntimeException(e);
 			}
 		}
 	}
