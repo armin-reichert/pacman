@@ -45,11 +45,11 @@ public abstract class FollowingPath implements Steering {
 	protected List<Tile> path;
 	protected int pathIndex;
 
-	public FollowingPath(Guy guy) {
+	protected FollowingPath(Guy guy) {
 		this(guy, Collections.emptyList());
 	}
 
-	public FollowingPath(Guy guy, List<Tile> initialPath) {
+	protected FollowingPath(Guy guy, List<Tile> initialPath) {
 		this.guy = Objects.requireNonNull(guy);
 		setPath(initialPath);
 	}

@@ -36,7 +36,7 @@ public abstract class TileWorldEntity extends Entity {
 
 	public final TiledWorld world;
 
-	public TileWorldEntity(TiledWorld world) {
+	protected TileWorldEntity(TiledWorld world) {
 		this.world = world;
 	}
 
@@ -70,8 +70,8 @@ public abstract class TileWorldEntity extends Entity {
 	}
 
 	/**
-	 * The deviation from the current tile's x-position from the center of its current tile, a value
-	 * between 0 and Tile.SIZE.
+	 * The deviation from the current tile's x-position from the center of its current tile, a value between 0 and
+	 * Tile.SIZE.
 	 * 
 	 * @return the horizontal tile offset
 	 */
@@ -80,8 +80,8 @@ public abstract class TileWorldEntity extends Entity {
 	}
 
 	/**
-	 * The deviation from the current tile's y-position from the center of its current tile, a value
-	 * between 0 and Tile.SIZE.
+	 * The deviation from the current tile's y-position from the center of its current tile, a value between 0 and
+	 * Tile.SIZE.
 	 * 
 	 * @return the vertical tile offset
 	 */

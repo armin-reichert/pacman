@@ -46,7 +46,7 @@ public abstract class Guy extends TileWorldEntity implements Lifecycle, StateMac
 
 	protected final MovementController movement;
 
-	public Guy(TiledWorld world, String name) {
+	protected Guy(TiledWorld world, String name) {
 		super(world);
 		this.name = name;
 		this.movement = new MovementController(this);
