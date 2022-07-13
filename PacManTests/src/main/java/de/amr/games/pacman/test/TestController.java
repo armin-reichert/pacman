@@ -37,7 +37,10 @@ public class TestController implements VisualController {
 	protected final ArcadeWorld world;
 	protected final Folks folks;
 	protected final PacMan pacMan;
-	protected final Ghost blinky, pinky, inky, clyde;
+	protected final Ghost blinky;
+	protected final Ghost pinky;
+	protected final Ghost inky;
+	protected final Ghost clyde;
 	protected final List<Theme> themes;
 	protected final ExtendedPlayView view;
 	protected int currentThemeIndex;

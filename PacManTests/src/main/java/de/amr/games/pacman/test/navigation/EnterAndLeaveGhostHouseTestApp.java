@@ -42,7 +42,8 @@ class EnterGhostHouseTestUI extends TestController {
 	private final List<Tile> capes = new ArrayList<>(world.capes());
 	private int visits;
 	private Tile nextCapeToVisit;
-	private boolean enteredCape, leftCape;
+	private boolean enteredCape;
+	private boolean leftCape;
 
 	private Tile randomCape() {
 		return capes.get(RND.nextInt(capes.size()));
