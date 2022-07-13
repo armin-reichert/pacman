@@ -65,6 +65,8 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Guy {
 
+	private static final String ANNOT_OUTSIDE_HOUSE = "Outside house";
+
 	public static Ghost shadowGhost(TiledWorld world, String name, PacMan pacMan) {
 		return new Ghost(world, name, GhostPersonality.SHADOW, pacMan);
 	}
@@ -167,15 +169,15 @@ public class Ghost extends Guy {
 	
 				.when(LEAVING_HOUSE).then(SCATTERING)
 					.condition(() -> justLeftHouse() && nextState == SCATTERING)
-					.annotation("Outside house")
+					.annotation(ANNOT_OUTSIDE_HOUSE)
 	
 				.when(LEAVING_HOUSE).then(CHASING)
 					.condition(() -> justLeftHouse() && nextState == CHASING)
-					.annotation("Outside house")
+					.annotation(ANNOT_OUTSIDE_HOUSE)
 	
 				.when(LEAVING_HOUSE).then(FRIGHTENED)
 					.condition(() -> justLeftHouse() && nextState == FRIGHTENED)
-					.annotation("Outside house")
+					.annotation(ANNOT_OUTSIDE_HOUSE)
 	
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> getSteering().isComplete())

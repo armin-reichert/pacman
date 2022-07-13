@@ -87,6 +87,7 @@ public class EmptyWorld extends AbstractTiledWorld {
 
 	@Override
 	public void restoreFood() {
+		// nothing to do
 	}
 
 	@Override
@@ -96,6 +97,7 @@ public class EmptyWorld extends AbstractTiledWorld {
 
 	@Override
 	public void removeFood(Tile location) {
+		// nothing to do
 	}
 
 	@Override
@@ -110,9 +112,11 @@ public class EmptyWorld extends AbstractTiledWorld {
 
 	@Override
 	public void showTemporaryFood(TemporaryFood food) {
+		// nothing to do
 	}
 
 	@Override
 	public void hideTemporaryFood() {
+		// nothing to do
 	}
 }

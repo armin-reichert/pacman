@@ -175,7 +175,7 @@ public class ArcadeWorld extends AbstractTiledWorld {
 	}
 
 	private boolean outsideHouse(Tile tile) {
-		return houses().noneMatch(house -> house.includes(tile));
+		return houses().noneMatch(h -> h.includes(tile));
 	}
 
 	@Override

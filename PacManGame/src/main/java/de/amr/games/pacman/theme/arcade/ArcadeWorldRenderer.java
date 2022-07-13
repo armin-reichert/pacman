@@ -45,7 +45,7 @@ class ArcadeWorldRenderer implements WorldRenderer {
 	private Sprite spriteFlashingMaze;
 	private final SpriteAnimation energizerAnimation;
 
-	public ArcadeWorldRenderer(ArcadeSpritesheet spriteSheet) {
+	public ArcadeWorldRenderer() {
 		energizerAnimation = new CyclicAnimation(2);
 		energizerAnimation.setFrameDuration(150);
 	}

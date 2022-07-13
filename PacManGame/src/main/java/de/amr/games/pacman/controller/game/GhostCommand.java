@@ -35,6 +35,7 @@ import de.amr.games.pacman.controller.game.GhostCommand.Phase;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
+import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * Controller for the timing of the ghost attack waves. Ghosts change between chasing and scattering mode during each
@@ -75,7 +76,7 @@ public class GhostCommand extends StateMachine<Phase, String> {
 	private static final Times[] LEVELS_5_ = createTimes();
 
 	/*@formatter:off*/
-	{
+	static {
 		LEVEL_1[0].scatter = sec(7);
 		LEVEL_1[0].chase   = sec(20);
 		LEVEL_1[1].scatter = sec(7);

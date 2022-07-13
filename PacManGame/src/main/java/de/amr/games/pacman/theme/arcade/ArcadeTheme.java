@@ -87,7 +87,7 @@ public class ArcadeTheme extends ThemeParameterMap implements Theme {
 		return map;
 	}
 
-	private SpriteMap makeGhostSpriteMap(Ghost ghost) {
+	private SpriteMap makeGhostSpriteMap() {
 		SpriteMap map = new SpriteMap();
 		for (Direction dir : Direction.values()) {
 			for (GhostColor color : GhostColor.values()) {
@@ -106,7 +106,7 @@ public class ArcadeTheme extends ThemeParameterMap implements Theme {
 	SpriteMap getSpriteMap(Ghost ghost) {
 		SpriteMap spriteMap = ghostSprites.get(ghost);
 		if (spriteMap == null) {
-			spriteMap = makeGhostSpriteMap(ghost);
+			spriteMap = makeGhostSpriteMap();
 			ghostSprites.put(ghost, spriteMap);
 		}
 		return spriteMap;
@@ -155,7 +155,7 @@ public class ArcadeTheme extends ThemeParameterMap implements Theme {
 
 	@Override
 	public WorldRenderer worldRenderer() {
-		return new ArcadeWorldRenderer(spriteSheet);
+		return new ArcadeWorldRenderer();
 	}
 
 	@Override

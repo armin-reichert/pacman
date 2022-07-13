@@ -38,11 +38,7 @@ import de.amr.games.pacman.model.world.api.Tile;
 @FunctionalInterface
 public interface Steering {
 
-	static Steering STANDING_STILL = new Steering() {
-
-		@Override
-		public void steer(Guy guy) {
-		}
+	static Steering STANDING_STILL = guy -> {
 	};
 
 	/**
@@ -59,8 +55,7 @@ public interface Steering {
 	}
 
 	/**
-	 * Triggers this steering once, even if preconditions (e.g. that a new tile has been entered) are
-	 * not fulfilled.
+	 * Triggers this steering once, even if preconditions (e.g. that a new tile has been entered) are not fulfilled.
 	 */
 	default void force() {
 	}
@@ -75,8 +70,7 @@ public interface Steering {
 	}
 
 	/**
-	 * @return tells if the steering requires that the mover stays aligned with the grid (default is
-	 *         {@code false}).
+	 * @return tells if the steering requires that the mover stays aligned with the grid (default is {@code false}).
 	 */
 	default boolean requiresGridAlignment() {
 		return false;
