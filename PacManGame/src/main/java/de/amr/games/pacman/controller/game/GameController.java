@@ -164,9 +164,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							.filter(ghost -> ghost.ai.is(GhostState.DEAD, GhostState.ENTERING_HOUSE))
 							.forEach(Ghost::update);
 					})
-					.onExit(() -> {
-						folks.pacMan.visible = true;
-					})
+					.onExit(() -> folks.pacMan.visible = true)
 				
 				.state(PACMAN_DYING)
 					.timeoutAfter(sec(5))
@@ -188,9 +186,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						folks.pacMan.update();
 					})
-					.onExit(() -> {
-						world.setFrozen(false);
-					})
+					.onExit(() -> world.setFrozen(false))
 				
 				.state(GAME_OVER)
 					.onEntry(() -> {
@@ -205,9 +201,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						sounds().stopAll();
 						sounds().playMusic(sounds().musicGameOver());
 					})
-					.onTick(() -> {
-						folks.ghostsInWorld().forEach(Ghost::move);
-					})
+					.onTick(() -> folks.ghostsInWorld().forEach(Ghost::move))
 					.onExit(() -> {
 						world.restoreFood();
 						playView().messagesView.clearMessage(2);
@@ -335,8 +329,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public class PlayingState extends State<PacManGameState> {
 
-		final long INITIAL_WAIT_TIME = sec(2);
-
 		@Override
 		public void onEntry() {
 			startBackgroundMusicForPlaying();
@@ -350,10 +342,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onTick(State<PacManGameState> state, long passed, long remaining) {
 			folks.guysInWorld().forEach(Lifecycle::update);
-			if (passed == INITIAL_WAIT_TIME) {
+			if (passed == sec(2)) {
 				folks.pacMan.wakeUp();
 			}
-			if (passed > INITIAL_WAIT_TIME) {
+			if (passed > sec(2)) {
 				ghostCommand.update();
 				doorMan.update();
 				bonusController.update();
@@ -444,7 +436,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class ChangingLevelState extends State<PacManGameState> {
 
 		private boolean complete;
-		private long flashingStart = sec(2), flashingEnd;
+		private long flashingStart = sec(2);
+		private long flashingEnd;
 
 		public boolean isComplete() {
 			return complete;
