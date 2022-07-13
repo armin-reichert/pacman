@@ -1,10 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>PacManGame</artifactId>
 	<name>PacManGame</name>
 	<description>Pac-Man game using explicit state machines</description>
+	<parent>
+		<groupId>de.amr.games.pacman</groupId>
+		<artifactId>pacman</artifactId>
+		<version>1.0</version>
+		<relativePath>..</relativePath>
+	</parent>
 	<build>
 		<plugins>
 			<plugin>
@@ -39,10 +43,4 @@
 		</dependency>
 	</dependencies>
 	<url>https://github.com/armin-reichert/pacman</url>
-	<parent>
-		<groupId>de.amr.games.pacman</groupId>
-		<artifactId>pacman</artifactId>
-		<version>1.0</version>
-		<relativePath>..</relativePath>
-	</parent>
 </project>
