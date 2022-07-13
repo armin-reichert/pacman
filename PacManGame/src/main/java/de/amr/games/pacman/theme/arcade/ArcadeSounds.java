@@ -45,7 +45,9 @@ public class ArcadeSounds implements PacManGameSounds {
 		return Assets.sound("themes/arcade/sounds/" + name + ".mp3");
 	}
 
-	private SoundClip musicGameReady, musicGameRunning, musicGameOver;
+	private SoundClip musicGameReady;
+	private SoundClip musicGameRunning;
+	private SoundClip musicGameOver;
 
 	@Override
 	public Stream<SoundClip> clips() {

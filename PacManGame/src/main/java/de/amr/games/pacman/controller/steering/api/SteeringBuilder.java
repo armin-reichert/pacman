@@ -240,7 +240,10 @@ public class SteeringBuilder {
 
 	public class FollowsKeysBuilder {
 
-		private int up, right, down, left;
+		private int up;
+		private int right;
+		private int down;
+		private int left;
 
 		public FollowsKeysBuilder keys(int up, int right, int down, int left) {
 			this.up = up;

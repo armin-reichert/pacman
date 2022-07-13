@@ -55,7 +55,10 @@ public class GhostPointsAnimation extends GameObject {
 	static final List<Integer> POINTS_GHOSTS = List.of(200, 400, 800, 1600);
 
 	private final PacMan pacMan;
-	private final Ghost blinky, inky, pinky, clyde;
+	private final Ghost blinky;
+	private final Ghost inky;
+	private final Ghost pinky;
+	private final Ghost clyde;
 	private final BitSet killed = new BitSet(5);
 	private Theme theme;
 	private PacManRenderer pacManRenderer;

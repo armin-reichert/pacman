@@ -44,7 +44,8 @@ public final class Tile {
 	 * @return Euclidean distance measured in tiles
 	 */
 	public static double euclideanDistance(Tile either, Tile other) {
-		int dx = either.col - other.col, dy = either.row - other.row;
+		int dx = either.col - other.col;
+		int dy = either.row - other.row;
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
@@ -54,7 +55,8 @@ public final class Tile {
 	 * @return Manhattan distance measured in tiles
 	 */
 	public static int manhattanDistance(Tile either, Tile other) {
-		int dx = Math.abs(either.col - other.col), dy = Math.abs(either.row - other.row);
+		int dx = Math.abs(either.col - other.col);
+		int dy = Math.abs(either.row - other.row);
 		return dx + dy;
 	}
 

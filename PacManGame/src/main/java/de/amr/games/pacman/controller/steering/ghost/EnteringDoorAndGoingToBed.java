@@ -51,7 +51,8 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 		FALLING, MOVING_LEFT, MOVING_RIGHT, BED_REACHED
 	}
 
-	private final float targetX, targetY;
+	private final float targetX;
+	private final float targetY;
 
 	public EnteringDoorAndGoingToBed(Ghost ghost, Door door, Bed bed) {
 		super(State.class);

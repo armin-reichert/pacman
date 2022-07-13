@@ -143,7 +143,8 @@ public class StatesRenderer {
 		g.setStroke(fine);
 		g.setColor(Color.RED);
 		g.translate(guy.tf.x, guy.tf.y);
-		int w = guy.tf.width, h = guy.tf.height;
+		int w = guy.tf.width;
+		int h = guy.tf.height;
 		Direction moveDir = guy.moveDir;
 		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(guy.tf.y) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, w, 0);

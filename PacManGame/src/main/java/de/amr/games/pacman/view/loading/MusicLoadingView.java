@@ -123,7 +123,8 @@ public class MusicLoadingView implements PacManGameView {
 		messagesRenderer.setTextColor(new Color(255, 0, 0, alpha));
 		messagesRenderer.draw(g, PacManGameView.texts.getString("loading_music"), width);
 		pacManRenderer.render(g, folks.pacMan);
-		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2, y = folks.pacMan.tf.y + 20;
+		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2;
+		float y = folks.pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			Ghost ghost = ghosts.get(rnd.nextInt(4));
 			ghost.tf.x = x;

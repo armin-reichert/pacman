@@ -48,7 +48,10 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	private final TiledWorld world;
 	private final PacMan pacMan;
-	private final Ghost blinky, inky, pinky, clyde;
+	private final Ghost blinky;
+	private final Ghost inky;
+	private final Ghost pinky;
+	private final Ghost clyde;
 	private Theme theme;
 	private PacManRenderer pacManRenderer;
 	private int points;
