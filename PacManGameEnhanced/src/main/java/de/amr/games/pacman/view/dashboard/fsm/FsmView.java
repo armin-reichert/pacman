@@ -64,8 +64,7 @@ public class FsmView extends JPanel implements Lifecycle {
 
 	static final String GRAPHVIZ_ONLINE_URL = "https://dreampuf.github.io/GraphvizOnline";
 
-	private Action actionViewOnline = new AbstractAction("View Online") {
-
+	private final Action actionViewOnline = new AbstractAction("View Online") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			tree.getSelectedData().ifPresent(data -> {
@@ -79,18 +78,37 @@ public class FsmView extends JPanel implements Lifecycle {
 		}
 	};
 
-	private Action actionSave = new AbstractAction("Save") {
-
+	private final Action actionSave = new AbstractAction("Save") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			tree.getSelectedData().ifPresent(data -> {
-				saveFile(data);
-			});
+			tree.getSelectedData().ifPresent(this::saveFile);
+		}
+
+		private void saveFile(FsmData data) {
+			saveDialog.setDialogTitle("Save state machine as DOT file");
+			saveDialog.setSelectedFile(new File(data.getFsm().getDescription()));
+			int option = saveDialog.showSaveDialog(FsmView.this);
+			if (option == JFileChooser.APPROVE_OPTION) {
+				File file = saveDialog.getSelectedFile();
+				if (file.getName().endsWith(".dot")) {
+					try (FileWriter w = new FileWriter(saveDialog.getSelectedFile())) {
+						w.write(data.getGraphVizText());
+					} catch (Exception x) {
+						loginfo("DOT file could not be written", file);
+					}
+				} else if (file.getName().endsWith(".png")) {
+					BufferedImage png = Graphviz.fromString(data.getGraphVizText()).render(Format.PNG).toImage();
+					try {
+						ImageIO.write(png, "png", file);
+					} catch (IOException x) {
+						loginfo("PNG file could not be written", file);
+					}
+				}
+			}
 		}
 	};
 
-	private Action actionOpenDashboard = new AbstractAction("Open Dashboard") {
-
+	private final Action actionOpenDashboard = new AbstractAction("Open Dashboard") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (dashboard == null) {
@@ -99,11 +117,10 @@ public class FsmView extends JPanel implements Lifecycle {
 				dashboard.setSize(1024, 768);
 			}
 			dashboard.setVisible(true);
-		};
+		}
 	};
 
-	private TreeModelListener treeSelectionInitializer = new TreeModelListener() {
-
+	private final TreeModelListener treeSelectionInitializer = new TreeModelListener() {
 		@Override
 		public void treeStructureChanged(TreeModelEvent e) {
 			tree.initSelection();
@@ -112,18 +129,21 @@ public class FsmView extends JPanel implements Lifecycle {
 
 		@Override
 		public void treeNodesRemoved(TreeModelEvent e) {
+			// nothing to do
 		}
 
 		@Override
 		public void treeNodesInserted(TreeModelEvent e) {
+			// nothing to do
 		}
 
 		@Override
 		public void treeNodesChanged(TreeModelEvent e) {
+			// nothing to do
 		}
 	};
 
-	private FsmModel model = new FsmModel();
+	private final FsmModel model = new FsmModel();
 	private FsmDashboard dashboard;
 	private FsmTreeModel tree;
 	private FsmTextView fsmEmbeddedTextView;
@@ -223,28 +243,5 @@ public class FsmView extends JPanel implements Lifecycle {
 	private Stream<Action> actions() {
 		return Stream.of(actionViewOnline, actionSave, fsmEmbeddedGraphView.actionZoomIn,
 				fsmEmbeddedGraphView.actionZoomOut);
-	}
-
-	private void saveFile(FsmData data) {
-		saveDialog.setDialogTitle("Save state machine as DOT file");
-		saveDialog.setSelectedFile(new File(data.getFsm().getDescription()));
-		int option = saveDialog.showSaveDialog(this);
-		if (option == JFileChooser.APPROVE_OPTION) {
-			File file = saveDialog.getSelectedFile();
-			if (file.getName().endsWith(".dot")) {
-				try (FileWriter w = new FileWriter(saveDialog.getSelectedFile())) {
-					w.write(data.getGraphVizText());
-				} catch (Exception x) {
-					loginfo("DOT file could not be written", file);
-				}
-			} else if (file.getName().endsWith(".png")) {
-				BufferedImage png = Graphviz.fromString(data.getGraphVizText()).render(Format.PNG).toImage();
-				try {
-					ImageIO.write(png, "png", file);
-				} catch (IOException x) {
-					loginfo("PNG file could not be written", file);
-				}
-			}
-		}
 	}
 }

@@ -70,8 +70,9 @@ public class FsmData implements Comparable<FsmData> {
 		graphVizText = DotPrinter.toDotFormat(fsm);
 	}
 
-	public StateMachine<?, ?> getFsm() {
-		return fsm;
+	@SuppressWarnings("unchecked")
+	public StateMachine<Object, Object> getFsm() {
+		return (StateMachine<Object, Object>) fsm;
 	}
 
 	public String getGraphVizText() {

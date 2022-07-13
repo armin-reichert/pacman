@@ -54,9 +54,10 @@ public class FsmGraphView extends JPanel {
 	static final double SCALE_MAX = 3.0;
 	static final double SCALE_STEP = 0.2;
 
-	static int rendering_count = 0;
+	private int renderingCount = 0;
 
-	public Action actionZoomIn = new AbstractAction("Zoom In", new ImageIcon(getClass().getResource("/zoom_in.png"))) {
+	public final Action actionZoomIn = new AbstractAction("Zoom In",
+			new ImageIcon(getClass().getResource("/zoom_in.png"))) {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -65,7 +66,8 @@ public class FsmGraphView extends JPanel {
 		}
 	};
 
-	public Action actionZoomOut = new AbstractAction("Zoom Out", new ImageIcon(getClass().getResource("/zoom_out.png"))) {
+	public final Action actionZoomOut = new AbstractAction("Zoom Out",
+			new ImageIcon(getClass().getResource("/zoom_out.png"))) {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -104,9 +106,9 @@ public class FsmGraphView extends JPanel {
 				BufferedImage png = Graphviz.fromString(data.getGraphVizText()).totalMemory(GRAPHVIZ_MEMORY).scale(scaling)
 						.render(Format.PNG).toImage();
 				graphDisplay.setIcon(new ImageIcon(png));
-				++rendering_count;
+				++renderingCount;
 			} catch (Exception x) {
-				System.err.println("Graphviz rendering failed for image #" + rendering_count);
+				System.out.println("Graphviz rendering failed for image #" + renderingCount);
 				x.printStackTrace(System.err);
 			}
 		}
