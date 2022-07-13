@@ -49,14 +49,13 @@ import de.amr.games.pacman.model.world.components.House;
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
+ * @see <a href= "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
  */
 public class DoorMan implements Lifecycle {
 
 	private final House house;
 	private final Folks folks;
-	private final Ghost[] ghost_preference;
+	private final Ghost[] ghostPreference;
 	private final DotCounter globalCounter;
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
@@ -64,7 +63,7 @@ public class DoorMan implements Lifecycle {
 	public DoorMan(House house, Folks folks) {
 		this.house = house;
 		this.folks = folks;
-		ghost_preference = new Ghost[] { folks.blinky, folks.pinky, folks.inky, folks.clyde };
+		ghostPreference = new Ghost[] { folks.blinky, folks.pinky, folks.inky, folks.clyde };
 		globalCounter = new DotCounter();
 		ghostCounters = new int[4];
 	}
@@ -101,9 +100,7 @@ public class DoorMan implements Lifecycle {
 				loginfo("Global dot counter reset and disabled (Clyde was locked when counter reached 32)");
 			}
 		} else {
-			preferredLockedGhost().ifPresent(ghost -> {
-				ghostCounters[index(ghost)] += 1;
-			});
+			preferredLockedGhost().ifPresent(ghost -> ghostCounters[index(ghost)] += 1);
 		}
 	}
 
@@ -151,7 +148,11 @@ public class DoorMan implements Lifecycle {
 			return game.level == 1 ? 30 : 0;
 		}
 		if (ghost == folks.clyde) {
-			return game.level == 1 ? 60 : game.level == 2 ? 50 : 0;
+			return switch (game.level) {
+			case 1 -> 60;
+			case 2 -> 50;
+			default -> 0;
+			};
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
@@ -175,7 +176,7 @@ public class DoorMan implements Lifecycle {
 
 	public Optional<Ghost> preferredLockedGhost() {
 		//@formatter:off
-		return Arrays.stream(ghost_preference)
+		return Arrays.stream(ghostPreference)
 			.filter(ghost -> ghost.world.contains(ghost))
 			.filter(ghost -> ghost.ai.is(LOCKED))
 			.findFirst();
@@ -225,9 +226,7 @@ public class DoorMan implements Lifecycle {
 	 * @param ghost a ghost
 	 * @return decision why ghost can leave
 	 * 
-	 * @see <a href=
-	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
-	 *      Dossier</a>
+	 * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man Dossier</a>
 	 */
 	private Decision decideIfGhostCanLeaveHouse(Ghost ghost) {
 		if (!ghost.ai.is(LOCKED)) {
