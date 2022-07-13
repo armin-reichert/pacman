@@ -50,29 +50,24 @@ class BlocksGhostRenderer implements GhostRenderer {
 		int width = 2 * ghost.tf.width - 4;
 		int height = 2 * ghost.tf.height - 2;
 		switch (state) {
-		case CHASING:
-		case SCATTERING:
-		case LOCKED:
-		case LEAVING_HOUSE:
-			drawColored(g, ghost, width, height, 0, 0);
-			break;
-		case FRIGHTENED:
+		case CHASING, SCATTERING, LOCKED, LEAVING_HOUSE -> drawColored(g, ghost, width, height, 0, 0);
+		case FRIGHTENED -> {
 			if (ghost.recovering) {
 				drawFlashing(g, ghost, width, height, 0, 0);
 			} else {
 				drawFrightened(g, ghost, width, height, 0, 0);
 			}
-			break;
-		case DEAD:
-		case ENTERING_HOUSE:
+		}
+		case DEAD, ENTERING_HOUSE -> {
 			if (ghost.bounty > 0) {
 				drawPoints(g, ghost);
 			} else {
 				drawEyes(g, ghost, ghost.tf.width, ghost.tf.width);
 			}
-			break;
-		default:
-			break;
+		}
+		default -> {
+			// empty
+		}
 		}
 		Rendering.smoothOff(g);
 	}
