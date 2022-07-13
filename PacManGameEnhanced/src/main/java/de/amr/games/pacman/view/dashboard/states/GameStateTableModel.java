@@ -61,27 +61,27 @@ class GameStateTableModel extends AbstractTableModel {
 	public enum ColumnInfo {
 
 		//@formatter:off
-		OnStage(null, Boolean.class, true), 
-		Name("Actor", String.class, false), 
-		Tile(null, Tile.class, false), 
-		Target(null, Tile.class, false),
-		MoveDir("Moves", Direction.class, false),
-		WishDir("Wants", Direction.class, false),
-		Speed("px/s", Float.class, false),
-		State(null, Object.class, false),
-		Sanity(null, GhostMentalState.class, false),
-		Remaining(null, Integer.class, false), 
-		Duration(null, Integer.class, false);
+		ON_STAGE(null, Boolean.class, true), 
+		NAME("Actor", String.class, false), 
+		TILE(null, Tile.class, false), 
+		TARGET(null, Tile.class, false),
+		MOVE_DIR("Moves", Direction.class, false),
+		WISH_DIR("Wants", Direction.class, false),
+		SPEED("px/s", Float.class, false),
+		STATE(null, Object.class, false),
+		SANITY(null, GhostMentalState.class, false),
+		REMAINING(null, Integer.class, false), 
+		DURATION(null, Integer.class, false);
 		//@formatter:on
 
-		private ColumnInfo(String name, Class<?> class_, boolean editable) {
-			this.name = name != null ? name : name();
-			this.class_ = class_;
+		private ColumnInfo(String name, Class<?> columnClass, boolean editable) {
+			this.columnName = name != null ? name : name();
+			this.columnClass = columnClass;
 			this.editable = editable;
 		}
 
-		public final String name;
-		public final Class<?> class_;
+		public final String columnName;
+		public final Class<?> columnClass;
 		public final boolean editable;
 
 		public static ColumnInfo at(int col) {
@@ -103,7 +103,7 @@ class GameStateTableModel extends AbstractTableModel {
 		this.gameController = gameController;
 		world = gameController.world;
 		addTableModelListener(change -> {
-			if (change.getColumn() == ColumnInfo.OnStage.ordinal()) {
+			if (change.getColumn() == ColumnInfo.ON_STAGE.ordinal()) {
 				handleOnStageStatusChange(change.getFirstRow());
 			}
 		});
@@ -221,27 +221,27 @@ class GameStateTableModel extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		GameStateRecord r = records[row];
 		switch (ColumnInfo.at(col)) {
-		case OnStage:
+		case ON_STAGE:
 			return r.included;
-		case Name:
+		case NAME:
 			return r.name;
-		case MoveDir:
+		case MOVE_DIR:
 			return r.moveDir;
-		case WishDir:
+		case WISH_DIR:
 			return r.wishDir;
-		case Tile:
+		case TILE:
 			return r.tile;
-		case Target:
+		case TARGET:
 			return r.target;
-		case Speed:
+		case SPEED:
 			return r.speed;
-		case State:
+		case STATE:
 			return r.state;
-		case Remaining:
+		case REMAINING:
 			return r.ticksRemaining;
-		case Duration:
+		case DURATION:
 			return r.duration;
-		case Sanity:
+		case SANITY:
 			return r.ghostSanity;
 		default:
 			return null;
@@ -251,7 +251,7 @@ class GameStateTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object value, int row, int col) {
 		switch (ColumnInfo.at(col)) {
-		case OnStage:
+		case ON_STAGE:
 			records[row].included = (boolean) value;
 			fireTableCellUpdated(row, col);
 			break;
@@ -276,12 +276,12 @@ class GameStateTableModel extends AbstractTableModel {
 
 	@Override
 	public String getColumnName(int col) {
-		return ColumnInfo.at(col).name;
+		return ColumnInfo.at(col).columnName;
 	}
 
 	@Override
 	public Class<?> getColumnClass(int col) {
-		return ColumnInfo.at(col).class_;
+		return ColumnInfo.at(col).columnClass;
 	}
 
 	@Override

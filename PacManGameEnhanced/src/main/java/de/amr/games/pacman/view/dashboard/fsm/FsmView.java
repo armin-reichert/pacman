@@ -47,6 +47,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -157,7 +158,7 @@ public class FsmView extends JPanel implements Lifecycle {
 		treeView.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		treeView.addTreeSelectionListener(this::onTreeViewSelectionChange);
 
-		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
+		tabbedPane = new JTabbedPane(SwingConstants.BOTTOM);
 		splitPane.setRightComponent(tabbedPane);
 
 		fsmEmbeddedTextView = new FsmTextView();

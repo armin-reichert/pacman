@@ -27,15 +27,15 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
-import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class UniversalFormatter extends DefaultTableCellRenderer {
 
 	public static class Context {
-
 		public JTable table;
 		public Object value;
 		public boolean isSelected;
@@ -45,12 +45,11 @@ public class UniversalFormatter extends DefaultTableCellRenderer {
 	}
 
 	private Context context = new Context();
-
 	public Color hilightColor = new Color(255, 0, 0, 100);
-	public Function<Context, Boolean> fnHilightCondition = context -> false;
+	public Predicate<Context> fnHilightCondition = context -> false;
 	public Function<Context, String> fnTextFormat = context -> context.value == null ? "" : String.valueOf(context.value);
-	public Function<Context, Boolean> fnBoldCondition = context -> false;
-	public int horizontalAlignment = JLabel.LEADING;
+	public Predicate<Context> fnBoldCondition = context -> false;
+	public int horizontalAlignment = SwingConstants.LEADING;
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
@@ -63,10 +62,10 @@ public class UniversalFormatter extends DefaultTableCellRenderer {
 		context.row = row;
 		context.column = column;
 		Color bg = isSelected ? table.getSelectionBackground() : table.getBackground();
-		setBackground(fnHilightCondition.apply(context) ? hilightColor : bg);
+		setBackground(fnHilightCondition.test(context) ? hilightColor : bg);
 		setHorizontalAlignment(horizontalAlignment);
 		setText(fnTextFormat.apply(context));
-		if (fnBoldCondition.apply(context)) {
+		if (fnBoldCondition.test(context)) {
 			setFont(new Font(getFont().getFamily(), Font.BOLD, getFont().getSize()));
 		}
 		return this;

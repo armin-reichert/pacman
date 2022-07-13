@@ -58,17 +58,17 @@ public class GameStateTable extends JTable implements Lifecycle {
 	public void init() {
 		UniversalFormatter tileFmt = new UniversalFormatter();
 		tileFmt.fnHilightCondition = c -> record(c.row) != null && record(c.row).pacManCollision;
-		format(ColumnInfo.Tile, tileFmt);
+		format(ColumnInfo.TILE, tileFmt);
 
 		UniversalFormatter speedFmt = new UniversalFormatter();
 		speedFmt.fnHilightCondition = c -> c.row == ROW_BLINKY && record(ROW_PACMAN).speed <= record(ROW_BLINKY).speed;
-		format(ColumnInfo.Speed, speedFmt);
+		format(ColumnInfo.SPEED, speedFmt);
 
 		UniversalFormatter ticksFmt = new UniversalFormatter();
 		ticksFmt.horizontalAlignment = SwingConstants.TRAILING;
 		ticksFmt.fnTextFormat = c -> Formatting.ticksAndSeconds((Long) c.value);
-		format(ColumnInfo.Remaining, ticksFmt);
-		format(ColumnInfo.Duration, ticksFmt);
+		format(ColumnInfo.REMAINING, ticksFmt);
+		format(ColumnInfo.DURATION, ticksFmt);
 	}
 
 	@Override
