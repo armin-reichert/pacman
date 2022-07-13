@@ -65,13 +65,13 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		}
 	}
 
-	private final Guy<?> guy;
+	private final Guy guy;
 	private final Folks folks;
 	private final TiledWorld world;
 	private final WorldGraph graph;
 	private Tile target;
 
-	public SearchingForFoodAndAvoidingGhosts(TiledWorld world, Guy<?> guy, Folks folks) {
+	public SearchingForFoodAndAvoidingGhosts(TiledWorld world, Guy guy, Folks folks) {
 		this.world = world;
 		this.guy = guy;
 		this.folks = folks;
@@ -80,7 +80,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	@Override
-	public void steer(Guy<?> guy_) {
+	public void steer(Guy guy_) {
 		if (!guy.enteredNewTile && guy.canMoveTo(guy.moveDir)) {
 			return;
 		}

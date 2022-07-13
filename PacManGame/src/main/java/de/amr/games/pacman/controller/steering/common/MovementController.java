@@ -47,7 +47,7 @@ public class MovementController extends StateMachine<MovementType, Void> {
 	private Portal portalEntered;
 	private Tile portalExitTile;
 
-	public MovementController(Guy<?> guy) {
+	public MovementController(Guy guy) {
 		super(MovementType.class);
 		//@formatter:off
 		beginStateMachine()
@@ -79,7 +79,7 @@ public class MovementController extends StateMachine<MovementType, Void> {
 		//@formatter:on
 	}
 
-	private void checkPortalEnteredBy(Guy<?> guy) {
+	private void checkPortalEnteredBy(Guy guy) {
 		Tile tile = guy.tile();
 		guy.world.portals().filter(portal -> portal.includes(tile)).findFirst().ifPresent(portal -> {
 			if (portal.either.equals(tile) && (guy.moveDir == LEFT && guy.tileOffsetX() <= 1)
@@ -97,7 +97,7 @@ public class MovementController extends StateMachine<MovementType, Void> {
 		}
 	}
 
-	private void teleport(Guy<?> guy) {
+	private void teleport(Guy guy) {
 		guy.placeAt(portalExitTile, 0, 0);
 		portalEntered = null;
 		loginfo("%s left portal at %s", guy.name, guy.tile());

@@ -66,7 +66,7 @@ public class HeadingForTargetTile implements Steering {
 	 * @param tile    current tile
 	 * @param target  target tile
 	 */
-	private static Direction bestDirTowardsTarget(Guy<?> guy, Direction moveDir, Tile tile, Tile target) {
+	private static Direction bestDirTowardsTarget(Guy guy, Direction moveDir, Tile tile, Tile target) {
 		/*@formatter:off*/
 		return Direction.dirs()
 			.filter(dir -> dir != moveDir.opposite())
@@ -94,7 +94,7 @@ public class HeadingForTargetTile implements Steering {
 	}
 
 	@Override
-	public void steer(Guy<?> guy) {
+	public void steer(Guy guy) {
 		if (forced || guy.enteredNewTile) {
 			Tile target = fnTargetTile.get();
 			if (target != null) {
@@ -109,7 +109,7 @@ public class HeadingForTargetTile implements Steering {
 	 * Computes the path the guy would traverse until either reaching the target tile, running into a
 	 * cycle or entering a portal.
 	 */
-	private void updatePath(Guy<?> guy, Tile target) {
+	private void updatePath(Guy guy, Tile target) {
 		if (target != null) {
 			path = new ArrayList<>();
 			Direction dir = guy.moveDir;

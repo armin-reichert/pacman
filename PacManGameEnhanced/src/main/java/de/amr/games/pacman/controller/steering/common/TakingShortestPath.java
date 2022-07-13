@@ -39,14 +39,14 @@ public class TakingShortestPath extends FollowingPath {
 	private final WorldGraph graph;
 	private final Supplier<Tile> fnTargetTile;
 
-	public TakingShortestPath(Guy<?> guy, WorldGraph graph, Supplier<Tile> fnTargetTile) {
+	public TakingShortestPath(Guy guy, WorldGraph graph, Supplier<Tile> fnTargetTile) {
 		super(guy);
 		this.graph = graph;
 		this.fnTargetTile = fnTargetTile;
 	}
 
 	@Override
-	public void steer(Guy<?> guy) {
+	public void steer(Guy guy) {
 		if (path.size() == 0 || isComplete()) {
 			setPath(graph.findPath(guy.tile(), fnTargetTile.get()));
 		}

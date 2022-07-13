@@ -37,7 +37,7 @@ public class RandomMovement implements Steering {
 	private boolean forced;
 
 	@Override
-	public void steer(Guy<?> guy) {
+	public void steer(Guy guy) {
 		if (forced || !guy.canMoveTo(guy.moveDir) || guy.enteredNewTile && guy.world.isIntersection(guy.tile())) {
 			/*@formatter:off*/
 			Direction.dirsShuffled()

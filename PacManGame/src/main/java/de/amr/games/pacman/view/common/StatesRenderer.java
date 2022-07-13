@@ -134,7 +134,7 @@ public class StatesRenderer {
 		folks.ghostsInWorld().forEach(ghost -> drawActorOffTrack(g, ghost));
 	}
 
-	private void drawActorOffTrack(Graphics2D g, Guy<?> guy) {
+	private void drawActorOffTrack(Graphics2D g, Guy guy) {
 		if (!guy.visible) {
 			return;
 		}

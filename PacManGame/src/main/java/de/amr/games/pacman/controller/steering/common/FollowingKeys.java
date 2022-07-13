@@ -56,7 +56,7 @@ public class FollowingKeys implements Steering {
 	}
 
 	@Override
-	public void steer(Guy<?> guy) {
+	public void steer(Guy guy) {
 		Direction.dirs().filter(dir -> Keyboard.keyDown(keys.get(dir))).findAny().ifPresent(dir -> guy.wishDir = dir);
 	}
 

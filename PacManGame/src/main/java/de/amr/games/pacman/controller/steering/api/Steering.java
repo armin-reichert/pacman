@@ -41,7 +41,7 @@ public interface Steering {
 	static Steering STANDING_STILL = new Steering() {
 
 		@Override
-		public void steer(Guy<?> guy) {
+		public void steer(Guy guy) {
 		}
 	};
 
@@ -50,7 +50,7 @@ public interface Steering {
 	 * 
 	 * @param guy the steered guy
 	 */
-	void steer(Guy<?> guy);
+	void steer(Guy guy);
 
 	/**
 	 * Some steerings needs an initial step.

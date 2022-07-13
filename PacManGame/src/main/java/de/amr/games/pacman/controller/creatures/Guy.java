@@ -37,7 +37,7 @@ import de.amr.games.pacman.model.world.core.TileWorldEntity;
  * 
  * @author Armin Reichert
  */
-public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle, StateMachineControlled {
+public abstract class Guy extends TileWorldEntity implements Lifecycle, StateMachineControlled {
 
 	public final String name;
 	public Direction moveDir;
@@ -63,7 +63,7 @@ public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle, S
 	 * @param state    current state of this guy
 	 * @param steering steering for given state
 	 */
-	public abstract void setSteering(STATE state, Steering steering);
+	public abstract void setSteering(Object state, Steering steering);
 
 	/**
 	 * @return current steering of this guy
@@ -79,11 +79,11 @@ public abstract class Guy<STATE> extends TileWorldEntity implements Lifecycle, S
 
 	/**
 	 * @param dir some direction
-	 * @return if this guy can cross the border between its current tile and the neighbor to the given
-	 *         direction
+	 * @return if this guy can cross the border between its current tile and the neighbor to the given direction
 	 */
 	public boolean canMoveTo(Direction dir) {
-		Tile currentTile = tile(), neighbor = world.neighbor(currentTile, dir);
+		Tile currentTile = tile();
+		Tile neighbor = world.neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
 

@@ -66,7 +66,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Guy<PacManState> {
+public class PacMan extends Guy {
 
 	public final StateMachine<PacManState, PacManGameEvent> ai;
 	private Steering walkingBehavior;
@@ -154,7 +154,7 @@ public class PacMan extends Guy<PacManState> {
 	}
 
 	@Override
-	public void setSteering(PacManState state, Steering steering) {
+	public void setSteering(Object state, Steering steering) {
 		if (state == AWAKE || state == POWERFUL) {
 			walkingBehavior = steering;
 		}
@@ -192,14 +192,12 @@ public class PacMan extends Guy<PacManState> {
 	}
 
 	/**
-	 * NOTE: Depending on the application setting {@link PacManApp.Settings#fixOverflowBug}, this method
-	 * simulates/fixes the overflow bug from the original Arcade game which causes, if Pac-Man points
-	 * upwards, the wrong calculation of the position ahead of Pac-Man (namely adding the same number of
-	 * tiles to the left).
+	 * NOTE: Depending on the application setting {@link PacManApp.Settings#fixOverflowBug}, this method simulates/fixes
+	 * the overflow bug from the original Arcade game which causes, if Pac-Man points upwards, the wrong calculation of
+	 * the position ahead of Pac-Man (namely adding the same number of tiles to the left).
 	 * 
 	 * @param nTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move
-	 *         direction.
+	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move direction.
 	 */
 	public Tile tilesAhead(int nTiles) {
 		Tile tileAhead = world.tileToDir(tile(), moveDir, nTiles);

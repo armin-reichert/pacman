@@ -63,7 +63,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Guy<GhostState> {
+public class Ghost extends Guy {
 
 	public static Ghost shadowGhost(TiledWorld world, String name, PacMan pacMan) {
 		return new Ghost(world, name, GhostPersonality.SHADOW, pacMan);
@@ -260,8 +260,8 @@ public class Ghost extends Guy<GhostState> {
 	}
 
 	@Override
-	public void setSteering(GhostState state, Steering steering) {
-		behaviors.put(state, steering);
+	public void setSteering(Object state, Steering steering) {
+		behaviors.put((GhostState) state, steering);
 	}
 
 	@Override

@@ -41,7 +41,7 @@ public class LeavingHouse implements Steering {
 	}
 
 	@Override
-	public void steer(Guy<?> guy) {
+	public void steer(Guy guy) {
 		Tile exit = Tile.at(house.bed(0).col(), house.bed(0).row());
 		int targetX = exit.centerX(), targetY = exit.y();
 		if (guy.tf.y <= targetY) {

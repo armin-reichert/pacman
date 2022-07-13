@@ -101,7 +101,7 @@ public class TestController implements VisualController {
 		return Optional.of(view);
 	}
 
-	protected void include(Guy<?>... guys) {
+	protected void include(Guy... guys) {
 		Stream.of(guys).forEach(guy -> world.include(guy));
 	}
 
