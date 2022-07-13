@@ -45,8 +45,8 @@ public class PacManGame {
 	static final int POINTS_ENERGIZER = 50;
 	static final int POINTS_EXTRA_LIFE = 10_000;
 	static final int POINTS_ALL_GHOSTS = 12_000;
-	static final int POINTS_GHOSTS[] = { 200, 400, 800, 1600 };
-	static final int BONUS_ACTIVATION[] = { 70, 170 };
+	static final int[] POINTS_GHOSTS = { 200, 400, 800, 1600 };
+	static final int[] BONUS_ACTIVATION = { 70, 170 };
 
 	/**
 	 * Returns the level-specific data.

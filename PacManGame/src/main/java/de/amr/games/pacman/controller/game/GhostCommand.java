@@ -35,7 +35,6 @@ import de.amr.games.pacman.controller.game.GhostCommand.Phase;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
-import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * Controller for the timing of the ghost attack waves. Ghosts change between chasing and scattering mode during each

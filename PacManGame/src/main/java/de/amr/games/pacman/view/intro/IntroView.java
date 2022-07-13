@@ -64,7 +64,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 
 	public enum IntroState {
 		SCROLLING_LOGO_ANIMATION, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
-	};
+	}
 
 	private static final String GITHUB_URL = "https://github.com/armin-reichert/pacman";
 	private static final Color ORANGE = new Color(255, 163, 71);
@@ -168,23 +168,6 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		messagesRenderer.setRow(row);
 		messagesRenderer.setTextColor(Color.ORANGE);
 		messagesRenderer.draw(g, text, world.width());
-	}
-
-	private void drawSpeedSelectionTexts(Graphics2D g, int row) {
-		String[] speedTexts = { "1-" + texts.getString("normal"), "2-" + texts.getString("fast"),
-				"3-" + texts.getString("insane") };
-		try (Pen pen = new Pen(g)) {
-			pen.font(messagesRenderer.getFont());
-			FontMetrics fm = pen.getFontMetrics();
-			int[] w = { fm.stringWidth(speedTexts[0]), fm.stringWidth(speedTexts[1]), fm.stringWidth(speedTexts[2]) };
-			float s = (width - (w[0] + w[1] + w[2])) / 4f;
-			float[] x = { s, s + w[0] + s, s + w[0] + s + w[1] + s };
-			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate());
-			for (int i = 0; i < 3; ++i) {
-				pen.color(selectedSpeed == i ? ORANGE : RED);
-				pen.draw(speedTexts[i], x[i], row * Tile.SIZE);
-			}
-		}
 	}
 
 	private void createController() {
@@ -324,6 +307,23 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			}
 			drawSpeedSelectionTexts(g, 22);
 			drawToggleScreenModeText(g, 31);
+		}
+
+		private void drawSpeedSelectionTexts(Graphics2D g, int row) {
+			String[] speedTexts = { "1-" + texts.getString("normal"), "2-" + texts.getString("fast"),
+					"3-" + texts.getString("insane") };
+			try (Pen pen = new Pen(g)) {
+				pen.font(messagesRenderer.getFont());
+				FontMetrics fm = pen.getFontMetrics();
+				int[] w = { fm.stringWidth(speedTexts[0]), fm.stringWidth(speedTexts[1]), fm.stringWidth(speedTexts[2]) };
+				float s = (width - (w[0] + w[1] + w[2])) / 4f;
+				float[] x = { s, s + w[0] + s, s + w[0] + s + w[1] + s };
+				int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate());
+				for (int i = 0; i < 3; ++i) {
+					pen.color(selectedSpeed == i ? ORANGE : RED);
+					pen.draw(speedTexts[i], x[i], row * Tile.SIZE);
+				}
+			}
 		}
 	}
 }

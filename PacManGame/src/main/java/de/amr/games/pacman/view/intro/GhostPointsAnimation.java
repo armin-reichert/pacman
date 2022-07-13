@@ -46,8 +46,7 @@ import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.theme.api.Theme;
 
 /**
- * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
- * ghosts.
+ * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the ghosts.
  * 
  * @author Armin Reichert
  */
@@ -94,9 +93,7 @@ public class GhostPointsAnimation extends GameObject {
 	@Override
 	public void draw(Graphics2D g) {
 		pacManRenderer.render(g, pacMan);
-		ghosts().forEach(ghost -> {
-			theme.ghostRenderer().render(g, ghost);
-		});
+		ghosts().forEach(ghost -> theme.ghostRenderer().render(g, ghost));
 		g.translate(tf.x + dx, tf.y);
 		renderPellet(g);
 		g.translate(-(tf.x + dx), -tf.y);

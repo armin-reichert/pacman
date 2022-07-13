@@ -33,7 +33,6 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
@@ -51,7 +50,6 @@ public class MusicLoadingView implements PacManGameView {
 
 	private final ArcadeWorld world = new ArcadeWorld();
 	private final Folks folks = new Folks(world, world.house(0).get());
-	private final PacMan pacMan = folks.pacMan;
 	private final List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
 	private Theme theme;
 	private PacManRenderer pacManRenderer;
@@ -89,23 +87,23 @@ public class MusicLoadingView implements PacManGameView {
 		ghostCount = 0;
 		ghostInc = 1;
 		ghosts.forEach(ghost -> ghost.moveDir = Direction.random());
-		pacMan.init();
-		pacMan.wakeUp();
+		folks.pacMan.init();
+		folks.pacMan.wakeUp();
 		theme.sounds().loadMusic();
 	}
 
 	@Override
 	public void update() {
-		float x = pacMan.tf.getCenter().x;
+		float x = folks.pacMan.tf.getCenter().x;
 		if (x > 0.9f * width || x < 0.1 * width) {
-			pacMan.moveDir = pacMan.moveDir.opposite();
+			folks.pacMan.moveDir = folks.pacMan.moveDir.opposite();
 			ghostCount += ghostInc;
 			if (ghostCount == 9 || ghostCount == 0) {
 				ghostInc = -ghostInc;
 			}
 		}
-		pacMan.tf.setVelocity(Vector2f.smul(2.5f, pacMan.moveDir.vector()));
-		pacMan.tf.move();
+		folks.pacMan.tf.setVelocity(Vector2f.smul(2.5f, folks.pacMan.moveDir.vector()));
+		folks.pacMan.tf.move();
 
 		alpha += alphaInc;
 		if (alpha >= 160) {
@@ -124,8 +122,8 @@ public class MusicLoadingView implements PacManGameView {
 		messagesRenderer.setRow(18);
 		messagesRenderer.setTextColor(new Color(255, 0, 0, alpha));
 		messagesRenderer.draw(g, PacManGameView.texts.getString("loading_music"), width);
-		pacManRenderer.render(g, pacMan);
-		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2, y = pacMan.tf.y + 20;
+		pacManRenderer.render(g, folks.pacMan);
+		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2, y = folks.pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			Ghost ghost = ghosts.get(rnd.nextInt(4));
 			ghost.tf.x = x;

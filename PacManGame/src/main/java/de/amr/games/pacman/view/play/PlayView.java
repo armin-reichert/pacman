@@ -68,9 +68,7 @@ public class PlayView implements PacManGameView {
 		soundState = new SoundState();
 		messagesView = new MessagesView(theme, world, 15, 21);
 		// this is a hack to reset the collapsing animation of Pac-Man. Need clean solution.
-		folks.pacMan.ai.addStateExitListener(PacManState.DEAD, state -> {
-			pacManRenderer.resetAnimations(folks.pacMan);
-		});
+		folks.pacMan.ai.addStateExitListener(PacManState.DEAD, state -> pacManRenderer.resetAnimations(folks.pacMan));
 		setTheme(theme);
 	}
 

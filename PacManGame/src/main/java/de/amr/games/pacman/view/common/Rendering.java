@@ -44,9 +44,9 @@ public class Rendering {
 
 	public static final String INFTY = Character.toString('\u221E');
 
-	public static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };
+	protected static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };
 
-	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
+	protected static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
 	public static void smoothOn(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
