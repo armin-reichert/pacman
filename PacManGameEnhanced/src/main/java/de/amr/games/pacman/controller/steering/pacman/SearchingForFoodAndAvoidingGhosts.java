@@ -39,7 +39,6 @@ import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
@@ -80,7 +79,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	@Override
-	public void steer(Guy guy_) {
+	public void steer(Guy someGuy) {
 		if (!guy.enteredNewTile && guy.canMoveTo(guy.moveDir)) {
 			return;
 		}
@@ -102,6 +101,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	@Override
 	public void setPathComputed(boolean enabled) {
+		// nothing to do
 	}
 
 	@Override
@@ -110,7 +110,8 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	private void flee(Ghost enemy) {
-		Tile here = guy.tile(), enemyTile = enemy.tile();
+		Tile here = guy.tile();
+		Tile enemyTile = enemy.tile();
 		if (world.isIntersection(here)) {
 			double maxDistance = -1;
 			Iterable<Direction> dirs = Stream.of(guy.moveDir.opposite(), guy.moveDir.left(), guy.moveDir.right())
@@ -197,13 +198,11 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	private Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
-		if (world.temporaryFood().isPresent()) {
-			TemporaryFood bonus = world.temporaryFood().get();
-			if (bonus.isActive() && !bonus.isConsumed()) {
-				int dist = here.manhattanDistance(bonus.location());
-				if (dist <= maxDistance) {
-					return Optional.of(bonus.location());
-				}
+		var bonus = world.temporaryFood();
+		if (bonus.isPresent() && bonus.get().isActive() && !bonus.get().isConsumed()) {
+			int dist = here.manhattanDistance(bonus.get().location());
+			if (dist <= maxDistance) {
+				return Optional.of(bonus.get().location());
 			}
 		}
 		return Optional.empty();
@@ -221,7 +220,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	private Optional<Tile> nearestFoodFrom(Tile here) {
 		//@formatter:off
 		return foodTiles()
-			.sorted(comparingInt(food -> here.manhattanDistance(food)))
+			.sorted(comparingInt(here::manhattanDistance))
 			.findFirst();
 		//@formatter:on
 	}
@@ -272,7 +271,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 				int dist = path.size();
 				if (dist < minDist && path.size() >= 2) {
 					minDist = dist;
-					result = path.get(0).dirTo(path.get(1)).get();
+					result = path.get(0).dirTo(path.get(1)).orElseThrow(IllegalStateException::new);
 				}
 			}
 		}

@@ -56,6 +56,8 @@ import net.miginfocom.swing.MigLayout;
 
 public class ThemeSelectionView extends JPanel implements Lifecycle {
 
+	private static final Random RND = new Random();
+
 	static final int THUMBNAIL_SIZE = 80;
 	static final int ENTITY_SIZE = 16;
 
@@ -215,7 +217,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		lblGhostFrightened.setIcon(createGhostIcon(theme, folks.blinky, GhostState.FRIGHTENED, Direction.random(), 0));
 		lblGhostDead.setIcon(createGhostIcon(theme, folks.blinky, GhostState.DEAD, Direction.random(), 0));
 		int[] bounties = { 200, 400, 800, 1600 };
-		int bounty = bounties[new Random().nextInt(4)];
+		int bounty = bounties[RND.nextInt(4)];
 		lblGhostDeadBounty.setIcon(createGhostIcon(theme, folks.blinky, GhostState.DEAD, Direction.random(), bounty));
 	}
 

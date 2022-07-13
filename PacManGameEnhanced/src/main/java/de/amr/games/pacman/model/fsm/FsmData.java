@@ -23,13 +23,14 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.fsm;
 
+import java.util.Objects;
+
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.dot.DotPrinter;
 
 /**
- * A finite-state machine together with its textual Graphviz representation. As this text includes
- * information depending on the current state of the machine, it has to be updated at certain
- * intervals.
+ * A finite-state machine together with its textual Graphviz representation. As this text includes information depending
+ * on the current state of the machine, it has to be updated at certain intervals.
  * 
  * @author Armin Reichert
  */
@@ -46,6 +47,23 @@ public class FsmData implements Comparable<FsmData> {
 	@Override
 	public int compareTo(FsmData other) {
 		return fsm.getDescription().compareTo(other.fsm.getDescription());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(graphVizText);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FsmData other = (FsmData) obj;
+		return Objects.equals(graphVizText, other.graphVizText);
 	}
 
 	public void updateGraphVizText() {

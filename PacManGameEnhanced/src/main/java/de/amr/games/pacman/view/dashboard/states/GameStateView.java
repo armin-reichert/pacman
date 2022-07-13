@@ -37,7 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.games.pacman.PacManAppEnhanced;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.ExtendedGameController;
 import de.amr.games.pacman.controller.game.PacManGameState;
@@ -46,8 +46,7 @@ import de.amr.statemachine.core.State;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * Displays information (state, timer values, directions, speed) about the actors and the global
- * game controller.
+ * Displays information (state, timer values, directions, speed) about the actors and the global game controller.
  * 
  * @author Armin Reichert
  */
@@ -137,7 +136,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 			cbShowRoutes.setSelected(gameController.isShowingRoutes());
 			cbShowGrid.setSelected(gameController.isShowingGrid());
 			cbShowStates.setSelected(gameController.isShowingStates());
-			cbDemoMode.setSelected(PacManAppEnhanced.appSettings.demoMode);
+			cbDemoMode.setSelected(PacManApp.appSettings.demoMode);
 		}
 	}
 

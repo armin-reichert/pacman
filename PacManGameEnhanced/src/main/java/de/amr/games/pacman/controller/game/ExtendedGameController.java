@@ -71,20 +71,26 @@ public class ExtendedGameController extends GameController {
 
 	public ExtendedGameController(List<Theme> themes) {
 		super(themes);
-		REGISTRY.register("Game", Stream.of(this, bonusController, ghostCommand));
+		Stream.of(this, bonusController, ghostCommand).forEach(fsm -> {
+			REGISTRY.register("Game", fsm);
+		});
 		addStateEntryListener(INTRO,
-				state -> REGISTRY.register(currentView.getClass().getSimpleName(), currentView.machines()));
-		addStateExitListener(INTRO, state -> REGISTRY.unregister(currentView.machines()));
+				state -> currentView.machines().forEach(fsm -> REGISTRY.register(currentView.getClass().getSimpleName(), fsm)));
+		addStateExitListener(INTRO, state -> {
+			currentView.machines().forEach(REGISTRY::unregister);
+		});
 		addStateEntryListener(GETTING_READY, state -> {
-			REGISTRY.register(currentView.getClass().getSimpleName(), currentView.machines());
-			REGISTRY.unregister(folks.pacMan.machines());
-			REGISTRY.register("Pac-Man", folks.pacMan.machines());
+			currentView.machines().forEach(fsm -> REGISTRY.register(currentView.getClass().getSimpleName(), fsm));
+			folks.pacMan.machines().forEach(REGISTRY::unregister);
+			folks.pacMan.machines().forEach(fsm -> REGISTRY.register("Pac-Man", fsm));
 			folks.ghosts().forEach(ghost -> {
-				REGISTRY.unregister(ghost.machines());
-				REGISTRY.register("Ghosts", ghost.machines());
+				ghost.machines().forEach(REGISTRY::unregister);
+				ghost.machines().forEach(fsm -> REGISTRY.register("Ghosts", fsm));
 			});
 		});
-		addStateEntryListener(GAME_OVER, state -> REGISTRY.unregister(currentView.machines()));
+		addStateEntryListener(GAME_OVER, state -> {
+			currentView.machines().forEach(REGISTRY::unregister);
+		});
 	}
 
 	@Override
