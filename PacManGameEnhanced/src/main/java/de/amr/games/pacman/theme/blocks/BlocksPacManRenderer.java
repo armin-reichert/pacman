@@ -44,20 +44,12 @@ class BlocksPacManRenderer implements PacManRenderer {
 		PacManState state = pacMan.ai.getState();
 		int size = 2 * pacMan.tf.width;
 		switch (state) {
-		case AWAKE:
-		case POWERFUL:
-			drawRunning(g, pacMan, size);
-			break;
-		case IN_BED:
-		case SLEEPING:
-		case DEAD:
-			drawFull(g, pacMan, size);
-			break;
-		case COLLAPSING:
-			drawCollapsed(g, pacMan, size);
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown Pac-Man state" + state);
+		case AWAKE, POWERFUL -> drawRunning(g, pacMan, size);
+		case IN_BED, SLEEPING -> {
+		}
+		case DEAD -> drawFull(g, pacMan, size);
+		case COLLAPSING -> drawCollapsed(g, pacMan, size);
+		default -> throw new IllegalArgumentException("Unknown Pac-Man state" + state);
 		}
 		Rendering.smoothOff(g);
 	}
