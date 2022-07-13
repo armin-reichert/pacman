@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.PacManApp.settings;
+import static de.amr.games.pacman.PacManApp.appSettings;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.CHASING_ANIMATIONS;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.SCROLLING_LOGO_ANIMATION;
@@ -85,8 +85,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	public IntroView(Theme theme) {
 		super(IntroState.class);
 		this.theme = theme;
-		width = settings.width;
-		height = settings.height;
+		width = appSettings.width;
+		height = appSettings.height;
 		world = new EmptyWorld(width / Tile.SIZE, height / Tile.SIZE);
 		messagesRenderer = theme.messagesRenderer();
 		pacManLogo = new ImageWidget(Assets.readImage("images/logo.png"));

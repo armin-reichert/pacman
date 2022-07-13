@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.view.common;
 
-import static de.amr.games.pacman.PacManApp.settings;
+import static de.amr.games.pacman.PacManApp.appSettings;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
@@ -74,7 +74,7 @@ public class StatesRenderer {
 		if (pacMan.ai.state().hasTimer()) {
 			text += String.format("(%d of %d)", pacMan.ai.state().getTicksConsumed(), pacMan.ai.state().getDuration());
 		}
-		if (settings.pacManImmortable) {
+		if (appSettings.pacManImmortable) {
 			text += " lives " + Rendering.INFTY;
 		}
 		drawEntityState(g, pacMan, text, Color.YELLOW);

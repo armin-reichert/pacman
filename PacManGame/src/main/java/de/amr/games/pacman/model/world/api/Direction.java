@@ -40,9 +40,10 @@ public enum Direction {
 
 	UP(0, -1), RIGHT(1, 0), DOWN(0, 1), LEFT(-1, 0);
 
-	private static Direction[] OPPOSITE_DIR = { DOWN, LEFT, UP, RIGHT };
-	private static Direction[] LEFT_DIR = { LEFT, UP, RIGHT, DOWN };
-	private static Direction[] RIGHT_DIR = { RIGHT, DOWN, LEFT, UP };
+	private static final Direction[] OPPOSITE_DIR = { DOWN, LEFT, UP, RIGHT };
+	private static final Direction[] LEFT_DIR = { LEFT, UP, RIGHT, DOWN };
+	private static final Direction[] RIGHT_DIR = { RIGHT, DOWN, LEFT, UP };
+	private static final Random RND = new Random();
 
 	public static Stream<Direction> dirs() {
 		return Arrays.stream(values());
@@ -55,7 +56,7 @@ public enum Direction {
 	}
 
 	public static Direction random() {
-		return values()[new Random().nextInt(4)];
+		return values()[RND.nextInt(4)];
 	}
 
 	private final Vector2f vector;

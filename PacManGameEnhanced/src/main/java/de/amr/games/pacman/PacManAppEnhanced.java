@@ -55,7 +55,7 @@ public class PacManAppEnhanced extends PacManApp {
 	}
 
 	public static void main(String[] args) {
-		launch(PacManAppEnhanced.class, settings, args);
+		launch(PacManAppEnhanced.class, appSettings, args);
 	}
 
 	@Override

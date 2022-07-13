@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.creatures.pacman;
 
-import static de.amr.games.pacman.PacManApp.settings;
+import static de.amr.games.pacman.PacManApp.appSettings;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.AWAKE;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.COLLAPSING;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
@@ -203,7 +203,7 @@ public class PacMan extends Guy<PacManState> {
 	 */
 	public Tile tilesAhead(int nTiles) {
 		Tile tileAhead = world.tileToDir(tile(), moveDir, nTiles);
-		if (moveDir == UP && !settings.fixOverflowBug) {
+		if (moveDir == UP && !appSettings.fixOverflowBug) {
 			tileAhead = world.tileToDir(tileAhead, LEFT, nTiles);
 		}
 		return tileAhead;

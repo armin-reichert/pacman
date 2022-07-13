@@ -25,7 +25,7 @@ package de.amr.games.pacman.controller.game;
 
 import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacman.PacManApp.settings;
+import static de.amr.games.pacman.PacManApp.appSettings;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.game.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.game.PacManGameState.GAME_OVER;
@@ -103,7 +103,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		buildStateMachine();
 
 		themes = new ThemeSelector(supportedThemes);
-		themes.select(settings.theme);
+		themes.select(appSettings.theme);
 		themes.addListener(theme -> {
 			if (currentView != null) {
 				currentView.setTheme(theme);
@@ -171,7 +171,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(PACMAN_DYING)
 					.timeoutAfter(sec(5))
 					.onEntry(() -> {
-						if (!settings.pacManImmortable) {
+						if (!appSettings.pacManImmortable) {
 							game.lives -= 1;
 						}
 						world.setFrozen(true);
@@ -217,7 +217,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			.transitions()
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
-					.condition(() -> sounds().isMusicLoaded()	&& settings.skipIntro)
+					.condition(() -> sounds().isMusicLoaded()	&& appSettings.skipIntro)
 					.annotation("Music loaded, skipping intro")
 					
 				.when(LOADING_MUSIC).then(INTRO)
@@ -295,7 +295,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class GettingReadyState extends State<PacManGameState> {
 
 		private void startNewGame() {
-			PacManGame.start(settings.startLevel, world.totalFoodCount());
+			PacManGame.start(appSettings.startLevel, world.totalFoodCount());
 			world.setFrozen(true);
 			closeAllDoors();
 			folks.guys().forEach(guy -> {
@@ -340,7 +340,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onEntry() {
 			startBackgroundMusicForPlaying();
-			if (settings.demoMode) {
+			if (appSettings.demoMode) {
 				playView().messagesView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 			} else {
 				playView().messagesView.clearMessage(1);
@@ -395,7 +395,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				loginfo("%s got killed at %s", ghost.name, ghost.tile());
 			}
 
-			else if (!settings.ghostsHarmless) {
+			else if (!appSettings.ghostsHarmless) {
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());
 				doorMan.onPacManLostLife();
 				playView().soundState.chasingGhosts = false;

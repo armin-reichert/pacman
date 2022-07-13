@@ -26,7 +26,7 @@ package de.amr.games.pacman.controller.game;
 import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.easy.game.controller.StateMachineRegistry.REGISTRY;
-import static de.amr.games.pacman.PacManApp.settings;
+import static de.amr.games.pacman.PacManApp.appSettings;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
@@ -95,7 +95,7 @@ public class ExtendedGameController extends GameController {
 	@Override
 	public void init() {
 		super.init();
-		setDemoMode(settings.demoMode);
+		setDemoMode(appSettings.demoMode);
 	}
 
 	@Override
@@ -204,10 +204,10 @@ public class ExtendedGameController extends GameController {
 
 	protected void setDemoMode(boolean demoMode) {
 		if (demoMode) {
-			settings.pacManImmortable = true;
+			appSettings.pacManImmortable = true;
 			folks.pacMan.setSteering(PacManState.AWAKE, new SearchingForFoodAndAvoidingGhosts(world, folks.pacMan, folks));
 		} else {
-			settings.pacManImmortable = false;
+			appSettings.pacManImmortable = false;
 			you(folks.pacMan).followTheCursorKeys().ok();
 		}
 	}
@@ -274,17 +274,17 @@ public class ExtendedGameController extends GameController {
 	}
 
 	private void togglePacManOverflowBug() {
-		settings.fixOverflowBug = !settings.fixOverflowBug;
-		loginfo("Overflow bug is %s", settings.fixOverflowBug ? "fixed" : "active");
+		appSettings.fixOverflowBug = !appSettings.fixOverflowBug;
+		loginfo("Overflow bug is %s", appSettings.fixOverflowBug ? "fixed" : "active");
 	}
 
 	private void toggleGhostFrightenedBehavior() {
-		if (settings.ghostsSafeCorner) {
-			settings.ghostsSafeCorner = false;
+		if (appSettings.ghostsSafeCorner) {
+			appSettings.ghostsSafeCorner = false;
 			folks.ghosts().forEach(ghost -> you(ghost).when(FRIGHTENED).moveRandomly().ok());
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
-			settings.ghostsSafeCorner = true;
+			appSettings.ghostsSafeCorner = true;
 			if (graph == null) {
 				graph = new WorldGraph(world);
 			}
@@ -294,24 +294,24 @@ public class ExtendedGameController extends GameController {
 	}
 
 	private void toggleGhostsHarmless() {
-		settings.ghostsHarmless = !settings.ghostsHarmless;
-		loginfo("Ghosts are %s", settings.ghostsHarmless ? "harmless" : "dangerous");
+		appSettings.ghostsHarmless = !appSettings.ghostsHarmless;
+		loginfo("Ghosts are %s", appSettings.ghostsHarmless ? "harmless" : "dangerous");
 	}
 
 	public void toggleDemoMode() {
-		settings.demoMode = !settings.demoMode;
-		setDemoMode(settings.demoMode);
-		if (settings.demoMode) {
+		appSettings.demoMode = !appSettings.demoMode;
+		setDemoMode(appSettings.demoMode);
+		if (appSettings.demoMode) {
 			playView().messagesView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 		} else {
 			playView().messagesView.clearMessage(1);
 		}
-		loginfo("Demo mode is %s", settings.demoMode ? "on" : "off");
+		loginfo("Demo mode is %s", appSettings.demoMode ? "on" : "off");
 	}
 
 	private void toggleMakePacManImmortable() {
-		settings.pacManImmortable = !settings.pacManImmortable;
-		loginfo("Pac-Man immortable = %s", settings.pacManImmortable);
+		appSettings.pacManImmortable = !appSettings.pacManImmortable;
+		loginfo("Pac-Man immortable = %s", appSettings.pacManImmortable);
 	}
 
 	private void switchToNextLevel() {

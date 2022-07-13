@@ -48,7 +48,7 @@ public class PacManApp extends Application {
 	}
 
 	public static void main(String[] args) {
-		launch(PacManApp.class, settings, args);
+		launch(PacManApp.class, appSettings, args);
 	}
 
 	// Application configuration
@@ -83,7 +83,7 @@ public class PacManApp extends Application {
 		public String theme = "arcade";
 	}
 
-	public static final Settings settings = new Settings();
+	public static final Settings appSettings = new Settings();
 
 	@Override
 	protected void configure(AppSettings settings) {
@@ -97,16 +97,16 @@ public class PacManApp extends Application {
 	@Override
 	protected void printSettings() {
 		super.printSettings();
-		settings.print("Demo Mode", settings.demoMode);
-		settings.print("Ghosts harmless", settings.ghostsHarmless);
-		settings.print("Ghosts flee into corner", settings.ghostsSafeCorner);
-		settings.print("Fix Overflow Bug", settings.fixOverflowBug);
-		settings.print("Pac-Man immortable", settings.pacManImmortable);
-		settings.print("Pathfinder", settings.pathFinder);
-		settings.print("Skip Intro", settings.skipIntro);
-		settings.print("Startlevel", settings.startLevel);
-		settings.print("Theme", settings.theme.toUpperCase());
-		settings.print("User Language", PacManGameView.texts.getLocale().getDisplayLanguage());
+		appSettings.print("Demo Mode", appSettings.demoMode);
+		appSettings.print("Ghosts harmless", appSettings.ghostsHarmless);
+		appSettings.print("Ghosts flee into corner", appSettings.ghostsSafeCorner);
+		appSettings.print("Fix Overflow Bug", appSettings.fixOverflowBug);
+		appSettings.print("Pac-Man immortable", appSettings.pacManImmortable);
+		appSettings.print("Pathfinder", appSettings.pathFinder);
+		appSettings.print("Skip Intro", appSettings.skipIntro);
+		appSettings.print("Startlevel", appSettings.startLevel);
+		appSettings.print("Theme", appSettings.theme.toUpperCase());
+		appSettings.print("User Language", PacManGameView.texts.getLocale().getDisplayLanguage());
 	}
 
 	@Override

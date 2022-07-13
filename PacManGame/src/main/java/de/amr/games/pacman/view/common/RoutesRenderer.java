@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.view.common;
 
-import static de.amr.games.pacman.PacManApp.settings;
+import static de.amr.games.pacman.PacManApp.appSettings;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.view.common.Rendering.alpha;
 import static de.amr.games.pacman.view.common.Rendering.drawDirectionIndicator;
@@ -152,7 +152,7 @@ public class RoutesRenderer {
 		Direction pacManDir = pacMan.moveDir;
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
-		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
+		if (!appSettings.fixOverflowBug && pacManDir == Direction.UP) {
 			Tile twoAhead = world.tileToDir(pacManTile, pacManDir, 2);
 			Tile twoLeft = world.tileToDir(twoAhead, Direction.LEFT, 2);
 			x1 = pacManTile.centerX();

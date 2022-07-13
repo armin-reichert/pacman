@@ -66,8 +66,8 @@ public class MusicLoadingView implements PacManGameView {
 	private Random rnd = new Random();
 
 	public MusicLoadingView(Theme theme) {
-		this.width = PacManApp.settings.width;
-		this.height = PacManApp.settings.height;
+		this.width = PacManApp.appSettings.width;
+		this.height = PacManApp.appSettings.height;
 		setTheme(theme);
 		init();
 	}

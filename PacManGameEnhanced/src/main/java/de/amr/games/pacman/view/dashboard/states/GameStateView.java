@@ -137,7 +137,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 			cbShowRoutes.setSelected(gameController.isShowingRoutes());
 			cbShowGrid.setSelected(gameController.isShowingGrid());
 			cbShowStates.setSelected(gameController.isShowingStates());
-			cbDemoMode.setSelected(PacManAppEnhanced.settings.demoMode);
+			cbDemoMode.setSelected(PacManAppEnhanced.appSettings.demoMode);
 		}
 	}
 

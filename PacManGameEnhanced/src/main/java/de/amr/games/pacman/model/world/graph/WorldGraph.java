@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.world.graph;
 
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacman.PacManApp.settings;
+import static de.amr.games.pacman.PacManApp.appSettings;
 
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +63,7 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 		edges().filter(edge -> !world.isAccessible(tile(edge.either())) || !world.isAccessible(tile(edge.other())))
 				.forEach(this::removeEdge);
 		setDefaultVertexLabel(this::tile);
-		pathFinder = getPathFinder(settings.pathFinder);
+		pathFinder = getPathFinder(appSettings.pathFinder);
 	}
 
 	public void setPathFinder(PathFinder pathFinder) {
