@@ -13,6 +13,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
+import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.test.TestController;
 
 public class EnterAndLeaveGhostHouseTestApp extends Application {
@@ -52,7 +53,8 @@ class EnterGhostHouseTestUI extends TestController {
 		super.init();
 		include(inky);
 		inky.init();
-		Bed bed = world.house(0).get().bed(0);
+		House house = world.house(0).orElseThrow();
+		Bed bed = house.bed(0);
 		inky.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
 		inky.ai.setState(SCATTERING);
 		view.turnRoutesOn();

@@ -9,7 +9,6 @@ import java.awt.Robot;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Mouse;
-import de.amr.easy.game.ui.AppShell;
 import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.test.TestController;
@@ -56,22 +55,24 @@ class FollowMouseTestUI extends TestController {
 
 	@Override
 	public void update() {
-		if (mousePosition == null) {
-			try {
-				AppShell shell = Application.app().shell().get();
-				int x = shell.getX() + shell.getWidth() / 2;
-				int y = shell.getY() + shell.getHeight() / 2;
-				mousePosition = Tile.at(x / Tile.SIZE, y / Tile.SIZE);
-				Robot robot = new Robot();
-				robot.mouseMove(x, y);
-			} catch (AWTException e) {
-				Bed bed = world.house(0).get().bed(0);
-				mousePosition = Tile.at(bed.col(), bed.row());
-				e.printStackTrace();
+		var shell = Application.app().shell();
+		if (shell.isPresent()) {
+			if (mousePosition == null) {
+				try {
+					int x = shell.get().getX() + shell.get().getWidth() / 2;
+					int y = shell.get().getY() + shell.get().getHeight() / 2;
+					mousePosition = Tile.at(x / Tile.SIZE, y / Tile.SIZE);
+					Robot robot = new Robot();
+					robot.mouseMove(x, y);
+				} catch (AWTException e) {
+					Bed bed = world.house(0).get().bed(0);
+					mousePosition = Tile.at(bed.col(), bed.row());
+					e.printStackTrace();
+				}
 			}
-		}
-		if (Mouse.moved()) {
-			mousePosition = Tile.at(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
+			if (Mouse.moved()) {
+				mousePosition = Tile.at(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
+			}
 		}
 		super.update();
 	}
