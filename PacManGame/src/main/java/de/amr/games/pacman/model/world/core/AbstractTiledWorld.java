@@ -43,20 +43,23 @@ import de.amr.games.pacman.model.world.components.TiledRectangle;
 public abstract class AbstractTiledWorld extends TiledRectangle implements TiledWorld {
 
 	private final Collection<Entity> outsiders = new HashSet<>();
-	private Tile capeNW, capeNE, capeSE, capeSW;
+	private Tile capeNW;
+	private Tile capeNE;
+	private Tile capeSE;
+	private Tile capeSW;
 
 	protected boolean changing;
 	protected boolean frozen;
 
-	public AbstractTiledWorld(int width, int height) {
+	protected AbstractTiledWorld(int width, int height) {
 		super(0, 0, width, height);
 	}
 
 	private void computeCapes() {
-		capeNW = tiles().filter(this::isAccessible).min(this::distFromCornerNW).get();
-		capeNE = tiles().filter(this::isAccessible).min(this::distFromCornerNE).get();
-		capeSE = tiles().filter(this::isAccessible).max(this::distFromCornerNW).get();
-		capeSW = tiles().filter(this::isAccessible).max(this::distFromCornerNE).get();
+		capeNW = tiles().filter(this::isAccessible).min(this::distFromCornerNW).orElse(null);
+		capeNE = tiles().filter(this::isAccessible).min(this::distFromCornerNE).orElse(null);
+		capeSE = tiles().filter(this::isAccessible).max(this::distFromCornerNW).orElse(null);
+		capeSW = tiles().filter(this::isAccessible).max(this::distFromCornerNE).orElse(null);
 	}
 
 	private int distFromCornerNW(Tile t1, Tile t2) {
@@ -89,12 +92,17 @@ public abstract class AbstractTiledWorld extends TiledRectangle implements Tiled
 			throw new IllegalArgumentException("Number of tiles must be non-negative, but is " + n);
 		}
 		Vector2f dirVector = dir.vector();
-		int dx = dirVector.roundedX(), dy = dirVector.roundedY();
-		int col = tile.col, row = tile.row;
+		int dx = dirVector.roundedX();
+		int dy = dirVector.roundedY();
+		int col = tile.col;
+		int row = tile.row;
 		while (n-- > 0) {
 			Tile t = Tile.at(col, row);
 			if (isPortal(t)) {
-				Portal portal = portals().filter(p -> p.includes(t)).findAny().get();
+				Portal portal = portals().filter(p -> p.includes(t)).findAny().orElse(null);
+				if (portal == null) {
+					throw new IllegalStateException("Portal is NULL");
+				}
 				if (portal.vertical) {
 					if (t.equals(portal.either) && dir == Direction.UP) {
 						col = portal.other.col;
