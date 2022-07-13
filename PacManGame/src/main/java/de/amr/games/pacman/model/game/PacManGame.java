@@ -34,8 +34,7 @@ import java.util.List;
  * 
  * @author Armin Reichert
  * 
- * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
- *      dossier</a>
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man dossier</a>
  */
 public class PacManGame {
 
@@ -57,7 +56,7 @@ public class PacManGame {
 	 * @param level level number (1..)
 	 * @return data for level with given number
 	 */
-	static List<?> levelData(int level) {
+	static List<Object> levelData(int level) {
 		if (level < 1) {
 			throw new IllegalArgumentException("Illegal game level number: " + level);
 		}
@@ -215,8 +214,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * Gains points for killing a ghost. Value doubles for each ghost killed in series using the same
-	 * energizer. If all ghosts have been killed in a level, additional 12000 points are gained.
+	 * Gains points for killing a ghost. Value doubles for each ghost killed in series using the same energizer. If all
+	 * ghosts have been killed in a level, additional 12000 points are gained.
 	 */
 	public boolean gainGhostPoints() {
 		ghostsKilledByEnergizer += 1;

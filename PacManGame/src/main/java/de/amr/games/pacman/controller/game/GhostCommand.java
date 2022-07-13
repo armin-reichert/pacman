@@ -29,32 +29,33 @@ import static de.amr.games.pacman.controller.game.GhostCommand.Phase.CHASE;
 import static de.amr.games.pacman.controller.game.GhostCommand.Phase.PAUSED;
 import static de.amr.games.pacman.controller.game.GhostCommand.Phase.SCATTER;
 import static de.amr.games.pacman.controller.game.Timing.sec;
-import static de.amr.games.pacman.model.game.PacManGame.game;
 
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.GhostCommand.Phase;
+import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Controller for the timing of the ghost attack waves. Ghosts change between chasing and scattering
- * mode during each level in 4 rounds of different durations. When a ghost becomes frightened, the
- * timer is stopped and later resumed at this point in time when ghosts are not frightened anymore.
+ * Controller for the timing of the ghost attack waves. Ghosts change between chasing and scattering mode during each
+ * level in 4 rounds of different durations. When a ghost becomes frightened, the timer is stopped and later resumed at
+ * this point in time when ghosts are not frightened anymore.
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
 public class GhostCommand extends StateMachine<Phase, String> {
 
-	public static enum Phase {
+	private static final String EVENT_PAUSE = "Pause";
+
+	public enum Phase {
 		SCATTER, CHASE, PAUSED
 	}
 
 	private static class Times {
-
-		long scatter, chase;
+		long scatter;
+		long chase;
 	}
 
 	private static Times[] createTimes() {
@@ -69,43 +70,47 @@ public class GhostCommand extends StateMachine<Phase, String> {
 	private int round;
 	private Phase pausedState;
 
-	private final Times[] L1 = createTimes(); // level 1
-	private final Times[] L2 = createTimes(); // levels 2-4
-	private final Times[] L5 = createTimes(); // levels 5...
+	private static final Times[] LEVEL_1 = createTimes();
+	private static final Times[] LEVELS_2_4 = createTimes();
+	private static final Times[] LEVELS_5_ = createTimes();
 
 	/*@formatter:off*/
 	{
-		L1[0].scatter = sec(7);
-		L1[0].chase   = sec(20);
-		L1[1].scatter = sec(7);
-		L1[1].chase   = sec(20);
-		L1[2].scatter = sec(5);
-		L1[2].chase   = sec(20);
-		L1[3].scatter = sec(5);
-		L1[3].chase   = Long.MAX_VALUE;
+		LEVEL_1[0].scatter = sec(7);
+		LEVEL_1[0].chase   = sec(20);
+		LEVEL_1[1].scatter = sec(7);
+		LEVEL_1[1].chase   = sec(20);
+		LEVEL_1[2].scatter = sec(5);
+		LEVEL_1[2].chase   = sec(20);
+		LEVEL_1[3].scatter = sec(5);
+		LEVEL_1[3].chase   = Long.MAX_VALUE;
 
-		L2[0].scatter = sec(7);
-		L2[0].chase   = sec(20);
-		L2[1].scatter = sec(7);
-		L2[1].chase   = sec(20);
-		L2[2].scatter = sec(5);
-		L2[2].chase   = sec(1033);
-		L2[3].scatter = 1;
-		L2[3].chase   = Long.MAX_VALUE;
+		LEVELS_2_4[0].scatter = sec(7);
+		LEVELS_2_4[0].chase   = sec(20);
+		LEVELS_2_4[1].scatter = sec(7);
+		LEVELS_2_4[1].chase   = sec(20);
+		LEVELS_2_4[2].scatter = sec(5);
+		LEVELS_2_4[2].chase   = sec(1033);
+		LEVELS_2_4[3].scatter = 1;
+		LEVELS_2_4[3].chase   = Long.MAX_VALUE;
 
-		L5[0].scatter = sec(5);
-		L5[0].chase   = sec(20);
-		L5[1].scatter = sec(5);
-		L5[1].chase   = sec(20);
-		L5[2].scatter = sec(5);
-		L5[2].chase   = sec(1037);
-		L5[3].scatter = 1;
-		L5[3].chase   = Long.MAX_VALUE;
+		LEVELS_5_[0].scatter = sec(5);
+		LEVELS_5_[0].chase   = sec(20);
+		LEVELS_5_[1].scatter = sec(5);
+		LEVELS_5_[1].chase   = sec(20);
+		LEVELS_5_[2].scatter = sec(5);
+		LEVELS_5_[2].chase   = sec(1037);
+		LEVELS_5_[3].scatter = 1;
+		LEVELS_5_[3].chase   = Long.MAX_VALUE;
 	}
 	/*@formatter:on*/
 
 	private Times times(int level) {
-		return level >= 5 ? L5[round] : level >= 2 ? L2[round] : L1[round];
+		return switch (level) {
+		case 1 -> LEVEL_1[round];
+		case 2, 3, 4 -> LEVELS_2_4[round];
+		default -> LEVELS_5_[round];
+		};
 	}
 
 	public GhostCommand(Folks folks) {
@@ -118,19 +123,19 @@ public class GhostCommand extends StateMachine<Phase, String> {
 			.initialState(SCATTER)
 		.states()
 			.state(SCATTER)
-				.timeoutAfter(() -> times(game.level).scatter)
+				.timeoutAfter(() -> times(PacManGame.game.level).scatter)
 				.onTick(this::notifyGhosts)
 				.annotation(() -> "Round " + (round + 1))
 			.state(CHASE)
-				.timeoutAfter(() -> times(game.level).chase)
+				.timeoutAfter(() -> times(PacManGame.game.level).chase)
 				.onTick(this::notifyGhosts)
 				.annotation(() -> "Round " + (round + 1))
 			.state(PAUSED)
 		.transitions()
 			.when(SCATTER).then(CHASE).onTimeout()
-			.when(SCATTER).then(PAUSED).on("Pause").act(() -> pausedState = getState())
+			.when(SCATTER).then(PAUSED).on(EVENT_PAUSE).act(() -> pausedState = getState())
 			.when(CHASE).then(SCATTER).onTimeout().act(() -> ++round)
-			.when(CHASE).then(PAUSED).on("Pause").act(() -> pausedState = getState())
+			.when(CHASE).then(PAUSED).on(EVENT_PAUSE).act(() -> pausedState = getState())
 		.endStateMachine();
 		/*@formatter:on*/
 	}
@@ -147,7 +152,7 @@ public class GhostCommand extends StateMachine<Phase, String> {
 	}
 
 	public void pauseAttacking() {
-		process("Pause");
+		process(EVENT_PAUSE);
 	}
 
 	public void resumeAttacking() {
