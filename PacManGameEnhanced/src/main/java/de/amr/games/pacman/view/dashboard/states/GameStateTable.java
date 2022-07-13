@@ -57,11 +57,11 @@ public class GameStateTable extends JTable implements Lifecycle {
 	@Override
 	public void init() {
 		UniversalFormatter tileFmt = new UniversalFormatter();
-		tileFmt.fnHilightCondition = c -> record(c.row) != null && record(c.row).pacManCollision;
+		tileFmt.fnHilightCondition = c -> getRecordAt(c.row) != null && getRecordAt(c.row).pacManCollision;
 		format(ColumnInfo.TILE, tileFmt);
 
 		UniversalFormatter speedFmt = new UniversalFormatter();
-		speedFmt.fnHilightCondition = c -> c.row == ROW_BLINKY && record(ROW_PACMAN).speed <= record(ROW_BLINKY).speed;
+		speedFmt.fnHilightCondition = c -> c.row == ROW_BLINKY && getRecordAt(ROW_PACMAN).speed <= getRecordAt(ROW_BLINKY).speed;
 		format(ColumnInfo.SPEED, speedFmt);
 
 		UniversalFormatter ticksFmt = new UniversalFormatter();
@@ -84,7 +84,7 @@ public class GameStateTable extends JTable implements Lifecycle {
 		return (GameStateTableModel) getModel();
 	}
 
-	private GameStateRecord record(int row) {
-		return getGameStateTableModel().record(row);
+	private GameStateRecord getRecordAt(int row) {
+		return getGameStateTableModel().getRecordAt(row);
 	}
 }

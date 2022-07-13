@@ -30,7 +30,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.view.dashboard.util.UniversalFormatter;
 import net.miginfocom.swing.MigLayout;
@@ -54,10 +53,6 @@ public class GameLevelView extends JPanel implements Lifecycle {
 		table.setRowHeight(17);
 		table.setRowSelectionAllowed(false);
 		scrollPane.setViewportView(table);
-	}
-
-	public void attachTo(GameController controller) {
-		init();
 	}
 
 	@Override

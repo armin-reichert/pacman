@@ -46,9 +46,9 @@ public class UniversalFormatter extends DefaultTableCellRenderer {
 
 	private Context context = new Context();
 	public Color hilightColor = new Color(255, 0, 0, 100);
-	public Predicate<Context> fnHilightCondition = context -> false;
-	public Function<Context, String> fnTextFormat = context -> context.value == null ? "" : String.valueOf(context.value);
-	public Predicate<Context> fnBoldCondition = context -> false;
+	public Predicate<Context> fnHilightCondition = ctx -> false;
+	public Function<Context, String> fnTextFormat = ctx -> ctx.value == null ? "" : String.valueOf(ctx.value);
+	public Predicate<Context> fnBoldCondition = ctx -> false;
 	public int horizontalAlignment = SwingConstants.LEADING;
 
 	@Override

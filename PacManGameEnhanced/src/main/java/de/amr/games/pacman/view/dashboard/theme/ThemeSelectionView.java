@@ -77,7 +77,7 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
-		folks = new Folks(gameController.world, gameController.world.house(0).get());
+		folks = new Folks(gameController.world, gameController.world.house(0).orElseThrow(IllegalStateException::new));
 	}
 
 	public ThemeSelectionView() {

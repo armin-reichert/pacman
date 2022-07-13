@@ -255,7 +255,7 @@ class GameStateTableModel extends AbstractTableModel {
 		}
 	}
 
-	public GameStateRecord record(int row) {
+	public GameStateRecord getRecordAt(int row) {
 		return records[row];
 	}
 

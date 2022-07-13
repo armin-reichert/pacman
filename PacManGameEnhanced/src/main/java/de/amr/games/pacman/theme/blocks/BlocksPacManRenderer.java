@@ -70,10 +70,7 @@ class BlocksPacManRenderer implements PacManRenderer {
 	}
 
 	private void drawRunning(Graphics2D g, PacMan pacMan, int size) {
-		int x = (int) pacMan.tf.x + (pacMan.tf.width - size) / 2;
-		int y = (int) pacMan.tf.y + (pacMan.tf.width - size) / 2;
-		g.setColor(Color.YELLOW);
-		g.fillOval(x, y, size, size);
+		drawFull(g, pacMan, size);
 	}
 
 	private void drawCollapsed(Graphics2D g, PacMan pacMan, int size) {
