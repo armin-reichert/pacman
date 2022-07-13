@@ -38,17 +38,17 @@ public interface Theme {
 
 	String name();
 
-	int $int(String key);
+	int asInt(String key);
 
-	float $float(String key);
+	float asFloat(String key);
 
-	Font $font(String key);
+	Font asFont(String key);
 
-	Color $color(String key);
+	Color asColor(String key);
 
-	Image $image(String key);
+	Image asIimage(String key);
 
-	<T> T $value(String key);
+	<T> T asValue(String key);
 
 	WorldRenderer worldRenderer();
 

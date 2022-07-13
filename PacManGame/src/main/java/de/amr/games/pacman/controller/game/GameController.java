@@ -129,7 +129,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void buildStateMachine() {
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
+		doNotLogEventProcessingIf(FoodFoundEvent.class::isInstance);
 		//@formatter:off
 		beginStateMachine()
 			
@@ -235,19 +235,19 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
-					.act(state_PLAYING()::onPacManFoundFood)
+					.act(statePlaying()::onPacManFoundFood)
 					
 				.stay(PLAYING)
 					.on(BonusFoundEvent.class)
-					.act(state_PLAYING()::onPacManFoundBonus)
+					.act(statePlaying()::onPacManFoundBonus)
 					
 				.stay(PLAYING)
 					.on(PacManLostPowerEvent.class)
-					.act(state_PLAYING()::onPacManLostPower)
+					.act(statePlaying()::onPacManLostPower)
 			
 				.stay(PLAYING)
 					.on(PacManGhostCollisionEvent.class)
-					.act(state_PLAYING()::onPacManGhostCollision)
+					.act(statePlaying()::onPacManGhostCollision)
 			
 				.when(PLAYING).then(PACMAN_DYING)	
 					.on(PacManKilledEvent.class)
@@ -259,8 +259,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.on(LevelCompletedEvent.class)
 					
 				.when(CHANGING_LEVEL).then(PLAYING)
-					.condition(() -> state_CHANGING_LEVEL().isComplete())
-					.act(state_PLAYING()::resumePlaying)
+					.condition(() -> stateChangingLevel().isComplete())
+					.act(statePlaying()::resumePlaying)
 					.annotation("Level change complete")
 					
 				.when(GHOST_DYING).then(PLAYING)
@@ -275,7 +275,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
 					.condition(() -> game.lives > 0)
-					.act(state_PLAYING()::resumePlaying)
+					.act(statePlaying()::resumePlaying)
 					.annotation(() -> PacManGame.started() ?
 							String.format("Lives remaining = %d, resume game", game.lives) : "Lives remaining, resume game"
 					)
@@ -457,7 +457,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			folks.pacMan.fallAsleep();
 			doorMan.onLevelChange();
 			sounds().clips().forEach(SoundClip::stop);
-			flashingEnd = flashingStart + game.numFlashes * sec(themes.current().$float("maze-flash-sec"));
+			flashingEnd = flashingStart + game.numFlashes * sec(themes.current().asFloat("maze-flash-sec"));
 			complete = false;
 		}
 
@@ -549,11 +549,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 *         {@code state_PLAYING()::onPacManFoundFood} can be used. <br/>
 	 *         The builtin expression {@code this.<PlayingState>state(PLAYING)} looked too ugly to me.
 	 */
-	protected PlayingState state_PLAYING() {
+	protected PlayingState statePlaying() {
 		return state(PLAYING);
 	}
 
-	protected ChangingLevelState state_CHANGING_LEVEL() {
+	protected ChangingLevelState stateChangingLevel() {
 		return state(CHANGING_LEVEL);
 	}
 

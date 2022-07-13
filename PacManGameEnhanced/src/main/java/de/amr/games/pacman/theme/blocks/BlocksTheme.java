@@ -89,12 +89,12 @@ public class BlocksTheme extends ThemeParameterMap implements Theme {
 	}
 
 	Color ghostColor(Ghost ghost) {
-		Map<Integer, Color> colorByPersonality = $value("ghost-colors");
+		Map<Integer, Color> colorByPersonality = asValue("ghost-colors");
 		return colorByPersonality.getOrDefault(ghost.personality, Color.WHITE);
 	}
 
 	Color symbolColor(String symbolName) {
-		Map<String, Color> colorBySymbol = $value("symbol-colors");
+		Map<String, Color> colorBySymbol = asValue("symbol-colors");
 		return colorBySymbol.getOrDefault(symbolName, Color.GREEN);
 	}
 
@@ -116,7 +116,7 @@ public class BlocksTheme extends ThemeParameterMap implements Theme {
 	@Override
 	public MessagesRenderer messagesRenderer() {
 		DefaultMessagesRenderer messagesRenderer = new DefaultMessagesRenderer();
-		messagesRenderer.setFont($font("font").deriveFont(14f));
+		messagesRenderer.setFont(asFont("font").deriveFont(14f));
 		messagesRenderer.setTextAntialiasing(true);
 		return messagesRenderer;
 	}
@@ -124,7 +124,7 @@ public class BlocksTheme extends ThemeParameterMap implements Theme {
 	@Override
 	public GameRenderer gameScoreRenderer() {
 		DefaultGameScoreRenderer r = new DefaultGameScoreRenderer();
-		r.setFont($font("font"));
+		r.setFont(asFont("font"));
 		return r;
 	}
 
@@ -157,6 +157,6 @@ public class BlocksTheme extends ThemeParameterMap implements Theme {
 
 	@Override
 	public PacManGameSounds sounds() {
-		return $value("sounds");
+		return asValue("sounds");
 	}
 }

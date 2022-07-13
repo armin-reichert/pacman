@@ -52,13 +52,13 @@ class ArcadeWorldRenderer implements WorldRenderer {
 
 	@Override
 	public void render(Graphics2D g, TiledWorld world) {
-		ArcadeSpritesheet spriteSheet = ArcadeTheme.THEME.$value("sprites");
+		ArcadeSpritesheet spriteSheet = ArcadeTheme.THEME.asValue("sprites");
 		// no anti-aliasing for maze image for better performance
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		if (world.isChanging()) {
 			if (spriteFlashingMaze == null) {
-				spriteFlashingMaze = spriteSheet.makeSprite_flashingMaze(PacManGame.game.numFlashes);
+				spriteFlashingMaze = spriteSheet.makeSpriteFlashingMaze(PacManGame.game.numFlashes);
 			}
 			spriteFlashingMaze.draw(g2, 0, 3 * Tile.SIZE);
 		} else {
@@ -96,12 +96,12 @@ class ArcadeWorldRenderer implements WorldRenderer {
 			if (bonus.isActive()) {
 				if (bonus.isConsumed()) {
 					Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.SIZE / 2);
-					Image img = ArcadeTheme.THEME.$image("points-" + bonus.value());
+					Image img = ArcadeTheme.THEME.asIimage("points-" + bonus.value());
 					g.drawImage(img, position.roundedX(), position.roundedY(), null);
 				} else {
 					ArcadeBonus arcadeBonus = (ArcadeBonus) bonus;
 					Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.SIZE / 2);
-					Image img = ArcadeTheme.THEME.$image("symbol-" + arcadeBonus.symbol.name());
+					Image img = ArcadeTheme.THEME.asIimage("symbol-" + arcadeBonus.symbol.name());
 					g.drawImage(img, position.roundedX(), position.roundedY(), null);
 				}
 			}

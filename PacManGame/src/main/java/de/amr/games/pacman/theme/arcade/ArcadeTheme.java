@@ -68,7 +68,7 @@ public class ArcadeTheme extends ThemeParameterMap implements Theme {
 		set("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		set("maze-flash-sec", 0.4f);
 		for (ArcadeBonus.Symbol symbol : ArcadeBonus.Symbol.values()) {
-			set("symbol-" + symbol.name(), spriteSheet.makeSprite_bonusSymbol(symbol.name()).frame(0));
+			set("symbol-" + symbol.name(), spriteSheet.makeSpriteBonusSymbol(symbol.name()).frame(0));
 		}
 		for (int points : List.of(100, 300, 500, 700, 1000, 2000, 3000, 5000)) {
 			set("points-" + points, spriteSheet.imageNumber(points));
@@ -79,11 +79,11 @@ public class ArcadeTheme extends ThemeParameterMap implements Theme {
 	private SpriteMap makePacManSpriteMap() {
 		SpriteMap map = new SpriteMap();
 		Direction.dirs().forEach(dir -> {
-			map.set("walking-" + dir, spriteSheet.makeSprite_pacManWalking(dir));
-			map.set("blocked-" + dir, spriteSheet.makeSprite_pacManBlocked(dir));
+			map.set("walking-" + dir, spriteSheet.makeSpritePacManWalking(dir));
+			map.set("blocked-" + dir, spriteSheet.makeSpritePacManBlocked(dir));
 		});
-		map.set("collapsing", spriteSheet.makeSprite_pacManCollapsing());
-		map.set("full", spriteSheet.makeSprite_pacManFull());
+		map.set("collapsing", spriteSheet.makeSpritePacManCollapsing());
+		map.set("full", spriteSheet.makeSpritePacManFull());
 		return map;
 	}
 
@@ -91,12 +91,12 @@ public class ArcadeTheme extends ThemeParameterMap implements Theme {
 		SpriteMap map = new SpriteMap();
 		for (Direction dir : Direction.values()) {
 			for (GhostColor color : GhostColor.values()) {
-				map.set(ghostSpriteKeyColor(color, dir), spriteSheet.makeSprite_ghostColored(color, dir));
+				map.set(ghostSpriteKeyColor(color, dir), spriteSheet.makeSpritGhostColored(color, dir));
 			}
-			map.set(ghostSpriteKeyEyes(dir), spriteSheet.makeSprite_ghostEyes(dir));
+			map.set(ghostSpriteKeyEyes(dir), spriteSheet.makeSpriteGhostEyes(dir));
 		}
-		map.set("frightened", spriteSheet.makeSprite_ghostFrightened());
-		map.set("flashing", spriteSheet.makeSprite_ghostFlashing());
+		map.set("frightened", spriteSheet.makeSpriteGhostFrightened());
+		map.set("flashing", spriteSheet.makeSpriteGhostFlashing());
 		for (int bounty : List.of(200, 400, 800, 1600)) {
 			map.set(ghostSpriteKeyPoints(bounty), Sprite.of(spriteSheet.imageNumber(bounty)));
 		}
@@ -171,7 +171,7 @@ public class ArcadeTheme extends ThemeParameterMap implements Theme {
 	@Override
 	public MessagesRenderer messagesRenderer() {
 		DefaultMessagesRenderer messagesRenderer = new DefaultMessagesRenderer();
-		messagesRenderer.setFont($font("font"));
+		messagesRenderer.setFont(asFont("font"));
 		return messagesRenderer;
 	}
 
@@ -201,7 +201,7 @@ public class ArcadeTheme extends ThemeParameterMap implements Theme {
 	@Override
 	public GameRenderer gameScoreRenderer() {
 		DefaultGameScoreRenderer r = new DefaultGameScoreRenderer();
-		r.setFont($font("font"));
+		r.setFont(asFont("font"));
 		return r;
 	}
 

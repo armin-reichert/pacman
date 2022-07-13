@@ -209,7 +209,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			.transitions()
 			
 				.when(SCROLLING_LOGO_ANIMATION).then(CHASING_ANIMATIONS)
-					.condition(() -> pacManLogo.isComplete())
+					.condition(pacManLogo::isComplete)
 					.annotation("Pac-Man logo at top")
 				
 				.when(CHASING_ANIMATIONS).then(WAITING_FOR_INPUT)

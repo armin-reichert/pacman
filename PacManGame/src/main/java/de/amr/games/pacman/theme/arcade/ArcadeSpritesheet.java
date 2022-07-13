@@ -130,7 +130,7 @@ public class ArcadeSpritesheet extends Spritesheet {
 		return full_maze;
 	}
 
-	public Sprite makeSprite_flashingMaze(int flashes) {
+	public Sprite makeSpriteFlashingMaze(int flashes) {
 		if (flashes == 0) {
 			return Sprite.of(empty_maze);
 		}
@@ -142,24 +142,24 @@ public class ArcadeSpritesheet extends Spritesheet {
 		return Sprite.of(frames).animate(LINEAR, 200);
 	}
 
-	public Sprite makeSprite_bonusSymbol(String symbolName) {
+	public Sprite makeSpriteBonusSymbol(String symbolName) {
 		int index = ArcadeBonus.Symbol.valueOf(symbolName).ordinal();
 		return Sprite.of(bonus_symbols[index]);
 	}
 
-	public Sprite makeSprite_pacManFull() {
+	public Sprite makeSpritePacManFull() {
 		return Sprite.of(pacMan_full);
 	}
 
-	public Sprite makeSprite_pacManBlocked(Direction dir) {
+	public Sprite makeSpritePacManBlocked(Direction dir) {
 		return Sprite.of(pacMan_blocked[dirIndex(dir)]);
 	}
 
-	public Sprite makeSprite_pacManWalking(Direction dir) {
+	public Sprite makeSpritePacManWalking(Direction dir) {
 		return Sprite.of(pacMan_walking[dirIndex(dir)]).animate(FORWARD_BACKWARDS, 5);
 	}
 
-	public Sprite makeSprite_pacManCollapsing() {
+	public Sprite makeSpritePacManCollapsing() {
 		return Sprite.of(pacMan_dying).animate(LINEAR, 100);
 	}
 
@@ -179,21 +179,21 @@ public class ArcadeSpritesheet extends Spritesheet {
 		return index < 4 ? green_numbers[index] : pink_numbers[index - 4];
 	}
 
-	public Sprite makeSprite_ghostColored(GhostColor color, Direction dir) {
+	public Sprite makeSpritGhostColored(GhostColor color, Direction dir) {
 		BufferedImage[] frames = Arrays.copyOfRange(ghost_colored[color.ordinal()], 2 * dirIndex(dir),
 				2 * (dirIndex(dir) + 1));
 		return Sprite.of(frames).animate(FORWARD_BACKWARDS, 300);
 	}
 
-	public Sprite makeSprite_ghostFrightened() {
+	public Sprite makeSpriteGhostFrightened() {
 		return Sprite.of(ghost_frightened).animate(CYCLIC, 300);
 	}
 
-	public Sprite makeSprite_ghostFlashing() {
+	public Sprite makeSpriteGhostFlashing() {
 		return Sprite.of(ghost_flashing).animate(CYCLIC, 125); // 4 frames take 0.5 sec
 	}
 
-	public Sprite makeSprite_ghostEyes(Direction dir) {
+	public Sprite makeSpriteGhostEyes(Direction dir) {
 		return Sprite.of(ghost_eyes[dirIndex(dir)]);
 	}
 }

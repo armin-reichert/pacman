@@ -78,7 +78,7 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 	}
 
 	Color ghostColor(Ghost ghost) {
-		Map<Integer, Color> colorByPersonality = $value("ghost-colors");
+		Map<Integer, Color> colorByPersonality = asValue("ghost-colors");
 		return colorByPersonality.getOrDefault(ghost.personality, Color.WHITE);
 	}
 
@@ -101,8 +101,8 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 	public GhostRenderer ghostRenderer() {
 		return (g, ghost) -> {
 			if (ghost.visible) {
-				Font font = $font("font");
-				int offset_baseline = $int("offset-baseline");
+				Font font = asFont("font");
+				int offset_baseline = asInt("offset-baseline");
 				g.setFont(font.deriveFont((float) ghost.tf.width));
 				g.setColor(ghostColor(ghost));
 				if (ghost.bounty > 0) {
@@ -119,8 +119,8 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 		return (g, pacMan) -> {
 			if (pacMan.visible) {
 				Transform tf = pacMan.tf;
-				int offset_baseline = $int("offset-baseline");
-				g.setFont($font("font").deriveFont((float) tf.width));
+				int offset_baseline = asInt("offset-baseline");
+				g.setFont(asFont("font").deriveFont((float) tf.width));
 				g.setColor(Color.YELLOW);
 				String letter = pacMan.ai.is(COLLAPSING) ? "\u2668" : "O";
 				g.drawString(letter, tf.x, tf.y + offset_baseline);
@@ -131,8 +131,8 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 	@Override
 	public GameRenderer levelCounterRenderer() {
 		return (g, level) -> {
-			Font font = $font("font");
-			int offset_baseline = $int("offset-baseline");
+			Font font = asFont("font");
+			int offset_baseline = asInt("offset-baseline");
 			String text = String.format("Level: %d (%s)", level.level, level.bonusSymbol);
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
@@ -143,8 +143,8 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 	@Override
 	public GameRenderer livesCounterRenderer() {
 		return (g, level) -> {
-			Font font = $font("font");
-			int offset_baseline = $int("offset-baseline");
+			Font font = asFont("font");
+			int offset_baseline = asInt("offset-baseline");
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
 			g.drawString(String.format("Lives: %d", level.lives), 0, Tile.SIZE + offset_baseline);
@@ -154,8 +154,8 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 	@Override
 	public GameRenderer gameScoreRenderer() {
 		return (g, level) -> {
-			Font font = $font("font");
-			int offset_baseline = $int("offset-baseline");
+			Font font = asFont("font");
+			int offset_baseline = asInt("offset-baseline");
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
 			g.drawString(" Score          Highscore        Pellets", 0, offset_baseline);
@@ -168,8 +168,8 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 	@Override
 	public WorldRenderer worldRenderer() {
 		return (g, world) -> {
-			Font font = $font("font");
-			int offset_baseline = $int("offset-baseline");
+			Font font = asFont("font");
+			int offset_baseline = asInt("offset-baseline");
 			g.setFont(font);
 			for (int row = 3; row < world.height() - 2; ++row) {
 				for (int col = 0; col < world.width(); ++col) {
@@ -217,12 +217,12 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 	@Override
 	public MessagesRenderer messagesRenderer() {
 		DefaultMessagesRenderer messagesRenderer = new DefaultMessagesRenderer();
-		messagesRenderer.setFont($font("font"));
+		messagesRenderer.setFont(asFont("font"));
 		return messagesRenderer;
 	}
 
 	@Override
 	public PacManGameSounds sounds() {
-		return $value("sounds");
+		return asValue("sounds");
 	}
 }

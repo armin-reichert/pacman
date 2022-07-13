@@ -83,7 +83,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 		drawBonusSymbol(g, center, bonus);
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
-			pen.font(BlocksTheme.THEME.$font("font"));
+			pen.font(BlocksTheme.THEME.asFont("font"));
 			String text = bonus.symbol.name().substring(0, 1) + bonus.symbol.name().substring(1).toLowerCase();
 			pen.drawCentered(text, center.x, center.y + Tile.SIZE / 2);
 		}
@@ -92,7 +92,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 	private void drawConsumedBonus(Graphics2D g, Vector2f center, int value) {
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
-			pen.font(BlocksTheme.THEME.$font("font"));
+			pen.font(BlocksTheme.THEME.asFont("font"));
 			String text = String.valueOf(value);
 			pen.drawCentered(text, center.x, center.y + 4);
 		}
@@ -141,7 +141,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 		if (world.isChanging() && app().clock().getTotalTicks() % 30 < 15) {
 			g.setColor(Color.WHITE);
 		} else {
-			g.setColor(BlocksTheme.THEME.$color("wall-color"));
+			g.setColor(BlocksTheme.THEME.asColor("wall-color"));
 		}
 		g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 	}

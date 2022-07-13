@@ -48,14 +48,15 @@ class ArcadePacManRenderer implements PacManRenderer {
 	@Override
 	public void resetAnimations(PacMan pacMan) {
 		SpriteMap spriteMap = ArcadeTheme.THEME.getSpriteMap(pacMan);
-		spriteMap.forEach(sprite -> sprite.resetAnimation());
+		spriteMap.forEach(Sprite::resetAnimation);
 	}
 
 	@Override
 	public void render(Graphics2D g, PacMan pacMan) {
 		if (pacMan.visible) {
 			selectSprite(pacMan).ifPresent(sprite -> {
-				int spriteWidth = 2 * pacMan.tf.width, spriteHeight = 2 * pacMan.tf.height;
+				int spriteWidth = 2 * pacMan.tf.width;
+				int spriteHeight = 2 * pacMan.tf.height;
 				if (spriteWidth != sprite.getWidth() || spriteHeight != sprite.getHeight()) {
 					sprite.scale(spriteWidth, spriteHeight);
 				}

@@ -143,8 +143,8 @@ public class PacMan extends Guy {
 		.endStateMachine();
 		/* @formatter:on */
 		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		fsm.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
-		fsm.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
+		fsm.doNotLogEventProcessingIf(FoodFoundEvent.class::isInstance);
+		fsm.doNotLogEventPublishingIf(FoodFoundEvent.class::isInstance);
 		return fsm;
 	}
 

@@ -84,7 +84,7 @@ class BlocksGhostRenderer implements GhostRenderer {
 
 	private void drawPoints(Graphics2D g, Ghost ghost) {
 		g.setColor(Color.GREEN);
-		Font font = BlocksTheme.THEME.$font("font").deriveFont((float) ghost.tf.height);
+		Font font = BlocksTheme.THEME.asFont("font").deriveFont((float) ghost.tf.height);
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
 		String text = String.valueOf(ghost.bounty);
