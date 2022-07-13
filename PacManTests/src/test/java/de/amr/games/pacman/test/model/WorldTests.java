@@ -32,10 +32,10 @@ public class WorldTests {
 	@Before
 	public void setup() {
 		world = new ArcadeWorld();
+		writeMap();
 	}
 
-	@Test
-	public void writeMap() {
+	private void writeMap() {
 		for (int row = 0; row < world.height(); ++row) {
 			System.out.print("\"");
 			for (int col = 0; col < world.width(); ++col) {
