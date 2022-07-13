@@ -34,8 +34,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 /**
- * Maintains a map of data (state machine, Graphviz representation) that is kept in sync with the
- * currently registered set of state machines.
+ * Maintains a map of data (state machine, Graphviz representation) that is kept in sync with the currently registered
+ * set of state machines.
  * 
  * @author Armin Reichert
  */
@@ -50,9 +50,8 @@ public class FsmModel {
 		setOfMachinesChanged = !registeredMachineSet.equals(myMachineSet);
 		if (setOfMachinesChanged) {
 			dataByCategory.clear();
-			REGISTRY.categories().forEach(category -> {
-				dataByCategory.put(category, REGISTRY.machines(category).map(FsmData::new).collect(toList()));
-			});
+			REGISTRY.categories().forEach(
+					category -> dataByCategory.put(category, REGISTRY.machines(category).map(FsmData::new).collect(toList())));
 		} else {
 			data().forEach(FsmData::updateGraphVizText);
 		}

@@ -47,7 +47,7 @@ public class TakingShortestPath extends FollowingPath {
 
 	@Override
 	public void steer(Guy guy) {
-		if (path.size() == 0 || isComplete()) {
+		if (path.isEmpty() || isComplete()) {
 			setPath(graph.findPath(guy.tile(), fnTargetTile.get()));
 		}
 		super.steer(guy);

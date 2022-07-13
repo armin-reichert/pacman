@@ -71,14 +71,10 @@ public class ExtendedGameController extends GameController {
 
 	public ExtendedGameController(List<Theme> themes) {
 		super(themes);
-		Stream.of(this, bonusController, ghostCommand).forEach(fsm -> {
-			REGISTRY.register("Game", fsm);
-		});
+		Stream.of(this, bonusController, ghostCommand).forEach(fsm -> REGISTRY.register("Game", fsm));
 		addStateEntryListener(INTRO,
 				state -> currentView.machines().forEach(fsm -> REGISTRY.register(currentView.getClass().getSimpleName(), fsm)));
-		addStateExitListener(INTRO, state -> {
-			currentView.machines().forEach(REGISTRY::unregister);
-		});
+		addStateExitListener(INTRO, state -> currentView.machines().forEach(REGISTRY::unregister));
 		addStateEntryListener(GETTING_READY, state -> {
 			currentView.machines().forEach(fsm -> REGISTRY.register(currentView.getClass().getSimpleName(), fsm));
 			folks.pacMan.machines().forEach(REGISTRY::unregister);
@@ -88,9 +84,7 @@ public class ExtendedGameController extends GameController {
 				ghost.machines().forEach(fsm -> REGISTRY.register("Ghosts", fsm));
 			});
 		});
-		addStateEntryListener(GAME_OVER, state -> {
-			currentView.machines().forEach(REGISTRY::unregister);
-		});
+		addStateEntryListener(GAME_OVER, state -> currentView.machines().forEach(REGISTRY::unregister));
 	}
 
 	@Override

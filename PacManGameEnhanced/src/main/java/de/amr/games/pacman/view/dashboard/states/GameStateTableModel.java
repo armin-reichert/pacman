@@ -87,11 +87,11 @@ class GameStateTableModel extends AbstractTableModel {
 		public static ColumnInfo at(int col) {
 			return ColumnInfo.values()[col];
 		}
-	};
+	}
 
-	private  GameController gameController;
-	private  TiledWorld world;
-	private  GameStateRecord[] records;
+	private GameController gameController;
+	private TiledWorld world;
+	private GameStateRecord[] records;
 	private boolean dummy;
 
 	public GameStateTableModel() {

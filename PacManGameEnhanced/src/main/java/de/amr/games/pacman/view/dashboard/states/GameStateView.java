@@ -144,7 +144,8 @@ public class GameStateView extends JPanel implements Lifecycle {
 	private void setStateLabel() {
 		State<PacManGameState> state = gameController.state();
 		if (state.hasTimer()) {
-			long remaining = state.getTicksRemaining(), duration = state.getDuration();
+			long remaining = state.getTicksRemaining();
+			long duration = state.getDuration();
 			lblGameState
 					.setText(String.format("%s (%s of %s sec remaining)", state.id(), seconds(remaining), seconds(duration)));
 		} else {

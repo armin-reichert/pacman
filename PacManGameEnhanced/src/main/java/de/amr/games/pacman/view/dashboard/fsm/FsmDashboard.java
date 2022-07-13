@@ -52,9 +52,7 @@ public class FsmDashboard extends JFrame {
 	static class FsmSelectionModel extends DefaultComboBoxModel<String> {
 
 		public FsmSelectionModel(FsmModel model) {
-			model.data().sorted().forEach(data -> {
-				addElement(data.getFsm().getDescription());
-			});
+			model.data().sorted().forEach(data -> addElement(data.getFsm().getDescription()));
 		}
 	}
 
@@ -78,7 +76,7 @@ public class FsmDashboard extends JFrame {
 		}
 	};
 
-	private final  FsmModel model;
+	private final FsmModel model;
 	private MultiPanel multiPanel;
 	private FsmGraphView[] views = new FsmGraphView[4];
 

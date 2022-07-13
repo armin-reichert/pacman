@@ -93,7 +93,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 		lblPinkyDots = new JLabel("Pinky");
 		lblPinkyDots.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblPinkyDots.setFont(new Font("Monospaced", Font.BOLD, 24));
+		lblPinkyDots.setFont(new Font(Font.MONOSPACED, Font.BOLD, 24));
 		add(lblPinkyDots, "cell 1 1,alignx right,aligny center");
 
 		tfPinkyDots = new JTextField();
@@ -103,7 +103,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 		lblInkyDots = new JLabel("Inky");
 		lblInkyDots.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblInkyDots.setFont(new Font("Monospaced", Font.BOLD, 24));
+		lblInkyDots.setFont(new Font(Font.MONOSPACED, Font.BOLD, 24));
 		add(lblInkyDots, "cell 3 1,alignx right,aligny center");
 
 		tfInkyDots = new JTextField();

@@ -47,7 +47,8 @@ class BlocksGhostRenderer implements GhostRenderer {
 			state = GhostState.CHASING;
 		}
 		Rendering.smoothOn(g);
-		int width = 2 * ghost.tf.width - 4, height = 2 * ghost.tf.height - 2;
+		int width = 2 * ghost.tf.width - 4;
+		int height = 2 * ghost.tf.height - 2;
 		switch (state) {
 		case CHASING:
 		case SCATTERING:
@@ -77,7 +78,8 @@ class BlocksGhostRenderer implements GhostRenderer {
 	}
 
 	private void drawEyes(Graphics2D g, Ghost ghost, int width, int height) {
-		int x = centerOffsetX(ghost, width), y = centerOffsetY(ghost, height);
+		int x = centerOffsetX(ghost, width);
+		int y = centerOffsetY(ghost, height);
 		g.setColor(BlocksTheme.THEME.ghostColor(ghost));
 		g.drawRect(x, y, width, height);
 	}
@@ -108,7 +110,8 @@ class BlocksGhostRenderer implements GhostRenderer {
 	}
 
 	private void drawShape(Graphics2D g, Ghost ghost, int width, int height, int offsetX, int offsetY, Color color) {
-		int x = centerOffsetX(ghost, width) + offsetX, y = centerOffsetY(ghost, height) + offsetY;
+		int x = centerOffsetX(ghost, width) + offsetX;
+		int y = centerOffsetY(ghost, height) + offsetY;
 		g.setColor(color);
 		g.fillRect(x, y, width, height);
 		g.fillArc(x, y - height / 4 - 2, width, height, 0, 180);
