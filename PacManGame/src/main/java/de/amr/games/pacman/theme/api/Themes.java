@@ -36,7 +36,10 @@ import java.util.Set;
  */
 public class Themes {
 
-	private static Set<Theme> REGISTERED_THEMES = new HashSet<>();
+	private Themes() {
+	}
+
+	private static final Set<Theme> REGISTERED_THEMES = new HashSet<>();
 
 	public static List<Theme> all() {
 		return new ArrayList<>(REGISTERED_THEMES);

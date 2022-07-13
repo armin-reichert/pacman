@@ -39,6 +39,9 @@ import de.amr.games.pacman.model.world.api.Tile;
 
 public class Rendering {
 
+	private Rendering() {
+	}
+
 	public static final String INFTY = Character.toString('\u221E');
 
 	public static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };

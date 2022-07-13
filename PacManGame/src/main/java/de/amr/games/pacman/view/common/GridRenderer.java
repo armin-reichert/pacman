@@ -55,7 +55,8 @@ public class GridRenderer {
 	}
 
 	private BufferedImage createGridPatternImage(int cols, int rows) {
-		int width = cols * Tile.SIZE, height = rows * Tile.SIZE + 1;
+		int width = cols * Tile.SIZE;
+		int height = rows * Tile.SIZE + 1;
 		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
 		g.setColor(Rendering.GRID_PATTERN[0]);
@@ -74,21 +75,24 @@ public class GridRenderer {
 	}
 
 	public void drawOneWayTiles(Graphics2D g, TiledWorld world) {
-		world.oneWayTiles().forEach(oneWay -> {
-			Rendering.drawDirectionIndicator(g, Color.WHITE, false, oneWay.dir, oneWay.tile.centerX(), oneWay.tile.y());
-		});
+		world.oneWayTiles().forEach(oneWay -> Rendering.drawDirectionIndicator(g, Color.WHITE, false, oneWay.dir,
+				oneWay.tile.centerX(), oneWay.tile.y()));
 	}
 
 	public void drawBeds(Graphics2D g, TiledWorld world) {
-		Color[] colors = { Color.RED, Color.CYAN, Color.PINK, Color.ORANGE };
-		for (int i = 0; i < 4; ++i) {
-			drawBed(g, world.house(0).get().bed(i), i + "", colors[i]);
+		var house = world.house(0);
+		if (house.isPresent()) {
+			Color[] colors = { Color.RED, Color.CYAN, Color.PINK, Color.ORANGE };
+			for (int i = 0; i < 4; ++i) {
+				drawBed(g, house.get().bed(i), i + "", colors[i]);
+			}
 		}
 		drawBed(g, world.pacManBed(), "P", Color.YELLOW);
 	}
 
 	private void drawBed(Graphics2D g, Bed bed, String text, Color color) {
-		int x = bed.center().roundedX() - Tile.SIZE, y = bed.center().roundedY() - Tile.SIZE / 2;
+		int x = bed.center().roundedX() - Tile.SIZE;
+		int y = bed.center().roundedY() - Tile.SIZE / 2;
 		g.setColor(color);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.drawRoundRect(x, y, 2 * Tile.SIZE - 1, Tile.SIZE, 2, 2);

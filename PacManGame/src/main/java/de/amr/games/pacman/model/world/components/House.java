@@ -71,8 +71,10 @@ public class House implements TiledArea {
 		for (Direction dir : Direction.values()) {
 			Tile neighbor = tile.towards(dir);
 			if (hasDoorAt(neighbor)) {
-				Door door = doors().filter(d -> d.includes(neighbor)).findFirst().get();
-				return dir == door.intoHouse;
+				var door = doors().filter(d -> d.includes(neighbor)).findFirst();
+				if (door.isPresent()) {
+					return dir == door.get().intoHouse;
+				}
 			}
 		}
 		return false;

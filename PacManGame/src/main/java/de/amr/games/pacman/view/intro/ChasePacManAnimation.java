@@ -51,7 +51,10 @@ public class ChasePacManAnimation extends GameObject {
 
 	private final TiledWorld world;
 	private final PacMan pacMan;
-	private final Ghost blinky, inky, pinky, clyde;
+	private final Ghost blinky;
+	private final Ghost inky;
+	private final Ghost pinky;
+	private final Ghost clyde;
 	private Theme theme;
 	private PacManRenderer pacManRenderer;
 
@@ -113,12 +116,13 @@ public class ChasePacManAnimation extends GameObject {
 	public void update() {
 		Stream.of(pacMan, blinky, inky, pinky, clyde).forEach(c -> c.tf.move());
 		if (pelletTimer > 0) {
-			if (pelletTimer % Timing.sec(0.5f) == 0)
+			if (pelletTimer % Timing.sec(0.5f) == 0) {
 				if (pelletDisplay == PelletDisplay.FIFTY) {
 					pelletDisplay = PelletDisplay.SIMPLE;
 				} else {
 					pelletDisplay = PelletDisplay.values()[pelletDisplay.ordinal() + 1]; // succ
 				}
+			}
 			pelletTimer--;
 		} else {
 			pelletTimer = Timing.sec(6 * 0.5f);
