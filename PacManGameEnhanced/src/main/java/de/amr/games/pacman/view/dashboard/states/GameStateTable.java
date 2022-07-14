@@ -32,7 +32,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ColumnInfo;
 import de.amr.games.pacman.view.dashboard.util.Formatting;
 import de.amr.games.pacman.view.dashboard.util.UniversalFormatter;
 

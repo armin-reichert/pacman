@@ -32,13 +32,10 @@ import javax.swing.table.AbstractTableModel;
 import de.amr.games.pacman.controller.bonus.BonusFoodState;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.ghost.GhostMentalState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 
@@ -57,37 +54,6 @@ class GameStateTableModel extends AbstractTableModel {
 	public static final int ROW_BONUS = 5;
 
 	public static final int NUM_ROWS = 6;
-
-	public enum ColumnInfo {
-
-		//@formatter:off
-		ON_STAGE(null, Boolean.class, true), 
-		NAME("Actor", String.class, false), 
-		TILE(null, Tile.class, false), 
-		TARGET(null, Tile.class, false),
-		MOVE_DIR("Moves", Direction.class, false),
-		WISH_DIR("Wants", Direction.class, false),
-		SPEED("px/s", Float.class, false),
-		STATE(null, Object.class, false),
-		SANITY(null, GhostMentalState.class, false),
-		REMAINING(null, Integer.class, false), 
-		DURATION(null, Integer.class, false);
-		//@formatter:on
-
-		private ColumnInfo(String name, Class<?> columnClass, boolean editable) {
-			this.columnName = name != null ? name : name();
-			this.columnClass = columnClass;
-			this.editable = editable;
-		}
-
-		public final String columnName;
-		public final Class<?> columnClass;
-		public final boolean editable;
-
-		public static ColumnInfo at(int col) {
-			return ColumnInfo.values()[col];
-		}
-	}
 
 	private GameController gameController;
 	private TiledWorld world;
