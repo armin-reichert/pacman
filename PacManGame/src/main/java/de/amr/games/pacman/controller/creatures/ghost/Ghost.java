@@ -47,9 +47,9 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementType;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
@@ -101,7 +101,7 @@ public class Ghost extends Guy {
 		ai = new StateMachine<>(GhostState.class);
 		buildGhostAI(pacMan);
 		madness = personality == GhostPersonality.SHADOW ? new GhostMadness(this, pacMan) : null;
-		tf.width = tf.height = Tile.SIZE;
+		tf.width = tf.height = Tile.TS;
 	}
 
 	private void buildGhostAI(PacMan pacMan) {
@@ -231,7 +231,7 @@ public class Ghost extends Guy {
 
 	private void placeIntoBed() {
 		if (bed != null) {
-			placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+			placeAt(Tile.at(bed.col(), bed.row()), Tile.TS / 2, 0);
 			moveDir = bed.exitDir;
 			wishDir = bed.exitDir;
 		}
@@ -371,13 +371,13 @@ public class Ghost extends Guy {
 	public boolean justLeftHouse() {
 		if (ai.is(LEAVING_HOUSE)) {
 			Tile location = tile();
-			return house.isEntry(location) && tf.y == location.row * Tile.SIZE;
+			return house.isEntry(location) && tf.y == location.row * Tile.TS;
 		}
 		return false;
 	}
 
 	public boolean isAtHouseEntry() {
-		return house.isEntry(tile()) && (tileOffsetX() - Tile.SIZE / 2) <= 1;
+		return house.isEntry(tile()) && (tileOffsetX() - Tile.TS / 2) <= 1;
 	}
 
 	public boolean isInsideHouse() {

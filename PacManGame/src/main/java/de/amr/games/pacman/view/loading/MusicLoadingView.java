@@ -33,8 +33,8 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.theme.api.MessagesRenderer;
 import de.amr.games.pacman.theme.api.PacManRenderer;
@@ -123,7 +123,7 @@ public class MusicLoadingView implements PacManGameView {
 		messagesRenderer.setTextColor(new Color(255, 0, 0, alpha));
 		messagesRenderer.draw(g, PacManGameView.texts.getString("loading_music"), width);
 		pacManRenderer.render(g, folks.pacMan);
-		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2;
+		float x = width / 2 - (ghostCount / 2) * 20 - Tile.TS / 2;
 		float y = folks.pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			Ghost ghost = ghosts.get(rnd.nextInt(4));

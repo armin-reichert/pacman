@@ -28,6 +28,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.Entity;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;

@@ -26,10 +26,10 @@ package de.amr.games.pacman.theme.arcade;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.FORWARD_BACKWARDS;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
-import static de.amr.games.pacman.model.world.api.Direction.DOWN;
-import static de.amr.games.pacman.model.world.api.Direction.LEFT;
-import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
-import static de.amr.games.pacman.model.world.api.Direction.UP;
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -39,7 +39,7 @@ import java.util.List;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.Spritesheet;
-import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 
 /**

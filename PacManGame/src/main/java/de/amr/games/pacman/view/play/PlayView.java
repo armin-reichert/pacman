@@ -33,8 +33,8 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.GameRenderer;
 import de.amr.games.pacman.theme.api.PacManRenderer;
@@ -121,15 +121,15 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawLivesCounter(Graphics2D g) {
-		g.translate(Tile.SIZE, (world.height() - 2) * Tile.SIZE);
+		g.translate(Tile.TS, (world.height() - 2) * Tile.TS);
 		livesCounterRenderer.render(g, PacManGame.it());
-		g.translate(-Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
+		g.translate(-Tile.TS, -(world.height() - 2) * Tile.TS);
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
-		g.translate(world.width() * Tile.SIZE, (world.height() - 2) * Tile.SIZE);
+		g.translate(world.width() * Tile.TS, (world.height() - 2) * Tile.TS);
 		levelCounterRenderer.render(g, PacManGame.it());
-		g.translate(-world.width() * Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
+		g.translate(-world.width() * Tile.TS, -(world.height() - 2) * Tile.TS);
 	}
 
 	protected void drawPacMan(Graphics2D g, PacMan pacMan) {

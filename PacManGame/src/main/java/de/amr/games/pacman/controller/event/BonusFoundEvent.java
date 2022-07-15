@@ -23,8 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.event;
 
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.Food;
-import de.amr.games.pacman.model.world.api.Tile;
 
 public class BonusFoundEvent extends FoodFoundEvent {
 

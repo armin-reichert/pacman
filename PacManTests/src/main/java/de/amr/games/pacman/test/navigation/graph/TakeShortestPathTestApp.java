@@ -2,8 +2,8 @@ package de.amr.games.pacman.test.navigation.graph;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.world.api.Direction.LEFT;
-import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -15,7 +15,7 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.steering.common.FollowingPath;
 import de.amr.games.pacman.controller.steering.common.TakingShortestPath;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.test.TestController;
@@ -28,8 +28,8 @@ public class TakeShortestPathTestApp extends Application {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		settings.width = 28 * Tile.SIZE;
-		settings.height = 36 * Tile.SIZE;
+		settings.width = 28 * Tile.TS;
+		settings.height = 36 * Tile.TS;
 		settings.scale = 2;
 		settings.title = "Take Shortest Path";
 	}

@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.world.components;
 
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 
 /**
  * A portal.

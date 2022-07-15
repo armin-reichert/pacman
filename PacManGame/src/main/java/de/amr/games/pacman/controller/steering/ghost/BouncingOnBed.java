@@ -23,8 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.steering.ghost;
 
-import static de.amr.games.pacman.model.world.api.Direction.DOWN;
-import static de.amr.games.pacman.model.world.api.Direction.UP;
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.UP;
 
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;

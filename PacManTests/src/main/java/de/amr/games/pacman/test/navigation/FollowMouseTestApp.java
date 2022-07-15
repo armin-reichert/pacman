@@ -9,7 +9,7 @@ import java.awt.Robot;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Mouse;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.test.TestController;
 
@@ -26,8 +26,8 @@ public class FollowMouseTestApp extends Application {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		settings.width = 28 * Tile.SIZE;
-		settings.height = 36 * Tile.SIZE;
+		settings.width = 28 * Tile.TS;
+		settings.height = 36 * Tile.TS;
 		settings.scale = 2;
 		settings.title = "Blinky catching mouse";
 	}
@@ -61,7 +61,7 @@ class FollowMouseTestUI extends TestController {
 				try {
 					int x = shell.get().getX() + shell.get().getWidth() / 2;
 					int y = shell.get().getY() + shell.get().getHeight() / 2;
-					mousePosition = Tile.at(x / Tile.SIZE, y / Tile.SIZE);
+					mousePosition = Tile.at(x / Tile.TS, y / Tile.TS);
 					Robot robot = new Robot();
 					robot.mouseMove(x, y);
 				} catch (AWTException e) {
@@ -72,7 +72,7 @@ class FollowMouseTestUI extends TestController {
 				}
 			}
 			if (Mouse.moved()) {
-				mousePosition = Tile.at(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
+				mousePosition = Tile.at(Mouse.getX() / Tile.TS, Mouse.getY() / Tile.TS);
 			}
 		}
 		super.update();

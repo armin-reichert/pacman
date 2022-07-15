@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import de.amr.games.pacman.controller.creatures.Guy;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 
 /**
  * Interface for steering guys through their world.

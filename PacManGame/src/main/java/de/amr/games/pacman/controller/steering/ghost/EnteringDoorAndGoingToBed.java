@@ -34,8 +34,8 @@ import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoingToBed.State;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.statemachine.core.StateMachine;
@@ -70,7 +70,7 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 						// place the ghost centered over the ghost house entry and start falling down
 						Transform tf = ghost.tf;
 						Direction awayFromHouse = door.intoHouse.opposite();
-						Vector2f houseEntry = door.center().add(awayFromHouse.vector().times(Tile.SIZE));
+						Vector2f houseEntry = door.center().add(awayFromHouse.vector().times(Tile.TS));
 						tf.setPosition(houseEntry.x - tf.width / 2, houseEntry.y - tf.height / 2);
 						ghost.wishDir = Direction.DOWN;					
 					})

@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.world.core;
 
 import de.amr.easy.game.entity.Entity;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 
 /**
@@ -56,7 +56,7 @@ public abstract class TileWorldEntity extends Entity {
 	 */
 	public int col() {
 		float centerX = tf.x + tf.width / 2;
-		return (int) (centerX >= 0 ? centerX / Tile.SIZE : Math.floor(centerX / Tile.SIZE));
+		return (int) (centerX >= 0 ? centerX / Tile.TS : Math.floor(centerX / Tile.TS));
 	}
 
 	/**
@@ -66,7 +66,7 @@ public abstract class TileWorldEntity extends Entity {
 	 */
 	public int row() {
 		float centerY = tf.y + tf.height / 2;
-		return (int) (centerY >= 0 ? centerY / Tile.SIZE : Math.floor(centerY / Tile.SIZE));
+		return (int) (centerY >= 0 ? centerY / Tile.TS : Math.floor(centerY / Tile.TS));
 	}
 
 	/**
@@ -76,7 +76,7 @@ public abstract class TileWorldEntity extends Entity {
 	 * @return the horizontal tile offset
 	 */
 	public float tileOffsetX() {
-		return (tf.x + tf.width / 2) - col() * Tile.SIZE;
+		return (tf.x + tf.width / 2) - col() * Tile.TS;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public abstract class TileWorldEntity extends Entity {
 	 * @return the vertical tile offset
 	 */
 	public float tileOffsetY() {
-		return (tf.y + tf.height / 2) - row() * Tile.SIZE;
+		return (tf.y + tf.height / 2) - row() * Tile.TS;
 	}
 
 	/**

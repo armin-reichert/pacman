@@ -25,8 +25,8 @@ SOFTWARE.
 package de.amr.games.pacman.view.dashboard.states;
 
 import de.amr.games.pacman.controller.creatures.ghost.GhostMentalState;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 
 public enum ColumnInfo {
 

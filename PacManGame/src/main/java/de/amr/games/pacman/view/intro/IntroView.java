@@ -45,7 +45,7 @@ import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.core.EmptyWorld;
 import de.amr.games.pacman.theme.api.MessagesRenderer;
@@ -87,7 +87,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		this.theme = theme;
 		width = appSettings.width;
 		height = appSettings.height;
-		world = new EmptyWorld(width / Tile.SIZE, height / Tile.SIZE);
+		world = new EmptyWorld(width / Tile.TS, height / Tile.TS);
 		messagesRenderer = theme.messagesRenderer();
 		pacManLogo = new ImageWidget(Assets.readImage("images/logo.png"));
 		chasePacMan = new ChasePacManAnimation(theme, world);
@@ -275,7 +275,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			ghostPointsAnimation.tf.centerHorizontally(0, width);
 			ghostPointsAnimation.start();
 			chasePacMan.tf.centerHorizontally(0, width);
-			chasePacMan.initPositions(width / 2 + 5 * Tile.SIZE);
+			chasePacMan.initPositions(width / 2 + 5 * Tile.TS);
 			chasePacMan.guys().forEach(guy -> guy.tf.vx = 0);
 			gitHubLink.visible = true;
 		}
@@ -321,7 +321,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 				int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate());
 				for (int i = 0; i < 3; ++i) {
 					pen.color(selectedSpeed == i ? ORANGE : RED);
-					pen.draw(speedTexts[i], x[i], row * Tile.SIZE);
+					pen.draw(speedTexts[i], x[i], row * Tile.TS);
 				}
 			}
 		}

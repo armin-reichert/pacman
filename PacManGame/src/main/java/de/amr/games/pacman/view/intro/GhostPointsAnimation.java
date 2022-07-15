@@ -39,8 +39,8 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.theme.api.Theme;
@@ -67,11 +67,11 @@ public class GhostPointsAnimation extends GameObject {
 	private long ghostTimer;
 	private long energizerTimer;
 	private boolean energizer;
-	private int dx = 2 * Tile.SIZE + 3;
+	private int dx = 2 * Tile.TS + 3;
 
 	public GhostPointsAnimation(Theme theme, TiledWorld world) {
 		tf.width = 6 * dx;
-		tf.height = 2 * Tile.SIZE;
+		tf.height = 2 * Tile.TS;
 		pacMan = new PacMan(world, "Pac-Man");
 		blinky = Ghost.shadowGhost(world, "Blinky", pacMan);
 		inky = Ghost.bashfulGhost(world, "Inky", pacMan);

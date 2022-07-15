@@ -23,10 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.steering.common;
 
-import static de.amr.games.pacman.model.world.api.Direction.DOWN;
-import static de.amr.games.pacman.model.world.api.Direction.LEFT;
-import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
-import static de.amr.games.pacman.model.world.api.Direction.UP;
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static java.util.Comparator.comparing;
 
 import java.util.ArrayList;
@@ -38,8 +38,8 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 
 /**
  * Steers a guy towards a target tile.

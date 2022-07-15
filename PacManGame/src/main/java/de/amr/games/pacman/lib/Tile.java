@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.world.api;
+package de.amr.games.pacman.lib;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -36,7 +36,7 @@ import de.amr.easy.game.math.Vector2f;
 public final class Tile {
 
 	/** Tile size in pixels. */
-	public static final byte SIZE = 8;
+	public static final byte TS = 8;
 
 	/**
 	 * @param either either tile
@@ -93,28 +93,28 @@ public final class Tile {
 	 * @return this tiles' x-coordinate
 	 */
 	public int x() {
-		return col * SIZE;
+		return col * TS;
 	}
 
 	/**
 	 * @return this tiles' y-coordinate
 	 */
 	public int y() {
-		return row * SIZE;
+		return row * TS;
 	}
 
 	/**
 	 * @return this tiles' center x-coordinate
 	 */
 	public int centerX() {
-		return col * SIZE + SIZE / 2;
+		return col * TS + TS / 2;
 	}
 
 	/**
 	 * @return this tiles' center y-coordinate
 	 */
 	public int centerY() {
-		return row * SIZE + SIZE / 2;
+		return row * TS + TS / 2;
 	}
 
 	/**

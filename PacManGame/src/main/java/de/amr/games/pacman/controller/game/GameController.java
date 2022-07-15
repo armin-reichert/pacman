@@ -63,9 +63,9 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
@@ -193,7 +193,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						closeAllDoors();
 						folks.ghostsInWorld().forEach(ghost -> {
 							ghost.init();
-							ghost.placeAt(Tile.at(folks.blinky.bed.col(), folks.blinky.bed.row()), Tile.SIZE / 2, 0);
+							ghost.placeAt(Tile.at(folks.blinky.bed.col(), folks.blinky.bed.row()), Tile.TS / 2, 0);
 							ghost.wishDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 							ghost.ai.setState(rnd.nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});

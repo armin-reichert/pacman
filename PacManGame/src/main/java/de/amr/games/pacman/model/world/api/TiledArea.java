@@ -25,6 +25,8 @@ package de.amr.games.pacman.model.world.api;
 
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.Tile;
+
 /**
  * An area of tiles.
  * 

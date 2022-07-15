@@ -31,8 +31,8 @@ import java.util.Optional;
 
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 
 /**
  * Lets a guy follow a path.

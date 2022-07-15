@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.world.components;
 
-import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.lib.Direction;
 
 /**
  * A door into a house.

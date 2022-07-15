@@ -26,8 +26,8 @@ package de.amr.games.pacman.model.world.components;
 import java.util.List;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledArea;
 
 /**

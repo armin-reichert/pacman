@@ -29,8 +29,8 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.GhostCommand;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.view.common.GridRenderer;
@@ -147,7 +147,7 @@ public class ExtendedPlayView extends PlayView {
 			world.tiles().filter(world::hasEatenFood).forEach(tile -> {
 				Color color = Rendering.patternColor(tile);
 				g.setColor(color);
-				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+				g.fillRect(tile.x(), tile.y(), Tile.TS, Tile.TS);
 			});
 		}
 	}
@@ -173,7 +173,7 @@ public class ExtendedPlayView extends PlayView {
 
 	protected void drawFrameRate(Graphics2D g) {
 		if (showingFrameRate) {
-			frameRateView.tf.setPosition(0, 18 * Tile.SIZE);
+			frameRateView.tf.setPosition(0, 18 * Tile.TS);
 			frameRateView.draw(g);
 		}
 	}

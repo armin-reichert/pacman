@@ -37,7 +37,7 @@ import de.amr.games.pacman.controller.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.steering.ghost.BouncingOnBed;
 import de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoingToBed;
 import de.amr.games.pacman.controller.steering.ghost.LeavingHouse;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.House;

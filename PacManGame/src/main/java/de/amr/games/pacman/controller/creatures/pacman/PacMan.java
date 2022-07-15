@@ -30,8 +30,8 @@ import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.IN_BED;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
-import static de.amr.games.pacman.model.world.api.Direction.LEFT;
-import static de.amr.games.pacman.model.world.api.Direction.UP;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.UP;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -49,9 +49,9 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.controller.steering.api.Steering;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Bed;
@@ -74,7 +74,7 @@ public class PacMan extends Guy {
 	public PacMan(TiledWorld world, String name) {
 		super(world, name);
 		ai = buildAI();
-		tf.width = tf.height = Tile.SIZE;
+		tf.width = tf.height = Tile.TS;
 	}
 
 	private StateMachine<PacManState, PacManGameEvent> buildAI() {
@@ -233,7 +233,7 @@ public class PacMan extends Guy {
 
 	private void putIntoBed(Bed bed) {
 		if (bed != null) {
-			placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+			placeAt(Tile.at(bed.col(), bed.row()), Tile.TS / 2, 0);
 			moveDir = wishDir = bed.exitDir;
 		}
 	}

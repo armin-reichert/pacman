@@ -46,8 +46,8 @@ import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GhostCommand;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 
 public class StatesRenderer {
 
@@ -146,11 +146,11 @@ public class StatesRenderer {
 		int w = guy.tf.width;
 		int h = guy.tf.height;
 		Direction moveDir = guy.moveDir;
-		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(guy.tf.y) % Tile.SIZE != 0) {
+		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(guy.tf.y) % Tile.TS != 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(guy.tf.x) % Tile.SIZE != 0) {
+		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(guy.tf.x) % Tile.TS != 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}

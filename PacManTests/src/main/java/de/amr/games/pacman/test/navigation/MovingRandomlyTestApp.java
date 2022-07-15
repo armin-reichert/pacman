@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.test.TestController;
 
@@ -21,8 +21,8 @@ public class MovingRandomlyTestApp extends Application {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		settings.width = 28 * Tile.SIZE;
-		settings.height = 36 * Tile.SIZE;
+		settings.width = 28 * Tile.TS;
+		settings.height = 36 * Tile.TS;
 		settings.scale = 2;
 		settings.title = "Moving Randomly";
 	}
@@ -47,8 +47,8 @@ class MovingRandomlyTestUI extends TestController {
 			ghost.ai.state(FRIGHTENED).removeTimer();
 			ghost.ai.setState(FRIGHTENED);
 			Bed bed = world.pacManBed();
-			ghost.tf.centerBoth(bed.col() * Tile.SIZE, bed.row() * Tile.SIZE, bed.width() * Tile.SIZE,
-					bed.height() * Tile.SIZE);
+			ghost.tf.centerBoth(bed.col() * Tile.TS, bed.row() * Tile.TS, bed.width() * Tile.TS,
+					bed.height() * Tile.TS);
 		});
 		view.turnRoutesOn();
 		view.turnStatesOn();

@@ -35,9 +35,9 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.theme.api.GameRenderer;
 import de.amr.games.pacman.theme.api.GhostRenderer;
@@ -181,7 +181,7 @@ public class ArcadeTheme extends ThemeParameterMap implements Theme {
 			int max = 7;
 			int first = Math.max(0, game.levelCounter.size() - max);
 			int n = Math.min(max, game.levelCounter.size());
-			int width = 2 * Tile.SIZE;
+			int width = 2 * Tile.TS;
 			for (int i = 0, x = -2 * width; i < n; ++i, x -= width) {
 				ArcadeBonus.Symbol symbol = ArcadeBonus.Symbol.valueOf(game.levelCounter.get(first + i));
 				g.drawImage(spriteSheet.imageBonusSymbol(symbol.ordinal()), x, 0, width, width, null);
@@ -192,7 +192,7 @@ public class ArcadeTheme extends ThemeParameterMap implements Theme {
 	@Override
 	public GameRenderer livesCounterRenderer() {
 		return (Graphics2D g, PacManGame game) -> {
-			for (int i = 0, x = Tile.SIZE; i < game.lives; ++i, x += 2 * Tile.SIZE) {
+			for (int i = 0, x = Tile.TS; i < game.lives; ++i, x += 2 * Tile.TS) {
 				g.drawImage(spriteSheet.imageLivesCounter(), x, 0, null);
 			}
 		};

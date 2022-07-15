@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
-import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
 
 import java.awt.Color;
 import java.awt.Font;

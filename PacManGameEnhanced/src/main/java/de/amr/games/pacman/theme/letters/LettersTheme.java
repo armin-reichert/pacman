@@ -33,7 +33,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
@@ -60,8 +60,8 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 	public static final LettersTheme THEME = new LettersTheme();
 
 	private LettersTheme() {
-		set("font", new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
-		set(OFFSET_BASELINE, Tile.SIZE - 1);
+		set("font", new Font(Font.MONOSPACED, Font.BOLD, Tile.TS));
+		set(OFFSET_BASELINE, Tile.TS - 1);
 		set("ghost-colors", Map.of(
 		//@formatter:off
 			GhostPersonality.SHADOW,  Color.RED,
@@ -133,7 +133,7 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 			String text = String.format("Level: %d (%s)", level.level, level.bonusSymbol);
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
-			g.drawString(text, -15 * Tile.SIZE, Tile.SIZE + offsetBaseline);
+			g.drawString(text, -15 * Tile.TS, Tile.TS + offsetBaseline);
 		};
 	}
 
@@ -144,7 +144,7 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 			int offsetBaseline = asInt(OFFSET_BASELINE);
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
-			g.drawString(String.format("Lives: %d", level.lives), 0, Tile.SIZE + offsetBaseline);
+			g.drawString(String.format("Lives: %d", level.lives), 0, Tile.TS + offsetBaseline);
 		};
 	}
 
@@ -158,7 +158,7 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 			g.drawString(" Score          Highscore        Pellets", 0, offsetBaseline);
 			g.drawString(
 					String.format(" %08d       %08d         %03d", level.score, level.hiscore.points, level.remainingFoodCount()),
-					0, Tile.SIZE + offsetBaseline);
+					0, Tile.TS + offsetBaseline);
 		};
 	}
 
@@ -174,15 +174,15 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 					if (world.isAccessible(tile)) {
 						if (world.hasFood(ArcadeFood.ENERGIZER, tile) && Application.app().clock().getTotalTicks() % 60 < 30) {
 							g.setColor(Color.PINK);
-							g.drawString("Ö", col * Tile.SIZE + 2, row * Tile.SIZE + offsetBaseline);
+							g.drawString("Ö", col * Tile.TS + 2, row * Tile.TS + offsetBaseline);
 						}
 						if (world.hasFood(ArcadeFood.PELLET, tile)) {
 							g.setColor(Color.PINK);
-							g.drawString(".", col * Tile.SIZE + 1, row * Tile.SIZE - 3 + offsetBaseline);
+							g.drawString(".", col * Tile.TS + 1, row * Tile.TS - 3 + offsetBaseline);
 						}
 					} else {
 						g.setColor(Rendering.alpha(Color.GREEN, 80));
-						g.drawString("#", col * Tile.SIZE + 1, row * Tile.SIZE + offsetBaseline - 1);
+						g.drawString("#", col * Tile.TS + 1, row * Tile.TS + offsetBaseline - 1);
 					}
 				}
 				world.temporaryFood().ifPresent(bonus -> {
@@ -197,7 +197,7 @@ public class LettersTheme extends ThemeParameterMap implements Theme {
 						text = "WON " + bonus.value() + " POINTS!";
 						col = tile.col - 3;
 					}
-					g.drawString(text, col * Tile.SIZE, tile.row * Tile.SIZE + offsetBaseline - 1);
+					g.drawString(text, col * Tile.TS, tile.row * Tile.TS + offsetBaseline - 1);
 				});
 			}
 			world.houses().flatMap(House::doors).forEach(door -> {

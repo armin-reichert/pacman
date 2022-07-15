@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller.event;
 
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 
 public class PacManGhostCollisionEvent implements PacManGameEvent {
 

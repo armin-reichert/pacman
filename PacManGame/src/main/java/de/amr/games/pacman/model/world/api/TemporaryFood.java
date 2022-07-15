@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.world.api;
 
+import de.amr.games.pacman.lib.Tile;
+
 /**
  * Food that appears for a certain time inside the world. There are three states:
  * <ul>

@@ -27,13 +27,13 @@ import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.game.Timing.sec;
 import static de.amr.games.pacman.controller.steering.common.MovementType.INSIDE_PORTAL;
 import static de.amr.games.pacman.controller.steering.common.MovementType.OUTSIDE_PORTAL;
-import static de.amr.games.pacman.model.world.api.Direction.DOWN;
-import static de.amr.games.pacman.model.world.api.Direction.LEFT;
-import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
-import static de.amr.games.pacman.model.world.api.Direction.UP;
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 
 import de.amr.games.pacman.controller.creatures.Guy;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.components.Portal;
 import de.amr.statemachine.core.StateMachine;
 

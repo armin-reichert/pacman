@@ -9,8 +9,8 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.test.TestController;
 
 public class PacManMovementTestApp extends Application {
@@ -21,8 +21,8 @@ public class PacManMovementTestApp extends Application {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		settings.width = 28 * Tile.SIZE;
-		settings.height = 36 * Tile.SIZE;
+		settings.width = 28 * Tile.TS;
+		settings.height = 36 * Tile.TS;
 		settings.scale = 2;
 		settings.title = "Pac-Man Movement";
 	}

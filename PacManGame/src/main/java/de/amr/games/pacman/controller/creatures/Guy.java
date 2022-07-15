@@ -27,8 +27,8 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.controller.StateMachineControlled;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementController;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.core.TileWorldEntity;
 
@@ -149,8 +149,8 @@ public abstract class Guy extends TileWorldEntity implements Lifecycle, StateMac
 		if (canMoveTo(dir)) {
 			return speed;
 		}
-		float availableX = tileOffsetX() - Tile.SIZE / 2;
-		float availableY = tileOffsetY() - Tile.SIZE / 2;
+		float availableX = tileOffsetX() - Tile.TS / 2;
+		float availableY = tileOffsetY() - Tile.TS / 2;
 		switch (dir) {
 		case UP:
 			return Math.min(availableY, speed);

@@ -29,15 +29,15 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 import de.amr.easy.game.view.Pen;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.theme.api.GameRenderer;
 
 public class DefaultGameScoreRenderer implements GameRenderer {
 
 	private Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 8);
 	private int topMargin = 1;
-	private int baselineOffset = Tile.SIZE;
+	private int baselineOffset = Tile.TS;
 
 	@Override
 	public void render(Graphics2D g, PacManGame game) {
@@ -83,8 +83,8 @@ public class DefaultGameScoreRenderer implements GameRenderer {
 			// Number of remaining pellets
 			// dot image
 			int size = 4;
-			int dotX = (col + 3) * Tile.SIZE - size - 1;
-			int dotY = topMargin + Tile.SIZE + interlineSpacing + 1;
+			int dotX = (col + 3) * Tile.TS - size - 1;
+			int dotY = topMargin + Tile.TS + interlineSpacing + 1;
 			g.setColor(Color.PINK);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.fillOval(dotX, dotY, size, size);

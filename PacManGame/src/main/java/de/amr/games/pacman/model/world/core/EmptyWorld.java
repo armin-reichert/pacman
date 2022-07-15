@@ -26,9 +26,9 @@ package de.amr.games.pacman.model.world.core;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.Food;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.model.world.components.OneWayTile;

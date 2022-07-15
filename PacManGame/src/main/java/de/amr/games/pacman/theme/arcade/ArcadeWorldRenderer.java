@@ -32,8 +32,8 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
@@ -60,15 +60,15 @@ class ArcadeWorldRenderer implements WorldRenderer {
 			if (spriteFlashingMaze == null) {
 				spriteFlashingMaze = spriteSheet.makeSpriteFlashingMaze(PacManGame.it().numFlashes);
 			}
-			spriteFlashingMaze.draw(g2, 0, 3 * Tile.SIZE);
+			spriteFlashingMaze.draw(g2, 0, 3 * Tile.TS);
 		} else {
 			spriteFlashingMaze = null;
-			g.drawImage(spriteSheet.imageFullMaze(), 0, 3 * Tile.SIZE, null);
+			g.drawImage(spriteSheet.imageFullMaze(), 0, 3 * Tile.TS, null);
 			drawContent(g, world);
 			world.house(0).ifPresent(house -> {
 				house.doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
 					g.setColor(Color.BLACK);
-					door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
+					door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.TS, Tile.TS));
 				});
 			});
 		}
@@ -80,7 +80,7 @@ class ArcadeWorldRenderer implements WorldRenderer {
 		Color eatenFoodColor = Color.BLACK;
 		world.tiles().filter(world::hasEatenFood).forEach(tile -> {
 			g.setColor(eatenFoodColor);
-			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+			g.fillRect(tile.x(), tile.y(), Tile.TS, Tile.TS);
 		});
 		// simulate energizer blinking animation
 		energizerAnimation.update();
@@ -88,19 +88,19 @@ class ArcadeWorldRenderer implements WorldRenderer {
 		if (energizerAnimation.isEnabled() && energizerAnimation.currentFrameIndex() == 1) {
 			world.tiles().filter(tile -> world.hasFood(ArcadeFood.ENERGIZER, tile)).forEach(tile -> {
 				g.setColor(eatenFoodColor);
-				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+				g.fillRect(tile.x(), tile.y(), Tile.TS, Tile.TS);
 			});
 		}
 		// draw bonus as image when active or as number when consumed
 		world.temporaryFood().ifPresent(bonus -> {
 			if (bonus.isActive()) {
 				if (bonus.isConsumed()) {
-					Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.SIZE / 2);
+					Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.TS / 2);
 					Image img = ArcadeTheme.THEME.asIimage("points-" + bonus.value());
 					g.drawImage(img, position.roundedX(), position.roundedY(), null);
 				} else {
 					ArcadeBonus arcadeBonus = (ArcadeBonus) bonus;
-					Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.SIZE / 2);
+					Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.TS / 2);
 					Image img = ArcadeTheme.THEME.asIimage("symbol-" + arcadeBonus.symbol.name());
 					g.drawImage(img, position.roundedX(), position.roundedY(), null);
 				}

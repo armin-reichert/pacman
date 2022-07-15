@@ -28,7 +28,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.theme.api.MessagesRenderer;
 
 public class DefaultMessagesRenderer implements MessagesRenderer {
@@ -42,7 +42,7 @@ public class DefaultMessagesRenderer implements MessagesRenderer {
 	public DefaultMessagesRenderer() {
 		row = 21;
 		textColor = Color.YELLOW;
-		font = new Font(Font.MONOSPACED, Font.PLAIN, Tile.SIZE);
+		font = new Font(Font.MONOSPACED, Font.PLAIN, Tile.TS);
 		textAntialiasing = false;
 	}
 
@@ -55,8 +55,8 @@ public class DefaultMessagesRenderer implements MessagesRenderer {
 				}
 				pen.font(font);
 				pen.color(textColor);
-				pen.move(0, row * Tile.SIZE);
-				pen.hcenter(message, widthInTiles * Tile.SIZE);
+				pen.move(0, row * Tile.TS);
+				pen.hcenter(message, widthInTiles * Tile.TS);
 			}
 		}
 	}

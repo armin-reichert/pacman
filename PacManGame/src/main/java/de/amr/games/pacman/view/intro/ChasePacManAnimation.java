@@ -37,8 +37,8 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.controller.game.Timing;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.theme.api.Theme;
@@ -98,11 +98,11 @@ public class ChasePacManAnimation extends GameObject {
 			ghost.ai.setState(GhostState.CHASING);
 			ghost.ai.state(GhostState.CHASING).removeTimer();
 		});
-		initPositions(world.width() * Tile.SIZE);
+		initPositions(world.width() * Tile.TS);
 	}
 
 	public void initPositions(int rightBorder) {
-		int size = 2 * Tile.SIZE;
+		int size = 2 * Tile.TS;
 		int x = rightBorder;
 		Ghost[] ghosts = Stream.of(blinky, inky, pinky, clyde).toArray(Ghost[]::new);
 		for (int i = 0; i < ghosts.length; ++i) {
@@ -147,7 +147,7 @@ public class ChasePacManAnimation extends GameObject {
 
 	@Override
 	public boolean isComplete() {
-		return guys().map(creature -> creature.tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
+		return guys().map(creature -> creature.tf.x / Tile.TS).allMatch(x -> x > world.width() || x < -2);
 	}
 
 	@Override
@@ -155,7 +155,7 @@ public class ChasePacManAnimation extends GameObject {
 		pacManRenderer.render(g, pacMan);
 		ghosts().forEach(ghost -> theme.ghostRenderer().render(g, ghost));
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		int x = (int) pacMan.tf.x - Tile.SIZE;
+		int x = (int) pacMan.tf.x - Tile.TS;
 		int y = (int) pacMan.tf.y;
 		switch (pelletDisplay) {
 		case SIMPLE:

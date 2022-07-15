@@ -6,7 +6,7 @@ import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.test.TestController;
 
 /**
@@ -21,8 +21,8 @@ public class OutsideTileTestApp extends Application {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		settings.width = 28 * Tile.SIZE;
-		settings.height = 36 * Tile.SIZE;
+		settings.width = 28 * Tile.TS;
+		settings.height = 36 * Tile.TS;
 		settings.scale = 2;
 		settings.title = "Follow Tile Outside Maze";
 	}

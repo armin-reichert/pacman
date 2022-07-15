@@ -11,7 +11,7 @@ import java.util.Random;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.test.TestController;
@@ -24,8 +24,8 @@ public class EnterAndLeaveGhostHouseTestApp extends Application {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		settings.width = 28 * Tile.SIZE;
-		settings.height = 36 * Tile.SIZE;
+		settings.width = 28 * Tile.TS;
+		settings.height = 36 * Tile.TS;
 		settings.scale = 2;
 		settings.title = "Enter/leave Ghost House";
 	}
@@ -56,7 +56,7 @@ class EnterGhostHouseTestUI extends TestController {
 		inky.init();
 		House house = world.house(0).orElseThrow();
 		Bed bed = house.bed(0);
-		inky.placeAt(Tile.at(bed.col(), bed.row()), Tile.SIZE / 2, 0);
+		inky.placeAt(Tile.at(bed.col(), bed.row()), Tile.TS / 2, 0);
 		inky.ai.setState(SCATTERING);
 		view.turnRoutesOn();
 		view.turnGridOn();

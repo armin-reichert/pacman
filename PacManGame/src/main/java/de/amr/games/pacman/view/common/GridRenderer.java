@@ -31,7 +31,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.components.Bed;
 
@@ -55,8 +55,8 @@ public class GridRenderer {
 	}
 
 	private BufferedImage createGridPatternImage(int cols, int rows) {
-		int width = cols * Tile.SIZE;
-		int height = rows * Tile.SIZE + 1;
+		int width = cols * Tile.TS;
+		int height = rows * Tile.TS + 1;
 		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
 		g.setColor(Rendering.GRID_PATTERN[0]);
@@ -66,7 +66,7 @@ public class GridRenderer {
 				int i = Rendering.patternIndex(col, row);
 				if (i != 0) {
 					g.setColor(Rendering.GRID_PATTERN[i]);
-					g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+					g.fillRect(col * Tile.TS, row * Tile.TS, Tile.TS, Tile.TS);
 				}
 			}
 		}
@@ -91,17 +91,17 @@ public class GridRenderer {
 	}
 
 	private void drawBed(Graphics2D g, Bed bed, String text, Color color) {
-		int x = bed.center().roundedX() - Tile.SIZE;
-		int y = bed.center().roundedY() - Tile.SIZE / 2;
+		int x = bed.center().roundedX() - Tile.TS;
+		int y = bed.center().roundedY() - Tile.TS / 2;
 		g.setColor(color);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.drawRoundRect(x, y, 2 * Tile.SIZE - 1, Tile.SIZE, 2, 2);
+		g.drawRoundRect(x, y, 2 * Tile.TS - 1, Tile.TS, 2, 2);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		try (Pen pen = new Pen(g)) {
 			pen.turnSmoothRenderingOn();
 			pen.color(Color.WHITE);
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 7));
-			pen.drawCentered(text, bed.center().roundedX(), bed.center().roundedY() + Tile.SIZE + 1);
+			pen.drawCentered(text, bed.center().roundedX(), bed.center().roundedY() + Tile.TS + 1);
 		}
 	}
 }

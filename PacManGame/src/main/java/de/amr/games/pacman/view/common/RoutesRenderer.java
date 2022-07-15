@@ -42,8 +42,8 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.steering.api.Steering;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 
 /**
@@ -82,8 +82,8 @@ public class RoutesRenderer {
 		if (ghost.wishDir != null) {
 			Vector2f center = ghost.tf.getCenter();
 			Vector2f dirVector = ghost.wishDir.vector();
-			drawDirectionIndicator(g, ghostColor(ghost), true, ghost.wishDir, (int) (center.x + dirVector.x * Tile.SIZE),
-					(int) (center.y + dirVector.y * Tile.SIZE));
+			drawDirectionIndicator(g, ghostColor(ghost), true, ghost.wishDir, (int) (center.x + dirVector.x * Tile.TS),
+					(int) (center.y + dirVector.y * Tile.TS));
 		}
 	}
 
@@ -157,7 +157,7 @@ public class RoutesRenderer {
 		g.drawLine(x1, y1, x2, y2);
 		Tile pacManTile = pacMan.tile();
 		Direction pacManDir = pacMan.moveDir;
-		int s = Tile.SIZE / 2; // size of target square
+		int s = Tile.TS / 2; // size of target square
 		g.setColor(Color.GRAY);
 		if (!appSettings.fixOverflowBug && pacManDir == Direction.UP) {
 			Tile twoAhead = world.tileToDir(pacManTile, pacManDir, 2);
@@ -190,7 +190,7 @@ public class RoutesRenderer {
 		Color ghostColor = ghostColor(clyde);
 		int cx = clyde.tile().centerX();
 		int cy = clyde.tile().centerY();
-		int r = 8 * Tile.SIZE;
+		int r = 8 * Tile.TS;
 		g.setColor(alpha(ghostColor, 200));
 		g.setStroke(new BasicStroke(0.2f));
 		g.drawOval(cx - r, cy - r, 2 * r, 2 * r);

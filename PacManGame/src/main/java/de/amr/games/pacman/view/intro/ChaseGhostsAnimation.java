@@ -33,8 +33,8 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
-import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.theme.api.Theme;
@@ -86,7 +86,7 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	@Override
 	public boolean isComplete() {
-		return guys().allMatch(guy -> guy.tf.x > world.width() * Tile.SIZE);
+		return guys().allMatch(guy -> guy.tf.x > world.width() * Tile.TS);
 	}
 
 	@Override

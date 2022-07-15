@@ -39,7 +39,7 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.theme.api.GhostRenderer;
 import de.amr.games.pacman.theme.arcade.ArcadeSpritesheet.GhostColor;
 

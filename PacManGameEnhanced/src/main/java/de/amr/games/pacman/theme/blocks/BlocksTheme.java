@@ -31,8 +31,8 @@ import java.util.Map;
 import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.ghost.GhostPersonality;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.game.PacManGame;
-import de.amr.games.pacman.model.world.api.Tile;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.theme.api.GameRenderer;
 import de.amr.games.pacman.theme.api.GhostRenderer;
@@ -133,8 +133,8 @@ public class BlocksTheme extends ThemeParameterMap implements Theme {
 		return (Graphics2D g, PacManGame level) -> {
 			Rendering.smoothOn(g);
 			g.setColor(Color.YELLOW);
-			for (int i = 0, x = 0; i < level.lives; ++i, x += 2 * Tile.SIZE) {
-				g.fillOval(x, 0, Tile.SIZE, Tile.SIZE);
+			for (int i = 0, x = 0; i < level.lives; ++i, x += 2 * Tile.TS) {
+				g.fillOval(x, 0, Tile.TS, Tile.TS);
 			}
 			Rendering.smoothOff(g);
 		};
@@ -145,11 +145,11 @@ public class BlocksTheme extends ThemeParameterMap implements Theme {
 		return (Graphics2D g, PacManGame level) -> {
 			Rendering.smoothOn(g);
 			int levels = level.levelCounter.size();
-			for (int i = 0, x = -2 * Tile.SIZE; i < Math.min(7, levels); ++i, x -= 2 * Tile.SIZE) {
+			for (int i = 0, x = -2 * Tile.TS; i < Math.min(7, levels); ++i, x -= 2 * Tile.TS) {
 				String symbolName = level.levelCounter.get(levels > 7 ? i + levels - 7 : i);
 				ArcadeBonus.Symbol symbol = ArcadeBonus.Symbol.valueOf(symbolName);
 				g.setColor(BlocksTheme.THEME.symbolColor(symbol.name()));
-				g.drawOval(x, 0, Tile.SIZE, Tile.SIZE);
+				g.drawOval(x, 0, Tile.TS, Tile.TS);
 			}
 			Rendering.smoothOff(g);
 		};

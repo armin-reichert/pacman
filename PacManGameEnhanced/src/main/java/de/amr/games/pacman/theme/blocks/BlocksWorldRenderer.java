@@ -30,7 +30,7 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.model.world.api.Tile;
+import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
@@ -50,7 +50,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 		// draw doors depending on their state
 		world.houses().flatMap(House::doors).forEach(door -> {
 			g.setColor(door.state == DoorState.CLOSED ? Color.PINK : Color.BLACK);
-			door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE / 4));
+			door.tiles().forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.TS, Tile.TS / 4));
 		});
 	}
 
@@ -64,7 +64,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 			}
 		});
 		world.temporaryFood().ifPresent(bonus -> {
-			Vector2f center = Vector2f.of(bonus.location().x() + Tile.SIZE, bonus.location().y() + Tile.SIZE / 2);
+			Vector2f center = Vector2f.of(bonus.location().x() + Tile.TS, bonus.location().y() + Tile.TS / 2);
 			if (bonus.isActive()) {
 				if (bonus.isConsumed()) {
 					drawConsumedBonus(g, center, bonus.value());
@@ -85,7 +85,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 			pen.color(Color.GREEN);
 			pen.font(BlocksTheme.THEME.asFont("font"));
 			String text = bonus.symbol.name().substring(0, 1) + bonus.symbol.name().substring(1).toLowerCase();
-			pen.drawCentered(text, center.x, center.y + Tile.SIZE / 2);
+			pen.drawCentered(text, center.x, center.y + Tile.TS / 2);
 		}
 	}
 
@@ -110,9 +110,9 @@ class BlocksWorldRenderer implements WorldRenderer {
 	}
 
 	private void drawEnergizer(Graphics2D g, TiledWorld world, Tile location) {
-		int size = Tile.SIZE;
-		int x = location.x() + (Tile.SIZE - size) / 2;
-		int y = location.y() + (Tile.SIZE - size) / 2;
+		int size = Tile.TS;
+		int x = location.x() + (Tile.TS - size) / 2;
+		int y = location.y() + (Tile.TS - size) / 2;
 		g.translate(x, y);
 		// create blink effect
 		if (!world.isFrozen() && app().clock().getTotalTicks() % 60 < 30) {
@@ -127,7 +127,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 
 	private void drawEmptyWorld(Graphics2D g, TiledWorld world) {
 		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, world.width() * Tile.SIZE, world.height() * Tile.SIZE);
+		g.fillRect(0, 0, world.width() * Tile.TS, world.height() * Tile.TS);
 		for (int row = 0; row < world.height(); ++row) {
 			for (int col = 0; col < world.width(); ++col) {
 				if (!world.isAccessible(Tile.at(col, row))) {
@@ -143,6 +143,6 @@ class BlocksWorldRenderer implements WorldRenderer {
 		} else {
 			g.setColor(BlocksTheme.THEME.asColor("wall-color"));
 		}
-		g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+		g.fillRect(col * Tile.TS, row * Tile.TS, Tile.TS, Tile.TS);
 	}
 }

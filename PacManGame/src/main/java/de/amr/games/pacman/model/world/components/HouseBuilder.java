@@ -26,7 +26,7 @@ package de.amr.games.pacman.model.world.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.world.api.TiledArea;
 
 public class HouseBuilder {
