@@ -23,13 +23,15 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
+import static de.amr.easy.game.math.V2f.v;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.math.V2f;
 
 /**
  * Directions in the order UP, RIGHT, DOWN, LEFT.
@@ -59,13 +61,13 @@ public enum Direction {
 		return values()[RND.nextInt(4)];
 	}
 
-	private final Vector2f vector;
+	private final V2f vector;
 
 	private Direction(int dx, int dy) {
-		vector = Vector2f.of(dx, dy);
+		vector = v(dx, dy);
 	}
 
-	public Vector2f vector() {
+	public V2f vector() {
 		return vector;
 	}
 

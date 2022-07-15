@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import de.amr.easy.game.entity.Entity;
-import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.math.V2f;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
@@ -91,7 +91,7 @@ public abstract class AbstractTiledWorld extends TiledRectangle implements Tiled
 		if (n < 0) {
 			throw new IllegalArgumentException("Number of tiles must be non-negative, but is " + n);
 		}
-		Vector2f dirVector = dir.vector();
+		V2f dirVector = dir.vector();
 		int dx = dirVector.roundedX();
 		int dy = dirVector.roundedY();
 		int col = tile.col;

@@ -23,12 +23,14 @@ SOFTWARE.
  */
 package de.amr.games.pacman.theme.arcade;
 
+import static de.amr.easy.game.math.V2f.v;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 
-import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.math.V2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
@@ -95,12 +97,12 @@ class ArcadeWorldRenderer implements WorldRenderer {
 		world.temporaryFood().ifPresent(bonus -> {
 			if (bonus.isActive()) {
 				if (bonus.isConsumed()) {
-					Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.TS / 2);
+					V2f position = v(bonus.location().x(), bonus.location().y() - Tile.TS / 2);
 					Image img = ArcadeTheme.THEME.asIimage("points-" + bonus.value());
 					g.drawImage(img, position.roundedX(), position.roundedY(), null);
 				} else {
 					ArcadeBonus arcadeBonus = (ArcadeBonus) bonus;
-					Vector2f position = Vector2f.of(bonus.location().x(), bonus.location().y() - Tile.TS / 2);
+					V2f position = v(bonus.location().x(), bonus.location().y() - Tile.TS / 2);
 					Image img = ArcadeTheme.THEME.asIimage("symbol-" + arcadeBonus.symbol.name());
 					g.drawImage(img, position.roundedX(), position.roundedY(), null);
 				}

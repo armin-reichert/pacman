@@ -32,7 +32,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 
-import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.math.V2f;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Tile;
@@ -58,14 +58,14 @@ public class Rendering {
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 
-	public static void drawCircleWithText(Graphics2D g, Vector2f center, int radius, Color color, String text) {
-		g.translate(center.x, center.y);
+	public static void drawCircleWithText(Graphics2D g, V2f center, int radius, Color color, String text) {
+		g.translate(center.x(), center.y());
 		g.setColor(color);
 		g.drawOval(-radius, -radius, 2 * radius, 2 * radius);
 		FontMetrics fm = g.getFontMetrics();
 		int width = fm.stringWidth(text);
 		g.drawString(text, -width / 2, fm.getHeight() / 2);
-		g.translate(-center.x, -center.y);
+		g.translate(-center.x(), -center.y());
 	}
 
 	public static Color alpha(Color color, int alpha) {

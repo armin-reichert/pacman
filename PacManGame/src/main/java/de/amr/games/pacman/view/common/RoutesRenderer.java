@@ -37,7 +37,7 @@ import java.awt.Stroke;
 import java.util.List;
 import java.util.Optional;
 
-import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.math.V2f;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
@@ -80,10 +80,10 @@ public class RoutesRenderer {
 			return;
 		}
 		if (ghost.wishDir != null) {
-			Vector2f center = ghost.tf.getCenter();
-			Vector2f dirVector = ghost.wishDir.vector();
-			drawDirectionIndicator(g, ghostColor(ghost), true, ghost.wishDir, (int) (center.x + dirVector.x * Tile.TS),
-					(int) (center.y + dirVector.y * Tile.TS));
+			V2f center = ghost.tf.getCenter();
+			V2f dirVector = ghost.wishDir.vector();
+			drawDirectionIndicator(g, ghostColor(ghost), true, ghost.wishDir, (int) (center.x() + dirVector.x() * Tile.TS),
+					(int) (center.y() + dirVector.y() * Tile.TS));
 		}
 	}
 

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.math.V2f;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -94,7 +94,7 @@ public class MusicLoadingView implements PacManGameView {
 
 	@Override
 	public void update() {
-		float x = folks.pacMan.tf.getCenter().x;
+		float x = folks.pacMan.tf.getCenter().x();
 		if (x > 0.9f * width || x < 0.1 * width) {
 			folks.pacMan.moveDir = folks.pacMan.moveDir.opposite();
 			ghostCount += ghostInc;
@@ -102,7 +102,7 @@ public class MusicLoadingView implements PacManGameView {
 				ghostInc = -ghostInc;
 			}
 		}
-		folks.pacMan.tf.setVelocity(Vector2f.smul(2.5f, folks.pacMan.moveDir.vector()));
+		folks.pacMan.tf.setVelocity(V2f.smul(2.5f, folks.pacMan.moveDir.vector()));
 		folks.pacMan.tf.move();
 
 		alpha += alphaInc;

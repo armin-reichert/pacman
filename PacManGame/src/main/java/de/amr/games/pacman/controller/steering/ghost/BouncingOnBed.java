@@ -40,7 +40,7 @@ public class BouncingOnBed implements Steering {
 	private final float bedCenterY;
 
 	public BouncingOnBed(Bed bed) {
-		bedCenterY = bed.center().y;
+		bedCenterY = bed.center().y();
 	}
 
 	@Override

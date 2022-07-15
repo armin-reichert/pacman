@@ -84,7 +84,7 @@ public class StatesRenderer {
 		try (Pen pen = new Pen(g)) {
 			pen.color(color);
 			pen.font(SMALL_FONT);
-			pen.drawCentered(text, entity.tf.getCenter().x, entity.tf.getCenter().y - 2);
+			pen.drawCentered(text, entity.tf.getCenter().x(), entity.tf.getCenter().y() - 2);
 		}
 	}
 

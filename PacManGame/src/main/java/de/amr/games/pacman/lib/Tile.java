@@ -23,10 +23,12 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
+import static de.amr.easy.game.math.V2f.v;
+
 import java.util.Objects;
 import java.util.Optional;
 
-import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.math.V2f;
 
 /**
  * The Pac-Man game world is layed out into tiles of eight pixels size each.
@@ -156,7 +158,7 @@ public final class Tile {
 	 * @return the direction towards the other tile, if it is a neighbor tile
 	 */
 	public Optional<Direction> dirTo(Tile other) {
-		Vector2f v = Vector2f.of(other.col - col, other.row - row);
+		V2f v = v(other.col - col, other.row - row);
 		return Direction.dirs().filter(dir -> dir.vector().equals(v)).findFirst();
 	}
 
@@ -165,8 +167,8 @@ public final class Tile {
 	 * @return the tile towards the given direction
 	 */
 	public Tile towards(Direction dir) {
-		Vector2f v = dir.vector();
-		return Tile.at(col + (int) v.x, row + (int) v.y);
+		V2f v = dir.vector();
+		return Tile.at(col + (int) v.x(), row + (int) v.y());
 	}
 
 	@Override

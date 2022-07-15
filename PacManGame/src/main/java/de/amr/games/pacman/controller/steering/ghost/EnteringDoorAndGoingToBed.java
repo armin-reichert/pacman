@@ -29,7 +29,7 @@ import static de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoing
 import static de.amr.games.pacman.controller.steering.ghost.EnteringDoorAndGoingToBed.State.MOVING_RIGHT;
 
 import de.amr.easy.game.entity.Transform;
-import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.math.V2f;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.steering.api.Steering;
@@ -56,8 +56,8 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 
 	public EnteringDoorAndGoingToBed(Ghost ghost, Door door, Bed bed) {
 		super(State.class);
-		targetX = bed.center().x - ghost.tf.width / 2;
-		targetY = bed.center().y - ghost.tf.width / 2;
+		targetX = bed.center().x() - ghost.tf.width / 2;
+		targetY = bed.center().y() - ghost.tf.width / 2;
 		/*@formatter:off*/
 		beginStateMachine()
 			.initialState(FALLING)
@@ -70,8 +70,8 @@ public class EnteringDoorAndGoingToBed extends StateMachine<State, Void> impleme
 						// place the ghost centered over the ghost house entry and start falling down
 						Transform tf = ghost.tf;
 						Direction awayFromHouse = door.intoHouse.opposite();
-						Vector2f houseEntry = door.center().add(awayFromHouse.vector().times(Tile.TS));
-						tf.setPosition(houseEntry.x - tf.width / 2, houseEntry.y - tf.height / 2);
+						V2f houseEntry = door.center().add(awayFromHouse.vector().times(Tile.TS));
+						tf.setPosition(houseEntry.x() - tf.width / 2, houseEntry.y() - tf.height / 2);
 						ghost.wishDir = Direction.DOWN;					
 					})
 					

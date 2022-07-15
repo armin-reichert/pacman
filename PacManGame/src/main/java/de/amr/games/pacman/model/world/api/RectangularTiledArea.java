@@ -23,9 +23,11 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.world.api;
 
+import static de.amr.easy.game.math.V2f.v;
+
 import java.util.stream.Stream;
 
-import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.math.V2f;
 import de.amr.games.pacman.lib.Tile;
 
 /**
@@ -70,7 +72,7 @@ public interface RectangularTiledArea extends TiledArea {
 				.map(i -> Tile.at(col() + i % width(), row() + i / width()));
 	}
 
-	default Vector2f center() {
-		return Vector2f.of(((col() + 0.5f * width()) * Tile.TS), (row() + 0.5f * height()) * Tile.TS);
+	default V2f center() {
+		return v(((col() + 0.5f * width()) * Tile.TS), (row() + 0.5f * height()) * Tile.TS);
 	}
 }

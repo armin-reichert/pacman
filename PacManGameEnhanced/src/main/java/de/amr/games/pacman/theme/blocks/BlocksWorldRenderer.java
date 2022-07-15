@@ -24,11 +24,12 @@ SOFTWARE.
 package de.amr.games.pacman.theme.blocks;
 
 import static de.amr.easy.game.Application.app;
+import static de.amr.easy.game.math.V2f.v;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.math.V2f;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
@@ -64,7 +65,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 			}
 		});
 		world.temporaryFood().ifPresent(bonus -> {
-			Vector2f center = Vector2f.of(bonus.location().x() + Tile.TS, bonus.location().y() + Tile.TS / 2);
+			V2f center = v(bonus.location().x() + Tile.TS, bonus.location().y() + Tile.TS / 2);
 			if (bonus.isActive()) {
 				if (bonus.isConsumed()) {
 					drawConsumedBonus(g, center, bonus.value());
@@ -76,7 +77,7 @@ class BlocksWorldRenderer implements WorldRenderer {
 		Rendering.smoothOff(g);
 	}
 
-	private void drawActiveBonus(Graphics2D g, Vector2f center, ArcadeBonus bonus) {
+	private void drawActiveBonus(Graphics2D g, V2f center, ArcadeBonus bonus) {
 		if (app().clock().getTotalTicks() % 60 < 30) {
 			return; // blink effect
 		}
@@ -85,20 +86,20 @@ class BlocksWorldRenderer implements WorldRenderer {
 			pen.color(Color.GREEN);
 			pen.font(BlocksTheme.THEME.asFont("font"));
 			String text = bonus.symbol.name().substring(0, 1) + bonus.symbol.name().substring(1).toLowerCase();
-			pen.drawCentered(text, center.x, center.y + Tile.TS / 2);
+			pen.drawCentered(text, center.x(), center.y() + Tile.TS / 2);
 		}
 	}
 
-	private void drawConsumedBonus(Graphics2D g, Vector2f center, int value) {
+	private void drawConsumedBonus(Graphics2D g, V2f center, int value) {
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
 			pen.font(BlocksTheme.THEME.asFont("font"));
 			String text = String.valueOf(value);
-			pen.drawCentered(text, center.x, center.y + 4);
+			pen.drawCentered(text, center.x(), center.y() + 4);
 		}
 	}
 
-	private void drawBonusSymbol(Graphics2D g, Vector2f center, ArcadeBonus bonus) {
+	private void drawBonusSymbol(Graphics2D g, V2f center, ArcadeBonus bonus) {
 		int radius = 4;
 		g.setColor(BlocksTheme.THEME.symbolColor(bonus.symbol.name()));
 		g.fillOval(center.roundedX() - radius, center.roundedY() - radius, 2 * radius, 2 * radius);
