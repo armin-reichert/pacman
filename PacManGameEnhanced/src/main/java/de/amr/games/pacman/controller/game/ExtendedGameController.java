@@ -111,16 +111,6 @@ public class ExtendedGameController extends GameController {
 			Timing.changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
 
-		else if (Keyboard.keyPressedOnce("l")) {
-			if (!app().getLogger().isShutUp()) {
-				loginfo("Application Logging is OFF");
-			}
-			app().getLogger().shutUp(!app().getLogger().isShutUp());
-			if (!app().getLogger().isShutUp()) {
-				loginfo("Application Logging is ON");
-			}
-		}
-
 		if (currentView instanceof PlayView) {
 			handlePlayViewInput();
 		}
