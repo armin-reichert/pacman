@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.fsm;
 
 import static de.amr.easy.game.controller.StateMachineRegistry.REGISTRY;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.List;
@@ -50,8 +49,8 @@ public class FsmModel {
 		setOfMachinesChanged = !registeredMachineSet.equals(myMachineSet);
 		if (setOfMachinesChanged) {
 			dataByCategory.clear();
-			REGISTRY.categories().forEach(
-					category -> dataByCategory.put(category, REGISTRY.machines(category).map(FsmData::new).collect(toList())));
+			REGISTRY.categories()
+					.forEach(category -> dataByCategory.put(category, REGISTRY.machines(category).map(FsmData::new).toList()));
 		} else {
 			data().forEach(FsmData::updateGraphVizText);
 		}

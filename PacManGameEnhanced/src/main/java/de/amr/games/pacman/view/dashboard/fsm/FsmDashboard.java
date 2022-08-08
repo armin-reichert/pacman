@@ -28,7 +28,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -105,7 +104,7 @@ public class FsmDashboard extends JFrame {
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 			JComboBox<String> combo = (JComboBox<String>) e.getSource();
 			int index = comboIndex(combo);
-			List<FsmData> dataList = model.data().sorted().collect(Collectors.toList());
+			List<FsmData> dataList = model.data().sorted().toList();
 			views[index].setData(dataList.get(combo.getSelectedIndex()));
 		}
 	}
@@ -127,7 +126,7 @@ public class FsmDashboard extends JFrame {
 	}
 
 	public void rebuild() {
-		List<FsmData> dataList = model.data().sorted().collect(Collectors.toList());
+		List<FsmData> dataList = model.data().sorted().toList();
 		for (int i = 0; i < 4; ++i) {
 			multiPanel.getComboBox(i).setModel(new FsmSelectionModel(model));
 			if (i < dataList.size()) {

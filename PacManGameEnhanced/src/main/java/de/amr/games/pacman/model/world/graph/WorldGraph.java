@@ -28,7 +28,6 @@ import static de.amr.games.pacman.PacManApp.appSettings;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.model.world.api.TiledWorld;
@@ -110,7 +109,7 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 			if (pathFinderCalls % 100 == 0) {
 				loginfo("%d'th pathfinding (%s) executed", pathFinderCalls, pathFinder);
 			}
-			tiles = path.vertexStream().map(this::tile).collect(Collectors.toList());
+			tiles = path.vertexStream().map(this::tile).toList();
 		}
 		return tiles;
 	}

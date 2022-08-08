@@ -27,7 +27,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import de.amr.easy.game.math.V2f;
 import de.amr.games.pacman.PacManApp;
@@ -50,7 +49,7 @@ public class MusicLoadingView implements PacManGameView {
 
 	private final ArcadeWorld world = new ArcadeWorld();
 	private final Folks folks = new Folks(world, world.house(0).get());
-	private final List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
+	private final List<Ghost> ghosts = folks.ghosts().toList();
 	private Theme theme;
 	private PacManRenderer pacManRenderer;
 	private MessagesRenderer messagesRenderer;
