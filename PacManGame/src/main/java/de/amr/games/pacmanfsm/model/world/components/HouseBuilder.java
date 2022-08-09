@@ -27,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.amr.games.pacmanfsm.lib.Direction;
-import de.amr.games.pacmanfsm.model.world.api.TiledArea;
+import de.amr.games.pacmanfsm.model.world.api.RectangularTiledArea;
 
 public class HouseBuilder {
 
-	private TiledArea layout;
+	private RectangularTiledArea layout;
 	private List<Door> doors = new ArrayList<>();
 	private List<Bed> beds = new ArrayList<>();
 

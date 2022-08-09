@@ -35,7 +35,7 @@ import de.amr.games.pacmanfsm.lib.Tile;
  * 
  * @author Armin Reichert
  */
-public interface RectangularTiledArea extends TiledArea {
+public interface RectangularTiledArea {
 
 	/**
 	 * @return width in number of tiles
@@ -61,12 +61,10 @@ public interface RectangularTiledArea extends TiledArea {
 		return width() * height();
 	}
 
-	@Override
 	default boolean includes(Tile tile) {
 		return col() <= tile.col && tile.col < col() + width() && row() <= tile.row && tile.row < row() + height();
 	}
 
-	@Override
 	default Stream<Tile> tiles() {
 		return Stream.iterate(0, i -> i + 1).limit(width() * height())
 				.map(i -> Tile.at(col() + i % width(), row() + i / width()));

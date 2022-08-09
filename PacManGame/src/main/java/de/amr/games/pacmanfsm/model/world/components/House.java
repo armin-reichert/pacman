@@ -28,20 +28,20 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacmanfsm.lib.Direction;
 import de.amr.games.pacmanfsm.lib.Tile;
-import de.amr.games.pacmanfsm.model.world.api.TiledArea;
+import de.amr.games.pacmanfsm.model.world.api.RectangularTiledArea;
 
 /**
  * A house has a room with beds and some doors.
  * 
  * @author Armin Reichert
  */
-public class House implements TiledArea {
+public class House implements RectangularTiledArea {
 
-	private final TiledArea layout;
+	private final RectangularTiledArea layout;
 	private final List<Door> doors;
 	private final List<Bed> beds;
 
-	public House(TiledArea layout, List<Door> doors, List<Bed> beds) {
+	public House(RectangularTiledArea layout, List<Door> doors, List<Bed> beds) {
 		this.layout = layout;
 		this.doors = doors;
 		this.beds = beds;
@@ -89,4 +89,25 @@ public class House implements TiledArea {
 	public Stream<Tile> tiles() {
 		return layout.tiles();
 	}
+
+	@Override
+	public int width() {
+		return layout.width();
+	}
+
+	@Override
+	public int height() {
+		return layout.height();
+	}
+
+	@Override
+	public int col() {
+		return layout.col();
+	}
+
+	@Override
+	public int row() {
+		return layout.row();
+	}
+
 }
