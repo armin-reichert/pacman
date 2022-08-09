@@ -2,9 +2,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.amr.games.pacman.test</groupId>
-	<artifactId>PacManTests</artifactId>
-	<name>PacManTests</name>
+	
+	<artifactId>pacman-fsm-tests</artifactId>
+	
+	<parent>
+		<groupId>de.amr.games.pacmanfsm</groupId>
+		<artifactId>pacman-fsm</artifactId>
+		<version>1.0</version>
+		<relativePath>..</relativePath>
+	</parent>
+
 	<description>Pac-Man game tests</description>
 	<build>
 		<plugins>
@@ -25,8 +32,8 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>de.amr.games.pacman</groupId>
-			<artifactId>PacManGameEnhanced</artifactId>
+			<groupId>de.amr.games.pacmanfsm</groupId>
+			<artifactId>pacman-fsm-game-ext</artifactId>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
@@ -39,10 +46,4 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
-	<parent>
-		<groupId>de.amr.games.pacman</groupId>
-		<artifactId>pacman</artifactId>
-		<version>1.0</version>
-		<relativePath>..</relativePath>
-	</parent>
 </project>
