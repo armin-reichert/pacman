@@ -35,6 +35,7 @@ import java.util.Objects;
 
 import de.amr.games.pacmanfsm.controller.creatures.pacman.PacMan;
 import de.amr.statemachine.api.TransitionMatchStrategy;
+import de.amr.statemachine.core.MissingTransitionBehavior;
 import de.amr.statemachine.core.StateMachine;
 
 /**

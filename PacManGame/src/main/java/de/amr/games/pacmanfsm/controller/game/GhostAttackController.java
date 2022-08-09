@@ -34,6 +34,7 @@ import static de.amr.games.pacmanfsm.controller.game.Timing.sec;
 import de.amr.games.pacmanfsm.controller.creatures.Folks;
 import de.amr.games.pacmanfsm.controller.game.GhostAttackController.Phase;
 import de.amr.statemachine.api.TransitionMatchStrategy;
+import de.amr.statemachine.core.MissingTransitionBehavior;
 import de.amr.statemachine.core.StateMachine;
 
 /**

@@ -58,8 +58,8 @@ import de.amr.games.pacmanfsm.model.world.arcade.ArcadeFood;
 import de.amr.games.pacmanfsm.model.world.components.Bed;
 import de.amr.games.pacmanfsm.model.world.components.House;
 import de.amr.statemachine.api.TransitionMatchStrategy;
+import de.amr.statemachine.core.MissingTransitionBehavior;
 import de.amr.statemachine.core.StateMachine;
-import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * Hunting ghosty girls, eating, sleeping - a Pac-Man's life.

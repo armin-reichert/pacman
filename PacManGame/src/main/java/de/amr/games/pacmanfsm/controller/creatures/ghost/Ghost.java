@@ -55,8 +55,8 @@ import de.amr.games.pacmanfsm.model.world.api.TiledWorld;
 import de.amr.games.pacmanfsm.model.world.components.Bed;
 import de.amr.games.pacmanfsm.model.world.components.House;
 import de.amr.games.pacmanfsm.model.world.components.OneWayTile;
+import de.amr.statemachine.core.MissingTransitionBehavior;
 import de.amr.statemachine.core.StateMachine;
-import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * A ghost.

@@ -79,9 +79,9 @@ import de.amr.games.pacmanfsm.view.api.PacManGameView;
 import de.amr.games.pacmanfsm.view.intro.IntroView;
 import de.amr.games.pacmanfsm.view.loading.MusicLoadingView;
 import de.amr.games.pacmanfsm.view.play.PlayView;
+import de.amr.statemachine.core.MissingTransitionBehavior;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
-import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * The Pac-Man game controller (finite-state machine).
