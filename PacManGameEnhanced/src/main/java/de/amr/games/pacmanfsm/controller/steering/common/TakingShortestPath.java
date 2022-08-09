@@ -26,7 +26,6 @@ package de.amr.games.pacmanfsm.controller.steering.common;
 import java.util.function.Supplier;
 
 import de.amr.games.pacmanfsm.controller.creatures.Guy;
-import de.amr.games.pacmanfsm.controller.steering.common.FollowingPath;
 import de.amr.games.pacmanfsm.lib.Tile;
 import de.amr.games.pacmanfsm.model.world.graph.WorldGraph;
 

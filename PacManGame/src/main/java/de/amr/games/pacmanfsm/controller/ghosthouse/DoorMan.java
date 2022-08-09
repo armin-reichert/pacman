@@ -41,8 +41,8 @@ import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacmanfsm.lib.Tile;
 import de.amr.games.pacmanfsm.model.world.components.Door;
-import de.amr.games.pacmanfsm.model.world.components.House;
 import de.amr.games.pacmanfsm.model.world.components.Door.DoorState;
+import de.amr.games.pacmanfsm.model.world.components.House;
 
 /**
  * This class controls when and in which order locked ghosts can leave the ghost house.

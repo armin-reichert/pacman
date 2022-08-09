@@ -25,7 +25,6 @@ package de.amr.games.pacmanfsm;
 
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.ui.f2dialog.F2Dialog;
-import de.amr.games.pacmanfsm.PacManApp;
 import de.amr.games.pacmanfsm.controller.game.ExtendedGameController;
 import de.amr.games.pacmanfsm.controller.game.GameController;
 import de.amr.games.pacmanfsm.theme.api.Themes;

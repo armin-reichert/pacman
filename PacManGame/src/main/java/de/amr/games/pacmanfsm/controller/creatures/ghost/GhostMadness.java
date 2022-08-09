@@ -36,6 +36,7 @@ import java.util.Objects;
 import de.amr.games.pacmanfsm.controller.creatures.pacman.PacMan;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
+import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * Blinky becomes mad (transforms into "Cruise Elroy") whenever the number of remaining food reaches certain values that

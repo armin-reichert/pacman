@@ -37,7 +37,6 @@ import de.amr.games.pacmanfsm.view.common.GridRenderer;
 import de.amr.games.pacmanfsm.view.common.Rendering;
 import de.amr.games.pacmanfsm.view.common.RoutesRenderer;
 import de.amr.games.pacmanfsm.view.common.StatesRenderer;
-import de.amr.games.pacmanfsm.view.play.PlayView;
 
 /**
  * Play view with additional functionality like routes display.

@@ -47,8 +47,6 @@ import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.controller.creatures.pacman.PacManState;
 import de.amr.games.pacmanfsm.controller.event.GhostKilledEvent;
 import de.amr.games.pacmanfsm.controller.event.LevelCompletedEvent;
-import de.amr.games.pacmanfsm.controller.game.GameController;
-import de.amr.games.pacmanfsm.controller.game.Timing;
 import de.amr.games.pacmanfsm.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacmanfsm.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacmanfsm.model.world.arcade.ArcadeFood;

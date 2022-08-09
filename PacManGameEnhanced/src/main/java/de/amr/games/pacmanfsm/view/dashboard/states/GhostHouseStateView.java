@@ -44,8 +44,8 @@ import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.controller.game.GameController;
 import de.amr.games.pacmanfsm.controller.ghosthouse.DoorMan;
 import de.amr.games.pacmanfsm.theme.arcade.ArcadeSpritesheet;
-import de.amr.games.pacmanfsm.theme.arcade.ArcadeTheme;
 import de.amr.games.pacmanfsm.theme.arcade.ArcadeSpritesheet.GhostColor;
+import de.amr.games.pacmanfsm.theme.arcade.ArcadeTheme;
 import de.amr.games.pacmanfsm.view.dashboard.util.Formatting;
 import net.miginfocom.swing.MigLayout;
 

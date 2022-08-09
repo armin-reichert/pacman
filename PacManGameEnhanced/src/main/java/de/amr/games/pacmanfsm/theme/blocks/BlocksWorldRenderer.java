@@ -35,8 +35,8 @@ import de.amr.games.pacmanfsm.lib.Tile;
 import de.amr.games.pacmanfsm.model.world.api.TiledWorld;
 import de.amr.games.pacmanfsm.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacmanfsm.model.world.arcade.ArcadeFood;
-import de.amr.games.pacmanfsm.model.world.components.House;
 import de.amr.games.pacmanfsm.model.world.components.Door.DoorState;
+import de.amr.games.pacmanfsm.model.world.components.House;
 import de.amr.games.pacmanfsm.theme.api.WorldRenderer;
 import de.amr.games.pacmanfsm.view.common.Rendering;
 
