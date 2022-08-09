@@ -15,7 +15,7 @@ https://kandi.openweaver.com/java/armin-reichert/pacman writes about this projec
 
 *It has a negative sentiment in the developer community.*
 
-**LOL**
+**LOL!**
 
 ## Ghost Lives Matter! Yellow man bad!
 
@@ -37,14 +37,14 @@ Why hasn't this **racist, homophobic game** long been forbidden? GLM, LGBTQ acti
 
 ## How to run the game
 
-Download the executable "PacManGame-1.0-jar-with-dependencies.jar" or the extended version "PacManGameEnhanced-1.0-jar-with-dependencies.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. For just playing Pac-Man, the first jar file is sufficient, if you want to see the fancy stuff in the custom tabs, use the enhanced version.
+Download the executable "pacman-fsm-game-1.0-jar-with-dependencies.jar" or the extended version "pacman-fsm-game-ext-1.0-jar-with-dependencies.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. For just playing Pac-Man, the first jar file is sufficient, if you want to see the fancy stuff, use the enhanced version.
 
-If you want to use the many command-line arguments (see below), open a command window and enter:
+To use the command-line arguments (see below), open a command window and enter:
 
 ```
 cd directory/where/jarfile/was/downloaded
-java -jar PacManGame-1.0-jar-with-dependencies.jar command-line-args...
-java -jar PacManGameEnhanced-1.0-jar-with-dependencies.jar command-line-args...
+java -jar pacman-fsm-game-1.0-jar-with-dependencies.jar command-line-args...
+java -jar pacman-fsm-game-ext-1.0-jar-with-dependencies.jar command-line-args...
 ```
 
 or when running on Windows, run the .bat files `pacman.bat`and `pacman-enhanced.bat`.
