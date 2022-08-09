@@ -34,8 +34,8 @@ import de.amr.easy.game.math.V2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.lib.Tile;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
@@ -60,7 +60,7 @@ class ArcadeWorldRenderer implements WorldRenderer {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		if (world.isChanging()) {
 			if (spriteFlashingMaze == null) {
-				spriteFlashingMaze = spriteSheet.makeSpriteFlashingMaze(PacManGame.it().numFlashes);
+				spriteFlashingMaze = spriteSheet.makeSpriteFlashingMaze(GameController.theGame.numFlashes);
 			}
 			spriteFlashingMaze.draw(g2, 0, 3 * Tile.TS);
 		} else {

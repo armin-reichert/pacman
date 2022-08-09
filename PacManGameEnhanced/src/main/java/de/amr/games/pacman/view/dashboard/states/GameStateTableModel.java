@@ -35,7 +35,6 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.GhostCommand;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeBonus;
 
@@ -112,7 +111,7 @@ class GameStateTableModel extends AbstractTableModel {
 	}
 
 	public void update() {
-		if (PacManGame.started()) {
+		if (GameController.isGameStarted()) {
 			GhostCommand ghostCommand = gameController.ghostCommand;
 			Folks folks = gameController.folks;
 			fillGhostRecord(records[ROW_BLINKY], ghostCommand, folks.blinky, folks.pacMan);

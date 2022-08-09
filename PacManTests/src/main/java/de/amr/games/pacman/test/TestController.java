@@ -12,7 +12,7 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.Guy;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.model.game.PacManGame;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.theme.api.Themes;
@@ -48,7 +48,7 @@ public class TestController implements VisualController {
 	public TestController() {
 		world = new ArcadeWorld();
 		world.tiles().forEach(world::removeFood);
-		PacManGame.start(1, world.totalFoodCount());
+		GameController.newGame(1, world.totalFoodCount());
 		var house = world.house(0).orElseThrow();
 		folks = new Folks(world, house);
 		pacMan = folks.pacMan;

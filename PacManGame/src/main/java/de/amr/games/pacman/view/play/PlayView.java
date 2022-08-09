@@ -26,6 +26,7 @@ package de.amr.games.pacman.view.play;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.controller.game.GameController.theGame;
 
 import java.awt.Graphics2D;
 
@@ -34,7 +35,6 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
 import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.lib.Tile;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.GameRenderer;
 import de.amr.games.pacman.theme.api.PacManRenderer;
@@ -117,18 +117,18 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawPointsCounter(Graphics2D g) {
-		pointsCounterRenderer.render(g, PacManGame.it());
+		pointsCounterRenderer.render(g, theGame);
 	}
 
 	protected void drawLivesCounter(Graphics2D g) {
 		g.translate(Tile.TS, (world.height() - 2) * Tile.TS);
-		livesCounterRenderer.render(g, PacManGame.it());
+		livesCounterRenderer.render(g, theGame);
 		g.translate(-Tile.TS, -(world.height() - 2) * Tile.TS);
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		g.translate(world.width() * Tile.TS, (world.height() - 2) * Tile.TS);
-		levelCounterRenderer.render(g, PacManGame.it());
+		levelCounterRenderer.render(g, theGame);
 		g.translate(-world.width() * Tile.TS, -(world.height() - 2) * Tile.TS);
 	}
 

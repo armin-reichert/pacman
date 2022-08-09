@@ -27,6 +27,7 @@ import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
+import static de.amr.games.pacman.controller.game.GameController.theGame;
 import static de.amr.games.pacman.controller.game.Timing.sec;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.confirmed;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.rejected;
@@ -39,7 +40,6 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.lib.Tile;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.components.Door;
 import de.amr.games.pacman.model.world.components.Door.DoorState;
 import de.amr.games.pacman.model.world.components.House;
@@ -141,15 +141,14 @@ public class DoorMan implements Lifecycle {
 	}
 
 	public int personalDotLimit(Ghost ghost) {
-		var game = PacManGame.it();
 		if (ghost == folks.pinky) {
 			return 0;
 		}
 		if (ghost == folks.inky) {
-			return game.level == 1 ? 30 : 0;
+			return theGame.level == 1 ? 30 : 0;
 		}
 		if (ghost == folks.clyde) {
-			return switch (game.level) {
+			return switch (theGame.level) {
 			case 1 -> 60;
 			case 2 -> 50;
 			default -> 0;
@@ -220,7 +219,7 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private long pacManStarvingTimeLimit() {
-		return PacManGame.it().level < 5 ? sec(4) : sec(3);
+		return theGame.level < 5 ? sec(4) : sec(3);
 	}
 
 	/**

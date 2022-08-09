@@ -28,9 +28,9 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.creatures.Folks;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.GhostCommand;
 import de.amr.games.pacman.lib.Tile;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.theme.api.Theme;
 import de.amr.games.pacman.view.common.GridRenderer;
@@ -155,7 +155,7 @@ public class ExtendedPlayView extends PlayView {
 	@Override
 	protected void drawPointsCounter(Graphics2D g) {
 		if (showingScores) {
-			theme.gameScoreRenderer().render(g, PacManGame.it());
+			theme.gameScoreRenderer().render(g, GameController.theGame);
 		}
 	}
 

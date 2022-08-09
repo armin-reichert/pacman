@@ -28,12 +28,12 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.EL
 import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.HEALTHY;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostMentalState.TRANQUILIZED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.game.GameController.theGame;
 import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
 
 import java.util.Objects;
 
 import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
 
@@ -98,11 +98,11 @@ public class GhostMadness extends StateMachine<GhostMentalState, String> {
 			
 				.when(HEALTHY).then(ELROY2)
 					.condition(this::elroy2ScoreReached)
-					.annotation(() -> String.format("Pellets left <= %d", PacManGame.it().elroy2DotsLeft))
+					.annotation(() -> String.format("Pellets left <= %d", theGame.elroy2DotsLeft))
 			
 				.when(HEALTHY).then(ELROY1)
 					.condition(this::elroy1ScoreReached)
-					.annotation(() -> String.format("Pellets left <= %d", PacManGame.it().elroy1DotsLeft))
+					.annotation(() -> String.format("Pellets left <= %d", theGame.elroy1DotsLeft))
 
 				.when(TRANQUILIZED).then(ELROY2)
 					.on(CLYDE_EXITS_HOUSE)
@@ -116,7 +116,7 @@ public class GhostMadness extends StateMachine<GhostMentalState, String> {
 					
 				.when(ELROY1).then(ELROY2)
 					.condition(this::elroy2ScoreReached)
-					.annotation(() -> String.format("Remaining pellets <= %d", PacManGame.it().elroy2DotsLeft))
+					.annotation(() -> String.format("Remaining pellets <= %d", theGame.elroy2DotsLeft))
 
 				.when(ELROY1).then(TRANQUILIZED).on(PACMAN_DIES)
 					.annotation("Suspend Elroy when Pac-Man dies")
@@ -138,11 +138,11 @@ public class GhostMadness extends StateMachine<GhostMentalState, String> {
 	}
 
 	private boolean elroy1ScoreReached() {
-		return PacManGame.it().remainingFoodCount() <= PacManGame.it().elroy1DotsLeft;
+		return theGame.remainingFoodCount() <= theGame.elroy1DotsLeft;
 	}
 
 	private boolean elroy2ScoreReached() {
-		return PacManGame.it().remainingFoodCount() <= PacManGame.it().elroy2DotsLeft;
+		return theGame.remainingFoodCount() <= theGame.elroy2DotsLeft;
 	}
 
 	private void headForCorner() {

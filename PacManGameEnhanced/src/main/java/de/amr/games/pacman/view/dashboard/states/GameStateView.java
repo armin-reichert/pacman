@@ -40,8 +40,8 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.ExtendedGameController;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.PacManGameState;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.statemachine.core.State;
 import net.miginfocom.swing.MigLayout;
 
@@ -125,7 +125,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		if (gameController != null) {
-			if (PacManGame.started()) {
+			if (GameController.isGameStarted()) {
 				GameStateTableModel tableModel = (GameStateTableModel) table.getModel();
 				if (tableModel.isDummy()) {
 					table.setModel(new GameStateTableModel(gameController));

@@ -25,7 +25,6 @@ package de.amr.games.pacman.model.game;
 
 import static de.amr.easy.game.Application.loginfo;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,22 +37,13 @@ import java.util.List;
  */
 public class PacManGame {
 
-	private static PacManGame theGame;
-
-	public static PacManGame it() {
-		if (theGame == null) {
-			throw new IllegalStateException("Cannot access game instance before is has been created.");
-		}
-		return theGame;
-	}
-
-	static final int PACMAN_LIVES = 3;
-	static final int POINTS_PELLET = 10;
-	static final int POINTS_ENERGIZER = 50;
-	static final int POINTS_EXTRA_LIFE = 10_000;
-	static final int POINTS_ALL_GHOSTS = 12_000;
-	static final int[] POINTS_GHOSTS = { 200, 400, 800, 1600 };
-	static final int[] BONUS_ACTIVATION = { 70, 170 };
+	public static final int PACMAN_LIVES = 3;
+	public static final int POINTS_PELLET = 10;
+	public static final int POINTS_ENERGIZER = 50;
+	public static final int POINTS_EXTRA_LIFE = 10_000;
+	public static final int POINTS_ALL_GHOSTS = 12_000;
+	public static final int[] POINTS_GHOSTS = { 200, 400, 800, 1600 };
+	public static final int[] BONUS_ACTIVATION = { 70, 170 };
 
 	/**
 	 * Returns the level-specific data.
@@ -102,29 +92,6 @@ public class PacManGame {
 		return (int) value;
 	}
 
-	public static boolean started() {
-		return theGame != null;
-	}
-
-	public static void start(int startLevel, int totalFoodCount) {
-		theGame = new PacManGame(startLevel, totalFoodCount, PACMAN_LIVES, 0);
-		theGame.hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
-		theGame.levelCounter.add(theGame.bonusSymbol);
-		loginfo("Game started at level %d", startLevel);
-	}
-
-	public static void nextLevel() {
-		if (!started()) {
-			throw new IllegalStateException("Cannot enter next level, game not started");
-		}
-		PacManGame next = new PacManGame(theGame.level + 1, theGame.foodCount, theGame.lives, theGame.score);
-		next.hiscore = theGame.hiscore;
-		next.levelCounter = theGame.levelCounter;
-		next.levelCounter.add(next.bonusSymbol);
-		theGame = next;
-		loginfo("Game entered level %d" + "", next.level);
-	}
-
 	//@formatter:off
 	public final String bonusSymbol;
 	public final int    bonusValue;
@@ -152,7 +119,7 @@ public class PacManGame {
 	public List<String> levelCounter;
 	//@formatter:on
 
-	private PacManGame(int level, int foodCount, int lives, int score) {
+	public PacManGame(int level, int foodCount, int lives, int score) {
 		this.level = level;
 		this.foodCount = foodCount;
 		this.lives = lives;

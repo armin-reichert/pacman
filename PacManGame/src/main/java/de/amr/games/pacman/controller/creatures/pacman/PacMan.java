@@ -30,6 +30,7 @@ import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.IN_BED;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.POWERFUL;
 import static de.amr.games.pacman.controller.creatures.pacman.PacManState.SLEEPING;
+import static de.amr.games.pacman.controller.game.GameController.theGame;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
@@ -47,10 +48,10 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.PacManWakeUpEvent;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.game.Timing;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.lib.Tile;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.TemporaryFood;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
@@ -208,15 +209,15 @@ public class PacMan extends Guy {
 
 	@Override
 	public float getSpeed() {
-		if (ai.getState() == null || !PacManGame.started()) {
+		if (ai.getState() == null || !GameController.isGameStarted()) {
 			return 0;
 		}
 		if (ai.is(IN_BED, SLEEPING, DEAD, COLLAPSING)) {
 			return 0;
 		} else if (ai.is(POWERFUL)) {
-			return Timing.speed(PacManGame.it().pacManPowerSpeed);
+			return Timing.speed(theGame.pacManPowerSpeed);
 		} else if (ai.is(AWAKE)) {
-			return Timing.speed(PacManGame.it().pacManSpeed);
+			return Timing.speed(theGame.pacManSpeed);
 		}
 		throw new IllegalStateException("Illegal Pac-Man state: " + ai.getState());
 	}

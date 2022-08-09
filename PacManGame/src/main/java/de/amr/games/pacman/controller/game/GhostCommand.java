@@ -25,6 +25,7 @@ package de.amr.games.pacman.controller.game;
 
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.game.GameController.theGame;
 import static de.amr.games.pacman.controller.game.GhostCommand.Phase.CHASE;
 import static de.amr.games.pacman.controller.game.GhostCommand.Phase.PAUSED;
 import static de.amr.games.pacman.controller.game.GhostCommand.Phase.SCATTER;
@@ -32,7 +33,6 @@ import static de.amr.games.pacman.controller.game.Timing.sec;
 
 import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.game.GhostCommand.Phase;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
 
@@ -123,11 +123,11 @@ public class GhostCommand extends StateMachine<Phase, String> {
 			.initialState(SCATTER)
 		.states()
 			.state(SCATTER)
-				.timeoutAfter(() -> times(PacManGame.it().level).scatter)
+				.timeoutAfter(() -> times(theGame.level).scatter)
 				.onTick(this::notifyGhosts)
 				.annotation(() -> "Round " + (round + 1))
 			.state(CHASE)
-				.timeoutAfter(() -> times(PacManGame.it().level).chase)
+				.timeoutAfter(() -> times(theGame.level).chase)
 				.onTick(this::notifyGhosts)
 				.annotation(() -> "Round " + (round + 1))
 			.state(PAUSED)

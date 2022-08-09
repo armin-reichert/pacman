@@ -49,7 +49,6 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
 import de.amr.games.pacman.controller.steering.pacman.SearchingForFoodAndAvoidingGhosts;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.arcade.ArcadeFood;
 import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.theme.api.Theme;
@@ -300,7 +299,7 @@ public class ExtendedGameController extends GameController {
 	}
 
 	private void switchToNextLevel() {
-		loginfo("Switching to level %d", PacManGame.it().level + 1);
+		loginfo("Switching to level %d", theGame.level + 1);
 		enqueue(new LevelCompletedEvent());
 	}
 
@@ -310,12 +309,12 @@ public class ExtendedGameController extends GameController {
 		}
 		world.tiles().filter(location -> world.hasFood(ArcadeFood.PELLET, location)).forEach(tile -> {
 			world.removeFood(tile);
-			PacManGame.it().gainPelletPoints();
+			theGame.gainPelletPoints();
 			doorMan.onPacManFoundFood();
 			doorMan.update();
 		});
 		loginfo("All simple pellets have been eaten");
-		if (PacManGame.it().remainingFoodCount() == 0) {
+		if (theGame.remainingFoodCount() == 0) {
 			enqueue(new LevelCompletedEvent());
 		}
 	}
@@ -324,9 +323,9 @@ public class ExtendedGameController extends GameController {
 		if (getState() != PLAYING) {
 			return;
 		}
-		PacManGame.it().ghostsKilledByEnergizer = 0;
+		theGame.ghostsKilledByEnergizer = 0;
 		folks.ghostsInWorld().filter(ghost -> ghost.ai.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
-			PacManGame.it().gainGhostPoints();
+			theGame.gainGhostPoints();
 			ghost.ai.process(new GhostKilledEvent(ghost));
 		});
 		loginfo("All ghosts have been killed");

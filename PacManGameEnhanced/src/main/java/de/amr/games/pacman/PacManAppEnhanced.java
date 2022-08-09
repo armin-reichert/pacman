@@ -26,7 +26,7 @@ package de.amr.games.pacman;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.ui.f2dialog.F2Dialog;
 import de.amr.games.pacman.controller.game.ExtendedGameController;
-import de.amr.games.pacman.model.game.PacManGame;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.theme.api.Themes;
 import de.amr.games.pacman.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.theme.blocks.BlocksTheme;
@@ -87,11 +87,11 @@ public class PacManAppEnhanced extends PacManApp {
 
 			GameStateView gameStateView = new GameStateView();
 			gameStateView.attachTo(gameController, gameController.folks);
-			f2.addCustomTab("Game State", gameStateView, PacManGame::started);
+			f2.addCustomTab("Game State", gameStateView, GameController::isGameStarted);
 
 			GameLevelView gameLevelView = new GameLevelView();
 			gameLevelView.init();
-			f2.addCustomTab("Game Level", gameLevelView, PacManGame::started);
+			f2.addCustomTab("Game Level", gameLevelView, GameController::isGameStarted);
 		});
 	}
 }

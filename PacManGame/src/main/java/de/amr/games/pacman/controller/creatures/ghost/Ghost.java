@@ -30,6 +30,7 @@ import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTEN
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.game.GameController.theGame;
 import static de.amr.games.pacman.controller.game.Timing.sec;
 import static de.amr.games.pacman.controller.game.Timing.speed;
 
@@ -45,11 +46,11 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
+import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.steering.api.Steering;
 import de.amr.games.pacman.controller.steering.common.MovementType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Tile;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.model.world.api.TiledWorld;
 import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.model.world.components.House;
@@ -270,35 +271,34 @@ public class Ghost extends Guy {
 		if (ai.getState() == null) {
 			throw new IllegalStateException(String.format("Ghost %s is not initialized.", name));
 		}
-		if (!PacManGame.started()) {
+		if (!GameController.isGameStarted()) {
 			return 0;
 		}
-		var game = PacManGame.it();
 		Tile tile = tile();
 		boolean tunnel = world.isTunnel(tile) || world.isPortal(tile);
 		switch (ai.getState()) {
 		case LOCKED:
-			return speed(isInsideHouse() ? game.ghostSpeed / 2 : 0);
+			return speed(isInsideHouse() ? theGame.ghostSpeed / 2 : 0);
 		case LEAVING_HOUSE:
-			return speed(game.ghostSpeed / 2);
+			return speed(theGame.ghostSpeed / 2);
 		case ENTERING_HOUSE:
-			return speed(game.ghostSpeed);
+			return speed(theGame.ghostSpeed);
 		case CHASING, SCATTERING:
 			if (tunnel) {
-				return speed(game.ghostTunnelSpeed);
+				return speed(theGame.ghostTunnelSpeed);
 			}
 			GhostMentalState mentalState = getMentalState();
 			if (mentalState == GhostMentalState.ELROY1) {
-				return speed(game.elroy1Speed);
+				return speed(theGame.elroy1Speed);
 			}
 			if (mentalState == GhostMentalState.ELROY2) {
-				return speed(game.elroy2Speed);
+				return speed(theGame.elroy2Speed);
 			}
-			return speed(game.ghostSpeed);
+			return speed(theGame.ghostSpeed);
 		case FRIGHTENED:
-			return speed(tunnel ? game.ghostTunnelSpeed : game.ghostFrightenedSpeed);
+			return speed(tunnel ? theGame.ghostTunnelSpeed : theGame.ghostFrightenedSpeed);
 		case DEAD:
-			return speed(2 * game.ghostSpeed);
+			return speed(2 * theGame.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s", ai.getState()));
 		}
@@ -314,16 +314,16 @@ public class Ghost extends Guy {
 	}
 
 	private void computeBounty() {
-		bounty = PacManGame.started() ? PacManGame.it().ghostBounty() : 0;
+		bounty = GameController.isGameStarted() ? theGame.ghostBounty() : 0;
 	}
 
 	private long getFrightenedTicks() {
-		return PacManGame.started() ? sec(PacManGame.it().pacManPowerSeconds) : sec(5);
+		return GameController.isGameStarted() ? sec(theGame.pacManPowerSeconds) : sec(5);
 	}
 
 	private long getFlashTimeTicks() {
 		// assuming one flashing takes 0.5 seconds
-		return PacManGame.started() ? PacManGame.it().numFlashes * sec(0.5f) : 0;
+		return GameController.isGameStarted() ? theGame.numFlashes * sec(0.5f) : 0;
 	}
 
 	private void checkPacManCollision(PacMan pacMan) {

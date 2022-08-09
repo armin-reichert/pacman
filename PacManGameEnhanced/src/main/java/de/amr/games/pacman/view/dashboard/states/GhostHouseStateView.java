@@ -43,7 +43,6 @@ import de.amr.games.pacman.controller.creatures.Folks;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
-import de.amr.games.pacman.model.game.PacManGame;
 import de.amr.games.pacman.theme.arcade.ArcadeSpritesheet;
 import de.amr.games.pacman.theme.arcade.ArcadeSpritesheet.GhostColor;
 import de.amr.games.pacman.theme.arcade.ArcadeTheme;
@@ -169,7 +168,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (PacManGame.started()) {
+		if (GameController.isGameStarted()) {
 			DoorMan doorMan = gameController.doorMan;
 			tfPinkyDots.setText(formatDots(doorMan, folks.pinky));
 			tfPinkyDots.setEnabled(!doorMan.isGlobalDotCounterEnabled());
