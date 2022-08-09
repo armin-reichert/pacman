@@ -35,6 +35,9 @@ import de.amr.games.pacman.controller.creatures.ghost.GhostState;
 import de.amr.games.pacman.theme.api.GhostRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
+/**
+ * @author Armin Reichert
+ */
 class BlocksGhostRenderer implements GhostRenderer {
 
 	@Override
@@ -53,7 +56,8 @@ class BlocksGhostRenderer implements GhostRenderer {
 		case CHASING, SCATTERING, LOCKED, LEAVING_HOUSE -> drawColored(g, ghost, width, height, 0, 0);
 		case FRIGHTENED -> {
 			if (ghost.recovering) {
-				drawFlashing(g, ghost, width, height, 0, 0);
+				var tick = Application.app().clock().getTotalTicks();
+				drawFlashing(g, ghost, tick, width, height, 0, 0);
 			} else {
 				drawFrightened(g, ghost, width, height, 0, 0);
 			}
@@ -95,8 +99,8 @@ class BlocksGhostRenderer implements GhostRenderer {
 		drawShape(g, ghost, width, height, offsetX, offsetY, Color.BLUE);
 	}
 
-	private void drawFlashing(Graphics2D g, Ghost ghost, int width, int height, int offsetX, int offsetY) {
-		boolean flash = Application.app().clock().getTotalTicks() % 30 < 15;
+	private void drawFlashing(Graphics2D g, Ghost ghost, long tick, int width, int height, int offsetX, int offsetY) {
+		boolean flash = tick % 30 < 15;
 		drawShape(g, ghost, width, height, offsetX, offsetY, flash ? Color.WHITE : Color.BLUE);
 	}
 

@@ -40,6 +40,9 @@ import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.theme.api.WorldRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
+/**
+ * @author Armin Reichert
+ */
 class BlocksWorldRenderer implements WorldRenderer {
 
 	@Override

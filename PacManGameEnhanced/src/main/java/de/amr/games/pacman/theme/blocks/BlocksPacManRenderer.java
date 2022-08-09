@@ -33,6 +33,9 @@ import de.amr.games.pacman.controller.creatures.pacman.PacManState;
 import de.amr.games.pacman.theme.api.PacManRenderer;
 import de.amr.games.pacman.view.common.Rendering;
 
+/**
+ * @author Armin Reichert
+ */
 class BlocksPacManRenderer implements PacManRenderer {
 
 	@Override
