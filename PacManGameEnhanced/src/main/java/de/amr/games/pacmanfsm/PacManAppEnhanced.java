@@ -68,6 +68,7 @@ public class PacManAppEnhanced extends PacManApp {
 		Graphviz.useEngine(new GraphvizV8Engine());
 		setIcon("/images/pacman-icon.png");
 		setController(new ExtendedGameController(Themes.all()));
+		printSettings();
 	}
 
 	@Override
