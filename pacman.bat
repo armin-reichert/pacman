@@ -1,1 +1,1 @@
-java -jar PacManGame\target\PacManGame-1.0-jar-with-dependencies.jar %*
+java -jar PacManGame\target\pacman-fsm-game-1.0-jar-with-dependencies.jar %*
