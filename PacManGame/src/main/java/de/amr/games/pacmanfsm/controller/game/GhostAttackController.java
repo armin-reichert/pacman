@@ -59,9 +59,9 @@ public class GhostAttackController extends StateMachine<Phase, String> {
 		long chase;
 	}
 
-	private static Times[] createTimes() {
-		Times[] times = new Times[4];
-		for (int i = 0; i < 4; ++i) {
+	private static Times[] createTimes(int n) {
+		Times[] times = new Times[n];
+		for (int i = 0; i < n; ++i) {
 			times[i] = new Times();
 		}
 		return times;
@@ -71,9 +71,9 @@ public class GhostAttackController extends StateMachine<Phase, String> {
 	private int round;
 	private Phase pausedState;
 
-	private static final Times[] LEVEL_1 = createTimes();
-	private static final Times[] LEVELS_2_4 = createTimes();
-	private static final Times[] LEVELS_5_ = createTimes();
+	private static final Times[] LEVEL_1 = createTimes(4);
+	private static final Times[] LEVELS_2_4 = createTimes(4);
+	private static final Times[] LEVELS_5_ = createTimes(4);
 
 	/*@formatter:off*/
 	static {
