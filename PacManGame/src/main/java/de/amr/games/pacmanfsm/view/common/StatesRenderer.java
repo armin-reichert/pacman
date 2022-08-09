@@ -45,7 +45,7 @@ import de.amr.games.pacmanfsm.controller.creatures.Folks;
 import de.amr.games.pacmanfsm.controller.creatures.Guy;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.controller.creatures.pacman.PacMan;
-import de.amr.games.pacmanfsm.controller.game.GhostCommand;
+import de.amr.games.pacmanfsm.controller.game.GhostAttackController;
 import de.amr.games.pacmanfsm.lib.Direction;
 import de.amr.games.pacmanfsm.lib.Tile;
 
@@ -53,12 +53,12 @@ public class StatesRenderer {
 
 	private static final Font SMALL_FONT = new Font("Arial", Font.PLAIN, 6);
 
-	public void renderStates(Graphics2D g, Folks folks, GhostCommand ghostCommand) {
+	public void renderStates(Graphics2D g, Folks folks, GhostAttackController ghostCommand) {
 		drawActorStates(g, folks, ghostCommand);
 		drawActorsOffTrack(g, folks);
 	}
 
-	private void drawActorStates(Graphics2D g, Folks folks, GhostCommand ghostCommand) {
+	private void drawActorStates(Graphics2D g, Folks folks, GhostAttackController ghostCommand) {
 		folks.ghostsInWorld().forEach(ghost -> drawGhostState(g, ghost, ghostCommand));
 		drawPacManState(g, folks.pacMan);
 	}
@@ -88,7 +88,7 @@ public class StatesRenderer {
 		}
 	}
 
-	private void drawGhostState(Graphics2D g, Ghost ghost, GhostCommand ghostCommand) {
+	private void drawGhostState(Graphics2D g, Ghost ghost, GhostAttackController ghostCommand) {
 		if (!ghost.visible) {
 			return;
 		}

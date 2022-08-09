@@ -26,13 +26,13 @@ package de.amr.games.pacmanfsm.controller.game;
 import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.SCATTERING;
 import static de.amr.games.pacmanfsm.controller.game.GameController.theGame;
-import static de.amr.games.pacmanfsm.controller.game.GhostCommand.Phase.CHASE;
-import static de.amr.games.pacmanfsm.controller.game.GhostCommand.Phase.PAUSED;
-import static de.amr.games.pacmanfsm.controller.game.GhostCommand.Phase.SCATTER;
+import static de.amr.games.pacmanfsm.controller.game.GhostAttackController.Phase.CHASE;
+import static de.amr.games.pacmanfsm.controller.game.GhostAttackController.Phase.PAUSED;
+import static de.amr.games.pacmanfsm.controller.game.GhostAttackController.Phase.SCATTER;
 import static de.amr.games.pacmanfsm.controller.game.Timing.sec;
 
 import de.amr.games.pacmanfsm.controller.creatures.Folks;
-import de.amr.games.pacmanfsm.controller.game.GhostCommand.Phase;
+import de.amr.games.pacmanfsm.controller.game.GhostAttackController.Phase;
 import de.amr.statemachine.api.TransitionMatchStrategy;
 import de.amr.statemachine.core.StateMachine;
 
@@ -45,7 +45,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
-public class GhostCommand extends StateMachine<Phase, String> {
+public class GhostAttackController extends StateMachine<Phase, String> {
 
 	private static final String EVENT_PAUSE = "Pause";
 
@@ -113,7 +113,7 @@ public class GhostCommand extends StateMachine<Phase, String> {
 		};
 	}
 
-	public GhostCommand(Folks folks) {
+	public GhostAttackController(Folks folks) {
 		super(Phase.class, TransitionMatchStrategy.BY_VALUE);
 		this.folks = folks;
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);

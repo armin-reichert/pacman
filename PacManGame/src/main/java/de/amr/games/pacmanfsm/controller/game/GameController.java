@@ -119,7 +119,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public final Folks folks;
 	public final BonusFoodController bonusController;
 	public final DoorMan doorMan;
-	public final GhostCommand ghostCommand;
+	public final GhostAttackController ghostCommand;
 	public final ThemeSelector themes;
 
 	protected final Random rnd = new Random();
@@ -144,7 +144,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		folks.ghosts().forEach(ghost -> ghost.ai.addEventListener(this::process));
 
 		doorMan = new DoorMan(world.house(0).orElse(null), folks);
-		ghostCommand = new GhostCommand(folks);
+		ghostCommand = new GhostAttackController(folks);
 		bonusController = new BonusFoodController(world, () -> ArcadeBonus.of(theGame.bonusSymbol, theGame.bonusValue));
 
 		app().onClose(() -> {

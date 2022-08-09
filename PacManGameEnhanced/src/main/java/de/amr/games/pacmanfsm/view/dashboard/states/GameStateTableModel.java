@@ -34,7 +34,7 @@ import de.amr.games.pacmanfsm.controller.creatures.Folks;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.controller.creatures.pacman.PacMan;
 import de.amr.games.pacmanfsm.controller.game.GameController;
-import de.amr.games.pacmanfsm.controller.game.GhostCommand;
+import de.amr.games.pacmanfsm.controller.game.GhostAttackController;
 import de.amr.games.pacmanfsm.model.world.api.TiledWorld;
 import de.amr.games.pacmanfsm.model.world.arcade.ArcadeBonus;
 
@@ -112,7 +112,7 @@ class GameStateTableModel extends AbstractTableModel {
 
 	public void update() {
 		if (GameController.isGameStarted()) {
-			GhostCommand ghostCommand = gameController.ghostCommand;
+			GhostAttackController ghostCommand = gameController.ghostCommand;
 			Folks folks = gameController.folks;
 			fillGhostRecord(records[ROW_BLINKY], ghostCommand, folks.blinky, folks.pacMan);
 			fillGhostRecord(records[ROW_PINKY], ghostCommand, folks.pinky, folks.pacMan);
@@ -139,7 +139,7 @@ class GameStateTableModel extends AbstractTableModel {
 		}
 	}
 
-	void fillGhostRecord(GameStateRecord r, GhostCommand ghostCommand, Ghost ghost, PacMan pacMan) {
+	void fillGhostRecord(GameStateRecord r, GhostAttackController ghostCommand, Ghost ghost, PacMan pacMan) {
 		r.creature = ghost;
 		r.included = world.contains(ghost);
 		r.name = ghost.name;

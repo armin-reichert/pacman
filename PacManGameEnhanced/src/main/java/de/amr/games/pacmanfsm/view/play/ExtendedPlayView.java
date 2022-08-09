@@ -29,7 +29,7 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacmanfsm.controller.creatures.Folks;
 import de.amr.games.pacmanfsm.controller.game.GameController;
-import de.amr.games.pacmanfsm.controller.game.GhostCommand;
+import de.amr.games.pacmanfsm.controller.game.GhostAttackController;
 import de.amr.games.pacmanfsm.lib.Tile;
 import de.amr.games.pacmanfsm.model.world.api.TiledWorld;
 import de.amr.games.pacmanfsm.theme.api.Theme;
@@ -49,7 +49,7 @@ public class ExtendedPlayView extends PlayView {
 	protected final RoutesRenderer routesRenderer;
 	protected final StatesRenderer statesRenderer;
 	protected final FrameRateWidget frameRateView;
-	protected final GhostCommand ghostCommand;
+	protected final GhostAttackController ghostCommand;
 
 	protected boolean showingFrameRate;
 	protected boolean showingGrid;
@@ -57,7 +57,7 @@ public class ExtendedPlayView extends PlayView {
 	protected boolean showingStates;
 	protected boolean showingScores = true;
 
-	public ExtendedPlayView(Theme theme, Folks folks, GhostCommand ghostCommand, TiledWorld world) {
+	public ExtendedPlayView(Theme theme, Folks folks, GhostAttackController ghostCommand, TiledWorld world) {
 		super(theme, folks, world);
 		this.ghostCommand = ghostCommand;
 		gridRenderer = new GridRenderer(world.width(), world.height());
