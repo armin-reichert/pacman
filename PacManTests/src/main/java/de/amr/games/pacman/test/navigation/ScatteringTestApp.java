@@ -1,6 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.SCATTERING;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -8,10 +8,10 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
-import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
+import de.amr.games.pacmanfsm.controller.event.GhostUnlockedEvent;
+import de.amr.games.pacmanfsm.lib.Tile;
 
 public class ScatteringTestApp extends Application {
 

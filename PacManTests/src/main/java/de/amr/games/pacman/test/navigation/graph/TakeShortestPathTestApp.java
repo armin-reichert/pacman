@@ -1,9 +1,9 @@
 package de.amr.games.pacman.test.navigation.graph;
 
-import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
-import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.CHASING;
+import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.FRIGHTENED;
+import static de.amr.games.pacmanfsm.lib.Direction.LEFT;
+import static de.amr.games.pacmanfsm.lib.Direction.RIGHT;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -13,12 +13,12 @@ import java.util.List;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.steering.common.FollowingPath;
-import de.amr.games.pacman.controller.steering.common.TakingShortestPath;
-import de.amr.games.pacman.lib.Tile;
-import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.controller.steering.common.FollowingPath;
+import de.amr.games.pacmanfsm.controller.steering.common.TakingShortestPath;
+import de.amr.games.pacmanfsm.lib.Tile;
+import de.amr.games.pacmanfsm.model.world.components.Portal;
+import de.amr.games.pacmanfsm.model.world.graph.WorldGraph;
 
 public class TakeShortestPathTestApp extends Application {
 

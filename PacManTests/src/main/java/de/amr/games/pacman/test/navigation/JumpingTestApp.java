@@ -2,9 +2,9 @@ package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
+import de.amr.games.pacmanfsm.lib.Tile;
 
 public class JumpingTestApp extends Application {
 

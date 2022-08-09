@@ -2,10 +2,10 @@ package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.controller.steering.api.SteeringBuilder;
-import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState;
+import de.amr.games.pacmanfsm.controller.steering.api.SteeringBuilder;
+import de.amr.games.pacmanfsm.lib.Tile;
 
 public class PortalTestApp extends Application {
 

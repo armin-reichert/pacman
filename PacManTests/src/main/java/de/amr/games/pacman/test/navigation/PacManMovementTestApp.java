@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.game.GameController.theGame;
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
+import static de.amr.games.pacmanfsm.controller.game.GameController.theGame;
+import static de.amr.games.pacmanfsm.controller.steering.api.SteeringBuilder.you;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -9,9 +9,9 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.event.FoodFoundEvent;
-import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.controller.event.FoodFoundEvent;
+import de.amr.games.pacmanfsm.lib.Tile;
 
 public class PacManMovementTestApp extends Application {
 

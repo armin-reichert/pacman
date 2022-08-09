@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
+import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.CHASING;
+import static de.amr.games.pacmanfsm.controller.steering.api.SteeringBuilder.you;
 
 import java.awt.AWTException;
 import java.awt.Robot;
@@ -9,9 +9,9 @@ import java.awt.Robot;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Mouse;
-import de.amr.games.pacman.lib.Tile;
-import de.amr.games.pacman.model.world.components.Bed;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.lib.Tile;
+import de.amr.games.pacmanfsm.model.world.components.Bed;
 
 /**
  * Lets Blinky follow the mouse pointer.

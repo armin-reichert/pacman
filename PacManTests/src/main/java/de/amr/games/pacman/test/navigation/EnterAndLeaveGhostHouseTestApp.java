@@ -1,9 +1,9 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.creatures.ghost.GhostState.DEAD;
-import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.controller.creatures.ghost.GhostState.SCATTERING;
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
+import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.DEAD;
+import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.SCATTERING;
+import static de.amr.games.pacmanfsm.controller.steering.api.SteeringBuilder.you;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +11,10 @@ import java.util.Random;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.lib.Tile;
-import de.amr.games.pacman.model.world.components.Bed;
-import de.amr.games.pacman.model.world.components.House;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.lib.Tile;
+import de.amr.games.pacmanfsm.model.world.components.Bed;
+import de.amr.games.pacmanfsm.model.world.components.House;
 
 public class EnterAndLeaveGhostHouseTestApp extends Application {
 

@@ -1,16 +1,16 @@
 package de.amr.games.pacman.test.navigation.graph;
 
-import static de.amr.games.pacman.controller.creatures.ghost.GhostState.FRIGHTENED;
+import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.FRIGHTENED;
 
 import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.controller.creatures.ghost.GhostState;
-import de.amr.games.pacman.controller.steering.ghost.FleeingToSafeTile;
-import de.amr.games.pacman.lib.Tile;
-import de.amr.games.pacman.model.world.graph.WorldGraph;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState;
+import de.amr.games.pacmanfsm.controller.steering.ghost.FleeingToSafeTile;
+import de.amr.games.pacmanfsm.lib.Tile;
+import de.amr.games.pacmanfsm.model.world.graph.WorldGraph;
 
 public class EscapeIntoCornerTestApp extends Application {
 

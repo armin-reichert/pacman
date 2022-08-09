@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.model;
 
-import static de.amr.games.pacman.model.world.arcade.ArcadeFood.ENERGIZER;
-import static de.amr.games.pacman.model.world.arcade.ArcadeFood.PELLET;
+import static de.amr.games.pacmanfsm.model.world.arcade.ArcadeFood.ENERGIZER;
+import static de.amr.games.pacmanfsm.model.world.arcade.ArcadeFood.PELLET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -17,13 +17,13 @@ import java.util.stream.Stream;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Tile;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.model.world.components.House;
-import de.amr.games.pacman.model.world.components.Portal;
-import de.amr.games.pacman.model.world.components.TiledRectangle;
+import de.amr.games.pacmanfsm.controller.creatures.pacman.PacMan;
+import de.amr.games.pacmanfsm.lib.Direction;
+import de.amr.games.pacmanfsm.lib.Tile;
+import de.amr.games.pacmanfsm.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacmanfsm.model.world.components.House;
+import de.amr.games.pacmanfsm.model.world.components.Portal;
+import de.amr.games.pacmanfsm.model.world.components.TiledRectangle;
 
 public class WorldTests {
 

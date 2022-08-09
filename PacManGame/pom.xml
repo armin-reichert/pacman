@@ -16,7 +16,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>de.amr.games.pacman.PacManApp</mainClass>
+							<mainClass>de.amr.games.pacmanfsm.PacManApp</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

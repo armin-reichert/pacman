@@ -8,18 +8,18 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.controller.creatures.Folks;
-import de.amr.games.pacman.controller.creatures.Guy;
-import de.amr.games.pacman.controller.creatures.ghost.Ghost;
-import de.amr.games.pacman.controller.creatures.pacman.PacMan;
-import de.amr.games.pacman.controller.game.GameController;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
-import de.amr.games.pacman.theme.api.Theme;
-import de.amr.games.pacman.theme.api.Themes;
-import de.amr.games.pacman.theme.arcade.ArcadeTheme;
-import de.amr.games.pacman.theme.blocks.BlocksTheme;
-import de.amr.games.pacman.theme.letters.LettersTheme;
-import de.amr.games.pacman.view.play.ExtendedPlayView;
+import de.amr.games.pacmanfsm.controller.creatures.Folks;
+import de.amr.games.pacmanfsm.controller.creatures.Guy;
+import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
+import de.amr.games.pacmanfsm.controller.creatures.pacman.PacMan;
+import de.amr.games.pacmanfsm.controller.game.GameController;
+import de.amr.games.pacmanfsm.model.world.arcade.ArcadeWorld;
+import de.amr.games.pacmanfsm.theme.api.Theme;
+import de.amr.games.pacmanfsm.theme.api.Themes;
+import de.amr.games.pacmanfsm.theme.arcade.ArcadeTheme;
+import de.amr.games.pacmanfsm.theme.blocks.BlocksTheme;
+import de.amr.games.pacmanfsm.theme.letters.LettersTheme;
+import de.amr.games.pacmanfsm.view.play.ExtendedPlayView;
 
 /**
  * Common controller for test applications.

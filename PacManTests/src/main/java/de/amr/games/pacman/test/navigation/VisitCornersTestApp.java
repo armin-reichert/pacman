@@ -1,16 +1,16 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.controller.creatures.ghost.GhostState.CHASING;
-import static de.amr.games.pacman.controller.steering.api.SteeringBuilder.you;
+import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.CHASING;
+import static de.amr.games.pacmanfsm.controller.steering.api.SteeringBuilder.you;
 
 import java.util.Arrays;
 import java.util.List;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.lib.Tile;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.lib.Tile;
 
 public class VisitCornersTestApp extends Application {
 
