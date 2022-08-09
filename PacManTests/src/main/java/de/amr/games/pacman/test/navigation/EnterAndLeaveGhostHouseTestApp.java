@@ -56,7 +56,7 @@ class EnterGhostHouseTestUI extends TestController {
 		inky.init();
 		House house = world.house(0).orElseThrow();
 		Bed bed = house.bed(0);
-		inky.placeAt(Tile.at(bed.col(), bed.row()), Tile.TS / 2, 0);
+		inky.placeAt(Tile.at(bed.minX(), bed.minY()), Tile.TS / 2, 0);
 		inky.ai.setState(SCATTERING);
 		view.turnRoutesOn();
 		view.turnGridOn();

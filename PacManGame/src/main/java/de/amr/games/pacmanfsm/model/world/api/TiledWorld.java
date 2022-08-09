@@ -40,7 +40,7 @@ import de.amr.games.pacmanfsm.model.world.components.Portal;
  * 
  * @author Armin Reichert
  */
-public interface TiledWorld extends RectangularTiledArea, FoodSource {
+public interface TiledWorld extends TileRegion, FoodSource {
 
 	/**
 	 * @param tile reference tile

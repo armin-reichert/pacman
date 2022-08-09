@@ -220,7 +220,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						closeAllDoors();
 						folks.ghostsInWorld().forEach(ghost -> {
 							ghost.init();
-							ghost.placeAt(Tile.at(folks.blinky.bed.col(), folks.blinky.bed.row()), Tile.TS / 2, 0);
+							ghost.placeAt(Tile.at(folks.blinky.bed.minX(), folks.blinky.bed.minY()), Tile.TS / 2, 0);
 							ghost.wishDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 							ghost.ai.setState(rnd.nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});

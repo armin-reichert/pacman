@@ -35,7 +35,7 @@ import de.amr.games.pacmanfsm.lib.Tile;
  * 
  * @author Armin Reichert
  */
-public interface RectangularTiledArea {
+public interface TileRegion {
 
 	/**
 	 * @return width in number of tiles
@@ -50,27 +50,27 @@ public interface RectangularTiledArea {
 	/**
 	 * @return column of left-upper tile
 	 */
-	int col();
+	int minX();
 
 	/**
 	 * @return row of left-upper tile
 	 */
-	int row();
+	int minY();
 
 	default int numTiles() {
 		return width() * height();
 	}
 
 	default boolean includes(Tile tile) {
-		return col() <= tile.col && tile.col < col() + width() && row() <= tile.row && tile.row < row() + height();
+		return minX() <= tile.col && tile.col < minX() + width() && minY() <= tile.row && tile.row < minY() + height();
 	}
 
 	default Stream<Tile> tiles() {
 		return Stream.iterate(0, i -> i + 1).limit(width() * height())
-				.map(i -> Tile.at(col() + i % width(), row() + i / width()));
+				.map(i -> Tile.at(minX() + i % width(), minY() + i / width()));
 	}
 
 	default V2f center() {
-		return v(((col() + 0.5f * width()) * Tile.TS), (row() + 0.5f * height()) * Tile.TS);
+		return v(((minX() + 0.5f * width()) * Tile.TS), (minY() + 0.5f * height()) * Tile.TS);
 	}
 }

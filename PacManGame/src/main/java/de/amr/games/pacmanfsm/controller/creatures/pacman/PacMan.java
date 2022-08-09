@@ -234,7 +234,7 @@ public class PacMan extends Guy {
 
 	private void putIntoBed(Bed bed) {
 		if (bed != null) {
-			placeAt(Tile.at(bed.col(), bed.row()), Tile.TS / 2, 0);
+			placeAt(Tile.at(bed.minX(), bed.minY()), Tile.TS / 2, 0);
 			moveDir = wishDir = bed.exitDir;
 		}
 	}

@@ -60,11 +60,11 @@ class TakeShortestPathTestUI extends TestController {
 				capes.get(3),
 				world.neighbor(thePortal.either, RIGHT), 
 				capes.get(0),
-				Tile.at(blinky.bed.col(), blinky.bed.row()), 
+				Tile.at(blinky.bed.minX(), blinky.bed.minY()), 
 				capes.get(1),
 				world.neighbor(thePortal.other, LEFT), 
-				Tile.at(world.pacManBed().col(), 
-				world.pacManBed().row()));
+				Tile.at(world.pacManBed().minX(), 
+				world.pacManBed().minY()));
 		//@formatter:on
 		targetIndex = 0;
 

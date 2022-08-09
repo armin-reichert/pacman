@@ -232,7 +232,7 @@ public class Ghost extends Guy {
 
 	private void placeIntoBed() {
 		if (bed != null) {
-			placeAt(Tile.at(bed.col(), bed.row()), Tile.TS / 2, 0);
+			placeAt(Tile.at(bed.minX(), bed.minY()), Tile.TS / 2, 0);
 			moveDir = bed.exitDir;
 			wishDir = bed.exitDir;
 		}

@@ -23,14 +23,14 @@ SOFTWARE.
  */
 package de.amr.games.pacmanfsm.model.world.components;
 
-import de.amr.games.pacmanfsm.model.world.api.RectangularTiledArea;
+import de.amr.games.pacmanfsm.model.world.api.TileRegion;
 
 /**
  * A rectangle of tiles.
  * 
  * @author Armin Reichert
  */
-public class TiledRectangle implements RectangularTiledArea {
+public class TiledRectangle implements TileRegion {
 
 	private final int col;
 	private final int row;
@@ -55,12 +55,12 @@ public class TiledRectangle implements RectangularTiledArea {
 	}
 
 	@Override
-	public int col() {
+	public int minX() {
 		return col;
 	}
 
 	@Override
-	public int row() {
+	public int minY() {
 		return row;
 	}
 }

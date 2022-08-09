@@ -42,7 +42,7 @@ class FollowTargetTilesTestUI extends TestController {
 		super.init();
 		List<Tile> capes = world.capes();
 		targets = Arrays.asList(capes.get(0), capes.get(1), capes.get(2),
-				Tile.at(world.pacManBed().col(), world.pacManBed().row()), capes.get(3));
+				Tile.at(world.pacManBed().minX(), world.pacManBed().minY()), capes.get(3));
 		current = 0;
 		app().soundManager().muteAll();
 		include(blinky);
