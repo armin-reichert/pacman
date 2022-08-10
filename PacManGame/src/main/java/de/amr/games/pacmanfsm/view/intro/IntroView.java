@@ -157,8 +157,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	public void draw(Graphics2D g) {
 		g.setColor(new Color(0, 23, 61));
 		g.fillRect(0, 0, width, height);
-		if (state() instanceof View) {
-			((View) state()).draw(g);
+		if (state() instanceof View view) {
+			view.draw(g);
 		}
 	}
 
