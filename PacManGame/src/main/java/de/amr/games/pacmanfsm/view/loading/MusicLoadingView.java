@@ -65,7 +65,11 @@ public class MusicLoadingView implements PacManGameView {
 	public MusicLoadingView(PacManAppSettings settings, Theme theme) {
 		this.width = settings.width;
 		this.height = settings.height;
-		folks = new Folks(settings, world, world.house(0).get());
+		var house = world.house(0);
+		if (house.isEmpty()) {
+			throw new IllegalStateException("No ghost house");
+		}
+		folks = new Folks(settings, world, house.get());
 		ghosts = folks.ghosts().toList();
 		setTheme(theme);
 		init();
