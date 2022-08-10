@@ -48,7 +48,7 @@ class BlocksPacManRenderer implements PacManRenderer {
 		int size = 2 * pacMan.tf.width;
 		switch (state) {
 		case AWAKE, POWERFUL -> drawRunning(g, pacMan, size);
-		case IN_BED, SLEEPING -> {
+		case IN_BED, SLEEPING -> { // nothing to do
 		}
 		case DEAD -> drawFull(g, pacMan, size);
 		case COLLAPSING -> drawCollapsed(g, pacMan, size);

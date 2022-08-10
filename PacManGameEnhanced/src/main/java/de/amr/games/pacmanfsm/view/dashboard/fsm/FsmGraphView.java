@@ -37,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
+import de.amr.easy.game.Application;
 import de.amr.games.pacmanfsm.model.fsm.FsmData;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
@@ -108,8 +109,7 @@ public class FsmGraphView extends JPanel {
 				graphDisplay.setIcon(new ImageIcon(png));
 				++renderingCount;
 			} catch (Exception x) {
-				System.out.println("Graphviz rendering failed for image #" + renderingCount);
-				x.printStackTrace(System.err);
+				Application.loginfo("Graphviz rendering failed for image #%d. Reason: %s", renderingCount, x.getMessage());
 			}
 		}
 	}
