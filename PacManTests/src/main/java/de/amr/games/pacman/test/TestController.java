@@ -8,6 +8,7 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.Folks;
 import de.amr.games.pacmanfsm.controller.creatures.Guy;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
@@ -34,6 +35,7 @@ public class TestController implements VisualController {
 		Themes.registerTheme(LettersTheme.THEME);
 	}
 
+	protected final PacManAppSettings settings;
 	protected final ArcadeWorld world;
 	protected final Folks folks;
 	protected final PacMan pacMan;
@@ -45,12 +47,13 @@ public class TestController implements VisualController {
 	protected final ExtendedPlayView view;
 	protected int currentThemeIndex;
 
-	public TestController() {
+	public TestController(PacManAppSettings settings) {
+		this.settings = settings;
 		world = new ArcadeWorld();
 		world.tiles().forEach(world::removeFood);
 		GameController.newGame(1, world.totalFoodCount());
 		var house = world.house(0).orElseThrow();
-		folks = new Folks(world, house);
+		folks = new Folks(settings, world, house);
 		pacMan = folks.pacMan;
 		blinky = folks.blinky;
 		pinky = folks.pinky;
@@ -58,7 +61,7 @@ public class TestController implements VisualController {
 		clyde = folks.clyde;
 		themes = Themes.all();
 		currentThemeIndex = themes.indexOf(ArcadeTheme.THEME);
-		view = new ExtendedPlayView(theme(), folks, null, world);
+		view = new ExtendedPlayView(settings, theme(), folks, null, world);
 		view.turnScoresOff();
 	}
 

@@ -26,7 +26,6 @@ package de.amr.games.pacmanfsm.controller.game;
 import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.easy.game.controller.StateMachineRegistry.REGISTRY;
-import static de.amr.games.pacmanfsm.PacManApp.appSettings;
 import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.FRIGHTENED;
 import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.SCATTERING;
@@ -89,12 +88,12 @@ public class ExtendedGameController extends GameController {
 	@Override
 	public void init() {
 		super.init();
-		setDemoMode(appSettings.demoMode);
+		setDemoMode(appSettings().demoMode);
 	}
 
 	@Override
 	protected PlayView createPlayView() {
-		return new ExtendedPlayView(themes.current(), folks, ghostCommand, world);
+		return new ExtendedPlayView(appSettings(), themes.current(), folks, ghostCommand, world);
 	}
 
 	@Override
@@ -188,10 +187,11 @@ public class ExtendedGameController extends GameController {
 
 	protected void setDemoMode(boolean demoMode) {
 		if (demoMode) {
-			appSettings.pacManImmortable = true;
-			folks.pacMan.setSteering(PacManState.AWAKE, new SearchingForFoodAndAvoidingGhosts(world, folks.pacMan, folks));
+			appSettings().pacManImmortable = true;
+			folks.pacMan.setSteering(PacManState.AWAKE,
+					new SearchingForFoodAndAvoidingGhosts(appSettings(), world, folks.pacMan, folks));
 		} else {
-			appSettings.pacManImmortable = false;
+			appSettings().pacManImmortable = false;
 			you(folks.pacMan).followTheCursorKeys().ok();
 		}
 	}
@@ -258,19 +258,19 @@ public class ExtendedGameController extends GameController {
 	}
 
 	private void togglePacManOverflowBug() {
-		appSettings.fixOverflowBug = !appSettings.fixOverflowBug;
-		loginfo("Overflow bug is %s", appSettings.fixOverflowBug ? "fixed" : "active");
+		appSettings().fixOverflowBug = !appSettings().fixOverflowBug;
+		loginfo("Overflow bug is %s", appSettings().fixOverflowBug ? "fixed" : "active");
 	}
 
 	private void toggleGhostFrightenedBehavior() {
-		if (appSettings.ghostsSafeCorner) {
-			appSettings.ghostsSafeCorner = false;
+		if (appSettings().ghostsSafeCorner) {
+			appSettings().ghostsSafeCorner = false;
 			folks.ghosts().forEach(ghost -> you(ghost).when(FRIGHTENED).moveRandomly().ok());
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
-			appSettings.ghostsSafeCorner = true;
+			appSettings().ghostsSafeCorner = true;
 			if (graph == null) {
-				graph = new WorldGraph(world);
+				graph = new WorldGraph(appSettings(), world);
 			}
 			folks.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, new FleeingToSafeTile(ghost, graph, folks.pacMan)));
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
@@ -278,24 +278,24 @@ public class ExtendedGameController extends GameController {
 	}
 
 	private void toggleGhostsHarmless() {
-		appSettings.ghostsHarmless = !appSettings.ghostsHarmless;
-		loginfo("Ghosts are %s", appSettings.ghostsHarmless ? "harmless" : "dangerous");
+		appSettings().ghostsHarmless = !appSettings().ghostsHarmless;
+		loginfo("Ghosts are %s", appSettings().ghostsHarmless ? "harmless" : "dangerous");
 	}
 
 	public void toggleDemoMode() {
-		appSettings.demoMode = !appSettings.demoMode;
-		setDemoMode(appSettings.demoMode);
-		if (appSettings.demoMode) {
+		appSettings().demoMode = !appSettings().demoMode;
+		setDemoMode(appSettings().demoMode);
+		if (appSettings().demoMode) {
 			playView().messagesView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 		} else {
 			playView().messagesView.clearMessage(1);
 		}
-		loginfo("Demo mode is %s", appSettings.demoMode ? "on" : "off");
+		loginfo("Demo mode is %s", appSettings().demoMode ? "on" : "off");
 	}
 
 	private void toggleMakePacManImmortable() {
-		appSettings.pacManImmortable = !appSettings.pacManImmortable;
-		loginfo("Pac-Man immortable = %s", appSettings.pacManImmortable);
+		appSettings().pacManImmortable = !appSettings().pacManImmortable;
+		loginfo("Pac-Man immortable = %s", appSettings().pacManImmortable);
 	}
 
 	private void switchToNextLevel() {

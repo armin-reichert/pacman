@@ -10,12 +10,13 @@ import java.util.List;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.lib.Tile;
 
 public class VisitCornersTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(VisitCornersTestApp.class, args);
+		launch(VisitCornersTestApp.class, new PacManAppSettings(), args);
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class VisitCornersTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FollowTargetTilesTestUI());
+		setController(new FollowTargetTilesTestUI((PacManAppSettings) settings()));
 	}
 }
 
@@ -36,6 +37,10 @@ class FollowTargetTilesTestUI extends TestController {
 
 	private List<Tile> targets;
 	private int current;
+
+	public FollowTargetTilesTestUI(PacManAppSettings settings) {
+		super(settings);
+	}
 
 	@Override
 	public void init() {

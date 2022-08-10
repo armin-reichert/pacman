@@ -3,6 +3,7 @@ package de.amr.games.pacman.test.navigation;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState;
 import de.amr.games.pacmanfsm.controller.steering.api.SteeringBuilder;
 import de.amr.games.pacmanfsm.lib.Tile;
@@ -10,7 +11,7 @@ import de.amr.games.pacmanfsm.lib.Tile;
 public class PortalTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(PortalTestApp.class, args);
+		launch(PortalTestApp.class, new PacManAppSettings(), args);
 	}
 
 	@Override
@@ -23,11 +24,15 @@ public class PortalTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new PortalTestUI());
+		setController(new PortalTestUI((PacManAppSettings) settings()));
 	}
 }
 
 class PortalTestUI extends TestController {
+
+	public PortalTestUI(PacManAppSettings settings) {
+		super(settings);
+	}
 
 	@Override
 	public void init() {

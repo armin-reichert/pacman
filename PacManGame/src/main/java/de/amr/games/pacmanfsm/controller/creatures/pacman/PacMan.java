@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacmanfsm.controller.creatures.pacman;
 
-import static de.amr.games.pacmanfsm.PacManApp.appSettings;
 import static de.amr.games.pacmanfsm.controller.creatures.pacman.PacManState.AWAKE;
 import static de.amr.games.pacmanfsm.controller.creatures.pacman.PacManState.COLLAPSING;
 import static de.amr.games.pacmanfsm.controller.creatures.pacman.PacManState.DEAD;
@@ -39,6 +38,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacmanfsm.PacManApp;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.Guy;
 import de.amr.games.pacmanfsm.controller.event.BonusFoundEvent;
 import de.amr.games.pacmanfsm.controller.event.FoodFoundEvent;
@@ -69,11 +69,13 @@ import de.amr.statemachine.core.StateMachine;
 public class PacMan extends Guy {
 
 	public final StateMachine<PacManState, PacManGameEvent> ai;
+	private final PacManAppSettings settings;
 	private Steering walkingBehavior;
 	private int weight;
 
-	public PacMan(TiledWorld world, String name) {
+	public PacMan(PacManAppSettings settings, TiledWorld world, String name) {
 		super(world, name);
+		this.settings = settings;
 		ai = buildAI();
 		tf.width = tf.height = Tile.TS;
 	}
@@ -192,16 +194,16 @@ public class PacMan extends Guy {
 	}
 
 	/**
-	 * NOTE: Depending on the application setting {@link PacManApp.Settings#fixOverflowBug}, this method simulates/fixes
-	 * the overflow bug from the original Arcade game which causes, if Pac-Man points upwards, the wrong calculation of
-	 * the position ahead of Pac-Man (namely adding the same number of tiles to the left).
+	 * NOTE: Depending on the application setting {@link PacManApp.PacManAppSettings#fixOverflowBug}, this method
+	 * simulates/fixes the overflow bug from the original Arcade game which causes, if Pac-Man points upwards, the wrong
+	 * calculation of the position ahead of Pac-Man (namely adding the same number of tiles to the left).
 	 * 
 	 * @param nTiles number of tiles
 	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move direction.
 	 */
 	public Tile tilesAhead(int nTiles) {
 		Tile tileAhead = world.tileToDir(tile(), moveDir, nTiles);
-		if (moveDir == UP && !appSettings.fixOverflowBug) {
+		if (moveDir == UP && !settings.fixOverflowBug) {
 			tileAhead = world.tileToDir(tileAhead, LEFT, nTiles);
 		}
 		return tileAhead;

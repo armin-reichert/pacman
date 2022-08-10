@@ -14,6 +14,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.steering.common.FollowingPath;
 import de.amr.games.pacmanfsm.controller.steering.common.TakingShortestPath;
 import de.amr.games.pacmanfsm.lib.Tile;
@@ -23,7 +24,7 @@ import de.amr.games.pacmanfsm.model.world.graph.WorldGraph;
 public class TakeShortestPathTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(TakeShortestPathTestApp.class, args);
+		launch(TakeShortestPathTestApp.class, new PacManAppSettings(), args);
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class TakeShortestPathTestApp extends Application {
 	@Override
 	public void init() {
 		soundManager().muteAll();
-		setController(new TakeShortestPathTestUI());
+		setController(new TakeShortestPathTestUI((PacManAppSettings) settings()));
 	}
 }
 
@@ -45,6 +46,10 @@ class TakeShortestPathTestUI extends TestController {
 
 	private List<Tile> targets;
 	private int targetIndex;
+
+	public TakeShortestPathTestUI(PacManAppSettings settings) {
+		super(settings);
+	}
 
 	@Override
 	public void init() {
@@ -68,7 +73,7 @@ class TakeShortestPathTestUI extends TestController {
 		//@formatter:on
 		targetIndex = 0;
 
-		WorldGraph graph = new WorldGraph(world);
+		WorldGraph graph = new WorldGraph(settings, world);
 		FollowingPath visitNextTarget = new TakingShortestPath(blinky, graph, () -> targets.get(targetIndex));
 		blinky.setSteering(CHASING, visitNextTarget);
 		blinky.setSteering(FRIGHTENED, visitNextTarget);

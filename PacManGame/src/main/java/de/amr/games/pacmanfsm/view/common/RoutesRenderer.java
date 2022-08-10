@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacmanfsm.view.common;
 
-import static de.amr.games.pacmanfsm.PacManApp.appSettings;
 import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacmanfsm.view.common.Rendering.alpha;
 import static de.amr.games.pacmanfsm.view.common.Rendering.drawDirectionIndicator;
@@ -38,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 import de.amr.easy.game.math.V2f;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.Folks;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.controller.creatures.pacman.PacMan;
@@ -52,6 +52,12 @@ import de.amr.games.pacmanfsm.model.world.api.TiledWorld;
  * @author Armin Reichert
  */
 public class RoutesRenderer {
+
+	private final PacManAppSettings settings;
+
+	public RoutesRenderer(PacManAppSettings settings) {
+		this.settings = settings;
+	}
 
 	public void renderRoutes(Graphics2D g, Folks folks) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -159,7 +165,7 @@ public class RoutesRenderer {
 		Direction pacManDir = pacMan.moveDir;
 		int s = Tile.TS / 2; // size of target square
 		g.setColor(Color.GRAY);
-		if (!appSettings.fixOverflowBug && pacManDir == Direction.UP) {
+		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
 			Tile twoAhead = world.tileToDir(pacManTile, pacManDir, 2);
 			Tile twoLeft = world.tileToDir(twoAhead, Direction.LEFT, 2);
 			x1 = pacManTile.centerX();

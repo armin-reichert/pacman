@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacmanfsm.view.intro;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacmanfsm.PacManApp.appSettings;
 import static de.amr.games.pacmanfsm.view.intro.IntroView.IntroState.CHASING_ANIMATIONS;
 import static de.amr.games.pacmanfsm.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static de.amr.games.pacmanfsm.view.intro.IntroView.IntroState.SCROLLING_LOGO_ANIMATION;
@@ -44,6 +43,7 @@ import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.game.Timing;
 import de.amr.games.pacmanfsm.lib.Tile;
 import de.amr.games.pacmanfsm.model.world.api.TiledWorld;
@@ -82,17 +82,17 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	private Theme theme;
 	private MessagesRenderer messagesRenderer;
 
-	public IntroView(Theme theme) {
+	public IntroView(PacManAppSettings settings, Theme theme) {
 		super(IntroState.class);
 		this.theme = theme;
-		width = appSettings.width;
-		height = appSettings.height;
+		width = settings.width;
+		height = settings.height;
 		world = new EmptyWorld(width / Tile.TS, height / Tile.TS);
 		messagesRenderer = theme.messagesRenderer();
 		pacManLogo = new ImageWidget(Assets.readImage("images/logo.png"));
-		chasePacMan = new ChasePacManAnimation(theme, world);
-		chaseGhosts = new ChaseGhostsAnimation(theme, world);
-		ghostPointsAnimation = new GhostPointsAnimation(theme, world);
+		chasePacMan = new ChasePacManAnimation(settings, theme, world);
+		chaseGhosts = new ChaseGhostsAnimation(settings, theme, world);
+		ghostPointsAnimation = new GhostPointsAnimation(settings, theme, world);
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/
 			.text(GITHUB_URL)

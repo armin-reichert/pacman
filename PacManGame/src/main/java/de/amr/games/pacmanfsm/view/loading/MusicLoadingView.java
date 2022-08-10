@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.amr.easy.game.math.V2f;
-import de.amr.games.pacmanfsm.PacManApp;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.Folks;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.lib.Direction;
@@ -48,8 +48,8 @@ import de.amr.games.pacmanfsm.view.api.PacManGameView;
 public class MusicLoadingView implements PacManGameView {
 
 	private final ArcadeWorld world = new ArcadeWorld();
-	private final Folks folks = new Folks(world, world.house(0).get());
-	private final List<Ghost> ghosts = folks.ghosts().toList();
+	private final Folks folks;
+	private final List<Ghost> ghosts;
 	private Theme theme;
 	private PacManRenderer pacManRenderer;
 	private MessagesRenderer messagesRenderer;
@@ -62,9 +62,11 @@ public class MusicLoadingView implements PacManGameView {
 	private int ghostInc;
 	private Random rnd = new Random();
 
-	public MusicLoadingView(Theme theme) {
-		this.width = PacManApp.appSettings.width;
-		this.height = PacManApp.appSettings.height;
+	public MusicLoadingView(PacManAppSettings settings, Theme theme) {
+		this.width = settings.width;
+		this.height = settings.height;
+		folks = new Folks(settings, world, world.house(0).get());
+		ghosts = folks.ghosts().toList();
 		setTheme(theme);
 		init();
 	}

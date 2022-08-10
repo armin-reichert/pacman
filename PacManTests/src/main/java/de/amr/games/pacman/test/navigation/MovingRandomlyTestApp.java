@@ -10,13 +10,14 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.lib.Tile;
 import de.amr.games.pacmanfsm.model.world.components.Bed;
 
 public class MovingRandomlyTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(MovingRandomlyTestApp.class, args);
+		launch(MovingRandomlyTestApp.class, new PacManAppSettings(), args);
 	}
 
 	@Override
@@ -29,11 +30,15 @@ public class MovingRandomlyTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new MovingRandomlyTestUI());
+		setController(new MovingRandomlyTestUI((PacManAppSettings) settings()));
 	}
 }
 
 class MovingRandomlyTestUI extends TestController {
+
+	public MovingRandomlyTestUI(PacManAppSettings settings) {
+		super(settings);
+	}
 
 	private boolean started;
 

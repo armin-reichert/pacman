@@ -37,7 +37,6 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.games.pacmanfsm.PacManApp;
 import de.amr.games.pacmanfsm.controller.creatures.Folks;
 import de.amr.games.pacmanfsm.controller.game.ExtendedGameController;
 import de.amr.games.pacmanfsm.controller.game.GameController;
@@ -137,7 +136,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 			cbShowRoutes.setSelected(gameController.isShowingRoutes());
 			cbShowGrid.setSelected(gameController.isShowingGrid());
 			cbShowStates.setSelected(gameController.isShowingStates());
-			cbDemoMode.setSelected(PacManApp.appSettings.demoMode);
+			cbDemoMode.setSelected(gameController.appSettings().demoMode);
 		}
 	}
 

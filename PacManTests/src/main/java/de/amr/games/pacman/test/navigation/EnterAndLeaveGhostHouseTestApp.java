@@ -12,6 +12,7 @@ import java.util.Random;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.lib.Tile;
 import de.amr.games.pacmanfsm.model.world.components.Bed;
 import de.amr.games.pacmanfsm.model.world.components.House;
@@ -19,7 +20,7 @@ import de.amr.games.pacmanfsm.model.world.components.House;
 public class EnterAndLeaveGhostHouseTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(EnterAndLeaveGhostHouseTestApp.class, args);
+		launch(EnterAndLeaveGhostHouseTestApp.class, new PacManAppSettings(), args);
 	}
 
 	@Override
@@ -32,7 +33,7 @@ public class EnterAndLeaveGhostHouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new EnterGhostHouseTestUI());
+		setController(new EnterGhostHouseTestUI((PacManAppSettings) settings()));
 	}
 }
 
@@ -44,6 +45,10 @@ class EnterGhostHouseTestUI extends TestController {
 	private Tile nextCapeToVisit;
 	private boolean enteredCape;
 	private boolean leftCape;
+
+	public EnterGhostHouseTestUI(PacManAppSettings settings) {
+		super(settings);
+	}
 
 	private Tile randomCape() {
 		return capes.get(RND.nextInt(capes.size()));

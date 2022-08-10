@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacmanfsm.view.common;
 
-import static de.amr.games.pacmanfsm.PacManApp.appSettings;
 import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.CHASING;
 import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.DEAD;
 import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.ENTERING_HOUSE;
@@ -41,6 +40,7 @@ import java.awt.Stroke;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.view.Pen;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.Folks;
 import de.amr.games.pacmanfsm.controller.creatures.Guy;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
@@ -52,6 +52,12 @@ import de.amr.games.pacmanfsm.lib.Tile;
 public class StatesRenderer {
 
 	private static final Font SMALL_FONT = new Font("Arial", Font.PLAIN, 6);
+
+	private final PacManAppSettings settings;
+
+	public StatesRenderer(PacManAppSettings settings) {
+		this.settings = settings;
+	}
 
 	public void renderStates(Graphics2D g, Folks folks, GhostAttackController ghostCommand) {
 		drawActorStates(g, folks, ghostCommand);
@@ -74,7 +80,7 @@ public class StatesRenderer {
 		if (pacMan.ai.state().hasTimer()) {
 			text += String.format("(%d of %d)", pacMan.ai.state().getTicksConsumed(), pacMan.ai.state().getDuration());
 		}
-		if (appSettings.pacManImmortable) {
+		if (settings.pacManImmortable) {
 			text += " lives " + Rendering.INFTY;
 		}
 		drawEntityState(g, pacMan, text, Color.YELLOW);

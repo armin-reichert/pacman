@@ -3,13 +3,14 @@ package de.amr.games.pacman.test.navigation;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.lib.Tile;
 
 public class JumpingTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(JumpingTestApp.class, args);
+		launch(JumpingTestApp.class, new PacManAppSettings(), args);
 	}
 
 	@Override
@@ -22,11 +23,15 @@ public class JumpingTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new JumpingTestUI());
+		setController(new JumpingTestUI((PacManAppSettings) settings()));
 	}
 }
 
 class JumpingTestUI extends TestController {
+
+	public JumpingTestUI(PacManAppSettings settings) {
+		super(settings);
+	}
 
 	@Override
 	public void init() {

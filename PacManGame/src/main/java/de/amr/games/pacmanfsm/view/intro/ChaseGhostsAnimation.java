@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.entity.GameObject;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.Guy;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState;
@@ -56,9 +57,9 @@ public class ChaseGhostsAnimation extends GameObject {
 	private PacManRenderer pacManRenderer;
 	private int points;
 
-	public ChaseGhostsAnimation(Theme theme, TiledWorld world) {
+	public ChaseGhostsAnimation(PacManAppSettings settings, Theme theme, TiledWorld world) {
 		this.world = world;
-		pacMan = new PacMan(world, "Pac-Man");
+		pacMan = new PacMan(settings, world, "Pac-Man");
 		blinky = Ghost.shadowGhost(world, "Blinky", pacMan);
 		inky = Ghost.bashfulGhost(world, "Inky", pacMan);
 		pinky = Ghost.speedyGhost(world, "Pinky", pacMan);

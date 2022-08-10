@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.pacman.PacMan;
 import de.amr.games.pacmanfsm.lib.Direction;
 import de.amr.games.pacmanfsm.lib.Tile;
@@ -27,6 +28,7 @@ import de.amr.games.pacmanfsm.model.world.components.TiledRectangle;
 
 public class WorldTests {
 
+	private PacManAppSettings settings = new PacManAppSettings();
 	private ArcadeWorld world;
 
 	@Before
@@ -92,7 +94,7 @@ public class WorldTests {
 		assertEquals(4, Tile.at(0, 0).distance(Tile.at(0, 4)), 0);
 		assertEquals(4, Tile.at(0, 0).distance(Tile.at(4, 0)), 0);
 		assertEquals(Math.sqrt(32), Tile.at(0, 0).distance(Tile.at(4, 4)), 0);
-		PacMan pacMan = new PacMan(world, "Pac-Man-Dummy");
+		PacMan pacMan = new PacMan(settings, world, "Pac-Man-Dummy");
 		pacMan.placeAt(Tile.at(-10, 4), 0, 0);
 		assertEquals(-10, pacMan.tile().col);
 		assertEquals(4, pacMan.tile().row);

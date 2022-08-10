@@ -10,13 +10,14 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacmanfsm.lib.Tile;
 
 public class InkyChaseTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(InkyChaseTestApp.class, args);
+		launch(InkyChaseTestApp.class, new PacManAppSettings(), args);
 	}
 
 	@Override
@@ -29,11 +30,15 @@ public class InkyChaseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new InkyChaseTestUI());
+		setController(new InkyChaseTestUI((PacManAppSettings) settings()));
 	}
 }
 
 class InkyChaseTestUI extends TestController {
+
+	public InkyChaseTestUI(PacManAppSettings settings) {
+		super(settings);
+	}
 
 	@Override
 	public void init() {

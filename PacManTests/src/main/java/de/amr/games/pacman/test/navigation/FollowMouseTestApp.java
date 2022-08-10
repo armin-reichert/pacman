@@ -10,6 +10,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Mouse;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.lib.Tile;
 import de.amr.games.pacmanfsm.model.world.components.Bed;
 
@@ -21,7 +22,7 @@ import de.amr.games.pacmanfsm.model.world.components.Bed;
 public class FollowMouseTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(FollowMouseTestApp.class, args);
+		launch(FollowMouseTestApp.class, new PacManAppSettings(), args);
 	}
 
 	@Override
@@ -34,13 +35,17 @@ public class FollowMouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FollowMouseTestUI());
+		setController(new FollowMouseTestUI((PacManAppSettings) settings()));
 	}
 }
 
 class FollowMouseTestUI extends TestController {
 
 	private Tile mousePosition = null;
+
+	public FollowMouseTestUI(PacManAppSettings settings) {
+		super(settings);
+	}
 
 	@Override
 	public void init() {

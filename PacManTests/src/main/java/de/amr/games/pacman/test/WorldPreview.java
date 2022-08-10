@@ -7,6 +7,7 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.lib.Direction;
 import de.amr.games.pacmanfsm.lib.Tile;
 import de.amr.games.pacmanfsm.model.world.api.TiledWorld;
@@ -23,15 +24,16 @@ public class WorldPreview extends JFrame {
 	static final int TS = 16;
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(WorldPreview::new);
+		var settings = new PacManAppSettings();
+		SwingUtilities.invokeLater(() -> new WorldPreview(settings));
 	}
 
 	private TiledWorld world;
 	private WorldGraph graph;
 
-	public WorldPreview() {
+	public WorldPreview(PacManAppSettings settings) {
 		world = new ArcadeWorld();
-		graph = new WorldGraph(world);
+		graph = new WorldGraph(settings, world);
 		setTitle("Pac-Man World Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		GridCanvas canvas = new GridCanvas(graph, TS);

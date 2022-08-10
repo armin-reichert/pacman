@@ -7,6 +7,7 @@ import static de.amr.games.pacmanfsm.controller.steering.api.SteeringBuilder.you
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.lib.Tile;
 
 /**
@@ -16,7 +17,7 @@ import de.amr.games.pacmanfsm.lib.Tile;
 public class OutsideTileTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(OutsideTileTestApp.class, args);
+		launch(OutsideTileTestApp.class, new PacManAppSettings(), args);
 	}
 
 	@Override
@@ -29,11 +30,15 @@ public class OutsideTileTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new OutsideTileTestUI());
+		setController(new OutsideTileTestUI((PacManAppSettings) settings()));
 	}
 }
 
 class OutsideTileTestUI extends TestController {
+
+	public OutsideTileTestUI(PacManAppSettings settings) {
+		super(settings);
+	}
 
 	@Override
 	public void init() {

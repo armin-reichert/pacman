@@ -24,11 +24,11 @@ SOFTWARE.
 package de.amr.games.pacmanfsm.model.world.graph;
 
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacmanfsm.PacManApp.appSettings;
 
 import java.util.Collections;
 import java.util.List;
 
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.lib.Tile;
 import de.amr.games.pacmanfsm.model.world.api.TiledWorld;
 import de.amr.graph.core.api.UndirectedEdge;
@@ -55,14 +55,14 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 	private PathFinder pathFinder;
 	private int pathFinderCalls;
 
-	public WorldGraph(TiledWorld world) {
+	public WorldGraph(PacManAppSettings settings, TiledWorld world) {
 		super(world.width(), world.height(), Grid4Topology.get(), v -> null, (u, v) -> null, UndirectedEdge::new);
 		this.world = world;
 		fill();
 		edges().filter(edge -> !world.isAccessible(tile(edge.either())) || !world.isAccessible(tile(edge.other())))
 				.forEach(this::removeEdge);
 		setDefaultVertexLabel(this::tile);
-		pathFinder = getPathFinder(appSettings.pathFinder);
+		pathFinder = getPathFinder(settings.pathFinder);
 	}
 
 	public void setPathFinder(PathFinder pathFinder) {

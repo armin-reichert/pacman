@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.Folks;
 import de.amr.games.pacmanfsm.controller.creatures.Guy;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
@@ -70,11 +71,11 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	private final WorldGraph graph;
 	private Tile target;
 
-	public SearchingForFoodAndAvoidingGhosts(TiledWorld world, Guy guy, Folks folks) {
+	public SearchingForFoodAndAvoidingGhosts(PacManAppSettings settings, TiledWorld world, Guy guy, Folks folks) {
 		this.world = world;
 		this.guy = guy;
 		this.folks = folks;
-		graph = new WorldGraph(world);
+		graph = new WorldGraph(settings, world);
 		graph.setPathFinder(PathFinder.ASTAR);
 	}
 

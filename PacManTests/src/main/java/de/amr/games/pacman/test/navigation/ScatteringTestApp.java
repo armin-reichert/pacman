@@ -9,6 +9,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.test.TestController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacmanfsm.lib.Tile;
@@ -16,7 +17,7 @@ import de.amr.games.pacmanfsm.lib.Tile;
 public class ScatteringTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(ScatteringTestApp.class, args);
+		launch(ScatteringTestApp.class, new PacManAppSettings(), args);
 	}
 
 	@Override
@@ -29,11 +30,15 @@ public class ScatteringTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new ScatteringTestUI());
+		setController(new ScatteringTestUI((PacManAppSettings) settings()));
 	}
 }
 
 class ScatteringTestUI extends TestController {
+
+	public ScatteringTestUI(PacManAppSettings settings) {
+		super(settings);
+	}
 
 	@Override
 	public void init() {

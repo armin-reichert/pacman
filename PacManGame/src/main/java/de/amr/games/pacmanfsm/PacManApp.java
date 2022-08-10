@@ -48,12 +48,12 @@ public class PacManApp extends Application {
 	}
 
 	public static void main(String[] args) {
-		launch(PacManApp.class, appSettings, args);
+		launch(PacManApp.class, new PacManAppSettings(), args);
 	}
 
 	// Application configuration
 
-	public static class Settings extends AppSettings {
+	public static class PacManAppSettings extends AppSettings {
 
 		@Parameter(names = { "-demoMode" }, description = "Pac-Man moves automatically")
 		public boolean demoMode = false;
@@ -83,8 +83,6 @@ public class PacManApp extends Application {
 		public String theme = "arcade";
 	}
 
-	public static final Settings appSettings = new Settings();
-
 	@Override
 	protected void configure(AppSettings settings) {
 		settings.width = 224;
@@ -97,16 +95,17 @@ public class PacManApp extends Application {
 	@Override
 	protected void printSettings() {
 		super.printSettings();
-		appSettings.print("Demo Mode", appSettings.demoMode);
-		appSettings.print("Ghosts harmless", appSettings.ghostsHarmless);
-		appSettings.print("Ghosts flee into corner", appSettings.ghostsSafeCorner);
-		appSettings.print("Fix Overflow Bug", appSettings.fixOverflowBug);
-		appSettings.print("Pac-Man immortable", appSettings.pacManImmortable);
-		appSettings.print("Pathfinder", appSettings.pathFinder);
-		appSettings.print("Skip Intro", appSettings.skipIntro);
-		appSettings.print("Startlevel", appSettings.startLevel);
-		appSettings.print("Theme", appSettings.theme.toUpperCase());
-		appSettings.print("User Language", PacManGameView.texts.getLocale().getDisplayLanguage());
+		var cfg = (PacManAppSettings) super.settings();
+		cfg.print("Demo Mode", cfg.demoMode);
+		cfg.print("Ghosts harmless", cfg.ghostsHarmless);
+		cfg.print("Ghosts flee into corner", cfg.ghostsSafeCorner);
+		cfg.print("Fix Overflow Bug", cfg.fixOverflowBug);
+		cfg.print("Pac-Man immortable", cfg.pacManImmortable);
+		cfg.print("Pathfinder", cfg.pathFinder);
+		cfg.print("Skip Intro", cfg.skipIntro);
+		cfg.print("Startlevel", cfg.startLevel);
+		cfg.print("Theme", cfg.theme.toUpperCase());
+		cfg.print("User Language", PacManGameView.texts.getLocale().getDisplayLanguage());
 	}
 
 	@Override

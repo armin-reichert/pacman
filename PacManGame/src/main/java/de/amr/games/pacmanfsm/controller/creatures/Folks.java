@@ -38,6 +38,7 @@ import static de.amr.games.pacmanfsm.controller.steering.api.SteeringBuilder.you
 
 import java.util.stream.Stream;
 
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.controller.creatures.pacman.PacMan;
 import de.amr.games.pacmanfsm.lib.Tile;
@@ -58,9 +59,9 @@ public class Folks {
 	public final Ghost inky;
 	public final Ghost clyde;
 
-	public Folks(TiledWorld world, House ghostHouse) {
+	public Folks(PacManAppSettings settings, TiledWorld world, House ghostHouse) {
 
-		pacMan = new PacMan(world, "Pac-Man");
+		pacMan = new PacMan(settings, world, "Pac-Man");
 
 		blinky = shadowGhost(world, "Blinky", pacMan);
 		inky = bashfulGhost(world, "Inky", pacMan);

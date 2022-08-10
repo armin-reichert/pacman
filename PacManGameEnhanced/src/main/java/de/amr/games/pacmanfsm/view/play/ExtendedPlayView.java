@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.Folks;
 import de.amr.games.pacmanfsm.controller.game.GameController;
 import de.amr.games.pacmanfsm.controller.game.GhostAttackController;
@@ -57,12 +58,13 @@ public class ExtendedPlayView extends PlayView {
 	protected boolean showingStates;
 	protected boolean showingScores = true;
 
-	public ExtendedPlayView(Theme theme, Folks folks, GhostAttackController ghostCommand, TiledWorld world) {
+	public ExtendedPlayView(PacManAppSettings settings, Theme theme, Folks folks, GhostAttackController ghostCommand,
+			TiledWorld world) {
 		super(theme, folks, world);
 		this.ghostCommand = ghostCommand;
 		gridRenderer = new GridRenderer(world.width(), world.height());
-		routesRenderer = new RoutesRenderer();
-		statesRenderer = new StatesRenderer();
+		routesRenderer = new RoutesRenderer(settings);
+		statesRenderer = new StatesRenderer(settings);
 		frameRateView = new FrameRateWidget();
 		setTheme(theme);
 	}

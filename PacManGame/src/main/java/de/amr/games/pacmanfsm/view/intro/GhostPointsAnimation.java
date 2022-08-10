@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.entity.GameObject;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.creatures.Guy;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.Ghost;
 import de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState;
@@ -69,10 +70,10 @@ public class GhostPointsAnimation extends GameObject {
 	private boolean energizer;
 	private int dx = 2 * Tile.TS + 3;
 
-	public GhostPointsAnimation(Theme theme, TiledWorld world) {
+	public GhostPointsAnimation(PacManAppSettings settings, Theme theme, TiledWorld world) {
 		tf.width = 6 * dx;
 		tf.height = 2 * Tile.TS;
-		pacMan = new PacMan(world, "Pac-Man");
+		pacMan = new PacMan(settings, world, "Pac-Man");
 		blinky = Ghost.shadowGhost(world, "Blinky", pacMan);
 		inky = Ghost.bashfulGhost(world, "Inky", pacMan);
 		pinky = Ghost.speedyGhost(world, "Pinky", pacMan);

@@ -25,7 +25,6 @@ package de.amr.games.pacmanfsm.controller.game;
 
 import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacmanfsm.PacManApp.appSettings;
 import static de.amr.games.pacmanfsm.controller.creatures.ghost.GhostState.FRIGHTENED;
 import static de.amr.games.pacmanfsm.controller.game.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacmanfsm.controller.game.PacManGameState.GAME_OVER;
@@ -44,11 +43,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.controller.bonus.BonusFoodController;
 import de.amr.games.pacmanfsm.controller.bonus.BonusFoodState;
 import de.amr.games.pacmanfsm.controller.creatures.Folks;
@@ -125,12 +126,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected final Random rnd = new Random();
 	protected PacManGameView currentView;
 
+	public PacManAppSettings appSettings() {
+		return (PacManAppSettings) Application.app().settings();
+	}
+
 	public GameController(List<Theme> supportedThemes) {
 		super(PacManGameState.class);
 		buildStateMachine();
 
 		themes = new ThemeSelector(supportedThemes);
-		themes.select(appSettings.theme);
+		themes.select(appSettings().theme);
 		themes.addListener(theme -> {
 			if (currentView != null) {
 				currentView.setTheme(theme);
@@ -139,7 +144,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		world = new ArcadeWorld();
 
-		folks = new Folks(world, world.house(0).orElse(null));
+		folks = new Folks(appSettings(), world, world.house(0).orElse(null));
 		folks.pacMan.ai.addEventListener(this::process);
 		folks.ghosts().forEach(ghost -> ghost.ai.addEventListener(this::process));
 
@@ -166,11 +171,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			.states()
 			
 				.state(LOADING_MUSIC)
-					.onEntry(() -> currentView = new MusicLoadingView(themes.current()))
+					.onEntry(() -> currentView = new MusicLoadingView(appSettings(), themes.current()))
 					.onExit(() -> currentView.exit())
 					
 				.state(INTRO)
-					.onEntry(() -> currentView = new IntroView(themes.current()))
+					.onEntry(() -> currentView = new IntroView(appSettings(), themes.current()))
 					.onExit(() -> currentView.exit())
 				
 				.state(GETTING_READY).customState(new GettingReadyState())
@@ -196,7 +201,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(PACMAN_DYING)
 					.timeoutAfter(sec(5))
 					.onEntry(() -> {
-						if (!appSettings.pacManImmortable) {
+						if (!appSettings().pacManImmortable) {
 							theGame.lives -= 1;
 						}
 						world.setFrozen(true);
@@ -238,7 +243,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			.transitions()
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
-					.condition(() -> sounds().isMusicLoaded()	&& appSettings.skipIntro)
+					.condition(() -> sounds().isMusicLoaded()	&& appSettings().skipIntro)
 					.annotation("Music loaded, skipping intro")
 					
 				.when(LOADING_MUSIC).then(INTRO)
@@ -316,7 +321,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class GettingReadyState extends State<PacManGameState> {
 
 		private void startNewGame() {
-			newGame(appSettings.startLevel, world.totalFoodCount());
+			newGame(appSettings().startLevel, world.totalFoodCount());
 			world.setFrozen(true);
 			closeAllDoors();
 			folks.guys().forEach(guy -> {
@@ -359,7 +364,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onEntry() {
 			startBackgroundMusicForPlaying();
-			if (appSettings.demoMode) {
+			if (appSettings().demoMode) {
 				playView().messagesView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 			} else {
 				playView().messagesView.clearMessage(1);
@@ -414,7 +419,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				loginfo("%s got killed at %s", ghost.name, ghost.tile());
 			}
 
-			else if (!appSettings.ghostsHarmless) {
+			else if (!appSettings().ghostsHarmless) {
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());
 				doorMan.onPacManLostLife();
 				playView().soundState.chasingGhosts = false;
