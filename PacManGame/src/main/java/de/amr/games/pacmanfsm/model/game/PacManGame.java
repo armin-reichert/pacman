@@ -38,12 +38,12 @@ import java.util.List;
 public class PacManGame {
 
 	public static final int PACMAN_LIVES = 3;
-	public static final int POINTS_PELLET = 10;
-	public static final int POINTS_ENERGIZER = 50;
-	public static final int POINTS_EXTRA_LIFE = 10_000;
-	public static final int POINTS_ALL_GHOSTS = 12_000;
-	public static final int[] POINTS_GHOSTS = { 200, 400, 800, 1600 };
-	public static final int[] BONUS_ACTIVATION = { 70, 170 };
+	protected static final int POINTS_PELLET = 10;
+	protected static final int POINTS_ENERGIZER = 50;
+	protected static final int POINTS_EXTRA_LIFE = 10_000;
+	protected static final int POINTS_ALL_GHOSTS = 12_000;
+	protected static final int[] POINTS_GHOSTS = { 200, 400, 800, 1600 };
+	protected static final int[] BONUS_ACTIVATION = { 70, 170 };
 
 	/**
 	 * Returns the level-specific data.
