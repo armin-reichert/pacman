@@ -278,27 +278,27 @@ public class Ghost extends Guy {
 		boolean tunnel = world.isTunnel(tile) || world.isPortal(tile);
 		switch (ai.getState()) {
 		case LOCKED:
-			return speed(isInsideHouse() ? theGame.ghostSpeed / 2 : 0);
+			return speed(isInsideHouse() ? theGame().ghostSpeed / 2 : 0);
 		case LEAVING_HOUSE:
-			return speed(theGame.ghostSpeed / 2);
+			return speed(theGame().ghostSpeed / 2);
 		case ENTERING_HOUSE:
-			return speed(theGame.ghostSpeed);
+			return speed(theGame().ghostSpeed);
 		case CHASING, SCATTERING:
 			if (tunnel) {
-				return speed(theGame.ghostTunnelSpeed);
+				return speed(theGame().ghostTunnelSpeed);
 			}
 			GhostMentalState mentalState = getMentalState();
 			if (mentalState == GhostMentalState.ELROY1) {
-				return speed(theGame.elroy1Speed);
+				return speed(theGame().elroy1Speed);
 			}
 			if (mentalState == GhostMentalState.ELROY2) {
-				return speed(theGame.elroy2Speed);
+				return speed(theGame().elroy2Speed);
 			}
-			return speed(theGame.ghostSpeed);
+			return speed(theGame().ghostSpeed);
 		case FRIGHTENED:
-			return speed(tunnel ? theGame.ghostTunnelSpeed : theGame.ghostFrightenedSpeed);
+			return speed(tunnel ? theGame().ghostTunnelSpeed : theGame().ghostFrightenedSpeed);
 		case DEAD:
-			return speed(2 * theGame.ghostSpeed);
+			return speed(2 * theGame().ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s", ai.getState()));
 		}
@@ -314,16 +314,16 @@ public class Ghost extends Guy {
 	}
 
 	private void computeBounty() {
-		bounty = GameController.isGameStarted() ? theGame.ghostBounty() : 0;
+		bounty = GameController.isGameStarted() ? theGame().ghostBounty() : 0;
 	}
 
 	private long getFrightenedTicks() {
-		return GameController.isGameStarted() ? sec(theGame.pacManPowerSeconds) : sec(5);
+		return GameController.isGameStarted() ? sec(theGame().pacManPowerSeconds) : sec(5);
 	}
 
 	private long getFlashTimeTicks() {
 		// assuming one flashing takes 0.5 seconds
-		return GameController.isGameStarted() ? theGame.numFlashes * sec(0.5f) : 0;
+		return GameController.isGameStarted() ? theGame().numFlashes * sec(0.5f) : 0;
 	}
 
 	private void checkPacManCollision(PacMan pacMan) {

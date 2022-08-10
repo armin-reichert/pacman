@@ -51,10 +51,10 @@ class PacManMovementTestUI extends TestController {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				world.removeFood(foodFound.location);
-				GameController.theGame.eatenFoodCount++;
-				if (GameController.theGame.remainingFoodCount() == 0) {
+				GameController.theGame().eatenFoodCount++;
+				if (GameController.theGame().remainingFoodCount() == 0) {
 					world.restoreFood();
-					GameController.theGame.eatenFoodCount = 0;
+					GameController.theGame().eatenFoodCount = 0;
 				}
 			}
 		});

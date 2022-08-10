@@ -92,43 +92,43 @@ public class GameLevelTableModel extends AbstractTableModel {
 	private String levelValue(int row) {
 		switch (row) {
 		case 0:
-			return integer(theGame.level);
+			return integer(theGame().level);
 		case 1:
-			return integer(theGame.foodCount);
+			return integer(theGame().foodCount);
 		case 2:
-			return integer(theGame.eatenFoodCount);
+			return integer(theGame().eatenFoodCount);
 		case 3:
-			return integer(theGame.remainingFoodCount());
+			return integer(theGame().remainingFoodCount());
 		case 4:
-			return integer(theGame.ghostsKilledByEnergizer);
+			return integer(theGame().ghostsKilledByEnergizer);
 		case 5:
-			return integer(theGame.ghostsKilledInLevel);
+			return integer(theGame().ghostsKilledInLevel);
 		case 6:
-			return theGame.bonusSymbol;
+			return theGame().bonusSymbol;
 		case 7:
-			return integer(theGame.bonusValue);
+			return integer(theGame().bonusValue);
 		case 8:
-			return percent(theGame.pacManSpeed);
+			return percent(theGame().pacManSpeed);
 		case 9:
-			return percent(theGame.ghostSpeed);
+			return percent(theGame().ghostSpeed);
 		case 10:
-			return percent(theGame.ghostTunnelSpeed);
+			return percent(theGame().ghostTunnelSpeed);
 		case 11:
-			return integer(theGame.elroy1DotsLeft);
+			return integer(theGame().elroy1DotsLeft);
 		case 12:
-			return percent(theGame.elroy1Speed);
+			return percent(theGame().elroy1Speed);
 		case 13:
-			return integer(theGame.elroy2DotsLeft);
+			return integer(theGame().elroy2DotsLeft);
 		case 14:
-			return percent(theGame.elroy2Speed);
+			return percent(theGame().elroy2Speed);
 		case 15:
-			return percent(theGame.pacManPowerSpeed);
+			return percent(theGame().pacManPowerSpeed);
 		case 16:
-			return percent(theGame.ghostFrightenedSpeed);
+			return percent(theGame().ghostFrightenedSpeed);
 		case 17:
-			return integer(theGame.pacManPowerSeconds);
+			return integer(theGame().pacManPowerSeconds);
 		case 18:
-			return integer(theGame.numFlashes);
+			return integer(theGame().numFlashes);
 		default:
 			return null;
 		}

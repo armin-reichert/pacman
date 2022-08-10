@@ -145,10 +145,10 @@ public class DoorMan implements Lifecycle {
 			return 0;
 		}
 		if (ghost == folks.inky) {
-			return theGame.level == 1 ? 30 : 0;
+			return theGame().level == 1 ? 30 : 0;
 		}
 		if (ghost == folks.clyde) {
-			return switch (theGame.level) {
+			return switch (theGame().level) {
 			case 1 -> 60;
 			case 2 -> 50;
 			default -> 0;
@@ -219,7 +219,7 @@ public class DoorMan implements Lifecycle {
 	}
 
 	private long pacManStarvingTimeLimit() {
-		return theGame.level < 5 ? sec(4) : sec(3);
+		return theGame().level < 5 ? sec(4) : sec(3);
 	}
 
 	/**

@@ -60,7 +60,7 @@ class ArcadeWorldRenderer implements WorldRenderer {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		if (world.isChanging()) {
 			if (spriteFlashingMaze == null) {
-				spriteFlashingMaze = spriteSheet.makeSpriteFlashingMaze(GameController.theGame.numFlashes);
+				spriteFlashingMaze = spriteSheet.makeSpriteFlashingMaze(GameController.theGame().numFlashes);
 			}
 			spriteFlashingMaze.draw(g2, 0, 3 * Tile.TS);
 		} else {

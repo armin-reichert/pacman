@@ -117,18 +117,18 @@ public class PlayView implements PacManGameView {
 	}
 
 	protected void drawPointsCounter(Graphics2D g) {
-		pointsCounterRenderer.render(g, theGame);
+		pointsCounterRenderer.render(g, theGame());
 	}
 
 	protected void drawLivesCounter(Graphics2D g) {
 		g.translate(Tile.TS, (world.height() - 2) * Tile.TS);
-		livesCounterRenderer.render(g, theGame);
+		livesCounterRenderer.render(g, theGame());
 		g.translate(-Tile.TS, -(world.height() - 2) * Tile.TS);
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		g.translate(world.width() * Tile.TS, (world.height() - 2) * Tile.TS);
-		levelCounterRenderer.render(g, theGame);
+		levelCounterRenderer.render(g, theGame());
 		g.translate(-world.width() * Tile.TS, -(world.height() - 2) * Tile.TS);
 	}
 

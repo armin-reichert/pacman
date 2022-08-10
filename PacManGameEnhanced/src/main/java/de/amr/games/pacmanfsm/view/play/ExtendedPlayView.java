@@ -157,7 +157,7 @@ public class ExtendedPlayView extends PlayView {
 	@Override
 	protected void drawPointsCounter(Graphics2D g) {
 		if (showingScores) {
-			theme.gameScoreRenderer().render(g, GameController.theGame);
+			theme.gameScoreRenderer().render(g, GameController.theGame());
 		}
 	}
 
