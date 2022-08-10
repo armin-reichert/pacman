@@ -89,7 +89,7 @@ public class BlocksTheme extends ThemeParameterMap implements Theme {
 	}
 
 	Color ghostColor(Ghost ghost) {
-		Map<Integer, Color> colorByPersonality = asValue("ghost-colors");
+		Map<GhostPersonality, Color> colorByPersonality = asValue("ghost-colors");
 		return colorByPersonality.getOrDefault(ghost.personality, Color.WHITE);
 	}
 
