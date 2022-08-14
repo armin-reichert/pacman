@@ -32,6 +32,7 @@ import de.amr.games.pacmanfsm.PacManApp.PacManAppSettings;
 import de.amr.games.pacmanfsm.lib.Tile;
 import de.amr.games.pacmanfsm.model.world.api.TiledWorld;
 import de.amr.graph.core.api.UndirectedEdge;
+import de.amr.graph.grid.api.GridMetrics;
 import de.amr.graph.grid.impl.Grid4Topology;
 import de.amr.graph.grid.impl.GridGraph;
 import de.amr.graph.pathfinder.api.GraphSearch;
@@ -86,10 +87,10 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 		case BREADTH_FIRST_SEARCH:
 			return new BreadthFirstSearch(this);
 		case BEST_FIRST_SEARCH:
-			return new BestFirstSearch(this, v -> manhattan(v, vertex(target)));
+			return new BestFirstSearch(this, v -> GridMetrics.manhattan(this, v, vertex(target)));
 		case ASTAR:
 		default:
-			return new AStarSearch(this, (u, v) -> 1, this::manhattan);
+			return new AStarSearch(this, (u, v) -> 1.0, (u, v) -> GridMetrics.manhattan(this, u, v));
 		}
 	}
 
