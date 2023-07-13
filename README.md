@@ -3,8 +3,6 @@
 
 ## A Pac-Man implementation using finite-state machines all over the place
  
-YouTube: https://www.youtube.com/watch?v=F4KdJvGvL1Q
-
 <img src="PacManDoc/fsm/Ghost Blinky AI.png">
 
 ## Warning!
@@ -57,9 +55,6 @@ or when running on Windows, run the .bat files `pacman.bat`and `pacman-enhanced.
 cd \path\to\git\pacman
 mvn clean package
 ```
-
-[![Pac-Man](PacManDoc/app-and-f2dialog.png)](https://www.youtube.com/watch?v=JU3kmUC3T2k&t=210s)
-(Click image to play video)
 
 ## Features
 
@@ -555,10 +550,6 @@ This work would not have been possible without these invaluable sources of infor
 
 - [GameInternals - Understanding Pac-Man Ghost Behavior](http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior)
 - [Gamasutra - The Pac-Man Dossier](http://www.gamasutra.com/view/feature/3938/the_pacman_dossier.php)
-
-Just recently I found this excellent video on YouTube:
-
-- [Pac-Man ghost AI explained](https://www.youtube.com/watch?v=ataGotQ7ir8)
 
 ## Summary
 
