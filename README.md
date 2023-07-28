@@ -156,7 +156,7 @@ All state machines in this implementation are implemented in a declarative way (
 
 Sounds well and nice, but how does that look in the real code? 
 
-To give a first example, consider the **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) which shows different animations coordinated using timers and conditions. 
+To give a first example, consider the **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacmanfsm/view/intro/IntroView.java)) which shows different animations coordinated using timers and conditions. 
 
 <img src="PacManDoc/fsm/IntroView.png">
 
@@ -207,7 +207,7 @@ beginStateMachine()
 
 The states in this case are implemented as separate (inner) classes instead of inlined in the state machine builder expression. The reason is that each state has its own visualization which is implemented in its own draw method. Otherwise, the draw method of the intro view class would have to dispatch again depending on the current state.
 
-A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/game/GameController.java)).
+A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacmanfsm/controller/game/GameController.java)).
 
 <img src="PacManDoc/fsm/Game Controller.png">
 
@@ -220,7 +220,7 @@ The **ghost attack waves** (scattering, chasing) with their level-specific timin
 
 <img src="PacManDoc/fsm/Ghost Attack Controller.png">
 
-See [GhostCommand](PacManGame/src/main/java/de/amr/games/pacman/controller/game/GhostCommand.java)
+See [GhostCommand](PacManGame/src/main/java/de/amr/games/pacmanfsm/controller/game/GhostCommand.java)
 
 ```java
 beginStateMachine()
@@ -246,17 +246,17 @@ beginStateMachine()
 
 The actors are also controlled by several finite-state machines.
 
-- **Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/pacman/PacMan.java))
+- **Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacmanfsm/controller/creatures/pacman/PacMan.java))
 
 <img src="PacManDoc/fsm/Pac-Man.png">
 
 Each ghost has a state machine controlling its "AI" and a two-state machine controlling its moving (normal movement vs. teleportation mode). The ghost named "Blinky" has an additional state machine controlling its "mental state", see below.
 
-- **Ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/ghost/Ghost.java)) 
+- **Ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacmanfsm/controller/creatures/ghost/Ghost.java)) 
 
 <img src="PacManDoc/fsm/Ghost Blinky AI.png">
 
-Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/bonus/BonusFoodController.java)) which appears at certain scores is controlled by a finite-state machine:
+Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacmanfsm/controller/bonus/BonusFoodController.java)) which appears at certain scores is controlled by a finite-state machine:
 
 <img src="PacManDoc/fsm/Bonus Food Controller.png">
 
@@ -288,7 +288,7 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-When an actor leaves the board inside a tunnel it leaves its normal movement mode and enters *teleporting* mode. The [movement](PacManGame/src/main/java/de/amr/games/pacman/controller/steering/common/Movement.java) of the actors is controlled by the following state machine:
+When an actor leaves the board inside a tunnel it leaves its normal movement mode and enters *teleporting* mode. The [movement](PacManGame/src/main/java/de/amr/games/pacmanfsm/controller/steering/common/Movement.java) of the actors is controlled by the following state machine:
 
 <img src="PacManDoc/fsm/Pac-Man Movement.png">
 
@@ -431,7 +431,7 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-See class [GhostMadnessController](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/ghost/GhostMadnessController.java)
+See class [GhostMadnessController](PacManGame/src/main/java/de/amr/games/pacmanfsm/controller/creatures/ghost/GhostMadnessController.java)
 
 
 Blinky's chasing behavior is to directly attack Pac-Man. 
@@ -479,7 +479,7 @@ you(clyde).when(CHASING).headFor()
 
 <img src="PacManDoc/clyde.png"/>
 
-For details, see class [Folks](PacManGame/src/main/java/de/amr/games/pacman/controller/creatures/Folks.java).
+For details, see class [Folks](PacManGame/src/main/java/de/amr/games/pacmanfsm/controller/creatures/Folks.java).
 
 ### Visualization of attack behavior
 
@@ -516,7 +516,7 @@ The original Pac-Man game did not use any graph-based pathfinding. To still give
 ghost.setSteering(FRIGHTENED, new FleeingToSafeTile(ghost, ghost.pacMan));
 ```
 
-The wrapper class [WorldGraph](PacManGameEnhanced/src/main/java/de/amr/games/pacman/model/world/graph/WorldGraph.java) adds a (grid) graph structure to the maze. This allows running the generic graph algorithms from my [graph library](https://github.com/armin-reichert/graph) on the maze. For example, shortest paths in the maze can then be computed by just calling the *findPath(Tile source, Tile target)* method on the maze graph. This method runs either an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html), a Breadth-First Search or a Best-First Search on the underlying graph, see configuration options below. The graph library provides a whole number of search algorithms like BFS or Dijkstra. The code to compute a shortest path between two tiles using the A* algorithm with Manhattan distance heuristics looks like this:
+The wrapper class [WorldGraph](PacManGameEnhanced/src/main/java/de/amr/games/pacmanfsm/model/world/graph/WorldGraph.java) adds a (grid) graph structure to the maze. This allows running the generic graph algorithms from my [graph library](https://github.com/armin-reichert/graph) on the maze. For example, shortest paths in the maze can then be computed by just calling the *findPath(Tile source, Tile target)* method on the maze graph. This method runs either an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html), a Breadth-First Search or a Best-First Search on the underlying graph, see configuration options below. The graph library provides a whole number of search algorithms like BFS or Dijkstra. The code to compute a shortest path between two tiles using the A* algorithm with Manhattan distance heuristics looks like this:
 
 ```java
 GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
